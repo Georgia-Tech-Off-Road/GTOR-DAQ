@@ -1,2 +1,2 @@
 # GTOR-DAQ-Documentation
-DAQ stuff!
+DAQ stuff! #rtfm
