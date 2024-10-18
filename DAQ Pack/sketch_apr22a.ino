@@ -13,7 +13,6 @@
 //#define serialMonitor Serial
 
 File outputFile;
-unsigned long previousMillis = millis();
 
 bool isRecording = false;
 
@@ -47,7 +46,7 @@ void setup() {
 //writes data to SD card, checks if it should stop recording, and then waits 1ms
 void loop() {
   // put your main code here, to run repeatedly:
-  outputFile.printf("%llu,%lu,%d,%d,%d\n", now(), currentMillis,
+  outputFile.printf("%llu,%lu,%d,%d,%d\n", now(), micros(),
     digitalRead(17), analogRead(20), analogRead(21));
     //Serial.printf("%llu,%d,%d,%d\n", now(), digitalRead(17), analogRead(20), analogRead(21));
   if (digitalRead(22) == 1) {
