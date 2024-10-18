@@ -1,0 +1,38 @@
+
+How to add the GTOR ME Drive:
+
+https://docs.google.com/document/d/1dhMKIMhR-Y_TdGsyUbx2HvOuu8hzGJCwOcNmFCSNbao/edit?tab=t.0
+
+
+Text Version:
+
+Download the vpn
+Go to https://vpn.gatech.edu/global-protect/login.esp
+Sign in with your gatech username and password
+Click “Download Windows/macOS VPN Client”
+
+Click to download the appropriate VPN for your OS
+Open the installer and follow the installer instructions
+
+Start the VPN
+Open “GlobalProtect” app
+The portal is vpn.gatech.edu
+Log in with your georgia tech username and password
+
+Map the network drive
+Open file explorer
+Right click on “This PC” and click “Map Network Drive”
+
+In the popup window, 
+Enter \\mefsss03.ad.gatech.edu\gtor into “Folder”
+Select “Reconnect at sign-in”
+Select “Connect using different credentials”
+Click finish
+		
+In the following popup window
+If it doesn’t give you the option to enter a username
+Click “more choices”
+Select “Use a different account”
+
+Sign in with your email and password
+
