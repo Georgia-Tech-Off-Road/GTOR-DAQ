@@ -1,7 +1,7 @@
 //Note: May be able to go faster by modifying core Teensy 4.1 code to reduce the amount of averages that it takes when doing an analog read
 //Note: Also could maybe decrease bit resolution
 //Note: Should get an external powersupply to get better VCC stability
-#include "HallEffect.h"
+
 //sd card stuff
 #include "SD.h"
 #include "SPI.h"
@@ -40,14 +40,17 @@ void setup() {
   pinMode(17, INPUT_PULLDOWN);
   pinMode(20, INPUT_PULLDOWN);
   pinMode(21, INPUT_PULLDOWN);
+  pinMode(15, INPUT_PULLDOWN);
+  pinMode(22, INPUT_PULLDOWN);
+
   isRecording = true;
   outputFile.println(now());
 }
 //writes data to SD card, checks if it should stop recording, and then waits 1ms
 void loop() {
   // put your main code here, to run repeatedly:
-  outputFile.printf("%llu,%lu,%d,%d,%d\n", now(), micros(),
-    digitalRead(17), analogRead(20), analogRead(21));
+  outputFile.printf("%llu,%lu,%d,%d,%d,%d,%d\n", now(), micros(),
+    analogRead(17), digitalRead(20), digitalRead(21),analogRead(15), digitalRead(22));
     //Serial.printf("%llu,%d,%d,%d\n", now(), digitalRead(17), analogRead(20), analogRead(21));
   if (digitalRead(22) == 1) {
     if(isRecording == true) {
