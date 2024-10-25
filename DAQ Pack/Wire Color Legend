@@ -1,0 +1,11 @@
+
+Wire Color Legend
+
+
+| 🎨 Color   | 📍 Location     | ⚙️ Type         |
+|:----------:|:--------------:|:---------------:|
+| 🔴 Red     | ◀️ Left         | ⛔️ N/A          |
+| 🟢 Green   | ▶️ Right        | ⛔️ N/A          |
+| 🟡 Gold    | 🔼 Front        | ⛔️ N/A          |
+| ⚫ Black   | 🔽 Back         | ⛔️ N/A          |
+| 🔵 Blue    | ⏺️ N/A          | ⚡️ Hall Effect  |
