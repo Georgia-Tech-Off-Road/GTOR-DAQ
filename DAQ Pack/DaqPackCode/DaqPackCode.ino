@@ -11,8 +11,6 @@
 
 #define serialMonitor Serial
 
-unsigned long previousMicros = micros();
-
 File outputFile;
 
 bool isRecording = false;
@@ -47,9 +45,8 @@ void setup() {
   digitalWrite(9, HIGH); //turn on red LED
   outputFile.println(now());
 }
-//writes data to SD card, checks if it should stop recording, and then waits 1ms
+//writes data to SD card and then checks if it should stop recording
 void loop() {
-  // put your main code here, to run repeatedly:
   //try testing with an oscilloscope
   //potentially reduce print buffer time?
   //use flush?
@@ -77,6 +74,7 @@ void loop() {
       delay(300); //delays to prevent debounce
       String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
       Serial.println(time.c_str());
+      //turn on red LED
       digitalWrite(9, HIGH);
       outputFile = SD.open(time.c_str(),  FILE_WRITE);
       outputFile.println(now());
