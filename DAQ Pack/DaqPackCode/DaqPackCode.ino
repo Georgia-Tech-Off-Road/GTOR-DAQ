@@ -30,7 +30,7 @@ void setup() {
   serialMonitor.begin(BAUD);
   SD.begin(BUILTIN_SDCARD);
   delay(500);
-  String time = String(day()) + "-" + String(month()) + "-"+ String(year()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
+  String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
   Serial.println(time.c_str());
   outputFile = SD.open(time.c_str(),  FILE_WRITE);
   //sets top leds to output
@@ -42,7 +42,7 @@ void setup() {
   pinMode(21, INPUT_PULLDOWN); // front left halleffect
   pinMode(22, INPUT_PULLDOWN); // front right halleffect
   pinMode(17, INPUT_PULLDOWN); // front brake pressure
-  pinMode(15, INPUT_PULLDOWN); //rear brake pressure
+  pinMode(16, INPUT_PULLDOWN); //rear brake pressure
   isRecording = true;
   digitalWrite(9, HIGH); //turn on red LED
   outputFile.println(now());
@@ -54,7 +54,7 @@ void loop() {
   //potentially reduce print buffer time?
   //use flush?
   outputFile.printf("%llu,%lu,%d,%d,%d,%d,%d\n", now(), micros()
-  , digitalRead(20), digitalRead(21), digitalRead(22), analogRead(17), analogRead(15));
+  , digitalRead(20), digitalRead(21), digitalRead(22), analogRead(17), analogRead(16));
   //Serial.printf("%llu,%lu,%d,%d,%d,%d,%d\n", now(), micros()
   //, digitalRead(17), digitalRead(20), digitalRead(21), analogRead(22), analogRead(23));
   if (digitalRead(7) == 1) {
@@ -75,7 +75,7 @@ void loop() {
         Serial.println("RELEASE BUTTON");
       }
       delay(300); //delays to prevent debounce
-      String time = String(day()) + "-" + String(month()) + "-"+ String(year()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
+      String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
       Serial.println(time.c_str());
       digitalWrite(9, HIGH);
       outputFile = SD.open(time.c_str(),  FILE_WRITE);
