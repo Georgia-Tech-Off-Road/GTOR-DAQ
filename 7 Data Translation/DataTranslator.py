@@ -40,7 +40,7 @@ def process_digital_sensor(sensor, current_value, last_value, last_time, current
     return None, None
 
 # Read config file
-file = open("config.txt")
+file = open("Config/config.txt")
 header = file.readline()  # Read header
 data = file.readlines()  # Read sensor data
 
@@ -60,8 +60,22 @@ last_times = [0] * len(sensorList)
 print(len(sensorList))  # Print number of sensors
 dataBuffer = [[0 for _ in range(len(sensorList) + 1)] for _ in range(maxPr)]  # Fixed dataBuffer initialization
 
-print(os.listdir())  # List files in the directory
+driveLetter = input("Please type the drive letter for your MechE network drive.\n")
+os.chdir(driveLetter+":")
+directory = os.getcwd()
+while True:
+    directory = os.getcwd()
+    print(os.listdir())  # List files in the directory
+    newFolder = input("Please type the name of the folder you would like to navigate to. Type 	STOP when you've found the data file you're looking for.\n")
+    if newFolder == "STOP":
+        break
+    else:
+        
+        full_path = os.path.join(directory, newFolder)
+        os.chdir(full_path)
+
 fileName = input("What file would you like to read from?\n")
+
 inFile = open(fileName)
 initTimestamp = inFile.readline()  # Read first line (timestamp)
 newData = inFile.readlines()  # Read remaining lines (data)
