@@ -70,9 +70,11 @@ while True:
     if newFolder == "STOP":
         break
     else:
-        
-        full_path = os.path.join(directory, newFolder)
-        os.chdir(full_path)
+        try:
+            full_path = os.path.join(directory, newFolder)
+            os.chdir(full_path)
+        except:
+            print("INPROPER FILENAME UR BAD KID")
 
 fileName = input("What file would you like to read from?\n")
 
