@@ -1,4 +1,0 @@
-index,dataType,name,pollingRate
-1,digital,RPM Sensor,20000
-2,digital,Torque Sensor,25000
-3,analog,Weight Sensor,3000
