@@ -52,7 +52,6 @@ for line in data:
     if int(lineList[3]) > maxPr:
         maxPr = int(lineList[3])
         maxIn = lineList[0]
-    maxPr = maxPr - 1000
 file.close()
 
 last_values = [0] * len(sensorList)  # Initialize to match the number of sensors
