@@ -29,15 +29,24 @@ def mode1(fileToRead):
     print(len(timeStampDataPoints))
     print(minRefresh)
 
-def mode2(fileToRead):
-    print("penis")
 while True:
-    print(os.listdir())
-    fileName = input("Please type a file name\n")
-    fileToRead = open(fileName,"r")
-    mode = input("What mode would you like to use? (1 or 2)\n")
-    if mode == "1":
-        mode1(fileToRead)
+    driveLetter = input("Please type the drive letter for your MechE network drive.\n")
+os.chdir(driveLetter+":")
+directory = os.getcwd()
+while True:
+    directory = os.getcwd()
+    print(os.listdir())  # List files in the directory
+    newFolder = input("Please type the name of the folder you would like to navigate to. Type 	STOP when you've found the data file you're looking for.\n")
+    if newFolder == "STOP":
+        break
     else:
-        mode2(fileToRead)
+        try:
+            full_path = os.path.join(directory, newFolder)
+            os.chdir(full_path)
+        except:
+            print("INPROPER FILENAME UR BAD KID")
+
+    fileName = input("What file would you like to read from?\n")
+    fileToRead = open(fileName,"r")
+    mode1(fileToRead)
     
