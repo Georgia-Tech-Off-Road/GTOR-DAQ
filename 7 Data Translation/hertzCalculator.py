@@ -25,10 +25,10 @@ def mode1(fileToRead):
         timeStampDataPoints.append(timeStamp[1])
         if timeStamp[1] < minRefresh:
             minRefresh = timeStamp[1]
-    print(statistics.pvariance(timeStampDataPoints))
-    print(statistics.mean(timeStampDataPoints))
-    print(len(timeStampDataPoints))
-    print(minRefresh)
+    print(statistics.pvariance(timeStampDataPoints) + " : pVariance")
+    print(statistics.mean(timeStampDataPoints) + " : mean")
+    print(len(timeStampDataPoints)+ " : numSeconds")
+    print(minRefresh + ": minRefreshRate")
 
 originalDirectory = os.getcwd()
 driveLetter = input("Please type the drive letter for your MechE network drive.\n")
