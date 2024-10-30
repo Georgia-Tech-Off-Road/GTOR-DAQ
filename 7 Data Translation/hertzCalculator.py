@@ -46,4 +46,5 @@ while True:
 fileName = input("What file would you like to read from?\n")
 fileToRead = open(fileName,"r")
 mode1(fileToRead)
+input("Hit enter to close window")
         
