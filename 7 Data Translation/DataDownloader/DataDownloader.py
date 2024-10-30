@@ -57,6 +57,7 @@ def copy_with_progress(src, dst):
     
 def DownloadDataFile():
     originalDirectory = os.getcwd()
+    driveLetter = ""
     while True:
             driveLetter = input("Please type the drive letter for your MechE network drive.\n")
             try:
@@ -67,9 +68,19 @@ def DownloadDataFile():
     while True:
         directory = os.getcwd()
         print(os.listdir())  # List files in the directory
-        newFolder = input("Please type the name of the folder you would like to navigate to. Type STOP when you've found the data file you're looking for.\n")
+        newFolder = input("Please type the name of the folder you would like to navigate to or type DEFAULT to skip to the current season's data folder. Type STOP when you've found the data file you're looking for.\n")
         if newFolder == "STOP":
             break
+        elif newFolder == "DEFAULT":
+            try:
+                os.chdir(originalDirectory + "/DataDownloader/Config")
+                config = open("config.txt")
+                lines = config.readlines()
+                filePath = lines[1].replace("~?~", driveLetter)
+                os.chdir(filePath)
+            except:
+                print("Something went wrong. Please try manually navigating to the file.")
+                os.chdir(directory)
         else:
             try:
                 full_path = os.path.join(directory, newFolder)

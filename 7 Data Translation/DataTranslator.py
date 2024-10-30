@@ -1,4 +1,5 @@
 import os
+from DataDownloader import DataDownloader
 
 
 class Sensor:
@@ -60,25 +61,7 @@ last_times = [0] * len(sensorList)
 print(len(sensorList))  # Print number of sensors
 dataBuffer = [[0 for _ in range(len(sensorList) + 1)] for _ in range(maxPr)]  # Fixed dataBuffer initialization
 
-driveLetter = input("Please type the drive letter for your MechE network drive.\n")
-os.chdir(driveLetter+":")
-directory = os.getcwd()
-while True:
-    directory = os.getcwd()
-    print(os.listdir())  # List files in the directory
-    newFolder = input("Please type the name of the folder you would like to navigate to. Type 	STOP when you've found the data file you're looking for.\n")
-    if newFolder == "STOP":
-        break
-    else:
-        try:
-            full_path = os.path.join(directory, newFolder)
-            os.chdir(full_path)
-        except:
-            print("INPROPER FILENAME UR BAD KID LOL ANDREW SUCKS")
-
-fileName = input("What file would you like to read from?\n")
-
-inFile = open(fileName)
+inFile = DataDownloader.DownloadDataFile()
 initTimestamp = inFile.readline()  # Read first line (timestamp)
 newData = inFile.readlines()  # Read remaining lines (data)
 
@@ -89,7 +72,7 @@ for sensor in sensorList:
 
 print(counterList)
 
-outfile = open(fileName + "output", "w")
+outfile = open("output", "w")
 fileCount = 0
 andrewsBool = False
 
@@ -155,3 +138,4 @@ test = open("test.txt", "w")
 for i in range(len(dataBuffer)):
     test.write(str(dataBuffer[i]) + "\n")
 test.close()
+os.remove("temp.txt")
