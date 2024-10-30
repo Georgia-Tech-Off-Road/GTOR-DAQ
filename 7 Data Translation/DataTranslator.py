@@ -48,7 +48,7 @@ data = file.readlines()  # Read sensor data
 
 for line in data:
     lineList = line.strip().split(",")
-    sensorList.append(Sensor(lineList[0], lineList[1], lineList[2], lineList[3]))
+    sensorList.append(Sensor(lineList[0], lineList[1], lineList[2], lineList[3], lineList[4]))
     if int(lineList[3]) > maxPr:
         maxPr = int(lineList[3])
         maxIn = lineList[0]
