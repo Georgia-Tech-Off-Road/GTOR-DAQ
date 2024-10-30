@@ -1,4 +1,6 @@
 index,dataType,name,pollingRate
-1,digital,RPM Sensor,20000
-2,digital,Torque Sensor,25000
-3,analog,Weight Sensor,3000
+1,digital,rear diff,9999999999999
+2,digital,front left halleffect,9999999999999
+3,digital,front right halleffect,9999999999999
+4,analog,front brake pressure,9999999999999
+5,analog,rear brake pressure,9999999999999

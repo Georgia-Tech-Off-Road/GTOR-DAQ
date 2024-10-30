@@ -52,6 +52,7 @@ for line in data:
     if int(lineList[3]) > maxPr:
         maxPr = int(lineList[3])
         maxIn = lineList[0]
+    maxPr = maxPr - 1000
 file.close()
 
 last_values = [0] * len(sensorList)  # Initialize to match the number of sensors
@@ -74,7 +75,7 @@ while True:
             full_path = os.path.join(directory, newFolder)
             os.chdir(full_path)
         except:
-            print("INPROPER FILENAME UR BAD KID")
+            print("INPROPER FILENAME UR BAD KID LOL ANDREW SUCKS")
 
 fileName = input("What file would you like to read from?\n")
 
