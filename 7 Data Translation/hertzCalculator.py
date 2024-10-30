@@ -28,11 +28,8 @@ def mode1(fileToRead):
     print(statistics.mean(timeStampDataPoints))
     print(len(timeStampDataPoints))
     print(minRefresh)
-
-while True:
-    driveLetter = input("Please type the drive letter for your MechE network drive.\n")
+driveLetter = input("Please type the drive letter for your MechE network drive.\n")
 os.chdir(driveLetter+":")
-directory = os.getcwd()
 while True:
     directory = os.getcwd()
     print(os.listdir())  # List files in the directory
@@ -44,9 +41,9 @@ while True:
             full_path = os.path.join(directory, newFolder)
             os.chdir(full_path)
         except:
-            print("INPROPER FILENAME UR BAD KID")
+            print("IMPROPER FILENAME UR BAD KID")
 
-    fileName = input("What file would you like to read from?\n")
-    fileToRead = open(fileName,"r")
-    mode1(fileToRead)
-    
+fileName = input("What file would you like to read from?\n")
+fileToRead = open(fileName,"r")
+mode1(fileToRead)
+        
