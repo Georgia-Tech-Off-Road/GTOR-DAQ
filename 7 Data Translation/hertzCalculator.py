@@ -1,5 +1,6 @@
 import statistics
 import os
+import shutil 
 def mode1(fileToRead):
     minRefresh = 999999999
     timeStamps = []
@@ -28,6 +29,8 @@ def mode1(fileToRead):
     print(statistics.mean(timeStampDataPoints))
     print(len(timeStampDataPoints))
     print(minRefresh)
+
+originalDirectory = os.getcwd()
 driveLetter = input("Please type the drive letter for your MechE network drive.\n")
 os.chdir(driveLetter+":")
 while True:
@@ -42,9 +45,21 @@ while True:
             os.chdir(full_path)
         except:
             print("IMPROPER FILENAME UR BAD KID")
-
-fileName = input("What file would you like to read from?\n")
-fileToRead = open(fileName,"r")
+while True:
+    fileName = input("What file would you like to read from?\n")
+    if os.path.isfile(os.getcwd() + "/"+ fileName):
+        break
+    else: 
+        print("IMPROPER FILENAME UR BAD KID")
+print("Copying data to temporary local file.")
+shutil.copyfile(os.getcwd() + "/" + fileName, originalDirectory + "/temp.txt")
+print("Opening local temp file.")
+os.chdir(originalDirectory)
+fileToRead = open("temp.txt","r")
+print("Parsing local file.")
 mode1(fileToRead)
+print("Deleting local file.")
+fileToRead.close()
+os.remove(originalDirectory + "/temp.txt")
 input("Hit enter to close window")
         
