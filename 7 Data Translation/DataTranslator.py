@@ -2,11 +2,12 @@ import os
 
 
 class Sensor:
-    def __init__(self, index, dataType, name, pollingRate):
+    def __init__(self, index, dataType, name, pollingRate,numTeeth):
         self.index = int(index)
         self.dataType = dataType
         self.name = name
         self.pollingRate = int(pollingRate)
+        self.numTeeth = int(numTeeth)
 
     def __repr__(self):
         return f"Sensor(index={self.index}, dataType='{self.dataType}', name='{self.name}', pollingRate={self.pollingRate})"
@@ -17,7 +18,6 @@ maxPr = 0
 maxIn = 0
 currTime = 0
 tempTime = 0
-numTeeth = 1 #NEED A A WAY TO FIND NUM TEETH
 findAvg = False
 anaStart = 0
 anaEnd = 0
