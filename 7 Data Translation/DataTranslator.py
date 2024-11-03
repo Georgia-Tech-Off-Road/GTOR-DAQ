@@ -3,42 +3,27 @@ from DataDownloader import DataDownloader
 
 
 class Sensor:
-    def __init__(self, index, dataType, name, pollingRate,numTeeth):
+    def __init__(self, index, dataType, name, pollingRate, numTeeth):
         self.index = int(index)
         self.dataType = dataType
         self.name = name
         self.pollingRate = int(pollingRate)
         self.numTeeth = int(numTeeth)
+        #sum, num data points, last time they were averaged, timesAvged for analog sensors
+        self.sumList = [0, 0, 0, 0]
+        #last value, time of last value
+        self.digitalList = [0, 0]
+        #list of rpm values with their correpsonding time stamps
+        self.rpmValueList = []
 
     def __repr__(self):
-        return f"Sensor(index={self.index}, dataType='{self.dataType}', name='{self.name}', pollingRate={self.pollingRate})"
+        return f"Sensor(dataType='{self.dataType}', name='{self.name}', pollingRate={self.pollingRate})"
 
 
 sensorList = []
 maxPr = 0
-maxIn = 0
-currTime = 0
-tempTime = 0
-findAvg = False
-anaStart = 0
-anaEnd = 0
-avg_value = 0
+timeController = ""
 
-def process_analog_sensor(sensor, dataBuffer, start, end):
-
-    sum_values = sum(float(dataBuffer[i][sensor.index + 1]) for i in range(start, end))
-    average_value = sum_values / (end-start)
-    print(f"New Analog Average: {average_value}.")
-    return average_value
-
-def process_digital_sensor(sensor, current_value, last_value, last_time, current_time):
-    time_diff = current_time - last_time  # Calculate time difference using timestamps
-
-    if last_value == 0 and current_value == 1:
-        if time_diff > 0:
-            rpm = ((60 / numTeeth) / time_diff)  # RPM calculation based on Rotations Per Minute !!!
-            return rpm, current_time  # Return the current timestamp instead of fileCount
-    return None, None
 
 # Read config file
 file = open("Config/config.txt")
@@ -49,93 +34,109 @@ data = file.readlines()  # Read sensor data
 
 for line in data:
     lineList = line.strip().split(",")
-    sensorList.append(Sensor(lineList[0], lineList[1], lineList[2], lineList[3], lineList[4]))
-    if int(lineList[3]) > maxPr:
+    try:
+        sensorList.append(Sensor(lineList[0], lineList[1], lineList[2], lineList[3], lineList[4]))
+    except:
+        print("Inproper config! Please find and fix the following line\n" + str(line))
+    if int(lineList[3]) >= maxPr and lineList[1] == "analog":
         maxPr = int(lineList[3])
-        maxIn = lineList[0]
+        timeController = lineList[2]
 file.close()
 
-last_values = [0] * len(sensorList)  # Initialize to match the number of sensors
-last_times = [0] * len(sensorList)
-
-print(len(sensorList))  # Print number of sensors
 dataBuffer = [[0 for _ in range(len(sensorList) + 1)] for _ in range(maxPr)]  # Fixed dataBuffer initialization
-
-inFile = DataDownloader.DownloadDataFile()
-initTimestamp = inFile.readline()  # Read first line (timestamp)
-newData = inFile.readlines()  # Read remaining lines (data)
-
+#inFile = DataDownloader.DownloadDataFile()
+inFile = open("temp.txt")
 # Create counters for each sensor based on their polling rate
-counterList = []
-for sensor in sensorList:
-    counterList.append([0, sensor.pollingRate])
-
-print(counterList)
-
-outfile = open("output", "w")
-fileCount = 0
-andrewsBool = False
-
+outfile = open("output.txt", "w")
 # Process each data entry
-
-
-for entry in newData:
-    entryList = entry.strip().split(",")
-    dataBuffer[fileCount][0] = float(float(fileCount) / float(maxPr))  # Timestamp based on buffer
-
-    for i, sensor in enumerate(sensorList):
-        #Setting time
-        timeSensor = 1/sensor.pollingRate
-        if len(entryList) > i + 2:  # Ensure there are enough elements in entryList
-            current_value = entryList[i + 2].strip()  # The current value from the input file, with whitespace removed
-        else:
-            print(f"Warning: Not enough data for sensor {sensor.name}. Skipping entry.")
-            continue  # Skip this iteration if there's not enough data
-
-        if sensor.pollingRate < maxPr:  #sensor's polling rate is less than max
-            if (currTime + timeSensor) < dataBuffer[fileCount][0]: #if the current time + next increment of the sensor < buffer
-                currTime += timeSensor #update current time by the next polling rate's increment
-                print(f"The current time for the sensor is {currTime}")
-        else: #sensor is max polling rate so it reads or slower sensor is being updated
-            currTime += timeSensor
-            print(f"The current time for the {sensor.name} sensor is {currTime}")
-            findAvg = True
-            anaEnd = fileCount #shows where the sensor gets updated so avg can be found
-
-
-        if sensor.dataType == 'analog':
-            # Process analog sensor
-            if findAvg:
-                avg_value = process_analog_sensor(sensor, dataBuffer, anaStart, anaEnd)
-                findAvg = False
-            dataBuffer[fileCount][i + 1] = avg_value
-        elif sensor.dataType == 'digital':
-            try:
-                # Convert current_value to an integer after stripping spaces
-                rpm, time_diff = process_digital_sensor(sensor, int(current_value), last_values[i], last_times[i],
-                                                        currTime)
-                if rpm is not None:
-                    dataBuffer[fileCount][i + 1] = rpm
-                last_values[i] = int(current_value)  # Update the last value for this sensor
-                last_times[i] = currTime  # Update the last time for this sensor
-            except ValueError as e:
-                print(f"Error processing digital sensor {sensor.name} at index {i}: {e}")
-                print(f"Current value: {current_value}")
-                continue  # Skip this iteration if there's an error with the data
-
-        counterList[i][0] += 1  # Increment the polling counter for each sensor
-
-    print(dataBuffer[fileCount])  # Print current buffer line
-    print(fileCount)
-
-    fileCount += 1
-
-
-print(dataBuffer[0:100])  # Print first 100 rows of data buffer
-
-# Write data buffer to file
-test = open("test.txt", "w")
-for i in range(len(dataBuffer)):
-    test.write(str(dataBuffer[i]) + "\n")
-test.close()
+baseTime = 0
+firstRun = True
+timeScalar = 1
+progressBarCounter = 0
+for line in inFile:
+    lineList = line.strip().split(",")
+    if firstRun:
+        baseTime = int(lineList[1])
+        for sensor in sensorList:
+            sensor.sumList[2] = baseTime
+        firstRun = False
+    currentTime = lineList[1]
+    for i in range(0,len(lineList[2:])):
+        currentSensor = sensorList[i]
+        for sensor in sensorList:
+            if sensor.index == i + 2:
+                currentSensor = sensor
+        if currentSensor.dataType == "analog":
+            if int(currentTime) > int(currentSensor.sumList[2]) + float(1/(currentSensor.pollingRate)*10**6):
+                avg = float(currentSensor.sumList[0]/currentSensor.sumList[1])
+                for j in range(int(currentSensor.sumList[3]*(maxPr/currentSensor.pollingRate)), int(currentSensor.sumList[3]*(maxPr/currentSensor.pollingRate) + maxPr/currentSensor.pollingRate)):
+                    #have to subtract one since there's only one seconds column in the output file
+                    dataBuffer[j][currentSensor.index - 1] =  avg
+                    if currentSensor.pollingRate == maxPr and currentSensor.name == timeController:
+                        dataBuffer[j][0] = round(1/currentSensor.pollingRate * timeScalar, 10)
+                        timeScalar += 1
+                    if i == len(lineList[2:]) - 1 and j == maxPr - 1:
+                        for row in dataBuffer:
+                            outfile.write(str(row).replace('[','').replace(']','')+"\n")
+                        for sensor in sensorList:
+                            sensor.sumList[3] = 0
+                currentSensor.sumList[0] = 0
+                currentSensor.sumList[1] = 0
+                currentSensor.sumList[2] = currentTime
+                currentSensor.sumList[3] += 1
+            currentSensor.sumList[0] = currentSensor.sumList[0] + float(lineList[i + 2])
+            currentSensor.sumList[1] += 1
+        if currentSensor.dataType == "digital":
+            if int(lineList[i + 2]) != currentSensor.digitalList[0]:
+                if int(lineList[i + 2]) == 1:
+                    #print(lineList[i + 2])
+                    #print(currentSensor.digitalList[0])
+                    numTeeth = currentSensor.numTeeth
+                    timeDif = int(currentTime) - int(currentSensor.digitalList[1])
+                    RPM = ((1/timeDif) * (10**6)) * (1/numTeeth) * 60
+                    #print(numTeeth)
+                    #print(timeDif)
+                    #print(RPM)
+                    currentSensor.digitalList[0] = int(lineList[i + 2])
+                    currentSensor.digitalList[1] = int(currentTime)
+                    currentSensor.rpmValueList.append([RPM, timeDif])
+                else:
+                    currentSensor.digitalList[0] = int(lineList[i + 2])
+    if progressBarCounter == 1000000:
+        #replace 25000 with average polling rate found by hz calculator in future
+        print(str(round(((os.path.getsize(outfile.name))/(os.path.getsize(inFile.name) * maxPr/30000) * 100), 2)) + "% done with analog averaging!")
+        progressBarCounter = 0
+    progressBarCounter +=1
+inFile.close()
 os.remove("temp.txt")
+outfile.close()
+print("Finished analog averaging!")
+outFile = open("output.txt", "r")
+finalOutFile = open("finalOutput.txt", "w")
+progressBarCounter = 0
+for line in outFile:
+    lineList = line.strip().split(",")
+    for sensor in sensorList:
+        if sensor.dataType == "digital":
+            if len(sensor.rpmValueList) == 0:
+                lineList[sensor.index - 1] = '0'
+                continue
+            rpmValue = sensor.rpmValueList[0]
+            if float(lineList[0]) * (10 ** 6) > rpmValue[1]:
+                sensor.rpmValueList.pop(0)
+                #have to subtract one since only one time stamp  
+            lineList[sensor.index - 1] = str(rpmValue[0])
+    finalOutFile.write(",".join(lineList) + "\n")
+    if progressBarCounter == 1000000:
+        print(str(round((os.path.getsize(finalOutFile.name)/os.path.getsize(outFile.name) * 100), 8)) + "% done with rpm propagation!")
+        progressBarCounter = 0
+    progressBarCounter +=1
+finalOutFile.close()
+outFile.close()
+os.remove("output.txt")
+
+                    
+            
+    
+            
+            
