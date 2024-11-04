@@ -1,3 +1,4 @@
+#I still lose the last final bit of an average I think (like a hundredth of a second)kinda a good thing tho so you don't pretend you have proepr averages when you don't
 import os
 from DataDownloader import DataDownloader
 import math
@@ -131,6 +132,7 @@ for line in inFile:
                     RPM = ((1/timeDif) * (10**6)) * (1/numTeeth) * 60
                     currentSensor.digitalList[0] = int(lineList[i + 2])
                     currentSensor.digitalList[1] = int(currentTime)
+                    #subtract 
                     currentSensor.rpmValueList.append([RPM, int(currentTime) - baseTime])
                 #otherwise just update last sensor binary value entry
                 else:
@@ -150,17 +152,12 @@ for i in range(0, len(dataBuffer)):
         break
     outfile.write(str(dataBuffer[i]).replace('[','').replace(']','')+"\n")
 inFile.close()
-#os.remove("temp.txt")
+os.remove("temp.txt")
 outfile.close()
 print("Finished analog averaging!")
 outFile = open("output.txt", "r")
 finalOutFile = open("finalOutput.txt", "w")
 progressBarCounter = 0
-RPMFILE = open("RPM.txt", "w")
-for sensor in sensorList:
-    for rpmValue in sensor.rpmValueList:
-        RPMFILE.write(str(rpmValue))
-RPMFILE.close()
 #for line in output.txt plug in RPM value and save to final Output file
 for line in outFile:
     lineList = line.strip().split(",")
@@ -185,7 +182,7 @@ for line in outFile:
     progressBarCounter +=1
 finalOutFile.close()
 outFile.close()
-#os.remove("output.txt")
+os.remove("output.txt")
 print("Done!")
 answer = input("Please type enter to close window.")
             
