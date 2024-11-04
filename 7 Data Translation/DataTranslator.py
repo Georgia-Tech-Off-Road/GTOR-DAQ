@@ -142,7 +142,7 @@ for line in inFile:
         os.system("cls")
         #replace 25000 with average polling rate found by hz calculator in future
         #print porgress bar
-        print(str(round(((os.path.getsize(outfile.name))/(os.path.getsize(inFile.name) * prLCM/30000) * 100), 2)) + "% done with analog averaging!")
+        print(str(round(((os.path.getsize(outfile.name))/(os.path.getsize(inFile.name) * (prLCM/40000)) * 100), 2)) + "% done with analog averaging!")
         progressBarCounter = 0
     progressBarCounter +=1
 #write any lines remaining in file
@@ -177,7 +177,7 @@ for line in outFile:
     finalOutFile.write(",".join(lineList) + "\n")
     if progressBarCounter == 10000:
         os.system("cls")
-        print(str(round((os.path.getsize(finalOutFile.name)/os.path.getsize(outFile.name) * 100), 8)) + "% done with rpm propagation!")
+        print(str(round((os.path.getsize(finalOutFile.name)/(os.path.getsize(outFile.name)*0.25) * 100), 8)) + "% done with rpm propagation!")
         progressBarCounter = 0
     progressBarCounter +=1
 finalOutFile.close()
