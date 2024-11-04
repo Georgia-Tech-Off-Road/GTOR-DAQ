@@ -131,7 +131,7 @@ for line in inFile:
                     RPM = ((1/timeDif) * (10**6)) * (1/numTeeth) * 60
                     currentSensor.digitalList[0] = int(lineList[i + 2])
                     currentSensor.digitalList[1] = int(currentTime)
-                    currentSensor.rpmValueList.append([RPM, int(currentTime)])
+                    currentSensor.rpmValueList.append([RPM, int(currentTime) - baseTime])
                 #otherwise just update last sensor binary value entry
                 else:
                     currentSensor.digitalList[0] = int(lineList[i + 2])
