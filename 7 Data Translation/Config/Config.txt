@@ -1,6 +1,6 @@
 index,dataType,name,pollingRate,numTeeth
-1,digital,rear diff,10000,33
-2,digital,front left halleffect,10000,40
-3,digital,front right halleffect,10000,40
-4,analog,front brake pressure,10000,35
-5,analog,rear brake pressure,10000,35
+2,digital,rear diff,10000,33
+3,digital,front left halleffect,10000,40
+4,digital,front right halleffect,10000,40
+5,analog,front brake pressure,10000,35
+6,analog,rear brake pressure,10000,35
