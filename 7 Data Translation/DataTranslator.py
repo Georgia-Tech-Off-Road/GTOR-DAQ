@@ -177,7 +177,7 @@ for line in outFile:
     finalOutFile.write(",".join(lineList) + "\n")
     if progressBarCounter == 10000:
         os.system("cls")
-        print(str(round((os.path.getsize(finalOutFile.name)/(os.path.getsize(outFile.name)*0.25) * 100), 8)) + "% done with rpm propagation!")
+        print(str(round((os.path.getsize(finalOutFile.name)/(os.path.getsize(outFile.name)*1.25) * 100), 2)) + "% done with rpm propagation!")
         progressBarCounter = 0
     progressBarCounter +=1
 finalOutFile.close()
