@@ -2,6 +2,14 @@
 import os
 from DataDownloader import DataDownloader
 import math
+import importlib
+
+#imports all data libraries from ConversionLibrary folder
+for fileName in os.listdir("ConversionLibraries"):
+        if fileName.endswith('.py') and not fileName.startswith('__'):
+            moduleName = fileName[:-3]  # Remove .py extension
+            module = importlib.import_module(f'ConversionLibraries.{moduleName}')
+            globals()[moduleName] = module
 
 class Sensor:
     def __init__(self, index, dataType, name, pollingRate, numTeeth):
@@ -118,7 +126,7 @@ for line in inFile:
                 currentSensor.sumList[2] = currentSensor.sumList[2] + float((1/currentSensor.pollingRate)*10**6)
                 currentSensor.sumList[3] += 1
             #add entry to sumLists (prior logic runs on data before this)
-            currentSensor.sumList[0] = currentSensor.sumList[0] + float(lineList[i + 2])
+            currentSensor.sumList[0] =  currentSensor.sumList[0] + float(lineList[i + 2])
             currentSensor.sumList[1] += 1
         #if digital compute current RPM and save it with the time stamp to the sensors RPMlist
         if currentSensor.dataType == "digital":
@@ -137,22 +145,23 @@ for line in inFile:
                 #otherwise just update last sensor binary value entry
                 else:
                     currentSensor.digitalList[0] = int(lineList[i + 2])
-    if progressBarCounter == 10000:
+    if progressBarCounter == 100000:
         #clear prior progress bar
-        os.system("cls")
         #replace 25000 with average polling rate found by hz calculator in future
         #print porgress bar
-        print(str(round(((os.path.getsize(outfile.name))/(os.path.getsize(inFile.name) * (prLCM/40000)) * 100), 2)) + "% done with analog averaging!")
+        print(str(round(((os.path.getsize(outfile.name))/(os.path.getsize(inFile.name) * (prLCM/30000)) * 100), 2)) + "% done with analog averaging!")
         progressBarCounter = 0
     progressBarCounter +=1
 #write any lines remaining in file
-print(currentRowForBuffer)
 for i in range(0, len(dataBuffer)):
     if i == currentRowForBuffer:
         break
     outfile.write(str(dataBuffer[i]).replace('[','').replace(']','')+"\n")
 inFile.close()
-os.remove("temp.txt")
+try:
+    os.remove("temp.txt")
+except:
+    print("File deletion failed.")
 outfile.close()
 print("Finished analog averaging!")
 outFile = open("output.txt", "r")
@@ -174,15 +183,20 @@ for line in outFile:
                 rpmValue = sensor.rpmValueList[0]
             #have to subtract one since only one time stamp
             lineList[sensor.index - 1] = str(rpmValue[0])
+        #finds sensor type by name, may not be the best way to do this but itll be fineeeeee
+        elif "brake pressure" in sensor.name:
+                lineList[sensor.index - 1] = str(BrakePressureSensor.convertBrakePressure(float(lineList[sensor.index - 1]))) + "psi"
     finalOutFile.write(",".join(lineList) + "\n")
-    if progressBarCounter == 10000:
-        os.system("cls")
-        print(str(round((os.path.getsize(finalOutFile.name)/(os.path.getsize(outFile.name)*1.25) * 100), 2)) + "% done with rpm propagation!")
+    if progressBarCounter == 100000:
+        print(str(round((os.path.getsize(finalOutFile.name)/(os.path.getsize(outFile.name)*1.25) * 100), 2)) + "% done with rpm propagation and analog data conversion!")
         progressBarCounter = 0
     progressBarCounter +=1
 finalOutFile.close()
 outFile.close()
-os.remove("output.txt")
+try:
+    os.remove("output.txt")
+except:
+    print("File deletion failed.")
 print("Done!")
 answer = input("Please type enter to close window.")
             
