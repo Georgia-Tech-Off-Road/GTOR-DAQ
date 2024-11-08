@@ -165,7 +165,7 @@ except:
 outfile.close()
 print("Finished analog averaging!")
 outFile = open("output.txt", "r")
-finalOutFile = open("finalOutput.txt", "w")
+finalOutFile = open("finalOutput.csv", "w")
 progressBarCounter = 0
 #for line in output.txt plug in RPM value and save to final Output file
 for line in outFile:
@@ -185,7 +185,7 @@ for line in outFile:
             lineList[sensor.index - 1] = str(rpmValue[0])
         #finds sensor type by name, may not be the best way to do this but itll be fineeeeee
         elif "brake pressure" in sensor.name:
-                lineList[sensor.index - 1] = str(BrakePressureSensor.convertBrakePressure(float(lineList[sensor.index - 1]))) + "psi"
+                lineList[sensor.index - 1] = str(BrakePressureSensor.convertBrakePressure(float(lineList[sensor.index - 1])))
     finalOutFile.write(",".join(lineList) + "\n")
     if progressBarCounter == 100000:
         print(str(round((os.path.getsize(finalOutFile.name)/(os.path.getsize(outFile.name)*1.25) * 100), 2)) + "% done with rpm propagation and analog data conversion!")
