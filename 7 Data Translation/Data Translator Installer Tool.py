@@ -1,16 +1,18 @@
 import requests
 import os
 
-libraryNameList = [bs4,os,requests,time,shutil,statistics,DataDownloader,tkinter,math,importlib,]
+libraryNameList = []
 
 def imports(savePath):
-    file = open(savePath)
+    file = open(savePath, encoding = 'ISO-8859-1')
     for line in file:
         if "import" in line:
             lineList = line.strip().split(" ")
             libraryNameList.append(lineList[1])
             if "from" in line:
                 libraryNameList.append(lineList [-1])
+        if len(line.strip()) == 0:
+            break
     file.close()
 
 
