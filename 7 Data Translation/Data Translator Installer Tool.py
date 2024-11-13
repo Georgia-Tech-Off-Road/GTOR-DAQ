@@ -1,5 +1,18 @@
-import os
 import requests
+import os
+
+libraryNameList = [bs4,os,requests,time,shutil,statistics,DataDownloader,tkinter,math,importlib,]
+
+def imports(savePath):
+    file = open(savePath)
+    for line in file:
+        if "import" in line:
+            lineList = line.strip().split(" ")
+            libraryNameList.append(lineList[1])
+            if "from" in line:
+                libraryNameList.append(lineList [-1])
+    file.close()
+
 
 def listFilesInFolder(gitUrl, folderPath):
     apiUrl = f"{gitUrl.replace('github.com', 'api.github.com/repos')}/contents/{folderPath}"
@@ -22,6 +35,7 @@ def downloadFile(gitUrl, filePath, savePath):
         with open(savePath, 'wb') as f:
             f.write(response.content)
         print(f"Downloaded {filePath} to {savePath}")
+        imports(savePath)
     else:
         print(f"Failed to download {filePath}")
 
@@ -54,4 +68,9 @@ saveFolder = saveFolder.replace("\"","")
 #saveFolder = r"C:\Users\josep\Downloads"
 
 downloadFolder(gitUrl, folderPath, saveFolder)
+
+for library in libraryNameList:
+    os.system(f"py -m pip install --no-input {library}")
+
+
 
