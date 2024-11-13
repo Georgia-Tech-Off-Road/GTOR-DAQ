@@ -166,7 +166,7 @@ def translateData (inputFilePath, progressBar, progressBarPage, label, parentPag
         inFile.close()
         outfile.close()
         outFile = open("output.txt", "r")
-        finalOutFile = open("finalOutput.csv", "w")
+        finalOutFile = open(os.path.basename(str(ininputFilePath + ".csv"), "w")
         counter = 0
         #for line in output.txt plug in RPM value and save to final Output file
         for line in outFile:
