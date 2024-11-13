@@ -2,9 +2,7 @@ import shutil
 import os
 import time
 #handles data download and includes basic progress bar
-def copy_with_progress(src, dst):
-    #finds file size
-    fileSize = os.path.getsize(src)
+def downloadData(src, dst):
     #sets oldTime
     oldTime = time.time()
     #initializes a variable to keep track of last download speed
@@ -44,58 +42,37 @@ def copy_with_progress(src, dst):
                 previousDownloadSpeed = downloadSpeed
             except:
                 downloadSpeed = float(inf)
-            #calculate download percentage
-            percentage = round((copied/fileSize * 100), 2)
-            #print progress bar
-            print("Downloading: " + str(percentage) + "% at " + str(downloadSpeed) + "MB/s")
-            #update old time
-            oldTime = time.time()
             #increments numMegs to try and find optimum download rate
             if not wait:
                 numMegs += 1
-            
+        
+
+def updateProgressBar(src, dst, progressBar, progressBarPage, label, parentPage):
+    #I dunno why but seems like different paths use different file delimiters
+    basePath = os.getcwd()
+    #configDST = basePath + "\\Configs\\" + os.path.basename(src)+ "Config.txt"
+    #file = open(configDST, "w")
+    #file.close()
+    #configSRCLIST = src.split("/")
+    #configSRCLIST[-1] = "Config.txt"
+    #configSRC = "/".join(configSRCLIST)
+    #sourceFileSize = os.path.getsize(configSRC)
+    #downloadData(configDST, configSRC)
+    #creats a file so the attempt to get it's size doesn't create problems
+    file = open(os.path.basename(dst), "a")
+    file.close()
+    sourceFileSize = os.path.getsize(src)
+    while os.path.getsize(dst) != sourceFileSize:
+        percentage = os.path.getsize(dst)/sourceFileSize * 100
+        progressBar["value"] = percentage
+        label.config(text = str("Download Progress " + str(round(percentage,2)) + "%"))
+        label.pack()
+        progressBar.pack()
+        progressBarPage.update()
+    #in the future maybe add a pop-up that lets people choose if they want to replace the old Config file or not'
+    progressBarPage.destroy()
+    parentPage.deiconify()
     
-def DownloadDataFile():
-    originalDirectory = os.getcwd()
-    driveLetter = ""
-    while True:
-            driveLetter = input("Please type the drive letter for your MechE network drive.\n")
-            try:
-                    os.chdir(driveLetter+":")
-                    break
-            except:
-                    print("Something went wrong. Please make sure you're signed into the mechE drive.")
-    while True:
-        directory = os.getcwd()
-        print(os.listdir())  # List files in the directory
-        newFolder = input("Please type the name of the folder you would like to navigate to or type DEFAULT to skip to the current season's data folder. Type STOP when you've found the data file you're looking for.\n")
-        if newFolder == "STOP":
-            break
-        elif newFolder == "DEFAULT":
-            try:
-                os.chdir(originalDirectory + "/DataDownloader/Config")
-                config = open("config.txt")
-                lines = config.readlines()
-                filePath = lines[1].replace("~?~", driveLetter)
-                os.chdir(filePath)
-            except:
-                print("Something went wrong. Please try manually navigating to the file.")
-                os.chdir(directory)
-        else:
-            try:
-                full_path = os.path.join(directory, newFolder)
-                os.chdir(full_path)
-            except:
-                print("IMPROPER FILENAME UR BAD KID")
-    while True:
-        fileName = input("What file would you like to read from?\n")
-        if os.path.isfile(os.getcwd() + "/"+ fileName):
-            break
-        else: 
-            print("IMPROPER FILENAME UR BAD KID")
-    print("Copying data to temporary local file.")
-    copy_with_progress(os.getcwd() + "/" + fileName, originalDirectory + "/temp.txt")
-    print("Opening local temp file.")
-    os.chdir(originalDirectory)
-    fileToRead = open("temp.txt","r")
-    return fileToRead
+    
+    
+            
