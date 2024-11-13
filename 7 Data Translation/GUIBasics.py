@@ -46,9 +46,6 @@ def openDataDownloaderTool():
         if ('filePath' in globals()):
                 if "C:/" not in filePath:
                         button4.grid(row=0, column=1, padx=20)
-                        button5.grid(row=1, column=0, padx=20)
-                        button6.grid(row=1, column=1, padx=20)
-                        button7.grid(row=1, column=2, padx=20)
                 else: 
                         button5.grid(row=0, column=0, padx=20)
                         button6.grid(row=0, column=1, padx=20)
@@ -120,7 +117,7 @@ def openDataDownloaderTool():
     second_frame.pack(pady=20)
 
     # Create and place the buttons in a single row on the second page
-    button4 = tk.Button(second_frame, text="Download Data File (Recommended as it should make data processing faster)", command=lambda: downloadData())
+    button4 = tk.Button(second_frame, text="Download Data File", command=lambda: downloadData())
     button5 = tk.Button(second_frame, text="Process Data", command=lambda: processData())
     button6 = tk.Button(second_frame, text="Edit Config", command=lambda: editConfig())
     button7 = tk.Button(second_frame, text="Calculate Hertz Info", command=lambda: calculateHertz())
