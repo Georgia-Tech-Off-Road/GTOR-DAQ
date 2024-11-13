@@ -1,3 +1,5 @@
+os.system("py -m pip install --no-input requests")
+
 import requests
 import os
 
