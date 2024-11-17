@@ -1,24 +1,32 @@
 import os
 
+#Imports necessary modules to run this code
 os.system("py -m pip install --no-input requests")
+os.system("py -m pip install --no-input importlib.util")
 
-import requests
+import requests #for accessing API
+import importlib.util #for importing
 
+#List of libraries/modules to be installed
 libraryNameList = []
 
+#Appends libraries/modules to list
 def imports(savePath):
-    file = open(savePath, encoding = 'ISO-8859-1')
+    file = open(savePath, encoding="ISO-8859-1") #only encoding that seems to work
     for line in file:
-        if "import" in line:
-            lineList = line.strip().split(" ")
+        line = line.strip()
+        if not line:
+            continue
+        if line.startswith("import "):
+            lineList = line.split()
             libraryNameList.append(lineList[1])
-            if "from" in line:
-                libraryNameList.append(lineList [-1])
-        if len(line.strip()) == 0:
-            break
-    file.close()
+        elif line.startswith("from"):
+            lineList = line.split()
+            libraryNameList.append(lineList[1])
+    
+    return libraryNameList
 
-
+#Accesses GitAPI to create list of folders in Github repo to be downloaded
 def listFilesInFolder(gitUrl, folderPath):
     apiUrl = f"{gitUrl.replace('github.com', 'api.github.com/repos')}/contents/{folderPath}"
     response = requests.get(apiUrl)
@@ -26,9 +34,10 @@ def listFilesInFolder(gitUrl, folderPath):
     if isinstance(items, list):
         return items
     else:
-        print(f"Didn't work loser! Why? Well, {items}")
+        print(f"Didn't work loser! Tried {items}")
         return []
 
+#Uses OS to download every file
 def downloadFile(gitUrl, filePath, savePath):
     if filePath == "7 Data Translation/Data Translator Installer Tool.py":
         print(f"Skipping {filePath}...")
@@ -36,63 +45,58 @@ def downloadFile(gitUrl, filePath, savePath):
     url = f"{gitUrl}/raw/main/{filePath}"
     response = requests.get(url)
     if response.status_code == 200:
-        os.makedirs(os.path.dirname(savePath), exist_ok=True)
+        os.makedirs(os.path.dirname(savePath), exist_ok=True) #creates folder to install to
         with open(savePath, 'wb') as f:
-            f.write(response.content)
+            f.write(response.content) #Downloads file
         print(f"Downloaded {filePath} to {savePath}")
         imports(savePath)
     else:
         print(f"Failed to download {filePath}")
 
+#If the value in the API is a folder (dir), goes deeper into API until folder is reached,
+#then adds folders to be downloaded
 def downloadFolder(gitUrl, folderPath, saveFolder):
     items = listFilesInFolder(gitUrl, folderPath)
     if items:
         for item in items:
-            itemPath = item['path']
-            itemType = item['type']
-            localSavePath = os.path.join(saveFolder, itemPath)
-            if itemType == 'file':
+            itemPath = item['path'] #folder path
+            itemType = item['type'] #checks whether item is a FILE or FOLDER (directory
+            localSavePath = os.path.join(saveFolder, itemPath) #creates save path
+            if itemType == 'file': #if item is a FILE
                 os.makedirs(os.path.dirname(localSavePath), exist_ok=True)
                 downloadFile(gitUrl, itemPath, localSavePath)
-            elif itemType == 'dir':
+            elif itemType == 'dir': #if item is a FOLDER
                 downloadFolder(gitUrl, itemPath, saveFolder)
 
-
+#User inputs, github URL
 gitUrl = "https://github.com/Georgia-Tech-Off-Road/GTOR-DAQ"
 saveFolder = input(r"Enter the local folder path where the file will be saved (e.g., C:\Users\<name>\Documents): ")
-folderPath = input(r"Enter the folder path within the GitHub repository that you want to download (e.g., 7%20Data%20Translation). If you want to download the Data Translation folder, type Data: ")
+folderPath = input(r"Enter the folder path within the GitHub repository that you want to download (e.g., 7%20Data%20Translation). If you want to download the Data Translation folder, type data: ")
 
-if folderPath == "Data":
+#Defaults to Data Translation if user inputs 'data'
+if folderPath == "data":
     folderPath = "7%20Data%20Translation"
 
+#Removes quotes if user uses them in folder paths
 folderPath = folderPath.replace("\"","")
 saveFolder = saveFolder.replace("\"","")
 
+#Calls downloadFolder function to download files to saveFolder
+downloadFolder(gitUrl, folderPath, saveFolder)
 
-#folderPath = "7%20Data%20Translation"
-#saveFolder = r"C:\Users\josep\Downloads"
-
-#downloadFolder(gitUrl, folderPath, saveFolder)
-
-import subprocess
-
-def install_libraries(library_list):
-    for library in library_list:
-        try:
-            subprocess.run(
-                ["python", "-m", "pip", "install", "--no-input", library],
-                check=True,  # Raises CalledProcessError if the command fails
-                capture_output=True,  # Captures stdout and stderr
-                text=True  # Decodes output to text
-            )
-            print(f"Successfully installed {library}.")
-        except subprocess.CalledProcessError as e:
-            print(f"Failed to install {library}. Error: {e.stderr}")
-
-# Example usage
-libraryNameList = ["numpy", "pandas", "nonexistentlibrary"]
-install_libraries(libraryNameList)
-
+#Loops through items in libraryNameList to import necessary modules/libraries
+print(libraryNameList) #unnecessary but helpful for debugging
+for library in libraryNameList:
+    print(f"Processing: '{library}'")
+    if importlib.util.find_spec(library):
+        print(f"{library} is already installed. Skipping...")
+        continue
+    result = os.system(f"py -m pip install --no-input {library}")
+    if result == 0:
+        print(f"Successfully installed {library}.")
+    else:
+        print(f"Failed to install {library}. Error code: {result}")
+    
 
 print("Done!")
 
