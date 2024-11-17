@@ -1,0 +1,2 @@
+File path to DAQ data ~?~ gets replaced with the drive letter (update Baja year each season)
+~?~:\Baja 25\7 - DAQ\Data
