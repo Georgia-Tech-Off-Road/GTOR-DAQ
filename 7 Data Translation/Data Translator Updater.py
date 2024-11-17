@@ -44,9 +44,6 @@ def listFilesInFolder(gitUrl, folderPath):
 
 #Uses OS to download every file
 def downloadFile(gitUrl, filePath, savePath):
-    if filePath == "7 Data Translation/Data Translator Installer Tool.py":
-        print(f"Skipping {filePath}...")
-        return
     url = f"{gitUrl}/raw/main/{filePath}"
     response = requests.get(url)
     if response.status_code == 200:
