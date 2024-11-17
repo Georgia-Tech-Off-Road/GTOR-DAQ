@@ -1,3 +1,8 @@
+
+
+# This is the code required to overwrite and update the imports, files, etc.
+
+
 import os
 
 #Imports necessary modules to run this code
@@ -19,12 +24,10 @@ def imports(savePath):
             continue
         if line.startswith("import "):
             lineList = line.split()
-            if lineList[1] not in libraryNameList:
-                libraryNameList.append(lineList[1])
+            libraryNameList.append(lineList[1])
         elif line.startswith("from"):
             lineList = line.split()
-            if lineList[1] not in libraryNameList:
-                libraryNameList.append(lineList[1])
+            libraryNameList.append(lineList[1])
     
     return libraryNameList
 
