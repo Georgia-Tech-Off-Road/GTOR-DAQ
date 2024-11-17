@@ -11,6 +11,8 @@ import time
 
 #file imports
 from DataDownloader import DataDownloader
+from Updater import DataTranslatorUpdater
+
 #imports the processing programs (hertz calculator, data processor, etc etc) 
 os.chdir("./")
 for fileName in os.listdir("ProcessingPrograms"):
@@ -18,6 +20,7 @@ for fileName in os.listdir("ProcessingPrograms"):
             moduleName = fileName[:-3]  # Remove .py extension
             module = importlib.import_module(f'ProcessingPrograms.{moduleName}')
             globals()[moduleName] = module
+
 
 # Creates the main window
 root = tk.Tk()
@@ -143,6 +146,10 @@ def dataProcessingTool():
     herztCalculatorButton = tk.Button(buttonFrame, text="Calculate Hertz Info", command=lambda: calculateHertz())
     updateButtons()
 
+def runUpdater():
+        updateThread = threading.Thread(target = DataTranslatorUpdater.runUpdater, args = ())
+        root.destroy()
+        updateThread.start()
 #pack the main page
 frame = tk.Frame(root)
 frame.pack(pady=20)
@@ -160,8 +167,8 @@ dataProcessingToolButton = tk.Button(buttonFrame, text="Data Tool", command=lamb
 dataProcessingToolButton.grid(row=1, column=0, padx=20)
 
 # Create button 2
-button2 = tk.Button(buttonFrame, text="Button 2", command=lambda: on_main_button_click(2))
-button2.grid(row=1, column=1, padx=20)
+updaterButton = tk.Button(buttonFrame, text="Update Program", command=lambda: runUpdater())
+updaterButton.grid(row=1, column=1, padx=20)
 
 # Create Button 3
 button3 = tk.Button(buttonFrame, text="Button 3", command=lambda: on_main_button_click(3))

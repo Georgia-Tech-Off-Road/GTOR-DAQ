@@ -1,14 +1,4 @@
-
-
-# This is the code required to overwrite and update the imports, files, etc.
-
-
 import os
-
-#Imports necessary modules to run this code
-os.system("py -m pip install --no-input requests")
-os.system("py -m pip install --no-input importlib.util")
-
 import requests #for accessing API
 import importlib.util #for importing
 
@@ -70,35 +60,39 @@ def downloadFolder(gitUrl, folderPath, saveFolder):
             elif itemType == 'dir': #if item is a FOLDER
                 downloadFolder(gitUrl, itemPath, saveFolder)
 
-#User inputs, github URL
-gitUrl = "https://github.com/Georgia-Tech-Off-Road/GTOR-DAQ"
-saveFolder = input(r"Enter the local folder path where the file will be saved (e.g., C:\Users\<name>\Documents): ")
-folderPath = input(r"Enter the folder path within the GitHub repository that you want to download (e.g., 7%20Data%20Translation). If you want to download the Data Translation folder, type data: ")
-
-#Defaults to Data Translation if user inputs 'data'
-if folderPath == "data":
+def runUpdater():
+    #User inputs, github URL
+    gitUrl = "https://github.com/Georgia-Tech-Off-Road/GTOR-DAQ"
+    #go back two directories so we can obtain the save folder
+    os.chdir("..")
+    os.chdir("..")
+    
+    saveFolder = os.getcwd()
+    
     folderPath = "7%20Data%20Translation"
 
-#Removes quotes if user uses them in folder paths
-folderPath = folderPath.replace("\"","")
-saveFolder = saveFolder.replace("\"","")
+    #Removes quotes if user uses them in folder paths
+    folderPath = folderPath.replace("\"","")
+    saveFolder = saveFolder.replace("\"","")
 
-#Calls downloadFolder function to download files to saveFolder
-downloadFolder(gitUrl, folderPath, saveFolder)
+    #Calls downloadFolder function to download files to saveFolder
+    downloadFolder(gitUrl, folderPath, saveFolder)
 
-#Loops through items in libraryNameList to import necessary modules/libraries
-print(libraryNameList) #unnecessary but helpful for debugging
-for library in libraryNameList:
-    print(f"Processing: '{library}'")
-    if importlib.util.find_spec(library):
-        print(f"{library} is already installed. Skipping...")
-        continue
-    result = os.system(f"py -m pip install --no-input {library}")
-    if result == 0:
-        print(f"Successfully installed {library}.")
-    else:
-        print(f"Failed to install {library}. Error code: {result}")
-    
+    #Loops through items in libraryNameList to import necessary modules/libraries
+    print(libraryNameList) #unnecessary but helpful for debugging
+    for library in libraryNameList:
+        print(f"Processing: '{library}'")
+        if importlib.util.find_spec(library):
+            print(f"{library} is already installed. Skipping...")
+            continue
+        result = os.system(f"py -m pip install --no-input {library}")
+        if result == 0:
+            print(f"Successfully installed {library}.")
+        else:
+            print(f"Failed to install {library}. Error code: {result}")
+        
 
-print("Done!")
+    print("Done!")
+
+
 
