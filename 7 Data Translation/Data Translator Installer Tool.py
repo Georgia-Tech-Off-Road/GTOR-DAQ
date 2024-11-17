@@ -72,10 +72,27 @@ saveFolder = saveFolder.replace("\"","")
 #folderPath = "7%20Data%20Translation"
 #saveFolder = r"C:\Users\josep\Downloads"
 
-downloadFolder(gitUrl, folderPath, saveFolder)
+#downloadFolder(gitUrl, folderPath, saveFolder)
 
-for library in libraryNameList:
-    os.system(f"py -m pip install --no-input {library}")
+import subprocess
+
+def install_libraries(library_list):
+    for library in library_list:
+        try:
+            subprocess.run(
+                ["python", "-m", "pip", "install", "--no-input", library],
+                check=True,  # Raises CalledProcessError if the command fails
+                capture_output=True,  # Captures stdout and stderr
+                text=True  # Decodes output to text
+            )
+            print(f"Successfully installed {library}.")
+        except subprocess.CalledProcessError as e:
+            print(f"Failed to install {library}. Error: {e.stderr}")
+
+# Example usage
+libraryNameList = ["numpy", "pandas", "nonexistentlibrary"]
+install_libraries(libraryNameList)
+
 
 print("Done!")
 
