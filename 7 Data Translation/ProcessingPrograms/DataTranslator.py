@@ -3,6 +3,9 @@ import os
 from DataDownloader import DataDownloader
 import math
 import importlib
+import tkinter as tk
+from tkinter import ttk
+
 
 os.chdir("./")
 
@@ -34,7 +37,14 @@ class Sensor:
 
     def __repr__(self):
         return f"Sensor(dataType='{self.dataType}', name='{self.name}', pollingRate={self.pollingRate})"
-def translateData (inputFilePath, progressBar, progressBarPage, label, parentPage):
+
+def translateData (inputFilePath, progressBarPage, parentPage):
+        #create a label to tell the user how the download is progressing
+        dataTranslationProgressLabel = tk.Label(progressBarPage, text="Data Translation Progress")
+        dataTranslationProgressLabel.pack()
+        #create the progress bar
+        progressBar = ttk.Progressbar(progressBarPage, mode = "determinate", maximum=100)
+        progressBar.pack(padx=20, pady=20, fill="x")
         #list of sensors
         sensorList = []
         #maximum polling rate of all analog sensors
@@ -43,15 +53,13 @@ def translateData (inputFilePath, progressBar, progressBarPage, label, parentPag
         timeController = ""
         #index of last analog sensor
         lastAnalogIndex = 0
-
-        # Read config file
+        #open config file (found by navigating to the configs folder and looking for a file called fileNameConfig.txt)
         configFileName = os.path.basename(inputFilePath)+"Config.txt"
         file = open("Configs/" + configFileName)
-        # Read header
+        #get rid of the header
         header = file.readline()
-        # Read sensor data
+        #get the config data
         data = file.readlines()
-
         #loops through config file and creates sensor list
         for line in data:
             #strips and splits line
@@ -149,11 +157,12 @@ def translateData (inputFilePath, progressBar, progressBarPage, label, parentPag
                         #otherwise just update last sensor binary value entry
                         else:
                             currentSensor.digitalList[0] = int(lineList[i + 2])
+                #if counter is high enough update the progress bar value
                 if counter == 1000000:
                         percentage = round((os.path.getsize(outfile.name)/(os.path.getsize(inFile.name) * (prLCM/20000)) * 75), 2)
                         progressBar["value"] = percentage
-                        label.config(text = str("Analog Averaging Progress " + str(round(percentage,2)) + "%"))
-                        label.pack()
+                        dataTranslationProgressLabel.config(text = str("Analog Averaging Progress " + str(round(percentage,2)) + "%"))
+                        dataTranslationProgressLabel.pack()
                         progressBar.pack()
                         progressBarPage.update()
                         counter = 0
@@ -166,7 +175,7 @@ def translateData (inputFilePath, progressBar, progressBarPage, label, parentPag
         inFile.close()
         outfile.close()
         outFile = open("output.txt", "r")
-        finalOutFile = open(str(os.path.basename(ininputFilePath) + ".csv"), "w")
+        finalOutFile = open(str(os.path.basename(inputFilePath) + ".csv"), "w")
         counter = 0
         #for line in output.txt plug in RPM value and save to final Output file
         for line in outFile:
@@ -188,11 +197,12 @@ def translateData (inputFilePath, progressBar, progressBarPage, label, parentPag
                 elif "brake pressure" in sensor.name:
                         lineList[sensor.index - 1] = str(BrakePressureSensor.convertBrakePressure(float(lineList[sensor.index - 1])))
             finalOutFile.write(",".join(lineList) + "\n")
+            #if counter is high enough update the progress bar value
             if counter == 1000000:
                     percentage = round((os.path.getsize(finalOutFile.name)/(os.path.getsize(outFile.name)*1.25) * 25 + 75), 2)
                     progressBar["value"] = percentage
-                    label.config(text = str("RPM propogation and sensory library application " + str(round(percentage,2)) + "%"))
-                    label.pack()
+                    dataTranslationProgressLabel.config(text = str("RPM propogation and sensory library application " + str(round(percentage,2)) + "%"))
+                    dataTranslationProgressLabel.pack()
                     progressBar.pack()
                     progressBarPage.update()
                     counter = 0
@@ -203,7 +213,9 @@ def translateData (inputFilePath, progressBar, progressBarPage, label, parentPag
             os.remove("output.txt")
         except:
             print("File deletion failed.")
+        #destroy the progress bar page
         progressBarPage.destroy()
+        #unhide the parent page
         parentPage.deiconify()
 
                     

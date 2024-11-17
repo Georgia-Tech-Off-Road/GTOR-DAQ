@@ -1,6 +1,10 @@
 import shutil
 import os
 import time
+import tkinter as tk
+from tkinter import ttk
+
+
 #handles data download and includes basic progress bar
 def downloadData(src, dst):
     #sets oldTime
@@ -47,30 +51,34 @@ def downloadData(src, dst):
                 numMegs += 1
         
 
-def updateProgressBar(src, dst, progressBar, progressBarPage, label, parentPage):
-    #I dunno why but seems like different paths use different file delimiters
+def updateProgressBar(src, dst, progressBarPage, parentPage):
+    #get the basePath
     basePath = os.getcwd()
-    #configDST = basePath + "\\Configs\\" + os.path.basename(src)+ "Config.txt"
-    #file = open(configDST, "w")
-    #file.close()
-    #configSRCLIST = src.split("/")
-    #configSRCLIST[-1] = "Config.txt"
-    #configSRC = "/".join(configSRCLIST)
-    #sourceFileSize = os.path.getsize(configSRC)
-    #downloadData(configDST, configSRC)
-    #creats a file so the attempt to get it's size doesn't create problems
-    file = open(os.path.basename(dst), "a")
-    file.close()
+    #get the size of the source file
     sourceFileSize = os.path.getsize(src)
+    #create a label to say how far along the download is
+    downloadProgressLabel = tk.Label(progressBarPage, text="Download Progress")
+    downloadProgressLabel.pack()
+    #create the progress bar itself
+    progressBar = ttk.Progressbar(progressBarPage, mode = "determinate", maximum=100)
+    progressBar.pack(padx=20, pady=20, fill="x")
+    #get the destination file path by appending the file name to the current file path
+    #while the sizes aren't identical
     while os.path.getsize(dst) != sourceFileSize:
+        #compute the percentage downloaded
         percentage = os.path.getsize(dst)/sourceFileSize * 100
+        #update the progress bar to match the percentage
         progressBar["value"] = percentage
-        label.config(text = str("Download Progress " + str(round(percentage,2)) + "%"))
-        label.pack()
+        #update the label to display the percentage downloaded
+        downloadProgressLabel.config(text = str("Download Progress " + str(round(percentage,2)) + "%"))
+        #pack both elements
+        downloadProgressLabel.pack()
         progressBar.pack()
+        #update the progressBar page to show the label and progress bar
         progressBarPage.update()
-    #in the future maybe add a pop-up that lets people choose if they want to replace the old Config file or not'
+    #destry the progress bar page
     progressBarPage.destroy()
+    #unhide the main data processor page
     parentPage.deiconify()
     
     
