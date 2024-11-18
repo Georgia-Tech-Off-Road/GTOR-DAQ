@@ -34,7 +34,12 @@ def dataProcessingTool():
     dataProcessingToolPage = tk.Toplevel(root)
     dataProcessingToolPage.title("Data Downloader Tool")
     dataProcessingToolPage.geometry("800x400")
-    # Function to handle file upload
+    def openHowTo():
+        #find the DataProcessingTool.txt file
+        howToFilePath = "Guides/DataProcessingTool.txt"
+        #open the howToFile file in notepade (See if this works on mac.....)
+        os.system(f'notepad.exe {howToFilePath}')
+        # Function to handle file upload
     def chooseFile():
         # Open file dialog and get the file path
         global filePath
@@ -51,7 +56,7 @@ def dataProcessingTool():
                 #loop through every widget in the frame
                 for widget in frame.winfo_children():
                     #if the widget is a button and isn't the chooseFile button then hide it
-                    if widget["text"] != "Choose File" and isinstance(widget, tk.Button):
+                    if widget["text"] != "Choose File" and widget["text"] != "How To"  and isinstance(widget, tk.Button):
                             widget.grid_forget()
         #if a filePath has been chosen
         if ('filePath' in globals()):
@@ -127,10 +132,14 @@ def dataProcessingTool():
         #open the config file in notepade (See if this works on mac.....)
         os.system(f'notepad.exe {configFilePath}')
 
+    #howToButton
+    howToButton = tk.Button(dataProcessingToolPage, text="How To", command=lambda: openHowTo())
+    howToButton.pack()
+    
     #create a button to select the file to be processed
     fileSelectButton = tk.Button(dataProcessingToolPage, text="Choose File", command=chooseFile)
     fileSelectButton.pack(pady=10)
-
+  
     #create a label to show the file selected
     fileSelectLabel = tk.Label(dataProcessingToolPage, text="No file selected")
     fileSelectLabel.pack(pady=5)
@@ -147,9 +156,19 @@ def dataProcessingTool():
     updateButtons()
 
 def runUpdater():
-        updateThread = threading.Thread(target = DataTranslatorUpdater.runUpdater, args = ())
-        root.destroy()
-        updateThread.start()
+    #create update thread
+    updateThread = threading.Thread(target = DataTranslatorUpdater.runUpdater, args = ())
+    #destroy the root page
+    root.destroy()
+    #start the thread
+    updateThread.start()
+
+def openHowTo():
+    #find the HomeScreen.txt file
+    howToFilePath = "Guides/HomeScreen.txt"
+    #open the howToFile file in notepade (See if this works on mac.....)
+    os.system(f'notepad.exe {howToFilePath}')
+
 #pack the main page
 frame = tk.Frame(root)
 frame.pack(pady=20)
@@ -171,8 +190,8 @@ updaterButton = tk.Button(buttonFrame, text="Update Program", command=lambda: ru
 updaterButton.grid(row=1, column=1, padx=20)
 
 # Create Button 3
-button3 = tk.Button(buttonFrame, text="Button 3", command=lambda: on_main_button_click(3))
-button3.grid(row=1, column=2, padx=20)
+howToButton = tk.Button(buttonFrame, text="How To", command=lambda: openHowTo())
+howToButton.grid(row=1, column=2, padx=20)
 
 # Run the application
 root.mainloop()
