@@ -1,10 +1,4 @@
-import tkinter as tk
-from tkinter import filedialog
-from tkinter import ttk
-import os
-import importlib
-import threading
-import time
+
 
 #libraries used for program
 #NOTE: NEVER PUT ANYTHING IN FRONT OF IMPORTS AND ALWAYS KEEP IMPORTANTS IN THIS NOTATION, OTHERWISE THE UPDATER WILL LIKELY BREAK
