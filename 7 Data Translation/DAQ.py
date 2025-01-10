@@ -5,6 +5,7 @@ import os
 import importlib
 import threading
 import time
+import matplotlib
 
 #libraries used for program
 #NOTE: NEVER PUT ANYTHING IN FRONT OF IMPORTS AND ALWAYS KEEP IMPORTANTS IN THIS NOTATION, OTHERWISE THE UPDATER WILL LIKELY BREAK
@@ -12,6 +13,7 @@ import time
 #file imports
 from DataDownloader import DataDownloader
 from Updater import DataTranslatorUpdater
+from Visualizer import png
 
 #imports the processing programs (hertz calculator, data processor, etc etc) 
 os.chdir("./")
@@ -25,7 +27,7 @@ for fileName in os.listdir("ProcessingPrograms"):
 # Creates the main window
 root = tk.Tk()
 root.title("Main Page")
-root.geometry("400x200")
+root.geometry("600x200")
 
 # Function to go to Data Processing Tool
 def dataProcessingTool():
@@ -163,6 +165,13 @@ def runUpdater():
     #start the thread
     updateThread.start()
 
+def visualize():
+    filePath = filedialog.askopenfilename()
+    #update the buttons to allow the file to be operated on
+    visualizeThread = threading.Thread(target = png.generate_plot, args = (filePath,))
+    #start the thread
+    visualizeThread.start()
+
 def openHowTo():
     #find the HomeScreen.txt file
     howToFilePath = "Guides/HomeScreen.txt"
@@ -185,13 +194,17 @@ buttonFrame.pack(pady=20)
 dataProcessingToolButton = tk.Button(buttonFrame, text="Data Tool", command=lambda: dataProcessingTool())
 dataProcessingToolButton.grid(row=1, column=0, padx=20)
 
+#Button for visuals
+visualButton = tk.Button(buttonFrame, text="Visualize Data", command=lambda: visualize())
+visualButton.grid(row=1, column=1, padx=20)
+
 # Create button 2
 updaterButton = tk.Button(buttonFrame, text="Update Program", command=lambda: runUpdater())
-updaterButton.grid(row=1, column=1, padx=20)
+updaterButton.grid(row=1, column=2, padx=20)
 
 # Create Button 3
 howToButton = tk.Button(buttonFrame, text="How To", command=lambda: openHowTo())
-howToButton.grid(row=1, column=2, padx=20)
+howToButton.grid(row=1, column=3, padx=20)
 
 # Run the application
 root.mainloop()
