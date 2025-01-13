@@ -2,16 +2,9 @@ import socket
 import threading
 import time
 
-global currentData
+from XbeeDataTranslator import XbeeDataTranslator
 
-#function to create test data
-def read_File(filename):
-    file = open(filename)
-    while True:
-        currentData = file.readline()
-        time.sleep(1)
-        if currentData == "":
-            break
+global currentData
 
 # receive data from the client
 def handleClient(client_socket):
@@ -32,11 +25,10 @@ server.bind((server_ip, port))
 server.listen(20)
 print(f"Listening on {server_ip}:{port}")
 
-#create test thread to fead data from a file to clients
-testDataThread = threading.Thread(target=handleClient, args=(PUTFILENAMEHERE,))
-testDataThread.start()
+XbeeDataTranslator.initialSetup(configFileName)
 
 while True:
+    currentData = XbeeDataTranslator.computeNewValues(dataString)
     # accept incoming connections
     client_socket, client_address = server.accept()
     thread = threading.Thread(target=handleClient, args=(client_socket,))

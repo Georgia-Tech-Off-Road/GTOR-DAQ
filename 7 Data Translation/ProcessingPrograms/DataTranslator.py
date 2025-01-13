@@ -6,10 +6,8 @@ import importlib
 import tkinter as tk
 from tkinter import ttk
 
-
-os.chdir("./")
-
 #imports all data libraries from ConversionLibrary folder
+os.chdir("./")
 for fileName in os.listdir("ConversionLibraries"):
         if fileName.endswith('.py') and not fileName.startswith('__'):
             moduleName = fileName[:-3]  # Remove .py extension
