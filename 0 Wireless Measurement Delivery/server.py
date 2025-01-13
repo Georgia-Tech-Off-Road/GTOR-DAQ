@@ -24,15 +24,12 @@ def handleClient(client_socket):
 # create a socket object
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-server_ip = "127.0.0.1"
-port = 8000
-
-# bind the socket to a specific address and port
-server.bind((server_ip, port))
+# bind the socket to a specific port
+server.bind(('0.0.0.0',8000))
 
 # listen for incoming connections
 server.listen(20)
-print(f"Listening on {server_ip}:{port}")
+print("Listening for clients!")
 
 #run initial setup for xbee translator
 XbeeDataTranslator.initialSetup("Config.txt")
