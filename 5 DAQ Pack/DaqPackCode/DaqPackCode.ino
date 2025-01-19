@@ -10,6 +10,8 @@
 #include <TimeLib.h>
 #include <Adafruit_ADS1X15.h>
 #include <Wire.h>
+#include <Adafruit_BNO055.h>
+
 
 #define BAUD 230400
 
@@ -28,9 +30,22 @@ int analogValues[4] = {0, 0, 0, 0};
 //current analog sensor number being polled
 int currentAnalogSensor = 0;
 
-int lastSaveTimeInSeconds = 0;
+//creates a new instance of the BNO055 class
+Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x29, &Wire);
+
+//varaibles for data from BNO05
+sensors_event_t orientationData, linearAccelData, accelerometerData;
+uint8_t BNO05System, gyro, accel, mag = 0;
+double quatW, quatX, quatY, quatZ;
+imu::Quaternion quat;
+//saves the last time data was saved 
+ulong lastSaveTimeInMillis = 0;
 
 void setup() {
+  if (CrashReport) {
+    /* print info (hope Serial Monitor windows is open) */
+    Serial.print(CrashReport);
+  }
   // set the Time library to use Teensy 3.0's RTC to keep time
   pinMode(8, OUTPUT); //white LED (powered on)
   Serial.begin(115200);
@@ -55,33 +70,79 @@ void setup() {
   binaryValues[1] = digitalRead(21);
   binaryValues[2] = digitalRead(22);
   //sets up interupts for binary values
-  attachInterrupt(digitalPinToInterrupt(7), changeRecordingState, CHANGE); //record button
   attachInterrupt(digitalPinToInterrupt(20), updateRearDiff, CHANGE); //rear diff
   attachInterrupt(digitalPinToInterrupt(21), updateFrontLeftHalleffect, CHANGE); // front left halleffect
   attachInterrupt(digitalPinToInterrupt(22), updateFrontRightHalleffect, CHANGE); // front right halleffect
-  //sets up interupt pin for ADS1115 ADC (has to pullup alert pin in accordance with ADS1115 datasheet)
+  //sets up interupt pin for ADS1115 ADC (have to pullup alert pin in accordance with ADS1115 datasheet)
   pinMode(15, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(15), readAnalogValues, FALLING);
-  //configure ADC for continuous operation 
-  ads.begin();
+  //set up ADC on seperate bus to hopefully make them play nice
+  ads.begin(ADS1X15_ADDRESS, &Wire1);
   //set data rate to max 
   ads.setDataRate(RATE_ADS1115_860SPS);
-  pinMode(17, INPUT_PULLDOWN); // front brake pressure
-  pinMode(16, INPUT_PULLDOWN); //rear brake pressure
   isRecording = true;
   digitalWrite(9, HIGH); //turn on red LED
+  //start the BNO05
+  bno.begin();
   //start first ADC reading to begin the cycle
   ads.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
 }
 //writes data to SD card
 void loop() {
+  CrashReport.breadcrumb(2, 1111111);
   //try testing with an oscilloscope
   //potentially reduce print buffer time?
   //use flush?
-  outputFile.printf("%llu,%lu,%d,%d,%d,%d,%d,%d,%d\n", now(), micros()
-  , binaryValues[0], binaryValues[1], binaryValues[2], analogValues[0], analogValues[1], analogValues[2], analogValues[3]);
-  //Serial.printf("%llu,%lu,%d,%d,%d,%d,%d,%d,%d\n", now(), micros()
-  //, binaryValues[0], binaryValues[1], binaryValues[2], analogValues[0], analogValues[1], analogValues[2], analogValues[3]);
+  outputFile.printf("%llu,%lu,%d,%d,%d,%d,%d,%d,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%d,%d\n", now(), micros()
+  , binaryValues[0], binaryValues[1], binaryValues[2], analogValues[0], analogValues[1], 
+  analogValues[2], analogValues[3],orientationData.orientation.x, orientationData.orientation.y, 
+  orientationData.orientation.z, linearAccelData.acceleration.x, linearAccelData.acceleration.y, linearAccelData.acceleration.z,
+  accelerometerData.acceleration.x, accelerometerData.acceleration.y, accelerometerData.acceleration.z,
+  quatW, quatX, quatY, quatZ, BNO05System, gyro, accel, mag);
+  //CrashReport.breadcrumb(2, 2222222);
+  /**orientationData.orientation.x, orientationData.orientation.y, 
+  orientationData.orientation.z, linearAccelData.acceleration.x, linearAccelData.acceleration.y, linearAccelData.acceleration.z,
+  accelerometerData.acceleration.x, accelerometerData.acceleration.y, accelerometerData.acceleration.z,
+  quatW, quatX, quatY, quatZ, BNO05System, gyro, accel, mag**/
+  //update the BNO05 data values once every 5 milliseconds (the sensor updates at about 100hz but we poll at double it to make sure we dont miss any data)
+  if(millis() % 100 == 0) {
+    bno.getEvent(&orientationData, Adafruit_BNO055::VECTOR_EULER);
+    bno.getEvent(&linearAccelData, Adafruit_BNO055::VECTOR_LINEARACCEL);
+    bno.getEvent(&accelerometerData, Adafruit_BNO055::VECTOR_ACCELEROMETER);
+    bno.getCalibration(&BNO05System, &gyro, &accel, &mag);
+    quat = bno.getQuat();
+    quatW = quat.w();
+    quatX = quat.x();
+    quatY= quat.y();
+    quatZ = quat.z();
+  }
+  CrashReport.breadcrumb(2, 3333333);
+  //doing it this way instead of using interupts since it seems to be more stable
+  if (digitalRead(7) && lastSaveTimeInMillis + 1000 < millis()) {
+    CrashReport.breadcrumb(3, 66666666);
+    if(isRecording == true) {
+      while(digitalRead(7) == 1) {
+        delay(10);
+      }
+      outputFile.close();
+      digitalWrite(9, LOW); //turn off red LED
+      Serial.println("Data Recording Stopped");
+      isRecording = false;
+    }
+    else {
+      while(digitalRead(7) == 1) {
+        delay(10);
+      }
+      String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
+      Serial.println(time.c_str());
+      //turn on red LED
+      digitalWrite(9, HIGH);
+      outputFile = SD.open(time.c_str(),  FILE_WRITE);
+      isRecording = true;
+    }
+    lastSaveTimeInMillis = millis();
+    CrashReport.breadcrumb(3, 77777777);
+  }
 }
 //method needed to get time
 time_t getTeensy3Time()
@@ -99,6 +160,7 @@ void updateFrontRightHalleffect() {
   binaryValues[2] = !binaryValues[2];
 }
 void readAnalogValues() {
+  CrashReport.breadcrumb(2, 44444444);
   switch (currentAnalogSensor) {
       case 0:
         analogValues[0] =  ads.getLastConversionResults();
@@ -121,34 +183,6 @@ void readAnalogValues() {
         ads.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
         break;
   }
+  CrashReport.breadcrumb(2, 55555555);
 }
 
-void changeRecordingState() {
-  if(lastSaveTimeInSeconds + 1 > int(second())) {
-    return;
-  }
-  if(isRecording == true) {
-    while(digitalRead(7) == 1) {
-      Serial.println("RELEASE BUTTON");
-    }
-    outputFile.println(now());
-    outputFile.close();
-    digitalWrite(9, LOW); //turn off red LED
-    Serial.println("Data Recording Stopped");
-     
-    isRecording = false;
-  }
-  else {
-    while(digitalRead(7) == 1) {
-      Serial.println("RELEASE BUTTON");
-    }
-    String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
-    Serial.println(time.c_str());
-    //turn on red LED
-    digitalWrite(9, HIGH);
-    outputFile = SD.open(time.c_str(),  FILE_WRITE);
-    outputFile.println(now());
-    isRecording = true;
-  }
-  lastSaveTimeInSeconds = int(second());
-}
