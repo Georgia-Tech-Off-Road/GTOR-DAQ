@@ -26,6 +26,11 @@ struct {
   float linearAcceleration[3];
   float quaternionCoords[4];
   int calibration[4];
+  float orientation1[3];
+  float acceleration1[3];
+  float linearAcceleration1[3];
+  float quaternionCoords1[4];
+  int calibration1[4];
 } dataStruct;
 
 
@@ -43,6 +48,7 @@ IntervalTimer BNO05Timer;
 
 //creates a new instance of the BNO055 class
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x29, &Wire);
+Adafruit_BNO055 bno1 = Adafruit_BNO055(55, 0x28, &Wire);
 
 //varaibles for data from BNO05
 sensors_event_t orientationData, linearAccelData, accelerometerData;
@@ -95,6 +101,7 @@ void setup() {
   digitalWrite(9, HIGH); //turn on red LED
   //start the BNO05
   bno.begin();
+  bno1.begin();
   //start first ADC reading to begin the cycle
   ads.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
   updateBNO05Readings();
@@ -138,6 +145,24 @@ void updateBNO05Readings() {
   dataStruct.calibration[1] = gyro;
   dataStruct.calibration[2] = accel;
   dataStruct.calibration[3] = mag;
+  bno1.getEvent(&orientationData, Adafruit_BNO055::VECTOR_EULER);
+  bno1.getEvent(&linearAccelData, Adafruit_BNO055::VECTOR_LINEARACCEL);
+  bno1.getEvent(&accelerometerData, Adafruit_BNO055::VECTOR_ACCELEROMETER);
+  bno1.getCalibration(&BNO05System, &gyro, &accel, &mag);
+  quat = bno1.getQuat();
+  dataStruct.orientation1[0] = orientationData.orientation.x;
+  dataStruct.orientation1[1] = orientationData.orientation.y;
+  dataStruct.orientation1[2] = orientationData.orientation.z;
+  dataStruct.linearAcceleration1[0] = linearAccelData.acceleration.x;
+  dataStruct.linearAcceleration1[1] = linearAccelData.acceleration.y;
+  dataStruct.linearAcceleration1[2] = linearAccelData.acceleration.z;
+  dataStruct.acceleration1[0] = accelerometerData.acceleration.x;
+  dataStruct.acceleration1[1] = accelerometerData.acceleration.y;
+  dataStruct.acceleration1[2] = accelerometerData.acceleration.z;
+  dataStruct.calibration1[0] = BNO05System;
+  dataStruct.calibration1[1] = gyro;
+  dataStruct.calibration1[2] = accel;
+  dataStruct.calibration1[3] = mag;
 }
 //method needed to get time
 time_t getTeensy3Time()
