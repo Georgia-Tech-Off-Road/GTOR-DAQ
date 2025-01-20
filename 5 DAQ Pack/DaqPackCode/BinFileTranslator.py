@@ -1,12 +1,12 @@
 import struct
 
 # Define the format for the binary data (including padding to match Arduino's structure size)
-data_format = "Q L 3i 4i 3f 3f 3f 4f 4i 4x"  # Add 4 bytes of padding (x4)
+data_format = "Q L 3i 4i 3f 3f 3f 4f 4i 3f 3f 3f 4f 4i"  # Add 4 bytes of padding (x4)
 data_size = struct.calcsize(data_format)
 
 # Main function
 def main():
-    input_file_name = "2025-1-19 22_17_35.bin"
+    input_file_name = "2025-1-20 18_37_34.bin"
     output_file_name = "output.txt"
 
     try:
