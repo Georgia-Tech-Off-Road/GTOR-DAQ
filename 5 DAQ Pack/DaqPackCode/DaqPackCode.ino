@@ -12,40 +12,55 @@
 #include <Wire.h>
 #include <Adafruit_BNO055.h>
 
-
 #define BAUD 230400
 
 #define serialMonitor Serial
+
+struct {
+  unsigned long long int seconds;
+  unsigned long int micros;
+  int analogValues[4];
+  int binaryValues[3];
+  float orientation[3];
+  float acceleration[3];
+  float linearAcceleration[3];
+  float quaternionCoords[4];
+  int calibration[4];
+} dataStruct;
+
 
 File outputFile;
 
 bool isRecording = false;
 
 //the index in this matches up to the index of binary data in the printf
-int binaryValues[3] = {0, 0, 0};
 
 Adafruit_ADS1115 ads;
 //stores current values for sensors connected to adc0
-int analogValues[4] = {0, 0, 0, 0};
 //current analog sensor number being polled
 int currentAnalogSensor = 0;
 
+//create an interval timer for BNO05
+IntervalTimer BNO05Timer;
 //creates a new instance of the BNO055 class
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x29, &Wire);
 
 //varaibles for data from BNO05
 sensors_event_t orientationData, linearAccelData, accelerometerData;
 uint8_t BNO05System, gyro, accel, mag = 0;
-double quatW, quatX, quatY, quatZ;
 imu::Quaternion quat;
+
+bool analogValueFlag = false;
+bool BNO05flag = false;
+
+int sizeOfStruct = sizeof(dataStruct);
+
+char BNOData [256];
 //saves the last time data was saved 
 ulong lastSaveTimeInMillis = 0;
+//millis when 
 
 void setup() {
-  if (CrashReport) {
-    /* print info (hope Serial Monitor windows is open) */
-    Serial.print(CrashReport);
-  }
   // set the Time library to use Teensy 3.0's RTC to keep time
   pinMode(8, OUTPUT); //white LED (powered on)
   Serial.begin(115200);
@@ -58,7 +73,7 @@ void setup() {
   serialMonitor.begin(BAUD);
   SD.begin(BUILTIN_SDCARD);
   delay(500);
-  String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
+  String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second())+".bin";
   Serial.println(time.c_str());
   outputFile = SD.open(time.c_str(),  FILE_WRITE);
   //sets top leds to output
@@ -66,16 +81,17 @@ void setup() {
   digitalWrite(8, HIGH); //turn on white LED
   pinMode(7, INPUT_PULLDOWN); //pull down input for record stop/start button (NEEDED TO MAKE IT WORK)
   //set the values in the digital value array to their initial values (likely doesn't matter but feels better to do it this way)
-  binaryValues[0] = digitalRead(20);
-  binaryValues[1] = digitalRead(21);
-  binaryValues[2] = digitalRead(22);
+  dataStruct.binaryValues[0] = digitalRead(20);
+  dataStruct.binaryValues[1] = digitalRead(21);
+  dataStruct.binaryValues[2] = digitalRead(22);
   //sets up interupts for binary values
   attachInterrupt(digitalPinToInterrupt(20), updateRearDiff, CHANGE); //rear diff
   attachInterrupt(digitalPinToInterrupt(21), updateFrontLeftHalleffect, CHANGE); // front left halleffect
   attachInterrupt(digitalPinToInterrupt(22), updateFrontRightHalleffect, CHANGE); // front right halleffect
+  BNO05Timer.begin(updatBNO05Flag, 5000); //BNO05 polling flag
   //sets up interupt pin for ADS1115 ADC (have to pullup alert pin in accordance with ADS1115 datasheet)
   pinMode(15, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(15), readAnalogValues, FALLING);
+  attachInterrupt(digitalPinToInterrupt(15), updateAnalogValueFlag, FALLING);
   //set up ADC on seperate bus to hopefully make them play nice
   ads.begin(ADS1X15_ADDRESS, &Wire1);
   //set data rate to max 
@@ -86,40 +102,74 @@ void setup() {
   bno.begin();
   //start first ADC reading to begin the cycle
   ads.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
+  updateBNO05Readings();
 }
 //writes data to SD card
 void loop() {
-  CrashReport.breadcrumb(2, 1111111);
   //try testing with an oscilloscope
   //potentially reduce print buffer time?
   //use flush?
-  outputFile.printf("%llu,%lu,%d,%d,%d,%d,%d,%d,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%d,%d\n", now(), micros()
-  , binaryValues[0], binaryValues[1], binaryValues[2], analogValues[0], analogValues[1], 
-  analogValues[2], analogValues[3],orientationData.orientation.x, orientationData.orientation.y, 
-  orientationData.orientation.z, linearAccelData.acceleration.x, linearAccelData.acceleration.y, linearAccelData.acceleration.z,
-  accelerometerData.acceleration.x, accelerometerData.acceleration.y, accelerometerData.acceleration.z,
-  quatW, quatX, quatY, quatZ, BNO05System, gyro, accel, mag);
-  //CrashReport.breadcrumb(2, 2222222);
-  /**orientationData.orientation.x, orientationData.orientation.y, 
-  orientationData.orientation.z, linearAccelData.acceleration.x, linearAccelData.acceleration.y, linearAccelData.acceleration.z,
-  accelerometerData.acceleration.x, accelerometerData.acceleration.y, accelerometerData.acceleration.z,
-  quatW, quatX, quatY, quatZ, BNO05System, gyro, accel, mag**/
+  dataStruct.seconds = now();
+  dataStruct.micros = micros();
+  outputFile.write(&dataStruct, sizeOfStruct);
   //update the BNO05 data values once every 5 milliseconds (the sensor updates at about 100hz but we poll at double it to make sure we dont miss any data)
-  if(millis() % 100 == 0) {
-    bno.getEvent(&orientationData, Adafruit_BNO055::VECTOR_EULER);
-    bno.getEvent(&linearAccelData, Adafruit_BNO055::VECTOR_LINEARACCEL);
-    bno.getEvent(&accelerometerData, Adafruit_BNO055::VECTOR_ACCELEROMETER);
-    bno.getCalibration(&BNO05System, &gyro, &accel, &mag);
-    quat = bno.getQuat();
-    quatW = quat.w();
-    quatX = quat.x();
-    quatY= quat.y();
-    quatZ = quat.z();
+  if(BNO05flag) {
+    updateBNO05Readings();
   }
-  CrashReport.breadcrumb(2, 3333333);
-  //doing it this way instead of using interupts since it seems to be more stable
+  if (analogValueFlag) {
+    readAnalogValues();
+    analogValueFlag = false;
+  }
   if (digitalRead(7) && lastSaveTimeInMillis + 1000 < millis()) {
-    CrashReport.breadcrumb(3, 66666666);
+    changeRecordingState();
+  }
+
+}
+//method to update BNO05 readings
+void updateBNO05Readings() {
+  bno.getEvent(&orientationData, Adafruit_BNO055::VECTOR_EULER);
+  bno.getEvent(&linearAccelData, Adafruit_BNO055::VECTOR_LINEARACCEL);
+  bno.getEvent(&accelerometerData, Adafruit_BNO055::VECTOR_ACCELEROMETER);
+  bno.getCalibration(&BNO05System, &gyro, &accel, &mag);
+  quat = bno.getQuat();
+  dataStruct.orientation[0] = orientationData.orientation.x;
+  dataStruct.orientation[1] = orientationData.orientation.y;
+  dataStruct.orientation[2] = orientationData.orientation.z;
+  dataStruct.linearAcceleration[0] = linearAccelData.acceleration.x;
+  dataStruct.linearAcceleration[1] = linearAccelData.acceleration.y;
+  dataStruct.linearAcceleration[2] = linearAccelData.acceleration.z;
+  dataStruct.acceleration[0] = accelerometerData.acceleration.x;
+  dataStruct.acceleration[1] = accelerometerData.acceleration.y;
+  dataStruct.acceleration[2] = accelerometerData.acceleration.z;
+  dataStruct.calibration[0] = BNO05System;
+  dataStruct.calibration[1] = gyro;
+  dataStruct.calibration[2] = accel;
+  dataStruct.calibration[3] = mag;
+  BNO05flag = false;
+}
+//method needed to get time
+time_t getTeensy3Time()
+{
+  return Teensy3Clock.get();
+}
+void updateAnalogValueFlag() {
+  analogValueFlag = true;
+}
+void updatBNO05Flag() {
+  BNO05flag = true;
+}
+//I think you need a seperate one for some reason :(
+void updateRearDiff() {
+  dataStruct.binaryValues[0] = !dataStruct.binaryValues[0];
+}
+void updateFrontLeftHalleffect() {
+  dataStruct.binaryValues[1] = !dataStruct.binaryValues[1];
+}
+void updateFrontRightHalleffect() {
+  dataStruct.binaryValues[2] = !dataStruct.binaryValues[2];
+}
+void changeRecordingState() {
+    noInterrupts();
     if(isRecording == true) {
       while(digitalRead(7) == 1) {
         delay(10);
@@ -141,48 +191,30 @@ void loop() {
       isRecording = true;
     }
     lastSaveTimeInMillis = millis();
-    CrashReport.breadcrumb(3, 77777777);
-  }
-}
-//method needed to get time
-time_t getTeensy3Time()
-{
-  return Teensy3Clock.get();
-}
-//I think you need a seperate one for some reason :(
-void updateRearDiff() {
-  binaryValues[0] = !binaryValues[0];
-}
-void updateFrontLeftHalleffect() {
-  binaryValues[1] = !binaryValues[1];
-}
-void updateFrontRightHalleffect() {
-  binaryValues[2] = !binaryValues[2];
+    interrupts();    
 }
 void readAnalogValues() {
-  CrashReport.breadcrumb(2, 44444444);
   switch (currentAnalogSensor) {
       case 0:
-        analogValues[0] =  ads.getLastConversionResults();
+        dataStruct.analogValues[0] =  ads.getLastConversionResults();
         currentAnalogSensor = 1;
         ads.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
         break;
       case 1:
-        analogValues[1] =  ads.getLastConversionResults();
+        dataStruct.analogValues[1] =  ads.getLastConversionResults();
         currentAnalogSensor = 2;
         ads.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
       case 2:
-        analogValues[2] =  ads.getLastConversionResults();
+        dataStruct.analogValues[2] =  ads.getLastConversionResults();
         currentAnalogSensor = 3;
         ads.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
         break;
       case 3:
-        analogValues[3] =  ads.getLastConversionResults();
+        dataStruct.analogValues[3] =  ads.getLastConversionResults();
         currentAnalogSensor = 0;
         ads.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
         break;
   }
-  CrashReport.breadcrumb(2, 55555555);
 }
 
