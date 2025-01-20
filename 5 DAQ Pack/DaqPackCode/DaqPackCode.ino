@@ -103,13 +103,9 @@ void setup() {
 }
 //writes data to SD card
 void loop() {
-  //try testing with an oscilloscope
-  //potentially reduce print buffer time?
-  //use flush?
   dataStruct.seconds = now();
   dataStruct.micros = micros();
   outputFile.write(&dataStruct, sizeOfStruct);
-  //update the BNO05 data values once every 5 milliseconds (the sensor updates at about 100hz but we poll at double it to make sure we dont miss any data)
   if(BNO05flag) {
     updateBNO05Readings();
     BNO05flag = false;
@@ -155,7 +151,6 @@ void updateAnalogValueFlag() {
 void updatBNO05Flag() {
   BNO05flag = true;
 }
-//I think you need a seperate one for some reason :(
 void updateRearDiff() {
   dataStruct.binaryValues[0] = !dataStruct.binaryValues[0];
 }
