@@ -1,7 +1,7 @@
 import struct
 
 # Define the format for the binary data (including padding to match Arduino's structure size)
-data_format = "Q L 3i 4i 3f 3f 3f 4f 4i 4x"  # Add 4 bytes of padding (x4)
+data_format = "Q L 3i 4i 3f 3f 3f 4f 4i 3f 3f 3f 4f 4i 4x"  # Add 4 bytes of padding (x4)
 data_size = struct.calcsize(data_format)
 
 # Main function
