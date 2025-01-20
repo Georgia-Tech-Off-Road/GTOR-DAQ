@@ -52,8 +52,6 @@ imu::Quaternion quat;
 volatile bool analogValueFlag = false;
 volatile bool BNO05flag = false;
 
-int sizeOfStruct = sizeof(dataStruct);
-
 //saves the last time data was saved 
 ulong lastSaveTimeInMillis = 0;
 
@@ -105,7 +103,8 @@ void setup() {
 void loop() {
   dataStruct.seconds = now();
   dataStruct.micros = micros();
-  outputFile.write(&dataStruct, sizeOfStruct);
+  //size of is apparently computed at compile time
+  outputFile.write(&dataStruct, sizeof(dataStruct));
   if(BNO05flag) {
     updateBNO05Readings();
     BNO05flag = false;
