@@ -19,8 +19,8 @@
 struct {
   unsigned long long int seconds;
   unsigned long int micros;
-  int analogValues[4];
   int binaryValues[3];
+  int analogValues[4];
   float orientation[3];
   float acceleration[3];
   float linearAcceleration[3];
@@ -33,15 +33,14 @@ File outputFile;
 
 bool isRecording = false;
 
-//the index in this matches up to the index of binary data in the printf
-
 Adafruit_ADS1115 ads;
-//stores current values for sensors connected to adc0
+
 //current analog sensor number being polled
 int currentAnalogSensor = 0;
 
 //create an interval timer for BNO05
 IntervalTimer BNO05Timer;
+
 //creates a new instance of the BNO055 class
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x29, &Wire);
 
@@ -50,20 +49,18 @@ sensors_event_t orientationData, linearAccelData, accelerometerData;
 uint8_t BNO05System, gyro, accel, mag = 0;
 imu::Quaternion quat;
 
-bool analogValueFlag = false;
-bool BNO05flag = false;
+volatile bool analogValueFlag = false;
+volatile bool BNO05flag = false;
 
 int sizeOfStruct = sizeof(dataStruct);
 
-char BNOData [256];
 //saves the last time data was saved 
 ulong lastSaveTimeInMillis = 0;
-//millis when 
 
 void setup() {
-  // set the Time library to use Teensy 3.0's RTC to keep time
   pinMode(8, OUTPUT); //white LED (powered on)
   Serial.begin(115200);
+  //set up time stuff for rtc
   setSyncProvider(getTeensy3Time);
   if (timeStatus()!= timeSet) {
     Serial.println("Unable to sync with the RTC");
@@ -115,6 +112,7 @@ void loop() {
   //update the BNO05 data values once every 5 milliseconds (the sensor updates at about 100hz but we poll at double it to make sure we dont miss any data)
   if(BNO05flag) {
     updateBNO05Readings();
+    BNO05flag = false;
   }
   if (analogValueFlag) {
     readAnalogValues();
@@ -145,7 +143,6 @@ void updateBNO05Readings() {
   dataStruct.calibration[1] = gyro;
   dataStruct.calibration[2] = accel;
   dataStruct.calibration[3] = mag;
-  BNO05flag = false;
 }
 //method needed to get time
 time_t getTeensy3Time()
