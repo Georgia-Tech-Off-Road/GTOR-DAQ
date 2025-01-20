@@ -6,7 +6,7 @@ data_size = struct.calcsize(data_format)
 
 # Main function
 def main():
-    input_file_name = "2025-1-19 21_54_23.bin"
+    input_file_name = "2025-1-19 22_17_35.bin"
     output_file_name = "output.txt"
 
     try:
