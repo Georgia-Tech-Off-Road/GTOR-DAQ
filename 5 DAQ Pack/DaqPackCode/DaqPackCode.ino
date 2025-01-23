@@ -1,5 +1,3 @@
-//Note: May be able to go faster by modifying core Teensy 4.1 code to reduce the amount of averages that it takes when doing an analog read
-//Note: Also could maybe decrease bit resolution
 //Note: Should get an external powersupply to get better VCC stability
 //sd card stuff
 
@@ -109,7 +107,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(21), updateFrontLeftHalleffect, CHANGE); // front left halleffect
   attachInterrupt(digitalPinToInterrupt(22), updateFrontRightHalleffect, CHANGE); // front right halleffect
   BNO05Timer.begin(updatBNO05Flag, 5000); //BNO05 polling flag
-  dataCollectionTimer.begin(checkIfNewData, 1000); //set rate of data checking
+  dataCollectionTimer.begin(checkIfNewData, 100); //set rate of data checking
   dataCollectionTimer.priority(255); //set priority of interrupt to absolute lowest to make sure it doesn't interfere with data collection (prob have to tune this tbh)
   //sets up interupt pin for ADS1115 ADC (have to pullup alert pin in accordance with ADS1115 datasheet)
   pinMode(15, INPUT_PULLUP);
@@ -152,7 +150,8 @@ void checkIfNewData() {
   if (digitalRead(7) && lastSaveTimeInMillis + 1000 < millis()) {
     changeRecordingState();
   }
-  if (timeToUpdateData) {
+  //set this to always read true to see how much of a perf increase the queue yields
+  if (timeToUpdateData || !timeToUpdateData) {
     updateData();
   }
 }
