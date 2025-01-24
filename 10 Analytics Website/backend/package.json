@@ -1,0 +1,13 @@
+{
+  "name": "GTOR Analytics Backend",
+  "version": "1.0.0",
+  "description": "Website for real time visualization of GT offroad vehicle data during races.",
+  "main": "./app.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.5",
+    "nodemon": "^3.1.9",
+    "ws": "^8.18.0"
+  }
+}
