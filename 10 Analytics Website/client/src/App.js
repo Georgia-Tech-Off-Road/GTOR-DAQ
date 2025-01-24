@@ -1,31 +1,27 @@
 import logo from './logo.svg';
 import './App.css';
 import React, {Component} from "react";
+import { useState } from "react"
 
 
-let socket;
-let numberOfPings;
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {ping: ""};
-    this.createSocketConnection();
-    numberOfPings = 0;
-  }
-
-  callAPI() {
+export default function App () {
+  let socket;
+  let numberOfPings = 0;
+  const [ping, setPing] = useState(0);
+  createSocketConnection();
+  function callAPI() {
     fetch("http://localhost:9000/testAPI")
       .then(res => res.text())
       .then(res => this.setState( {apiResponse: res}));
   }
-  componentDidMount() {
-    this.callAPI();
+  function componentDidMount() {
+    callAPI();
   }
-  getCurrentDate() {
+  function getCurrentDate() {
     socket.send(`Date please ${numberOfPings}`)
     numberOfPings += 1;
   }
-  createSocketConnection() {
+  function createSocketConnection() {
     console.log("Created Socket Connection")
     socket = new WebSocket("ws:/localhost:8080");
     socket.onopen = () => {
@@ -36,18 +32,17 @@ class App extends Component {
       const time = event.data.toString().split(",")
       const nowSec = new Date().getUTCSeconds()
       const nowMilliSec = new Date().getUTCMilliseconds();
-      const ping = ((nowSec - time[0]) / 1000.0) + (nowMilliSec - time[1]);
-      this.setState({ping: `${ping} ms`});
+      const currPing = ((nowSec - time[0]) / 1000.0) + (nowMilliSec - time[1]);
+      setPing(currPing);
     }
   }
-  render() {
-    const sampleText = fetch("http://localhost:9000/testAPI")
-    return (
+  const sampleText = fetch("http://localhost:9000/testAPI")
+  return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
-            Ping: {this.state.ping}
+            Ping: {ping}
           </p>
           <a
             className="App-link"
@@ -57,14 +52,10 @@ class App extends Component {
           >
             Learn React
           </a>
-          <button onClick={this.getCurrentDate}>
+          <button onClick={getCurrentDate}>
             Press Me!
           </button>
         </header>
       </div>
-    );
-  }
+  )
 }
-
-
-export default App;
