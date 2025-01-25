@@ -14,6 +14,7 @@ import matplotlib
 from DataDownloader import DataDownloader
 from Updater import DataTranslatorUpdater
 from Visualizer import png
+from ProcessingPrograms import BinFileTranslator
 
 #imports the processing programs (hertz calculator, data processor, etc etc) 
 os.chdir("./")
@@ -64,7 +65,9 @@ def dataProcessingTool():
         if ('filePath' in globals()):
                 #if the filepath isn't on the main OS drive only display the download button
                 if "C:/" not in filePath:
-                        downloadButton.grid(row=0, column=1, padx=20)
+                    downloadButton.grid(row=0, column=1, padx=20)
+                if ".bin" in filePath:
+                    binButton.grid(row=0, column=1,padx=20)
                 #otherwise display everything but the download button
                 else: 
                         processButton.grid(row=0, column=0, padx=20)
@@ -102,6 +105,12 @@ def dataProcessingTool():
         #create the thread and download the config file (this isn't tracked since it's such a short download)
         configDownloadThread = threading.Thread(target = DataDownloader.downloadData, args = (configSRC, configDST))
         configDownloadThread.start()
+
+    def binConvert():
+        #update the buttons to allow the file to be operated on
+        binThread = threading.Thread(target = BinFileTranslator.binConverter, args = (filePath,))
+        #start the thread
+        binThread.start()
 
     def processData():
         #create a page for the progress bar
@@ -152,6 +161,7 @@ def dataProcessingTool():
 
     #Create and place the buttons in a single row on the second page
     downloadButton = tk.Button(buttonFrame, text="Download Data File", command=lambda: downloadData())
+    binButton = tk.Button(buttonFrame, text = "Convert .bin to .txt", command=lambda: binConvert())
     processButton = tk.Button(buttonFrame, text="Process Data", command=lambda: processData())
     configEditButton = tk.Button(buttonFrame, text="Edit Config", command=lambda: editConfig())
     herztCalculatorButton = tk.Button(buttonFrame, text="Calculate Hertz Info", command=lambda: calculateHertz())
