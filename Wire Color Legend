@@ -7,5 +7,6 @@ Wire Color Legend
 | 🔴 Red     | ◀️ Left         | ⛔️ N/A          |
 | 🟢 Green   | ▶️ Right        | ⛔️ N/A          |
 | 🟡 Gold    | 🔼 Front        | ⛔️ N/A          |
-| ⚫ Black   | 🔽 Back         | ⛔️ N/A          |
+| ⚫ Black   | 🔽 Back         | ⛔️ N/A   
+|  White       | N/A            |  Brakes          |
 | 🔵 Blue    | ⏺️ N/A          | ⚡️ Hall Effect  |

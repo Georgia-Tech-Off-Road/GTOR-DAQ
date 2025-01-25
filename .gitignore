@@ -1,0 +1,6 @@
+/10 Analytics Website/client/node_modules
+Dockerfile
+10 Analytics Website/backend/.dockerignore
+10 Analytics Website/backend/Dockerfile
+.dockerignore
+/10 Analytics Website/backend/node_modules
