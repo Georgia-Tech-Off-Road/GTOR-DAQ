@@ -1,26 +1,23 @@
 //Class is currently unused, use as reference
 import logo from './logo.svg';
 import './App.css';
-import React, {Component} from "react";
 import { useState } from "react"
+
+import Navbar from "./components/Navbar"
 
 
 export default function App () {
   let socket;
   let numberOfPings = 0;
-  const [ping, setPing] = useState(0);
+  const [ping, setPing] = useState(null);
   createSocketConnection();
-  function callAPI() {
-    fetch("http://localhost:9000/testAPI")
-      .then(res => res.text())
-      .then(res => this.setState( {apiResponse: res}));
-  }
-  function componentDidMount() {
-    callAPI();
-  }
   function getCurrentDate() {
-    socket.send(`Date please ${numberOfPings}`)
-    numberOfPings += 1;
+    if (socket.readyState == WebSocket.OPEN) {
+      socket.send(`Date please ${numberOfPings}`)
+      numberOfPings += 1;
+    } else {
+      setPing("unavailable")
+    }
   }
   function createSocketConnection() {
     console.log("Created Socket Connection")
@@ -33,12 +30,13 @@ export default function App () {
       const time = event.data.toString().split(",")
       const nowSec = new Date().getUTCSeconds()
       const nowMilliSec = new Date().getUTCMilliseconds();
-      const currPing = ((nowSec - time[0]) / 1000.0) + (nowMilliSec - time[1]);
+      const currPing = `${((nowSec - time[0]) / 1000.0) + (nowMilliSec - time[1])} ms`;
       setPing(currPing);
     }
   }
-  const sampleText = fetch("http://localhost:9000/testAPI")
   return (
+    <>
+      <Navbar />
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
@@ -58,5 +56,6 @@ export default function App () {
           </button>
         </header>
       </div>
+    </>
   )
 }
