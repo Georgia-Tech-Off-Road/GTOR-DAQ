@@ -86,8 +86,8 @@ void setup() {
   dataStruct.binaryValues[1] = digitalRead(21);
   dataStruct.binaryValues[2] = digitalRead(22);
   //sets up interupts for binary values
-  attachInterrupt(digitalPinToInterrupt(20), updateRearDiff, CHANGE); //rear diff
-  attachInterrupt(digitalPinToInterrupt(21), updateFrontLeftHalleffect, CHANGE); // front left halleffect
+  attachInterrupt(digitalPinToInterrupt(21), updateRearDiff, CHANGE); //rear diff
+  attachInterrupt(digitalPinToInterrupt(20), updateFrontLeftHalleffect, CHANGE); // front left halleffect
   attachInterrupt(digitalPinToInterrupt(22), updateFrontRightHalleffect, CHANGE); // front right halleffect
   BNO05Timer.begin(updatBNO05Flag, 5000); //BNO05 polling flag
   //sets up interupt pin for ADS1115 ADC (have to pullup alert pin in accordance with ADS1115 datasheet)
@@ -96,7 +96,9 @@ void setup() {
   //set up ADC on seperate bus to hopefully make them play nice
   ads.begin(ADS1X15_ADDRESS, &Wire1);
   //set data rate to max 
-  ads.setDataRate(RATE_ADS1115_860SPS);
+  ads.setDataRate(RATE_ADS1115_128SPS);
+  //verify that gain is set to two thirds (+-4.096)
+  ads.setGain(GAIN_ONE);
   isRecording = true;
   digitalWrite(9, HIGH); //turn on red LED
   //start the BNO05
