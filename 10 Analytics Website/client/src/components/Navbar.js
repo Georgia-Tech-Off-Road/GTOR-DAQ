@@ -1,11 +1,11 @@
-import './App.css'
+import '../App.css'
 export default function Navbar() {
     return (
         <nav class="navbar">
             <ul class="nav-list">
-                <li>Test Link 1</li>
-                <li>Test Link 2</li>
+                <li><a href="/"> Home </a></li>
+                <li><a href="/test"> Test </a></li>
             </ul>
         </nav>
-    )
+    );
 }
