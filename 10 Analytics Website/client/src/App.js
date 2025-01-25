@@ -1,3 +1,4 @@
+//Class is currently unused, use as reference
 import logo from './logo.svg';
 import './App.css';
 import React, {Component} from "react";
