@@ -1,9 +1,9 @@
 //Class is currently unused, use as reference
-import logo from './logo.svg';
-import './App.css';
+import logo from '../logo.svg';
+import '../App.css';
 import { useState } from "react"
 
-import Navbar from "./components/Navbar"
+import Navbar from "../components/Navbar"
 
 
 export default function App () {
