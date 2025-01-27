@@ -13,7 +13,9 @@ import matplotlib
 #file imports
 from DataDownloader import DataDownloader
 from Updater import DataTranslatorUpdater
-from Visualizer import png
+from Visualizers import AccelerationVisualizer
+from Visualizers import BrakePressureVisualizer
+from Visualizers import RPMVisualizer
 from ProcessingPrograms import BinFileTranslator
 
 #imports the processing programs (hertz calculator, data processor, etc etc) 
@@ -68,11 +70,15 @@ def dataProcessingTool():
                     downloadButton.grid(row=0, column=1, padx=20)
                 if ".bin" in filePath:
                     binButton.grid(row=0, column=1,padx=20)
+                if ".csv" in filePath:
+                    accelButton.grid(row=1, column=0, padx=20)
+                    brakeButton.grid(row=1, column=1, padx=20)
+                    rpmButton.grid(row=1, column=2, padx=20)
                 #otherwise display everything but the download button
                 else: 
-                        processButton.grid(row=0, column=0, padx=20)
-                        configEditButton.grid(row=0, column=1, padx=20)
-                        herztCalculatorButton.grid(row=0, column=2, padx=20)
+                    processButton.grid(row=0, column=0, padx=20)
+                    configEditButton.grid(row=0, column=1, padx=20)
+                    herztCalculatorButton.grid(row=0, column=2, padx=20)
     def downloadData():
         #create a new page for the progress bar
         progressBarPage = tk.Toplevel(dataProcessingToolPage)
@@ -162,6 +168,9 @@ def dataProcessingTool():
     #Create and place the buttons in a single row on the second page
     downloadButton = tk.Button(buttonFrame, text="Download Data File", command=lambda: downloadData())
     binButton = tk.Button(buttonFrame, text = "Convert .bin to .txt", command=lambda: binConvert())
+    accelButton = tk.Button(buttonFrame, text="Acceleration", command=lambda: acceleration())
+    brakeButton = tk.Button(buttonFrame, text="Brake Pressure", command=lambda: brakepressure())
+    rpmButton = tk.Button(buttonFrame, text="RPM", command=lambda: rpm())
     processButton = tk.Button(buttonFrame, text="Process Data", command=lambda: processData())
     configEditButton = tk.Button(buttonFrame, text="Edit Config", command=lambda: editConfig())
     herztCalculatorButton = tk.Button(buttonFrame, text="Calculate Hertz Info", command=lambda: calculateHertz())
@@ -175,12 +184,15 @@ def runUpdater():
     #start the thread
     updateThread.start()
 
-def visualize():
-    filePath = filedialog.askopenfilename()
-    #update the buttons to allow the file to be operated on
-    visualizeThread = threading.Thread(target = png.generate_plot, args = (filePath,))
-    #start the thread
-    visualizeThread.start()
+def acceleration():
+    accelThread = threading.Thread(target = AccelerationVisualizer.accel, args = (filePath,))
+    accelThread.start()
+def brakepressure():
+    brakeThread = threading.Thread(target = BrakePressureVisualizer.brake, args = (filePath,))
+    brakeThread.start()
+def rpm():
+    rpmThread = threading.Thread(target = RPMVisualizer.rpm, args = (filePath,))
+    rpmThread.start()
 
 def openHowTo():
     #find the HomeScreen.txt file
@@ -205,16 +217,22 @@ dataProcessingToolButton = tk.Button(buttonFrame, text="Data Tool", command=lamb
 dataProcessingToolButton.grid(row=1, column=0, padx=20)
 
 #Button for visuals
-visualButton = tk.Button(buttonFrame, text="Visualize Data", command=lambda: visualize())
-visualButton.grid(row=1, column=1, padx=20)
+"""
+accelButton = tk.Button(buttonFrame, text="Acceleration", command=lambda: acceleration())
+accelButton.grid(row=1, column=1, padx=20)
+brakeButton = tk.Button(buttonFrame, text="Brake Pressure", command=lambda: brakepressure())
+brakeButton.grid(row=1, column=2, padx=20)
+rpmButton = tk.Button(buttonFrame, text="RPM", command=lambda: rpm())
+rpmButton.grid(row=1, column=3, padx=20)
+"""
 
 # Create button 2
 updaterButton = tk.Button(buttonFrame, text="Update Program", command=lambda: runUpdater())
-updaterButton.grid(row=1, column=2, padx=20)
+updaterButton.grid(row=1, column=4, padx=20)
 
 # Create Button 3
 howToButton = tk.Button(buttonFrame, text="How To", command=lambda: openHowTo())
-howToButton.grid(row=1, column=3, padx=20)
+howToButton.grid(row=1, column=5, padx=20)
 
 # Run the application
 root.mainloop()
