@@ -52,9 +52,8 @@ def translateData (inputFilePath, progressBarPage, parentPage):
         #index of last analog sensor
         lastAnalogIndex = 0
         #open config file (found by navigating to the configs folder and looking for a file called fileNameConfig.txt)
-        #configFileName = os.path.basename(inputFilePath)+"Config.txt" #WARNING CHANGE FOR TESTING DAY ONLY
-        configFileName = "config.txt"
-        file = open("Config/" + configFileName)
+        configFileName = os.path.basename(inputFilePath).split('.')[0]+"Config.txt"
+        file = open("Configs/" + configFileName)
         #get rid of the header
         header = file.readline()
         #get the config data
