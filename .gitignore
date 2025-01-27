@@ -4,3 +4,4 @@ Dockerfile
 10 Analytics Website/backend/Dockerfile
 .dockerignore
 /10 Analytics Website/backend/node_modules
+/10 Analytics Website/swagger-editor

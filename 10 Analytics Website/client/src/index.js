@@ -1,13 +1,25 @@
+//React
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+
+//CSS
 import './index.css';
-import App from './App';
+
+//Website React Components
+import App from './pages/App';
+import Navbar from './components/Navbar'
+import Test from "./pages/Test"
+
 import reportWebVitals from './reportWebVitals';
+
+//Routing
+import { RouterProvider } from 'react-router-dom';
+import router from './routes';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router}/>
   </React.StrictMode>
 );
 
