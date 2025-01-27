@@ -6,9 +6,9 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 
 //Website React Components
-import App from './App';
+import App from './pages/App';
 import Navbar from './components/Navbar'
-import Test from "./components/Test"
+import Test from "./pages/Test"
 
 import reportWebVitals from './reportWebVitals';
 
