@@ -1,10 +1,19 @@
 import warnings
+import pandas as pd
+import matplotlib.pyplot as plt
+import tkinter as tk
+from tkinter import ttk
 
 warnings.filterwarnings("ignore", category=UserWarning)
-def accel(fname):
-    import pandas as pd
-    import matplotlib.pyplot as plt
-    print("Creating visuals...")
+def accel(fname, accelVisualizationPage):
+    #create a label to say Analyzing File
+    label1 = tk.Label(accelVisualizationPage, text="Creating Acceleration Graphs")
+    label1.pack()
+    #create a progress bar that just bounces back and forth
+    progressBar = ttk.Progressbar(accelVisualizationPage, mode = "indeterminate", maximum=100)
+    progressBar.pack(padx=20, pady=20, fill="x")
+    #start the bouncing
+    progressBar.start()
 
     # Create df from a text file
     df = pd.read_csv(fname, delimiter=',')
@@ -63,6 +72,6 @@ def accel(fname):
     print("Saved figures as AccelX,Y,Z.png")
 
     # Display all figures at once
+    accelVisualizationPage.destroy()
     plt.show()
-    print("Done")
         
