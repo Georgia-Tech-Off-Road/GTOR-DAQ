@@ -149,11 +149,17 @@ def dataProcessingTool():
         os.system(f'notepad.exe {configFilePath}')
 
     def acceleration():
-        accelThread = threading.Thread(target = AccelerationVisualizer.accel, args = (filePath,))
+        accelVisualizationPage = tk.Toplevel(dataProcessingToolPage)
+        accelVisualizationPage.title("Acceleration Visualizer")
+        accelVisualizationPage.geometry("400x200")
+        accelThread = threading.Thread(target = AccelerationVisualizer.accel, args = (filePath, accelVisualizationPage))
         accelThread.start()
 
     def brakepressure():
-        brakeThread = threading.Thread(target = BrakePressureVisualizer.brake, args = (filePath,))
+        brakeVisualizationPage = tk.Toplevel(dataProcessingToolPage)
+        brakeVisualizationPage.title("Brake Pressure Visualizer")
+        brakeVisualizationPage.geometry("400x200")
+        brakeThread = threading.Thread(target = BrakePressureVisualizer.brake, args = (filePath, brakeVisualizationPage))
         brakeThread.start()
 
     def rpm():
