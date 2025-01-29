@@ -1,4 +1,6 @@
+import warnings
 
+warnings.filterwarnings("ignore", category=UserWarning)
 def accel(fname):
     import pandas as pd
     import matplotlib.pyplot as plt
@@ -63,3 +65,4 @@ def accel(fname):
     # Display all figures at once
     plt.show()
     print("Done")
+        
