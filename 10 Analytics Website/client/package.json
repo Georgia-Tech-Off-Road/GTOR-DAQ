@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "chart.js": "^4.4.7",
     "cra-template": "1.2.0",
     "net": "^1.0.2",
     "react": "^19.0.0",

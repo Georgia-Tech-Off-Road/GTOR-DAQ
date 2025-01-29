@@ -5,6 +5,7 @@ export default function Navbar() {
             <ul class="nav-list">
                 <li><a href="/"> Home </a></li>
                 <li><a href="/test"> Test </a></li>
+                <li><a href="/data">Race Data</a></li>
             </ul>
         </nav>
     );
