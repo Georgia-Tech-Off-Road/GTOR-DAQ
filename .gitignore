@@ -4,3 +4,8 @@ Dockerfile
 10 Analytics Website/backend/Dockerfile
 .dockerignore
 /10 Analytics Website/backend/node_modules
+<<<<<<< Updated upstream
+=======
+/10 Analytics Website/swagger-editor
+7 Data Translation/Config
+>>>>>>> Stashed changes
