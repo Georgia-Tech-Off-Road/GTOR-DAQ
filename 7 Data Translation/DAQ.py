@@ -98,6 +98,8 @@ def dataProcessingTool():
         dataProcessingToolPage.withdraw()
         #run update buttons to make sure everything's in the right place once the page comes back (it'll be unhidden by progress bar thread once it sees that the file has finished being downloaded
         updateButtons()
+        #if no Configs folder then create one
+
         #get the file path for the config file included with the data
         configDST = os.getcwd() + "\\Configs\\" + os.path.basename(filePath).split('.')[0] + "Config.txt"
         #create a target file
