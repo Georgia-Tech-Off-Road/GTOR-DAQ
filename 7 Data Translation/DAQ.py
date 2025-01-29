@@ -68,9 +68,9 @@ def dataProcessingTool():
                 #if the filepath isn't on the main OS drive only display the download button
                 if "C:/" not in filePath:
                     downloadButton.grid(row=0, column=1, padx=20)
-                if ".bin" in filePath:
+                elif ".bin" in filePath:
                     binButton.grid(row=0, column=1,padx=20)
-                if ".csv" in filePath:
+                elif ".csv" in filePath:
                     accelButton.grid(row=1, column=0, padx=20)
                     brakeButton.grid(row=1, column=1, padx=20)
                     rpmButton.grid(row=1, column=2, padx=20)
@@ -99,7 +99,7 @@ def dataProcessingTool():
         #run update buttons to make sure everything's in the right place once the page comes back (it'll be unhidden by progress bar thread once it sees that the file has finished being downloaded
         updateButtons()
         #get the file path for the config file included with the data
-        configDST = os.getcwd() + "\\Configs\\" + os.path.basename(filePath)+ "Config.txt"
+        configDST = os.getcwd() + "\\Configs\\" + os.path.basename(filePath).split('.')[0] + "Config.txt"
         #create a target file
         file = open(configDST, "w")
         file.close()
@@ -130,7 +130,6 @@ def dataProcessingTool():
         #hide the main data processor page
         dataProcessingToolPage.withdraw()
         
-
     def calculateHertz():
         #open a hertz calculator page
         hertzCalculationPage = tk.Toplevel(dataProcessingToolPage)
@@ -148,6 +147,21 @@ def dataProcessingTool():
         configFilePath = "/".join(configFilePathList)
         #open the config file in notepade (See if this works on mac.....)
         os.system(f'notepad.exe {configFilePath}')
+
+    def acceleration():
+        accelThread = threading.Thread(target = AccelerationVisualizer.accel, args = (filePath,))
+        accelThread.start()
+
+    def brakepressure():
+        brakeThread = threading.Thread(target = BrakePressureVisualizer.brake, args = (filePath,))
+        brakeThread.start()
+
+    def rpm():
+        rpmVisualizationPage = tk.Toplevel(dataProcessingToolPage)
+        rpmVisualizationPage.title("RPM Visualizer")
+        rpmVisualizationPage.geometry("400x200")
+        rpmThread = threading.Thread(target = RPMVisualizer.rpm, args = (filePath, rpmVisualizationPage))
+        rpmThread.start()
 
     #howToButton
     howToButton = tk.Button(dataProcessingToolPage, text="How To", command=lambda: openHowTo())
@@ -184,15 +198,6 @@ def runUpdater():
     #start the thread
     updateThread.start()
 
-def acceleration():
-    accelThread = threading.Thread(target = AccelerationVisualizer.accel, args = (filePath,))
-    accelThread.start()
-def brakepressure():
-    brakeThread = threading.Thread(target = BrakePressureVisualizer.brake, args = (filePath,))
-    brakeThread.start()
-def rpm():
-    rpmThread = threading.Thread(target = RPMVisualizer.rpm, args = (filePath,))
-    rpmThread.start()
 
 def openHowTo():
     #find the HomeScreen.txt file
@@ -216,15 +221,6 @@ buttonFrame.pack(pady=20)
 dataProcessingToolButton = tk.Button(buttonFrame, text="Data Tool", command=lambda: dataProcessingTool())
 dataProcessingToolButton.grid(row=1, column=0, padx=20)
 
-#Button for visuals
-"""
-accelButton = tk.Button(buttonFrame, text="Acceleration", command=lambda: acceleration())
-accelButton.grid(row=1, column=1, padx=20)
-brakeButton = tk.Button(buttonFrame, text="Brake Pressure", command=lambda: brakepressure())
-brakeButton.grid(row=1, column=2, padx=20)
-rpmButton = tk.Button(buttonFrame, text="RPM", command=lambda: rpm())
-rpmButton.grid(row=1, column=3, padx=20)
-"""
 
 # Create button 2
 updaterButton = tk.Button(buttonFrame, text="Update Program", command=lambda: runUpdater())

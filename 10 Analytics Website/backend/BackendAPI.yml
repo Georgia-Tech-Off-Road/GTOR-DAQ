@@ -1,0 +1,21 @@
+openapi: '3.0.3'
+info:
+  title: Backend GTOR Analytics API
+  description: | 
+    Server side backend for the Georgia Tech Offroad ("GTOR") analytics website. 
+  version: '1.0'
+servers:
+  - url: localhost:3000
+tags:
+  - name: update
+    description: Receive updates from vehicle
+paths:
+  /update:
+    post:
+      tags: 
+        - update
+      responses:
+        '201':
+          description: Resource created
+        '400':
+          description: Bad request
