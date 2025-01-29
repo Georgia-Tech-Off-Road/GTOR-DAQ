@@ -190,9 +190,11 @@ def dataProcessingTool():
     #Create and place the buttons in a single row on the second page
     downloadButton = tk.Button(buttonFrame, text="Download Data File", command=lambda: downloadData())
     binButton = tk.Button(buttonFrame, text = "Convert .bin to .txt", command=lambda: binConvert())
+
     accelButton = tk.Button(buttonFrame, text="Acceleration", command=lambda: acceleration())
     brakeButton = tk.Button(buttonFrame, text="Brake Pressure", command=lambda: brakepressure())
     rpmButton = tk.Button(buttonFrame, text="RPM", command=lambda: rpm())
+
     processButton = tk.Button(buttonFrame, text="Process Data", command=lambda: processData())
     configEditButton = tk.Button(buttonFrame, text="Edit Config", command=lambda: editConfig())
     herztCalculatorButton = tk.Button(buttonFrame, text="Calculate Hertz Info", command=lambda: calculateHertz())

@@ -37,8 +37,6 @@ def accel(fname, accelVisualizationPage):
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig("Acceleration.png")
-    print("Saved figure as Acceleration.png")
     plt.show()
     """
 
@@ -49,7 +47,6 @@ def accel(fname, accelVisualizationPage):
     plt.xlabel('Time')
     plt.ylabel('Accel (X)')
     plt.grid(True)
-    plt.savefig("AccelX.png")
 
     # Plot Accel Y
     plt.figure()
@@ -58,7 +55,6 @@ def accel(fname, accelVisualizationPage):
     plt.xlabel('Time')
     plt.ylabel('Accel (Y)')
     plt.grid(True)
-    plt.savefig("AccelY.png")
 
     # Plot Accel Z
     plt.figure()
@@ -67,9 +63,6 @@ def accel(fname, accelVisualizationPage):
     plt.xlabel('Time')
     plt.ylabel('Accel (Z)')
     plt.grid(True)
-    plt.savefig("AccelZ.png")
-
-    print("Saved figures as AccelX,Y,Z.png")
 
     # Display all figures at once
     accelVisualizationPage.destroy()
