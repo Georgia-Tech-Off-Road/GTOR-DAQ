@@ -1,5 +1,11 @@
 import Chart from "chart.js/auto";
+import 'chartjs-adapter-luxon';
+//Use Chart Streaming plugin: https://nagix.github.io/chartjs-plugin-streaming/master/guide/getting-started.html#integration
+import ChartStreaming from 'chartjs-plugin-streaming';
 import {useRef, useEffect} from "react";
+
+Chart.register(ChartStreaming)
+
 export default function SensorGraph() {
 
     //Reference to <canvas> in DOM
@@ -17,38 +23,41 @@ export default function SensorGraph() {
     //Generate graph using Chart.js
     async function generateInitialGraph() {
         //Test data
-        const data = [
-            { year: 2010, count: 10 },
-            { year: 2011, count: 20 },
-            { year: 2012, count: 15 },
-            { year: 2013, count: 25 },
-            { year: 2014, count: 22 },
-            { year: 2015, count: 30 },
-            { year: 2016, count: 28 },
-          ];
-
-         chart = new Chart(
+        const data = {
+            labels: [0, 1, 2 ,3],
+            datasets: [{
+                axis: "y",
+                label: "Sensor Data",
+                data: [0, 1, 2, 3],
+                fill: false,
+                borderColor: "rgba(255, 0, 0, 1)",
+                backgroundColor: "(0, 255, 0, 1)",
+            }]
+        }
+        chart = new Chart(
             canvasRef.current,
               {
-                 type: "bar",
-                 data: {
-                       labels: data.map(row => row.year),
-                     datasets: [
-                           {
-                             label: "Aquisitions by year",
-                               data: data.map(row => row.count)
-                        }
-                   ]
-                }
+                 type: "line",
+                 data: data,
+                 scales: {
+                    x: {
+                        type: "realtime"
+                    }
+                 }
            }
         )
 
         //Update chartRendered
         chartRendered = true
     }
+
+    function testDataPush() {
+        
+    }
     return(
         <div style={{width: "800px"}}>
             <canvas ref={canvasRef}></canvas>
+            <button onClick={testDataPush}>Click Me</button>
         </div>
     )
 }
