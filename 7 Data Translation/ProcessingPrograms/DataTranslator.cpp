@@ -1,24 +1,21 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
-#include <fstream>
-#include "../ConversionLibraries/ConversionFunctions.h"
-//Must be above macrologger.h, decides log level, see macrologger.h for levels. Defined at compile time
-#define LOG_LEVEL     DEBUG_LEVEL
-
-//Shows the logger if to log INFO_LEVEL and DEBUG_LEVEL messages
-//If VERBOSE_FLAG variable is false will only log ERROR_LEVEL messages ragardless of LOG_LEVEL value
-#define VERBOSE_FLAG (verbose_flag)
-#include "macrologger.h"
-
-//The buffer for each line in the binary file will be set to this
-#define LINE_BUFFER_SIZE 30
+#include "DataTranslator.h"
 
 using namespace std;
 //Personal coding conventions for C++
 //I use snake_casing for basic types, char, int, double, etc.
 //I use camelCasing for classes and booleans
 
+//Enum for SensorType
+enum DataType {digital = 0, analogue = 1};
+
+//Define a struct that contains the basic data for each sensor
+struct Sensor {
+    int index;
+    DataType dataType;
+    std::string sensorName;
+    int pollingRate;
+    int numTeeth;
+};
 
 bool verbose_flag = false;
 int main(int argc, char *argv[]) {
@@ -64,33 +61,46 @@ int main(int argc, char *argv[]) {
     LOG_INFO("Output file: %s\n", outputFileName.c_str());
     LOG_INFO("Config file name: %s\n", configFileName.c_str());
 
-    //Create buffers for data
-    
+    //Open input file in read mode
+    ifstream in_file(inputFileName, std::ios_base::in);
 
-    //Open input file in binary read mode
-    ifstream in_file(inputFileName, std::ios_base::binary | std::ios_base::in);
+    //Open output file in read mode
     ofstream out_file(outputFileName, std::ios_base::out);
+
+    //Open config file in read mode
+    ifstream config_file(configFileName, std::ios_base::in);
 
     //Check to see if input file is open
     if(!in_file.is_open()) {
         LOG_ERROR("Input file %s could not be opened!", inputFileName.c_str());
     }
 
-
     //Check to see if output file is open
     if(!out_file.is_open()) {
-        LOG_ERROR("Output file %s could not be openend!", outputFileName.c_str()));
+        LOG_ERROR("Output file %s could not be opened!", outputFileName.c_str());
     }
 
-    //String buffer
-    char line_buffer[LINE_BUFFER_SIZE];
-    //Get 5 char from file and write to str
-    in_file.getline(line_buffer, LINE_BUFFER_SIZE);
-    LOG_INFO("Output text: %s\n", line_buffer);
+    //Check to see if config file is open
+    if(!config_file.is_open()) {
+        LOG_ERROR("Config file %s could not be opened!", configFileName.c_str());
+    }
 
-    
+    readConfigFile(&config_file);
 
+    //Before function termination
+    in_file.close();
+    out_file.close();
+    config_file.close();
     return 0;
 }
 
+void readConfigFile(ifstream *cf) {
+    const int CONFIG_BUFFER_SIZE = 70;
+    char line_buffer[CONFIG_BUFFER_SIZE];
+    //Get rid of header
+    (*cf).getline(line_buffer, CONFIG_BUFFER_SIZE);
+    (*cf).getline(line_buffer, CONFIG_BUFFER_SIZE);
+    LOG_INFO("Line from config file: %s\n", line_buffer);
+    
+}
 
