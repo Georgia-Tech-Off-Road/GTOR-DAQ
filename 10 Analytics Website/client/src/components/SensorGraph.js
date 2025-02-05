@@ -12,6 +12,7 @@ export default function SensorGraph() {
     const canvasRef = useRef(null);
     let chart = null;
     let chartRendered = false;
+    let currentIndex = 1;
     //After DOM has been commited to, get graph data, declare chartRendered as a dependency
     //See: https://react.dev/learn/synchronizing-with-effects
     useEffect(() => {
@@ -23,12 +24,11 @@ export default function SensorGraph() {
     //Generate graph using Chart.js
     async function generateInitialGraph() {
         //Test data
-        const data = {
-            labels: [0, 1, 2 ,3],
+        let data = {
             datasets: [{
                 axis: "y",
                 label: "Sensor Data",
-                data: [0, 1, 2, 3],
+                data: [],
                 fill: false,
                 borderColor: "rgba(255, 0, 0, 1)",
                 backgroundColor: "(0, 255, 0, 1)",
@@ -37,6 +37,13 @@ export default function SensorGraph() {
         chart = new Chart(
             canvasRef.current,
               {
+                options: {
+                    plugins: {
+                        streaming: {
+                            duration: 5000
+                        }
+                    }
+                },
                  type: "line",
                  data: data,
                  scales: {
@@ -47,12 +54,20 @@ export default function SensorGraph() {
            }
         )
 
+
         //Update chartRendered
         chartRendered = true
     }
 
     function testDataPush() {
-        
+        let intervalID = setInterval(() => {
+            chart.data.datasets[0].data.push({x: Date.now(), y: currentIndex});
+            currentIndex = currentIndex + 1;
+            chart.update('quiet');
+        }, 10)
+        setTimeout(() => {
+            clearInterval(intervalID)
+        }, 10 * 1000)
     }
     return(
         <div style={{width: "800px"}}>
