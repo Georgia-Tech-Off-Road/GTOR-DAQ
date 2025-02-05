@@ -1,1 +1,1 @@
- g++ DataTranslator.cpp -o dataprocess
+g++ DataTranslator.cpp -o dataprocess

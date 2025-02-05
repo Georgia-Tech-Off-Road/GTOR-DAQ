@@ -1,0 +1,1 @@
+./dataprocess -i "../LocalTestFiles/2025-1-28 21_55_15.txt" -o output.txt -c "../Configs/2025-1-25 13_44_40Config.txt" -v
