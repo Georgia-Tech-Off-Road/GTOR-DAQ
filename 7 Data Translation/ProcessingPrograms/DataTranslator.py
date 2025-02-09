@@ -36,7 +36,7 @@ class Sensor:
     def __repr__(self):
         return f"Sensor(dataType='{self.dataType}', name='{self.name}', pollingRate={self.pollingRate})"
 
-def translateData (inputFilePath, progressBarPage, parentPage):
+def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig):
         #create a label to tell the user how the download is progressing
         dataTranslationProgressLabel = tk.Label(progressBarPage, text="Data Translation Progress")
         dataTranslationProgressLabel.pack()
@@ -52,8 +52,12 @@ def translateData (inputFilePath, progressBarPage, parentPage):
         #index of last analog sensor
         lastAnalogIndex = 0
         #open config file (found by navigating to the configs folder and looking for a file called fileNameConfig.txt)
-        configFileName = os.path.basename(inputFilePath).split('.')[0]+"Config.txt"
-        file = open("Configs/" + configFileName)
+        if useDefaultConfig == 1:
+            file = open("Configs/defaultConfig.txt")
+        else:
+            configFileName = os.path.basename(inputFilePath).split('.')[0]+"Config.txt"
+            file = open("Configs/" + configFileName)
+
         #get rid of the header
         header = file.readline()
         #get the config data
