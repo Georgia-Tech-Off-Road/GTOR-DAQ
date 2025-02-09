@@ -8,3 +8,4 @@ Dockerfile
 7 Data Translation/Config
 /7 Data Translation/LocalTestFiles
 .vscode/
+*.o
