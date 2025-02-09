@@ -216,6 +216,17 @@ def openHowTo():
     #open the howToFile file in notepade (See if this works on mac.....)
     os.system(f'notepad.exe {howToFilePath}')
 
+def settings():
+    settingsPage = tk.Toplevel(root)
+    settingsPage.title("Settings")
+    settingsPage.geometry("400x200")
+
+    def printSettings():
+        print("Settings!!!!!!!!!!!!!")
+
+    testButton = tk.Button(settingsPage, text="IT WORKS YAY", command=printSettings)
+    testButton.pack(pady=20)
+
 #pack the main page
 frame = tk.Frame(root)
 frame.pack(pady=20)
@@ -232,7 +243,6 @@ buttonFrame.pack(pady=20)
 dataProcessingToolButton = tk.Button(buttonFrame, text="Data Tool", command=lambda: dataProcessingTool())
 dataProcessingToolButton.grid(row=1, column=0, padx=20)
 
-
 # Create button 2
 updaterButton = tk.Button(buttonFrame, text="Update Program", command=lambda: runUpdater())
 updaterButton.grid(row=1, column=4, padx=20)
@@ -240,6 +250,10 @@ updaterButton.grid(row=1, column=4, padx=20)
 # Create Button 3
 howToButton = tk.Button(buttonFrame, text="How To", command=lambda: openHowTo())
 howToButton.grid(row=1, column=5, padx=20)
+
+#Create button 4
+settingsButton = tk.Button(buttonFrame, text="Settings", command=lambda: settings())
+settingsButton.grid(row=1, column=6,padx=20)
 
 # Run the application
 root.mainloop()
