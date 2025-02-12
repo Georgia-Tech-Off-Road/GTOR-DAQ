@@ -9,3 +9,11 @@ Dockerfile
 /7 Data Translation/LocalTestFiles
 .vscode/
 *.o
+*.ipch
+*.vsidx
+/7 Data Translation/.vs
+.vscode/settings.json
+.vscode/settings.json
+/.vscode
+7 Data Translation/CppProperties.json
+.vscode/settings.json

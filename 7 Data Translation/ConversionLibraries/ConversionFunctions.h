@@ -1,2 +1,6 @@
-#include "./BrakePressure/BrakePressureConvert.h"
-#include "./Time/TimeConvert.h"
+#pragma once
+namespace cvf {
+    #include "./BrakePressure/BrakePressureConvert.h"
+    #include "./Time/TimeConvert.h"
+    #include "./RPM/RPMConvert.h"
+}
