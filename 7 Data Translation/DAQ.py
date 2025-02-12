@@ -42,6 +42,10 @@ def dataProcessingTool():
     dataProcessingToolPage.geometry("800x400")
     global useDefaultConfig
     useDefaultConfig = tk.IntVar(value=0)
+    global outputPath
+    outputPath = None
+    global chosePath
+    chosePath = False
     def openHowTo():
         #find the DataProcessingTool.txt file
         howToFilePath = "Guides/DataProcessingTool.txt"
@@ -74,7 +78,8 @@ def dataProcessingTool():
                 if "C:/" not in filePath:
                     downloadButton.grid(row=0, column=1, padx=20)
                 elif ".bin" in filePath:
-                    binButton.grid(row=0, column=1,padx=20)
+                    binButton.grid(row=0, column=0,padx=20)
+                    outputButton.grid(row=0,column=1,padx=20)
                 elif ".csv" in filePath:
                     accelButton.grid(row=1, column=0, padx=20)
                     brakeButton.grid(row=1, column=1, padx=20)
@@ -83,6 +88,7 @@ def dataProcessingTool():
                 else: 
                     processButton.grid(row=0, column=0, padx=20)
                     configCheckbox.grid(row=2, column=1, padx=20)
+                    outputButton.grid(row=2,column=0,padx=20)
                     configEditButton.grid(row=0, column=1, padx=20)
                     herztCalculatorButton.grid(row=0, column=2, padx=20)
     def downloadData():
@@ -119,18 +125,31 @@ def dataProcessingTool():
         #create the thread and download the config file (this isn't tracked since it's such a short download)
         configDownloadThread = threading.Thread(target = DataDownloader.downloadData, args = (configSRC, configDST))
         configDownloadThread.start()
+    def outputDestination():
+        global chosePath
+        global outputPath
+        outputPath = filedialog.askdirectory(title="Select Output Folder")
+        if outputPath:
+            chosePath = True
+        else:
+            chosePath = False
+
     def binConvert():
         #update the buttons to allow the file to be operated on
-        binThread = threading.Thread(target = BinFileTranslator.binConverter, args = (filePath,))
+        global chosePath
+        global outputPath
+        binThread = threading.Thread(target = BinFileTranslator.binConverter, args = (filePath,chosePath,outputPath))
         #start the thread
         binThread.start()
     def processData():
+        global chosePath
+        global outputPath
         #create a page for the progress bar
         progressBarPage = tk.Toplevel(dataProcessingToolPage)
         progressBarPage.title("Translation Progress")
         progressBarPage.geometry("400x200")
         #create the thread
-        dataProcessingThread = threading.Thread(target = DataTranslator.translateData, args = (filePath, progressBarPage, dataProcessingToolPage, int(useDefaultConfig.get())))
+        dataProcessingThread = threading.Thread(target = DataTranslator.translateData, args = (filePath, progressBarPage, dataProcessingToolPage, int(useDefaultConfig.get()),outputPath,chosePath))
         #start the thread
         dataProcessingThread.start()
         #hide the main data processor page
@@ -148,7 +167,6 @@ def dataProcessingTool():
     def editConfig():
         #find the config file based on filePath variable
         if useDefaultConfig.get() == 1:
-            print("hi")
             configFilePath = "Configs/defaultConfig.txt"
         else:
             configFilePathList = filePath.split("/")
@@ -201,6 +219,7 @@ def dataProcessingTool():
     downloadButton = tk.Button(buttonFrame, text="Download Data File", command=lambda: downloadData())
     binButton = tk.Button(buttonFrame, text = "Convert .bin to .txt", command=lambda: binConvert())
 
+
     accelButton = tk.Button(buttonFrame, text="Acceleration", command=lambda: acceleration())
     brakeButton = tk.Button(buttonFrame, text="Brake Pressure", command=lambda: brakepressure())
     rpmButton = tk.Button(buttonFrame, text="RPM", command=lambda: rpm())
@@ -209,6 +228,7 @@ def dataProcessingTool():
     configCheckbox = tk.Checkbutton(buttonFrame, text="Use default config", variable=useDefaultConfig)
     configEditButton = tk.Button(buttonFrame, text="Edit Config", command=lambda: editConfig())
     herztCalculatorButton = tk.Button(buttonFrame, text="Calculate Hertz Info", command=lambda: calculateHertz())
+    outputButton = tk.Button(buttonFrame, text = "Choose output destination...", command=lambda: outputDestination())
     updateButtons()
 
 def runUpdater():
