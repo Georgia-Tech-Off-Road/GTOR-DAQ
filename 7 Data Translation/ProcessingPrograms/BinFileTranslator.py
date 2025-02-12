@@ -1,4 +1,4 @@
-def binConverter(input_file_name):
+def binConverter(input_file_name,chosePath,outputPath):
     import struct
     import os
 
@@ -6,11 +6,18 @@ def binConverter(input_file_name):
     data_format = "Q L 3i 4i 3f 3f 3f 4f 4i 3f 3f 3f 4f 4i"  # Add 4 bytes of padding (x4)
     data_size = struct.calcsize(data_format)
 
-    # Generate output file name by appending ".txt" to the original file name
-    output_file_name = os.path.splitext(input_file_name)[0] + ".txt"
+
+    output_file_name = os.path.splitext(os.path.basename(input_file_name))[0] + ".txt"
+    print(output_file_name)
+    # Check if the user has selected a directory
+    if chosePath:
+        outfile = os.path.join(outputPath, output_file_name)
+        print(outfile)
+    else:
+        outfile = output_file_name
 
     try:
-        with open(input_file_name, "rb") as binary_file, open(output_file_name, "w") as text_file:
+        with open(input_file_name, "rb") as binary_file, open(outfile, "w") as text_file:
             print("Writing data...........")
             # Read and process binary data
             while chunk := binary_file.read(data_size):
@@ -24,9 +31,11 @@ def binConverter(input_file_name):
                 # Write the unpacked data as a comma-separated line
                 text_file.write(",".join(map(str, data)) + "\n")
 
-        print(f"Data successfully written to {output_file_name}")
+        print(f"Data successfully written to {outfile}")
 
     except FileNotFoundError:
         print("File not found")
     except Exception as e:
         print(f"An error occurred: {e}")
+
+
