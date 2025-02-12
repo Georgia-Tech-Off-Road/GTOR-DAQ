@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     openFiles();
 
     readConfigFile(&config_file);
-    
+
     readInputFile(&in_file);
 
 
@@ -38,6 +38,7 @@ int main(int argc, char *argv[]) {
     // Before function termination
     in_file.close();
     out_file.close();
+    config_file.close();
     return 0;
 }
 
@@ -63,7 +64,6 @@ void readConfigFile(ifstream *cf) {
     for (Sensor sensor : sensors) {
         cout << sensor.toStr().c_str();
     }
-    config_file.close();
 }
 
 // Self explanatory function name
@@ -129,7 +129,6 @@ void openFiles() {
 
 void readInputFile(std::ifstream *inf) {
     char line_buffer[LINE_BUFFER_SIZE];
-
     // While getline() does not result in an error (i.e end of file), keep adding result of line to line_buffer
     while (inf->getline(line_buffer, LINE_BUFFER_SIZE)) {
         processInputLine(line_buffer);
@@ -138,9 +137,48 @@ void readInputFile(std::ifstream *inf) {
 }
 
 void processInputLine(char* line_buffer) {
-    inline constexpr size_t INPUT_BUFFER_SIZE = 13;
-    char input_segment[INPUT_BUFFER_SIZE];
-    for (int i = 0; i < sensors.size(); i++) {
-        strcpy(input_segment, strtok(i == 0 ? line_buffer : NULL, ","));
+    constexpr size_t INPUT_BUFFER_SIZE = 25;
+    char line_segment[INPUT_BUFFER_SIZE];
+    Time time = getTimeFromLine(line_buffer);
+    for (int i = 0; i < (int) sensors.size(); i++) {
+        snprintf(line_segment, INPUT_BUFFER_SIZE, strtok(i == 0 ? line_buffer : NULL, ", " + '\n'));;
+        if(line_segment != nullptr) {
+            sensors[i].convertLine(line_segment, &time);
+        } else {
+            LOG_INFO("Line segment is null on line: %s", line_buffer);
+            throw std::invalid_argument("Strtok on line segment is null");
+        }
     }
+}
+
+cvf::Time getTimeFromLine(char* line) {
+    cvf::Time time;
+    static int secSensorIndex = -1;
+    static int milliSecSensorIndex = -1;
+    //If we have not already found the index of the time sensors, do so
+    if (secSensorIndex == -1 || milliSecSensorIndex == -1) {
+        for(int i = 0; i < sensors.size(); i++) {
+            if (sensors[i].getSensorName().find("millisec") != std::string::npos) {
+                milliSecSensorIndex = i;
+            } else if (sensors[i].getSensorName().find("sec") != std::string::npos) {
+                secSensorIndex = i;
+            }
+        }
+        if (secSensorIndex == -1 || milliSecSensorIndex == -1) {
+            throw std::invalid_argument("A second and millisec \"sensor\" could not be found in the config file. Please may sure their titles includes these tokens.");
+        }
+    }
+    char line_segment[25];
+    for (int i = 0; i < max(secSensorIndex, milliSecSensorIndex); i++) {
+        snprintf(line_segment, 25, strtok(i > 0 ? NULL : line, ","));
+        if (i == secSensorIndex) {
+            //Converts line_segment to unsigned long, then to uint32_t
+            time.sec = static_cast<uint32_t>(std::stoul(line_segment));
+        }
+        else if (i == milliSecSensorIndex) {
+            //Converts line_segment to unsigned long, then to uint32_t
+            time.milli = static_cast<uint32_t>(std::stoul(line_segment));
+        }
+    }
+    return time;
 }
