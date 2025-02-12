@@ -6,6 +6,7 @@ import importlib
 import threading
 import time
 import matplotlib
+import sys
 
 #libraries used for program
 #NOTE: NEVER PUT ANYTHING IN FRONT OF IMPORTS AND ALWAYS KEEP IMPORTANTS IN THIS NOTATION, OTHERWISE THE UPDATER WILL LIKELY BREAK
@@ -45,8 +46,10 @@ def dataProcessingTool():
         #find the DataProcessingTool.txt file
         howToFilePath = "Guides/DataProcessingTool.txt"
         #open the howToFile file in notepade (See if this works on mac.....)
-        os.system(f'notepad.exe {howToFilePath}')
-        # Function to handle file upload
+        if sys.platform.startswith("win"):  # Windows
+            os.system(f'notepad.exe {howToFilePath}')
+        elif sys.platform.startswith("darwin"):  # Mac
+            os.system(f'open {howToFilePath}')
     def chooseFile():
         # Open file dialog and get the file path
         global filePath
@@ -144,11 +147,18 @@ def dataProcessingTool():
 
     def editConfig():
         #find the config file based on filePath variable
-        configFilePathList = filePath.split("/")
-        configFilePathList[-1] = "Configs/" + configFilePathList[-1] + "Config.txt"
-        configFilePath = "/".join(configFilePathList)
+        if useDefaultConfig.get() == 1:
+            print("hi")
+            configFilePath = "Configs/defaultConfig.txt"
+        else:
+            configFilePathList = filePath.split("/")
+            configFilePathList[-1] = "Configs/" + configFilePathList[-1] + "Config.txt"
+            configFilePath = "/".join(configFilePathList)
         #open the config file in notepade (See if this works on mac.....)
-        os.system(f'notepad.exe {configFilePath}')
+        if sys.platform.startswith("win"):  # Windows
+            os.system(f'notepad.exe {configFilePath}')
+        elif sys.platform.startswith("darwin"):  # Mac
+            os.system(f'open {configFilePath}')
 
     def acceleration():
         accelVisualizationPage = tk.Toplevel(dataProcessingToolPage)
@@ -214,7 +224,10 @@ def openHowTo():
     #find the HomeScreen.txt file
     howToFilePath = "Guides/HomeScreen.txt"
     #open the howToFile file in notepade (See if this works on mac.....)
-    os.system(f'notepad.exe {howToFilePath}')
+    if sys.platform.startswith("win"):  # Windows
+        os.system(f'notepad.exe {howToFilePath}')
+    elif sys.platform.startswith("darwin"):  # Mac
+        os.system(f'open {howToFilePath}')
 
 def settings():
     settingsPage = tk.Toplevel(root)
