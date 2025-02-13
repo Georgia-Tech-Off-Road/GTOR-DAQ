@@ -6,10 +6,8 @@ import importlib
 import tkinter as tk
 from tkinter import ttk
 
-
-os.chdir("./")
-
 #imports all data libraries from ConversionLibrary folder
+os.chdir("./")
 for fileName in os.listdir("ConversionLibraries"):
         if fileName.endswith('.py') and not fileName.startswith('__'):
             moduleName = fileName[:-3]  # Remove .py extension
@@ -54,7 +52,7 @@ def translateData (inputFilePath, progressBarPage, parentPage):
         #index of last analog sensor
         lastAnalogIndex = 0
         #open config file (found by navigating to the configs folder and looking for a file called fileNameConfig.txt)
-        configFileName = os.path.basename(inputFilePath)+"Config.txt"
+        configFileName = os.path.basename(inputFilePath).split('.')[0]+"Config.txt"
         file = open("Configs/" + configFileName)
         #get rid of the header
         header = file.readline()

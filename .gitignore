@@ -5,3 +5,4 @@ Dockerfile
 .dockerignore
 /10 Analytics Website/backend/node_modules
 /10 Analytics Website/swagger-editor
+7 Data Translation/Config
