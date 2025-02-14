@@ -12,7 +12,7 @@ struct Time {
     }
     std::string toStr() {
         char buffer[200];
-        sprintf(buffer, "Sec: %f\nMillisec:%f", sec, milli);
+        snprintf(buffer, 200, "Sec: %d\nMillisec:%d", sec, milli);
         return std::string(buffer);
     }
 };
