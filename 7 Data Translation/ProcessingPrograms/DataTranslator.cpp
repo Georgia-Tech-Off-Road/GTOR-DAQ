@@ -1,6 +1,12 @@
 #include "DataTranslator.h"
+//Namespace qualifiers;
+using std::string;
+using std::ifstream;
+using std::ofstream;
+using std::cout;
+using cvf::Time;
 
-using namespace std;
+
 // Personal coding conventions for C++
 // I use snake_casing for basic types, char, int, double, etc.
 // I use camelCasing for classes and booleans
@@ -8,26 +14,26 @@ using namespace std;
 // If sensor layout changes, you can make a new struct and modfiy this alias. Orrr (more dangerously) modify the current struct
 using Sensor = DAQSensor;
 
-//  ---GLOBALS---
-
-// File IO
-string inputFileName;
-string outputFileName;
-string configFileName;
-
-ifstream in_file;
-ofstream out_file;
-ifstream config_file;
-
 // MISC
 bool verbose_flag = false;
 std::vector<Sensor> sensors;
 
 int main(int argc, char *argv[]) {
+    //  ---Function Variables---
+
+    // File IO
+    string inputFileName;
+    string outputFileName;
+    string configFileName;
+
+    ifstream in_file;
+    ofstream out_file;
+    ifstream config_file;
+
     LOG_INFO("You have entered %d cmd line arguments!\n", argc);
 
-    processCLIArgs(argc, argv);
-    openFiles();
+    processCLIArgs(argc, argv, &inputFileName, &outputFileName, &configFileName);
+    openFiles(&in_file, inputFileName, &out_file, outputFileName, &config_file, configFileName);
 
     readConfigFile(&config_file);
 
@@ -64,10 +70,15 @@ void readConfigFile(ifstream *cf) {
     for (Sensor sensor : sensors) {
         cout << sensor.toStr().c_str();
     }
+    if (sensors.size() == 0) {
+        char msg[200];
+        snprintf(msg, 200, "No sensors could be loaded from the config file!");
+        throw std::invalid_argument(msg);
+    }
 }
 
 // Self explanatory function name
-void processCLIArgs(int argc, char *argv[]) {
+void processCLIArgs(int argc, char *argv[], string *inputFileName, string *outputFileName, string *configFileName) {
     // Flags
     bool assignedInput = false;
     bool assignedOutput = false;
@@ -76,19 +87,19 @@ void processCLIArgs(int argc, char *argv[]) {
     // Get input and output file names
     for (int i = 1; i < argc; i++) {
         if (i < argc - 1) {
-         if (((string)"-i").compare(argv[i]) == 0) {
-             inputFileName.assign(argv[i + 1]);
+         if (strcmp("-i", argv[i]) == 0) {
+              inputFileName->assign(argv[i + 1]);
               assignedInput = true;
-           } else if (((string)"-o").compare(argv[i]) == 0) {
-               outputFileName.assign(argv[i + 1]);
+           } else if (strcmp("-o", argv[i]) == 0) {
+               outputFileName->assign(argv[i + 1]);
              assignedOutput = true;
           }
-            else if (((string)"-c").compare(argv[i]) == 0) {
-                configFileName.assign(argv[i + 1]);
+            else if (strcmp("-c", argv[i]) == 0) {
+                configFileName->assign(argv[i + 1]);
                 assignedConfig = true;
             }
         }
-        else if (((string)"-v").compare(argv[i]) == 0) {
+        else if (strcmp("-v", argv[i]) == 0) {
             verbose_flag = true;
         }
     }
@@ -97,33 +108,39 @@ void processCLIArgs(int argc, char *argv[]) {
     }
     LOG_INFO("Verbose: %s\n", verbose_flag ? "true" : "false");
     LOG_INFO("Running dataprocess with following parameters:\n");
-    LOG_INFO("Input file: %s\n", inputFileName.c_str());
-    LOG_INFO("Output file: %s\n", outputFileName.c_str());
-    LOG_INFO("Config file name: %s\n", configFileName.c_str());
+    LOG_INFO("Input file: %s\n", inputFileName->c_str());
+    LOG_INFO("Output file: %s\n", outputFileName->c_str());
+    LOG_INFO("Config file name: %s\n", configFileName->c_str());
 }
 
 // Opens input, output, and config files
-void openFiles() {
+void openFiles(ifstream *in_file, std::string inputFileName, ofstream *out_file, std::string outputFileName, ifstream *config_file, std::string configFileName) {
     // Open input file in read mode
-    in_file.open(inputFileName, std::ios_base::in);
+    in_file->open(inputFileName.c_str(), std::ios_base::in);
     // Open output file in write mode
-    out_file.open(outputFileName, std::ios_base::out);
+    out_file->open(outputFileName.c_str(), std::ios_base::out);
     // Open config file in read mode
-    config_file.open(configFileName, std::ios_base::in);
+    config_file->open(configFileName.c_str(), std::ios_base::in);
 
     // Check to see if input file is open
-    if (!in_file.is_open()) {
-        LOG_ERROR("Input file %s could not be opened!", inputFileName.c_str());
+    if (!in_file->is_open()) {
+        char msg[100];
+        snprintf(msg, 100, "Input file %s could not be opened! %s", inputFileName.c_str(), std::strerror(errno));
+        throw std::invalid_argument(msg);
     }
 
     // Check to see if output file is open
-    if (!out_file.is_open()) {
-        LOG_ERROR("Output file %s could not be opened!", outputFileName.c_str());
+    if (!out_file->is_open()) {
+        char msg[100];
+        snprintf(msg, 100, "Output file %s could not be opened! %s", outputFileName.c_str(), std::strerror(errno));
+        throw std::invalid_argument(msg);
     }
 
     // Check to see if config file is open
-    if (!config_file.is_open()) {
-        LOG_ERROR("Config file %s could not be opened!", configFileName.c_str());
+    if (!config_file->is_open()) {
+        char msg[100];
+        snprintf(msg, 100, "Config file %s could not be opened! %s", configFileName.c_str(), std::strerror(errno));
+        throw std::invalid_argument(msg);
     }
 }
 
@@ -137,15 +154,24 @@ void readInputFile(std::ifstream *inf) {
 }
 
 void processInputLine(char* line_buffer) {
-    constexpr size_t INPUT_BUFFER_SIZE = 25;
-    char line_segment[INPUT_BUFFER_SIZE];
+    //A line segment is the token of chars that is bordered by commas, should correspond to a sensor
+    //Set the length that each line_segment can occupy
+    int constexpr LINE_SEGMENT_SIZE = 25;
     Time time = getTimeFromLine(line_buffer);
-    for (int i = 0; i < (int) sensors.size(); i++) {
-        snprintf(line_segment, INPUT_BUFFER_SIZE, strtok(i == 0 ? line_buffer : NULL, ", " + '\n'));;
-        if(line_segment != nullptr) {
-            sensors[i].convertLine(line_segment, &time);
-        } else {
-            LOG_INFO("Line segment is null on line: %s", line_buffer);
+    char* line_segment;
+    for (int i = 0; i < static_cast<int>(sensors.size()); i++) {
+        line_segment = strtok(i > 0 ? NULL : line_buffer, ",");
+        //Check to see if token is null
+        if (line_segment == nullptr) {
+            char msg[200];
+            snprintf(msg, 200, "There are more sensors specified in the config than their are columns in your data file!");
+            throw std::invalid_argument(msg);
+        }
+        if(line_segment[0] != '\0') {
+            char* res = sensors[i].convertLine(line_segment, &time);
+            //LOG_INFO("%s value: %s", sensors[i].getSensorName().c_str(), res);
+        } else {    
+            LOG_ERROR("Line segment is null on line: %s", line_buffer);
             throw std::invalid_argument("Strtok on line segment is null");
         }
     }
@@ -155,6 +181,7 @@ cvf::Time getTimeFromLine(char* line) {
     cvf::Time time;
     static int secSensorIndex = -1;
     static int milliSecSensorIndex = -1;
+
     //If we have not already found the index of the time sensors, do so
     if (secSensorIndex == -1 || milliSecSensorIndex == -1) {
         for(int i = 0; i < sensors.size(); i++) {
@@ -163,14 +190,27 @@ cvf::Time getTimeFromLine(char* line) {
             } else if (sensors[i].getSensorName().find("sec") != std::string::npos) {
                 secSensorIndex = i;
             }
+            if (secSensorIndex != -1 && milliSecSensorIndex != -1) {
+                break;
+            }
         }
         if (secSensorIndex == -1 || milliSecSensorIndex == -1) {
             throw std::invalid_argument("A second and millisec \"sensor\" could not be found in the config file. Please may sure their titles includes these tokens.");
         }
     }
+    char line_buffer[LINE_BUFFER_SIZE];
+    //Copy line into line_buffer so that strtok does not override original line
+    snprintf(line_buffer, LINE_BUFFER_SIZE, "%s", line);
+
     char line_segment[25];
-    for (int i = 0; i < max(secSensorIndex, milliSecSensorIndex); i++) {
-        snprintf(line_segment, 25, strtok(i > 0 ? NULL : line, ","));
+    for (int i = 0; i < std::max(secSensorIndex, milliSecSensorIndex) + 1; i++) {
+        int result = snprintf(line_segment, 25, "%s", strtok(i > 0 ? NULL : line_buffer, ","));
+        //Check for error!
+        if (result < 0) {
+            char msg[200];
+            snprintf(msg, 100, "Line number %d: The line segment size is not enough for snprintf! %s", __LINE__, std::strerror(errno));
+            throw std::logic_error(msg);
+        }
         if (i == secSensorIndex) {
             //Converts line_segment to unsigned long, then to uint32_t
             time.sec = static_cast<uint32_t>(std::stoul(line_segment));

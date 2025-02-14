@@ -4,15 +4,20 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <cerrno>
+#include <cstring>
+#include <bits/stdc++.h>
 #include "../ConversionLibraries/ConversionFunctions.h"
 #include "DAQSensor.h"
 //Must be above macrologger.h, decides log level, see macrologger.h for levels. Defined at compile time
-#define LOG_LEVEL     DEBUG_LEVEL
+#define LOG_LEVEL     ERROR_LEVEL
 
 //Shows the logger if to log INFO_LEVEL and DEBUG_LEVEL messages
 //If VERBOSE_FLAG variable is false will only log ERROR_LEVEL messages ragardless of LOG_LEVEL value
 #define VERBOSE_FLAG (verbose_flag)
 #include "macrologger.h"
+
+
 
 //Buffer size for each line read from input file
 inline constexpr int LINE_BUFFER_SIZE = 300;
@@ -20,12 +25,13 @@ inline constexpr int LINE_BUFFER_SIZE = 300;
 
 void readConfigFile(std::ifstream *cf);
 
-void processCLIArgs(int argc, char *argv[]);
+void processCLIArgs(int argc, char *argv[], std::string *inputFileName, std::string *outputFileName, std::string *configFileName);
 
 void readInputFile(std::ifstream *inf);
 
-void openFiles();
+void openFiles(std::ifstream *in_file, std::string inputFileName, std::ofstream *out_file, std::string outputFileName, std::ifstream *config_file, std::string configFileName);
 
 void processInputLine(char* line_buffer);
+
 
 cvf::Time getTimeFromLine(char*);
