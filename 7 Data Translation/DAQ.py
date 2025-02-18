@@ -5,6 +5,8 @@ import os
 import importlib
 import threading
 import time
+import matplotlib
+import sys
 
 #libraries used for program
 #NOTE: NEVER PUT ANYTHING IN FRONT OF IMPORTS AND ALWAYS KEEP IMPORTANTS IN THIS NOTATION, OTHERWISE THE UPDATER WILL LIKELY BREAK
@@ -12,6 +14,10 @@ import time
 #file imports
 from DataDownloader import DataDownloader
 from Updater import DataTranslatorUpdater
+from Visualizers import AccelerationVisualizer
+from Visualizers import BrakePressureVisualizer
+from Visualizers import RPMVisualizer
+from ProcessingPrograms import BinFileTranslator
 
 #imports the processing programs (hertz calculator, data processor, etc etc) 
 os.chdir("./")
@@ -25,7 +31,7 @@ for fileName in os.listdir("ProcessingPrograms"):
 # Creates the main window
 root = tk.Tk()
 root.title("Main Page")
-root.geometry("400x200")
+root.geometry("600x200")
 
 # Function to go to Data Processing Tool
 def dataProcessingTool():
@@ -34,12 +40,20 @@ def dataProcessingTool():
     dataProcessingToolPage = tk.Toplevel(root)
     dataProcessingToolPage.title("Data Downloader Tool")
     dataProcessingToolPage.geometry("800x400")
+    global useDefaultConfig
+    useDefaultConfig = tk.IntVar(value=0)
+    global outputPath
+    outputPath = None
+    global chosePath
+    chosePath = False
     def openHowTo():
         #find the DataProcessingTool.txt file
         howToFilePath = "Guides/DataProcessingTool.txt"
         #open the howToFile file in notepade (See if this works on mac.....)
-        os.system(f'notepad.exe {howToFilePath}')
-        # Function to handle file upload
+        if sys.platform.startswith("win"):  # Windows
+            os.system(f'notepad.exe {howToFilePath}')
+        elif sys.platform.startswith("darwin"):  # Mac
+            os.system(f'open {howToFilePath}')
     def chooseFile():
         # Open file dialog and get the file path
         global filePath
@@ -62,12 +76,21 @@ def dataProcessingTool():
         if ('filePath' in globals()):
                 #if the filepath isn't on the main OS drive only display the download button
                 if "C:/" not in filePath:
-                        downloadButton.grid(row=0, column=1, padx=20)
+                    downloadButton.grid(row=0, column=1, padx=20)
+                elif ".bin" in filePath:
+                    binButton.grid(row=0, column=0,padx=20)
+                    outputButton.grid(row=0,column=1,padx=20)
+                elif ".csv" in filePath:
+                    accelButton.grid(row=1, column=0, padx=20)
+                    brakeButton.grid(row=1, column=1, padx=20)
+                    rpmButton.grid(row=1, column=2, padx=20)
                 #otherwise display everything but the download button
                 else: 
-                        processButton.grid(row=0, column=0, padx=20)
-                        configEditButton.grid(row=0, column=1, padx=20)
-                        herztCalculatorButton.grid(row=0, column=2, padx=20)
+                    processButton.grid(row=0, column=0, padx=20)
+                    configCheckbox.grid(row=2, column=1, padx=20)
+                    outputButton.grid(row=2,column=0,padx=20)
+                    configEditButton.grid(row=0, column=1, padx=20)
+                    herztCalculatorButton.grid(row=0, column=2, padx=20)
     def downloadData():
         #create a new page for the progress bar
         progressBarPage = tk.Toplevel(dataProcessingToolPage)
@@ -87,8 +110,10 @@ def dataProcessingTool():
         dataProcessingToolPage.withdraw()
         #run update buttons to make sure everything's in the right place once the page comes back (it'll be unhidden by progress bar thread once it sees that the file has finished being downloaded
         updateButtons()
+        #if no Configs folder then create one
+
         #get the file path for the config file included with the data
-        configDST = os.getcwd() + "\\Configs\\" + os.path.basename(filePath)+ "Config.txt"
+        configDST = os.getcwd() + "\\Configs\\" + os.path.basename(filePath).split('.')[0] + "Config.txt"
         #create a target file
         file = open(configDST, "w")
         file.close()
@@ -100,20 +125,35 @@ def dataProcessingTool():
         #create the thread and download the config file (this isn't tracked since it's such a short download)
         configDownloadThread = threading.Thread(target = DataDownloader.downloadData, args = (configSRC, configDST))
         configDownloadThread.start()
+    def outputDestination():
+        global chosePath
+        global outputPath
+        outputPath = filedialog.askdirectory(title="Select Output Folder")
+        if outputPath:
+            chosePath = True
+        else:
+            chosePath = False
 
+    def binConvert():
+        #update the buttons to allow the file to be operated on
+        global chosePath
+        global outputPath
+        binThread = threading.Thread(target = BinFileTranslator.binConverter, args = (filePath,chosePath,outputPath))
+        #start the thread
+        binThread.start()
     def processData():
+        global chosePath
+        global outputPath
         #create a page for the progress bar
         progressBarPage = tk.Toplevel(dataProcessingToolPage)
         progressBarPage.title("Translation Progress")
         progressBarPage.geometry("400x200")
         #create the thread
-        dataProcessingThread = threading.Thread(target = DataTranslator.translateData, args = (filePath, progressBarPage, dataProcessingToolPage)) 
+        dataProcessingThread = threading.Thread(target = DataTranslator.translateData, args = (filePath, progressBarPage, dataProcessingToolPage, int(useDefaultConfig.get()),outputPath,chosePath))
         #start the thread
         dataProcessingThread.start()
         #hide the main data processor page
         dataProcessingToolPage.withdraw()
-        
-
     def calculateHertz():
         #open a hertz calculator page
         hertzCalculationPage = tk.Toplevel(dataProcessingToolPage)
@@ -126,11 +166,38 @@ def dataProcessingTool():
 
     def editConfig():
         #find the config file based on filePath variable
-        configFilePathList = filePath.split("/")
-        configFilePathList[-1] = "Configs/" + configFilePathList[-1] + "Config.txt"
-        configFilePath = "/".join(configFilePathList)
+        if useDefaultConfig.get() == 1:
+            configFilePath = "Configs/defaultConfig.txt"
+        else:
+            configFilePathList = filePath.split("/")
+            configFilePathList[-1] = "Configs/" + configFilePathList[-1] + "Config.txt"
+            configFilePath = "/".join(configFilePathList)
         #open the config file in notepade (See if this works on mac.....)
-        os.system(f'notepad.exe {configFilePath}')
+        if sys.platform.startswith("win"):  # Windows
+            os.system(f'notepad.exe {configFilePath}')
+        elif sys.platform.startswith("darwin"):  # Mac
+            os.system(f'open {configFilePath}')
+
+    def acceleration():
+        accelVisualizationPage = tk.Toplevel(dataProcessingToolPage)
+        accelVisualizationPage.title("Acceleration Visualizer")
+        accelVisualizationPage.geometry("400x200")
+        accelThread = threading.Thread(target = AccelerationVisualizer.accel, args = (filePath, accelVisualizationPage))
+        accelThread.start()
+
+    def brakepressure():
+        brakeVisualizationPage = tk.Toplevel(dataProcessingToolPage)
+        brakeVisualizationPage.title("Brake Pressure Visualizer")
+        brakeVisualizationPage.geometry("400x200")
+        brakeThread = threading.Thread(target = BrakePressureVisualizer.brake, args = (filePath, brakeVisualizationPage))
+        brakeThread.start()
+
+    def rpm():
+        rpmVisualizationPage = tk.Toplevel(dataProcessingToolPage)
+        rpmVisualizationPage.title("RPM Visualizer")
+        rpmVisualizationPage.geometry("400x200")
+        rpmThread = threading.Thread(target = RPMVisualizer.rpm, args = (filePath, rpmVisualizationPage))
+        rpmThread.start()
 
     #howToButton
     howToButton = tk.Button(dataProcessingToolPage, text="How To", command=lambda: openHowTo())
@@ -150,9 +217,18 @@ def dataProcessingTool():
 
     #Create and place the buttons in a single row on the second page
     downloadButton = tk.Button(buttonFrame, text="Download Data File", command=lambda: downloadData())
+    binButton = tk.Button(buttonFrame, text = "Convert .bin to .txt", command=lambda: binConvert())
+
+
+    accelButton = tk.Button(buttonFrame, text="Acceleration", command=lambda: acceleration())
+    brakeButton = tk.Button(buttonFrame, text="Brake Pressure", command=lambda: brakepressure())
+    rpmButton = tk.Button(buttonFrame, text="RPM", command=lambda: rpm())
+
     processButton = tk.Button(buttonFrame, text="Process Data", command=lambda: processData())
+    configCheckbox = tk.Checkbutton(buttonFrame, text="Use default config", variable=useDefaultConfig)
     configEditButton = tk.Button(buttonFrame, text="Edit Config", command=lambda: editConfig())
     herztCalculatorButton = tk.Button(buttonFrame, text="Calculate Hertz Info", command=lambda: calculateHertz())
+    outputButton = tk.Button(buttonFrame, text = "Choose output destination...", command=lambda: outputDestination())
     updateButtons()
 
 def runUpdater():
@@ -163,11 +239,26 @@ def runUpdater():
     #start the thread
     updateThread.start()
 
+
 def openHowTo():
     #find the HomeScreen.txt file
     howToFilePath = "Guides/HomeScreen.txt"
     #open the howToFile file in notepade (See if this works on mac.....)
-    os.system(f'notepad.exe {howToFilePath}')
+    if sys.platform.startswith("win"):  # Windows
+        os.system(f'notepad.exe {howToFilePath}')
+    elif sys.platform.startswith("darwin"):  # Mac
+        os.system(f'open {howToFilePath}')
+
+def settings():
+    settingsPage = tk.Toplevel(root)
+    settingsPage.title("Settings")
+    settingsPage.geometry("400x200")
+
+    def printSettings():
+        print("Settings!!!!!!!!!!!!!")
+
+    testButton = tk.Button(settingsPage, text="IT WORKS YAY", command=printSettings)
+    testButton.pack(pady=20)
 
 #pack the main page
 frame = tk.Frame(root)
@@ -187,11 +278,15 @@ dataProcessingToolButton.grid(row=1, column=0, padx=20)
 
 # Create button 2
 updaterButton = tk.Button(buttonFrame, text="Update Program", command=lambda: runUpdater())
-updaterButton.grid(row=1, column=1, padx=20)
+updaterButton.grid(row=1, column=4, padx=20)
 
 # Create Button 3
 howToButton = tk.Button(buttonFrame, text="How To", command=lambda: openHowTo())
-howToButton.grid(row=1, column=2, padx=20)
+howToButton.grid(row=1, column=5, padx=20)
+
+#Create button 4
+settingsButton = tk.Button(buttonFrame, text="Settings", command=lambda: settings())
+settingsButton.grid(row=1, column=6,padx=20)
 
 # Run the application
 root.mainloop()
