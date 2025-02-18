@@ -217,8 +217,10 @@ def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,o
             counter += 1
         finalOutFile.close()
         outFile.close()
+        filePath = os.path.join(outputPath, "output.txt")
+        print(filePath)
         try:
-            os.remove("output.txt")
+            os.remove(filePath)
         except:
             print("File deletion failed.")
         #destroy the progress bar page
