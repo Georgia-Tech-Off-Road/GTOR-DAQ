@@ -1,1 +1,1 @@
-./dataprocess -i "../LocalTestFiles/Test2.txt" -o output.txt -c "../Configs/TestConfig.txt" -v
+./dataprocess -i "../LocalTestFiles/2025-1-25 13_44_40.txt" -o testy.csv -c "../Configs/defaultConfig.txt" -v

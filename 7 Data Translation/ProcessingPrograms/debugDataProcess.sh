@@ -1,1 +1,1 @@
-gdb -w --command=GDBDebuging.txt -ex=r --args ./dataprocess -i "../LocalTestFiles/2025-1-28 21_55_15.txt" -o output.txt -c "../Configs/TestConfig.txt" -v
+gdb -w --command=GDBDebuging.txt -ex=r --args ./dataprocess -i "../LocalTestFiles/testfile.txt" -o output.txt -c "../Configs/TestConfig.txt" -v

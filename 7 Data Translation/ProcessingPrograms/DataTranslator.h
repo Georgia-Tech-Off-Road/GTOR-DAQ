@@ -6,6 +6,8 @@
 #include <string>
 #include <cerrno>
 #include <cstring>
+#include <ctime>
+#include <chrono>
 #include <bits/stdc++.h>
 #include "../ConversionLibraries/ConversionFunctions.h"
 #include "DAQSensor.h"
@@ -31,7 +33,7 @@ void convertInputFile(std::ifstream *inf, std::ofstream *of);
 
 void openFiles(std::ifstream *in_file, std::string inputFileName, std::ofstream *out_file, std::string outputFileName, std::ifstream *config_file, std::string configFileName);
 
-void processInputLine(char* line_buffer);
+void processInputLine(char* line_buffer, std::ofstream *of);
 
 
 cvf::Time getTimeFromLine(char*);

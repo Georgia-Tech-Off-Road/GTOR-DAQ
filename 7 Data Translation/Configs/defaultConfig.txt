@@ -1,4 +1,6 @@
 index,dataType,name,pollingRate,numTeeth
+0,analog,time sec,10000,0
+1,analog,time millisec,10000,0
 2,digital,rear diff (RPM),10000,33
 3,digital,front left halleffect (RPM),10000,40
 4,digital,front right halleffect (RPM),10000,40

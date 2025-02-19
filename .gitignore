@@ -17,3 +17,5 @@ Dockerfile
 /.vscode
 7 Data Translation/CppProperties.json
 .vscode/settings.json
+/7 Data Translation/ProcessingPrograms/__pycache__
+/7 Data Translation/Visualizers/__pycache__
