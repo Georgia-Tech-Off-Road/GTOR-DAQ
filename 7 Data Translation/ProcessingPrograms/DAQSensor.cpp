@@ -61,7 +61,7 @@ std::string DAQSensor::toStr() {
     return std::string(buffer);
 }
 
-char* DAQSensor::convertLine(char* line, Time *time) {
+char* DAQSensor::convertLineSegment(char* line, Time *time) {
     if (sensorType == DAQSensorType::analog) {
         return convert(line);
     } else {
@@ -72,24 +72,19 @@ char* DAQSensor::convertLine(char* line, Time *time) {
 void DAQSensor::assignConvertFunctionsFromName(std::string name) {
     //Assign analog functions
     if(sensorType == DAQSensorType::analog) {
-        for(auto pair = convertFunctionMap.begin(); pair != convertFunctionMap.end(); ++pair) {
+        bool foundConvertFunction;
+        for (auto pair = convertFunctionMap.begin(); pair != convertFunctionMap.end(); ++pair) {
             if (name.find(pair->first) != std::string::npos) {
+                printf("Function Name Token: %s\n", pair->first.c_str());
                 convert = convertFunctionMap[pair->first];
+                foundConvertFunction = true;
                 return;
-            } else {
-                printf("Could not find a corresponding function for sensor %s. Will copy data from input .txt file.\n", name.c_str());
-                //Conver time literally just copies data
-                convert = cvf::convertTime;
             }
         }
         char msg[400];
-        sprintf(msg, "%s is not a known sensor token. Here is a list of valid sensor tokens:\n", name.c_str());
-        for (auto pair : convertFunctionMap) {
-            strcat(msg, pair.first.c_str());
-            strcat(msg, "\n");
-        }
-        strcat(msg, "The name of sensor only needs to include one of these tokens, it does not have to match this token exactly!");
-        throw std::invalid_argument(msg);
+        printf("Could not find a custom conversion function for %s: will just copy data\n", name.c_str());
+        //Literally will just copy and paste value
+        convert=cvf::copy;
     }
     //Now assign digital functions
     else {

@@ -145,15 +145,18 @@ void openFiles(ifstream *in_file, std::string inputFileName, ofstream *out_file,
 }
 
 void convertInputFile(std::ifstream *inf, std::ofstream *of) {
+    auto startTime = std::chrono::system_clock::now();
     char line_buffer[LINE_BUFFER_SIZE];
     // While getline() does not result in an error (i.e end of file), keep adding result of line to line_buffer
     while (inf->getline(line_buffer, LINE_BUFFER_SIZE)) {
-        processInputLine(line_buffer);
+        processInputLine(line_buffer, of);
     }
-    LOG_INFO("Finished reading file!");
+    auto endTime = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = endTime - startTime;
+    LOG_INFO("Finished converting file in %f sec!", elapsed_seconds.count());
 }
 
-void processInputLine(char* line_buffer) {
+void processInputLine(char* line_buffer, std::ofstream *of) {
     //A line segment is the token of chars that is bordered by commas, should correspond to a sensor
     //Set the length that each line_segment can occupy
     int constexpr LINE_SEGMENT_SIZE = 25;
@@ -168,13 +171,19 @@ void processInputLine(char* line_buffer) {
             throw std::invalid_argument(msg);
         }
         if(line_segment[0] != '\0') {
-            char* res = sensors[i].convertLine(line_segment, &time);
-            //LOG_INFO("%s value: %s", sensors[i].getSensorName().c_str(), res);
+            char* res = sensors[i].convertLineSegment(line_segment, &time);
+            //Write the result of converting the line segment to the output file
+            of->write(res, strlen(res));
+            //Add a comma if not last data elem
+            if(i != sensors.size() - 1) {
+                of->put(',');
+            }
         } else {    
             LOG_ERROR("Line segment is null on line: %s", line_buffer);
             throw std::invalid_argument("Strtok on line segment is null");
         }
     }
+    of->put('\n');
 }
 
 cvf::Time getTimeFromLine(char* line) {
@@ -195,7 +204,7 @@ cvf::Time getTimeFromLine(char* line) {
             }
         }
         if (secSensorIndex == -1 || milliSecSensorIndex == -1) {
-            throw std::invalid_argument("A second and millisec \"sensor\" could not be found in the config file. Please may sure their titles includes these tokens.");
+            throw std::invalid_argument("A sec and millisec \"sensor\" could not be found in the config file. Please may sure their titles includes these tokens.");
         }
     }
     char line_buffer[LINE_BUFFER_SIZE];

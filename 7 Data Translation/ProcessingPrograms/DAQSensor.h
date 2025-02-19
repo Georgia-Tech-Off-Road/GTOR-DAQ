@@ -59,7 +59,7 @@ class DAQSensor {
     public:
         DAQSensor();
         void initializeSensor(char* line);
-        char* convertLine(char* line, cvf::Time*);
+        char* convertLineSegment(char* line, cvf::Time*);
         std::string toStr();
         DAQSensorType getSensorType();
         std::string getSensorName();
