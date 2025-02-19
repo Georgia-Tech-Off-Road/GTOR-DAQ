@@ -19,8 +19,7 @@ def brake(fname, brakeVisualizationPage):
     df = pd.read_csv(fname, delimiter=',')
 
     # Extract time and ADC values
-    df = df[~((df.iloc[:, 4] > -20.0312) & (df.iloc[:, 4] < -20.0310))] #removes values that seem to be "zeroed".....
-    print('works!!')
+    df = df[~((df.iloc[:, 4] == 767.2912793359172))] #removes values that seem to be "zeroed".....
     time = df.iloc[:, 0]
     val = df.iloc[:, 4]
 

@@ -84,7 +84,7 @@ def dataProcessingTool():
                     processButton.grid(row=0, column=0, padx=20)
                     configCheckbox.grid(row=2, column=1, padx=20)
                     configEditButton.grid(row=0, column=1, padx=20)
-                    herztCalculatorButton.grid(row=0, column=2, padx=20)
+                    hertzCalculatorButton.grid(row=0, column=2, padx=20)
     def downloadData():
         #create a new page for the progress bar
         progressBarPage = tk.Toplevel(dataProcessingToolPage)
@@ -147,9 +147,12 @@ def dataProcessingTool():
 
     def editConfig():
         #find the config file based on filePath variable
-        configFilePathList = filePath.split("/")
-        configFilePathList[-1] = "Configs/" + configFilePathList[-1] + "Config.txt"
-        configFilePath = "/".join(configFilePathList)
+        if useDefaultConfig.get() == 1:
+            configFilePath = "Configs/defaultConfig.txt"
+        else:
+            configFilePathList = filePath.split("/")
+            configFilePathList[-1] = "Configs/" + configFilePathList[-1] + "Config.txt"
+            configFilePath = "/".join(configFilePathList)
         #open the config file in notepade (See if this works on mac.....)
         if sys.platform.startswith("win"):  # Windows
             os.system(f'notepad.exe {configFilePath}')
@@ -204,7 +207,8 @@ def dataProcessingTool():
     processButton = tk.Button(buttonFrame, text="Process Data", command=lambda: processData())
     configCheckbox = tk.Checkbutton(buttonFrame, text="Use default config", variable=useDefaultConfig)
     configEditButton = tk.Button(buttonFrame, text="Edit Config", command=lambda: editConfig())
-    herztCalculatorButton = tk.Button(buttonFrame, text="Calculate Hertz Info", command=lambda: calculateHertz())
+    hertzCalculatorButton = tk.Button(buttonFrame, text="Calculate Hertz Info", command=lambda: calculateHertz())
+
     updateButtons()
 
 def runUpdater():

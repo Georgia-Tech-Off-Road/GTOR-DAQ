@@ -36,7 +36,7 @@ class Sensor:
     def __repr__(self):
         return f"Sensor(dataType='{self.dataType}', name='{self.name}', pollingRate={self.pollingRate})"
 
-def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,outputPath,chosePath):
+def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig):
         #create a label to tell the user how the download is progressing
         dataTranslationProgressLabel = tk.Label(progressBarPage, text="Data Translation Progress")
         dataTranslationProgressLabel.pack()
@@ -85,10 +85,7 @@ def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,o
         #opens input data file
         inFile = open(inputFilePath)
         #opens output file
-        if not chosePath:
-            outfile = open("output.txt","w")
-        else:
-            outfile = open(os.path.join(outputPath, "output.txt"), "w")
+        outfile = open("output.txt", "w")
         #whether this is the first run
         firstRun = True
         #time scalar (multiplies the period of the largest PR by num dataBuffers written)
@@ -179,10 +176,7 @@ def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,o
             outfile.write(str(dataBuffer[i]).replace('[','').replace(']','')+"\n")
         inFile.close()
         outfile.close()
-        if not chosePath:
-            outFile = open("output.txt","w")
-        else:
-            outFile = open(os.path.join(outputPath, "output.txt"), "r")
+        outFile = open("output.txt", "r")
         finalOutFile = open(str(os.path.basename(inputFilePath) + ".csv"), "w")
         counter = 0
         #for line in output.txt plug in RPM value and save to final Output file
@@ -217,10 +211,8 @@ def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,o
             counter += 1
         finalOutFile.close()
         outFile.close()
-        filePath = os.path.join(outputPath, "output.txt")
-        print(filePath)
         try:
-            os.remove(filePath)
+            os.remove("output.txt")
         except:
             print("File deletion failed.")
         #destroy the progress bar page
