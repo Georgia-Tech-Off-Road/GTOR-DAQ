@@ -19,7 +19,8 @@ def brake(fname, brakeVisualizationPage):
     df = pd.read_csv(fname, delimiter=',')
 
     # Extract time and ADC values
-    df = df[~df.iloc[:, 4].between(767.2910, 767.2914)] #removes values that seem to be "zeroed" at 767.2912......
+    df = df[~((df.iloc[:, 4] > -20.0312) & (df.iloc[:, 4] < -20.0310))] #removes values that seem to be "zeroed".....
+    print('works!!')
     time = df.iloc[:, 0]
     val = df.iloc[:, 4]
 
@@ -28,7 +29,7 @@ def brake(fname, brakeVisualizationPage):
     # Create the line graph
     plt.plot(time, val, label="Brake Pressure",color="green")
     plt.title("Brake Pressure")
-    plt.xlabel("Microseconds")
+    plt.xlabel("Some weird number idk man I just work here")
     plt.ylabel("Pressure")
     plt.grid(True)
     plt.tight_layout()

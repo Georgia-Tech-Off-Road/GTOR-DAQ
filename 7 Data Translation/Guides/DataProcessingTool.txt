@@ -6,6 +6,7 @@ How-to:
 1. Connect to the Mech E drive using the vpn.
 2. Press the Choose File button and navigate to Baja 25/DAQ/Data and select a data file from whichever testing day you're interested in.
 3. Press Download Data. This will download the data file to the root directory of this program, but you should be able to move it to wherever you wish to keep your data files after it downloads. 
-4. You can either go ahead and press Process Data to get a .csv of the data, or you can modify the config file to specify what polling rate you want the data to be averaged to. If you choose to take the second path, make sure to press Calculate Hertz first and don't set any polling rates higher than the reported minimum polling rate.
+4. You can either go ahead and press Process Data to get a .csv of the data, or you can modify the config file to specify what polling rate you want the data to be averaged to. If you choose to take the second path, make sure to press Calculate Hertz first and don't set any polling rates higher than the reported maximum polling rate.
+5. After downloading the .csv file, you can select "Acceleration", "RPM", or "Brake Pressure" to get a graph of the corresponding data.
 
 As always feel free to reach out to a DAQ member if you run into any problems.
