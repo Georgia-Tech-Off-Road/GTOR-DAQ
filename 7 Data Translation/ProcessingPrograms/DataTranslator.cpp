@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
 
     readConfigFile(&config_file);
 
-    readInputFile(&in_file);
+    convertInputFile(&in_file, &out_file);
 
 
 
@@ -144,7 +144,7 @@ void openFiles(ifstream *in_file, std::string inputFileName, ofstream *out_file,
     }
 }
 
-void readInputFile(std::ifstream *inf) {
+void convertInputFile(std::ifstream *inf, std::ofstream *of) {
     char line_buffer[LINE_BUFFER_SIZE];
     // While getline() does not result in an error (i.e end of file), keep adding result of line to line_buffer
     while (inf->getline(line_buffer, LINE_BUFFER_SIZE)) {
