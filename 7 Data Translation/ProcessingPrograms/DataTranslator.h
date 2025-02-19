@@ -27,7 +27,7 @@ void readConfigFile(std::ifstream *cf);
 
 void processCLIArgs(int argc, char *argv[], std::string *inputFileName, std::string *outputFileName, std::string *configFileName);
 
-void readInputFile(std::ifstream *inf);
+void convertInputFile(std::ifstream *inf, std::ofstream *of);
 
 void openFiles(std::ifstream *in_file, std::string inputFileName, std::ofstream *out_file, std::string outputFileName, std::ifstream *config_file, std::string configFileName);
 

@@ -76,6 +76,10 @@ void DAQSensor::assignConvertFunctionsFromName(std::string name) {
             if (name.find(pair->first) != std::string::npos) {
                 convert = convertFunctionMap[pair->first];
                 return;
+            } else {
+                printf("Could not find a corresponding function for sensor %s. Will copy data from input .txt file.\n", name.c_str());
+                //Conver time literally just copies data
+                convert = cvf::convertTime;
             }
         }
         char msg[400];
