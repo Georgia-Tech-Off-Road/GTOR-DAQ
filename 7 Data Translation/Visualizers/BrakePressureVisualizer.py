@@ -21,7 +21,7 @@ def brake(fname, brakeVisualizationPage):
 
     # Extract time and ADC values
     # df = df[~((df.iloc[:, 4] > -20.0312) & (df.iloc[:, 4] < -20.0310))] #removes values that seem to be "zeroed".....
-    time = df.iloc[:, 1]
+    time = df.iloc[:, 1] * 10**(-6)
     val = df.iloc[:, 5]
 
     # val = 50 + (((val / 32767) * 4.096 - 0.5) / 4) * 7950  # Uncomment to convert ADC to PSI (already done in data conversion)
@@ -29,8 +29,8 @@ def brake(fname, brakeVisualizationPage):
     # Create the line graph
     plt.plot(time, val, label="Brake Pressure",color="green")
     plt.title("Brake Pressure")
-    plt.xlabel("Time")
-    plt.ylabel("Pressure")
+    plt.xlabel("Time (Seconds)")
+    plt.ylabel("Pressure (PSI)")
     plt.grid(True)
     plt.tight_layout()
 
