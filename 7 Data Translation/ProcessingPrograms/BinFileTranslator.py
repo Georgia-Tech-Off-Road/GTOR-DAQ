@@ -1,4 +1,4 @@
-def binConverter(input_file_name,chosePath,outputPath):
+def binConverter(input_file_name,chosePath,outputPath,settingsData):
     import struct
     import os
 
