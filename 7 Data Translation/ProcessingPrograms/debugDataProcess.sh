@@ -1,1 +1,1 @@
-gdb -w --command=GDBDebuging.txt -ex=r --args ./dataprocess -i "../LocalTestFiles/testfile.txt" -o output.txt -c "../Configs/TestConfig.txt" -v
+gdb -w --command=GDBDebuging.txt -ex=r --args ./Build/Linux/dataprocess -i "../LocalTestFiles/testfile.txt" -o output.txt -c "../Configs/TestConfig.txt" -v

@@ -19,7 +19,10 @@ bool verbose_flag = false;
 std::vector<Sensor> sensors;
 
 int main(int argc, char *argv[]) {
-    //  ---Function Variables---
+
+    printf("Inside Main Func!");
+    LOG_INFO("INside Main Func!");
+    //  ---Function Variables--
 
     // File IO
     string inputFileName;
@@ -32,7 +35,11 @@ int main(int argc, char *argv[]) {
 
     LOG_INFO("You have entered %d cmd line arguments!\n", argc);
 
-    processCLIArgs(argc, argv, &inputFileName, &outputFileName, &configFileName);
+    int res = processCLIArgs(argc, argv, &inputFileName, &outputFileName, &configFileName);
+    if(res != 1) {
+        //Bad command line args, cannot proceed
+        return -1;
+    }
     openFiles(&in_file, inputFileName, &out_file, outputFileName, &config_file, configFileName);
 
     readConfigFile(&config_file);
@@ -78,7 +85,14 @@ void readConfigFile(ifstream *cf) {
 }
 
 // Self explanatory function name
-void processCLIArgs(int argc, char *argv[], string *inputFileName, string *outputFileName, string *configFileName) {
+int processCLIArgs(int argc, char *argv[], string *inputFileName, string *outputFileName, string *configFileName) {
+    //Only dataprocess.exe is provided or --help is specified
+    if (argc == 1 || (argc == 2 && strcmp(argv[1], "--help") == 0)) {
+        printHelp();
+        //Failure
+        return -1;
+    }
+
     // Flags
     bool assignedInput = false;
     bool assignedOutput = false;
@@ -111,6 +125,8 @@ void processCLIArgs(int argc, char *argv[], string *inputFileName, string *outpu
     LOG_INFO("Input file: %s\n", inputFileName->c_str());
     LOG_INFO("Output file: %s\n", outputFileName->c_str());
     LOG_INFO("Config file name: %s\n", configFileName->c_str());
+    //Success
+    return 1;
 }
 
 // Opens input, output, and config files
@@ -148,9 +164,12 @@ void convertInputFile(std::ifstream *inf, std::ofstream *of) {
     auto startTime = std::chrono::system_clock::now();
     char line_buffer[LINE_BUFFER_SIZE];
     // While getline() does not result in an error (i.e end of file), keep adding result of line to line_buffer
+    int line_num = 0;
     while (inf->getline(line_buffer, LINE_BUFFER_SIZE)) {
         processInputLine(line_buffer, of);
+        line_num++;
     }
+    LOG_INFO("Converted %d lines from input file!", line_num);
     auto endTime = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = endTime - startTime;
     LOG_INFO("Finished converting file in %f sec!", elapsed_seconds.count());
@@ -230,4 +249,9 @@ cvf::Time getTimeFromLine(char* line) {
         }
     }
     return time;
+}
+
+//Print helper tip 
+void printHelp() {
+    printf("Command format: dataprocess [-ico] [-v] [--help]\n-c [filename.txt]: Specifies config file\n-i [filename.txt]: Specifies input file\n-o [filename.csv]: Specifies output file\n-v: Verbose, prints information logging messages\n--help: Prints this debug message\n");
 }
