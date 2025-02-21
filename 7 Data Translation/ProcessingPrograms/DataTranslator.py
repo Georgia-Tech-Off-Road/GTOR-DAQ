@@ -36,7 +36,8 @@ class Sensor:
     def __repr__(self):
         return f"Sensor(dataType='{self.dataType}', name='{self.name}', pollingRate={self.pollingRate})"
 
-def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,outputPath,chosePath):
+def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,outputPath,chosePath,settingsData):
+
         #create a label to tell the user how the download is progressing
         dataTranslationProgressLabel = tk.Label(progressBarPage, text="Data Translation Progress")
         dataTranslationProgressLabel.pack()
@@ -180,10 +181,12 @@ def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,o
         inFile.close()
         outfile.close()
         if not chosePath:
-            outFile = open("output.txt","w")
+            outFile = open("output.txt","r")
+            finalOutFile = open(str(os.path.basename(inputFilePath) + ".csv"), "w")
         else:
             outFile = open(os.path.join(outputPath, "output.txt"), "r")
-        finalOutFile = open(str(os.path.basename(inputFilePath) + ".csv"), "w")
+            finalOutFile = open(os.path.join(outputPath, os.path.splitext(os.path.basename(inputFilePath))[0] + ".csv"), "w")
+
         counter = 0
         #for line in output.txt plug in RPM value and save to final Output file
         for line in outFile:
@@ -217,17 +220,12 @@ def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,o
             counter += 1
         finalOutFile.close()
         outFile.close()
+        filePath = os.path.join(outputPath, "output.txt")
         try:
-            os.remove("output.txt")
+            os.remove(filePath)
         except:
             print("File deletion failed.")
         #destroy the progress bar page
         progressBarPage.destroy()
         #unhide the parent page
         parentPage.deiconify()
-
-                    
-            
-                    
-                    
-
