@@ -22,18 +22,20 @@
 
 
 //Buffer size for each line read from input file
-inline constexpr int LINE_BUFFER_SIZE = 300;
+inline constexpr int LINE_BUFFER_SIZE = 500;
 //If you're confused why constexpr is used instead of const, read here: https://www.cppstories.com/2022/const-options-cpp20/
 
 void readConfigFile(std::ifstream *cf);
 
-void processCLIArgs(int argc, char *argv[], std::string *inputFileName, std::string *outputFileName, std::string *configFileName);
+int processCLIArgs(int argc, char *argv[], std::string *inputFileName, std::string *outputFileName, std::string *configFileName);
 
 void convertInputFile(std::ifstream *inf, std::ofstream *of);
 
 void openFiles(std::ifstream *in_file, std::string inputFileName, std::ofstream *out_file, std::string outputFileName, std::ifstream *config_file, std::string configFileName);
 
 void processInputLine(char* line_buffer, std::ofstream *of);
+
+void printHelp();
 
 
 cvf::Time getTimeFromLine(char*);

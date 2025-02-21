@@ -38,8 +38,12 @@ done
 eval "cpplint DataTranslator.cpp"
 #
 #Define compilation settings
-COMPILE_SETTINGS="-std=c++20 -Wall -Wextra -g -pedantic -Wno-variadic-macros"
-#
-CMD="g++ ${COMPILE_SETTINGS} ${DEPENDENCIES_CPP[@]} DataTranslator.cpp -o ${OUTPUT_EXECUTABLE_NAME}"
-echo -e "${GOOD_COLOR}Executing: ${CMD}${DEFAULT_COLOR}\n"
-eval "$CMD"
+COMPILE_SETTINGS="-std=c++20 -Wall -Wextra -g -pedantic -static-libgcc -static-libstdc++ -Wno-variadic-macros"
+#Compilers to use
+COMPILERS=("g++" "x86_64-w64-mingw32-g++")
+OUTPUTS=("./Build/Linux/dataprocess" "./Build/Windows/dataprocess.exe")
+for i in "${!COMPILERS[@]}"; do
+  CMD="${COMPILERS[$i]} ${COMPILE_SETTINGS} ${DEPENDENCIES_CPP[@]} DataTranslator.cpp -o ${OUTPUTS[$i]}"
+  echo -e "${GOOD_COLOR}Executing: ${CMD}${DEFAULT_COLOR}\n"
+  eval "$CMD"
+done
