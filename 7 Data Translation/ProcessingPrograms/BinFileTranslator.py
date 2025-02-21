@@ -8,7 +8,7 @@ def binConverter(input_file_name,chosePath,outputPath,settingsData):
     output_file_name = os.path.splitext(os.path.basename(input_file_name))[0] + ".txt"
     # Check if the user has selected a directory
     if chosePath:
-        outfile = os.path.join(outputPath, output_file_name)
+        outfile = os.path.normpath(os.path.join(outputPath, output_file_name))
     else:
         outfile = output_file_name
     print("Bin files")
