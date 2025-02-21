@@ -37,6 +37,7 @@ class Sensor:
         return f"Sensor(dataType='{self.dataType}', name='{self.name}', pollingRate={self.pollingRate})"
 
 def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,outputPath,chosePath,settingsData):
+
         #create a label to tell the user how the download is progressing
         dataTranslationProgressLabel = tk.Label(progressBarPage, text="Data Translation Progress")
         dataTranslationProgressLabel.pack()
