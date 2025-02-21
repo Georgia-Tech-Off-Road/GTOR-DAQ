@@ -37,7 +37,6 @@ class Sensor:
         return f"Sensor(dataType='{self.dataType}', name='{self.name}', pollingRate={self.pollingRate})"
 
 def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,outputPath,chosePath,settingsData):
-        print(outputPath)
         #create a label to tell the user how the download is progressing
         dataTranslationProgressLabel = tk.Label(progressBarPage, text="Data Translation Progress")
         dataTranslationProgressLabel.pack()
@@ -53,8 +52,6 @@ def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,o
         #index of last analog sensor
         lastAnalogIndex = 0
         #open config file (found by navigating to the configs folder and looking for a file called fileNameConfig.txt)
-        print(useDefaultConfig)
-        print(os.getcwd())
         if useDefaultConfig == 1:
             file = open("Configs/defaultConfig.txt")
         else:
@@ -92,8 +89,6 @@ def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,o
             outfile = open("output.txt","w")
         else:
             outfile = open(os.path.join(outputPath, "output.txt"), "w")
-        print("Data trans:")
-        print(outfile)
         #whether this is the first run
         firstRun = True
         #time scalar (multiplies the period of the largest PR by num dataBuffers written)
@@ -190,9 +185,6 @@ def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,o
         else:
             outFile = open(os.path.join(outputPath, "output.txt"), "r")
             finalOutFile = open(os.path.join(outputPath, os.path.splitext(os.path.basename(inputFilePath))[0] + ".csv"), "w")
-        print(outFile)
-        print(finalOutFile)
-        print("^^^")
         counter = 0
         #for line in output.txt plug in RPM value and save to final Output file
         for line in outFile:
