@@ -6,6 +6,7 @@ from tkinter import ttk
 
 warnings.filterwarnings("ignore", category=UserWarning)
 def brake(fname, brakeVisualizationPage):
+    print(fname)
     #create a label to say Analyzing File
     label1 = tk.Label(brakeVisualizationPage, text="Creating Brake Pressure Graph")
     label1.pack()
@@ -20,7 +21,6 @@ def brake(fname, brakeVisualizationPage):
 
     # Extract time and ADC values
     # df = df[~((df.iloc[:, 4] > -20.0312) & (df.iloc[:, 4] < -20.0310))] #removes values that seem to be "zeroed".....
-    print('works!!')
     time = df.iloc[:, 1]
     val = df.iloc[:, 5]
 
@@ -29,7 +29,7 @@ def brake(fname, brakeVisualizationPage):
     # Create the line graph
     plt.plot(time, val, label="Brake Pressure",color="green")
     plt.title("Brake Pressure")
-    plt.xlabel("Some weird number idk man I just work here")
+    plt.xlabel("Time")
     plt.ylabel("Pressure")
     plt.grid(True)
     plt.tight_layout()

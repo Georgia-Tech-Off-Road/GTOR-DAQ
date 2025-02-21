@@ -33,6 +33,9 @@ root = tk.Tk()
 root.title("Main Page")
 root.geometry("600x200")
 
+settingsf = open("Settings/Settings.csv")
+settingsData = settingsf.readlines()[1:]
+
 # Function to go to Data Processing Tool
 def dataProcessingTool():
     root.withdraw()
@@ -133,12 +136,12 @@ def dataProcessingTool():
             chosePath = True
         else:
             chosePath = False
-
+        outputSelectLabel.config(text=f"Selected output path: {outputPath}")
     def binConvert():
         #update the buttons to allow the file to be operated on
         global chosePath
         global outputPath
-        binThread = threading.Thread(target = BinFileTranslator.binConverter, args = (filePath,chosePath,outputPath))
+        binThread = threading.Thread(target = BinFileTranslator.binConverter, args = (filePath,chosePath,outputPath,settingsData))
         #start the thread
         binThread.start()
     def processData():
@@ -149,7 +152,7 @@ def dataProcessingTool():
         progressBarPage.title("Translation Progress")
         progressBarPage.geometry("400x200")
         #create the thread
-        dataProcessingThread = threading.Thread(target = DataTranslator.translateData, args = (filePath, progressBarPage, dataProcessingToolPage, int(useDefaultConfig.get()),outputPath,chosePath))
+        dataProcessingThread = threading.Thread(target = DataTranslator.translateData, args = (filePath, progressBarPage, dataProcessingToolPage, int(useDefaultConfig.get()),outputPath,chosePath,settingsData))
         #start the thread
         dataProcessingThread.start()
         #hide the main data processor page
@@ -211,6 +214,9 @@ def dataProcessingTool():
     fileSelectLabel = tk.Label(dataProcessingToolPage, text="No file selected")
     fileSelectLabel.pack(pady=5)
     
+    outputSelectLabel = tk.Label(dataProcessingToolPage, text = "No output path selected")
+    outputSelectLabel.pack(pady=5)
+
     #Create a frame for the buttons
     buttonFrame = tk.Frame(dataProcessingToolPage)
     buttonFrame.pack(pady=20)
@@ -250,15 +256,12 @@ def openHowTo():
         os.system(f'open {howToFilePath}')
 
 def settings():
-    settingsPage = tk.Toplevel(root)
-    settingsPage.title("Settings")
-    settingsPage.geometry("400x200")
-
-    def printSettings():
-        print("Settings!!!!!!!!!!!!!")
-
-    testButton = tk.Button(settingsPage, text="IT WORKS YAY", command=printSettings)
-    testButton.pack(pady=20)
+    settingsPath = "Settings/Settings.csv"
+    #open the howToFile file in notepade (See if this works on mac.....)
+    if sys.platform.startswith("win"):  # Windows
+        os.system(f'notepad.exe {settingsPath}')
+    elif sys.platform.startswith("darwin"):  # Mac
+        os.system(f'open {settingsPath}')
 
 #pack the main page
 frame = tk.Frame(root)
