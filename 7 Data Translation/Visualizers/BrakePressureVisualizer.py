@@ -6,6 +6,7 @@ from tkinter import ttk
 
 warnings.filterwarnings("ignore", category=UserWarning)
 def brake(fname, brakeVisualizationPage):
+    print(fname)
     #create a label to say Analyzing File
     label1 = tk.Label(brakeVisualizationPage, text="Creating Brake Pressure Graph")
     label1.pack()
@@ -19,9 +20,8 @@ def brake(fname, brakeVisualizationPage):
     df = pd.read_csv(fname, delimiter=',')
 
     # Extract time and ADC values
-    df = df[~((df.iloc[:, 4] == 767.2912793359172))] #removes values that seem to be "zeroed".....
     time = df.iloc[:, 0]
-    val = df.iloc[:,]
+    val = df.iloc[:,4]
 
     # val = 50 + (((val / 32767) * 4.096 - 0.5) / 4) * 7950  # Uncomment to convert ADC to PSI (already done in data conversion)
 
