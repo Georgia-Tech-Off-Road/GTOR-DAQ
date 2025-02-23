@@ -7,6 +7,7 @@ import threading
 import time
 import matplotlib
 import sys
+import csv
 
 #libraries used for program
 #NOTE: NEVER PUT ANYTHING IN FRONT OF IMPORTS AND ALWAYS KEEP IMPORTANTS IN THIS NOTATION, OTHERWISE THE UPDATER WILL LIKELY BREAK
@@ -33,8 +34,11 @@ root = tk.Tk()
 root.title("Main Page")
 root.geometry("600x200")
 
-settingsf = open("Settings/Settings.csv")
-settingsData = settingsf.readlines()[1:]
+with open("Settings/Settings.csv") as settingsf:
+    reader = csv.reader(settingsf)
+    settingsData = list(reader)
+settingsHeader = settingsData[0]
+settingsData = settingsData[1:]
 
 # Function to go to Data Processing Tool
 def dataProcessingTool():
@@ -91,7 +95,7 @@ def dataProcessingTool():
                 else: 
                     processButton.grid(row=0, column=0, padx=20)
                     configCheckbox.grid(row=2, column=1, padx=20)
-                    outputButton.grid(row=2,column=0,padx=20)
+                    outputButton.grid(row=2, column=0, padx=20)
                     configEditButton.grid(row=0, column=1, padx=20)
                     herztCalculatorButton.grid(row=0, column=2, padx=20)
     def downloadData():
@@ -288,7 +292,7 @@ howToButton = tk.Button(buttonFrame, text="How To", command=lambda: openHowTo())
 howToButton.grid(row=1, column=5, padx=20)
 
 #Create button 4
-settingsButton = tk.Button(buttonFrame, text="Settings", command=lambda: settings())
+settingsButton = tk.Button(buttonFrame, text="View/Edit Settings", command=lambda: settings())
 settingsButton.grid(row=1, column=6,padx=20)
 
 # Run the application

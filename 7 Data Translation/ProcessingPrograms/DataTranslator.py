@@ -41,28 +41,38 @@ class Sensor:
         return f"Sensor(dataType='{self.dataType}', name='{self.name}', pollingRate={self.pollingRate})"
 
 def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,outputPath,chosePath,settingsData):
-        if useDefaultConfig == 1:
-            file = "Configs/defaultConfig.txt"
-        else:
-            configFileName = os.path.basename(inputFilePath).split('.')[0]+"Config.txt"
-            file = "Configs/" + configFileName
-        #opens output file
-        if not chosePath:
-            outfile = os.path.join(os.getcwd(), os.path.basename(inputFilePath).replace(".txt", ".csv"))
-        else:
-            outfile = str(os.path.join(outputPath, os.path.basename(inputFilePath).replace(".txt", ".csv")))
-        dataTranslationProgressLabel = tk.Label(progressBarPage, text="Data Translation Progress")
-        dataTranslationProgressLabel.pack()
-        progressBar = ttk.Progressbar(progressBarPage, mode = "determinate", length=100)
-        progressBar.pack(padx=20, pady=20, fill="x")
+    if useDefaultConfig == 1:
+        file = "Configs/defaultConfig.txt"
+    else:
+        configFileName = os.path.basename(inputFilePath).split('.')[0]+"Config.txt"
+        file = "Configs/" + configFileName
+    outputFileFolder = settingsData[0][2]
+    #opens output file
+    if outputFileFolder == "":
+        outputFileBase = os.getcwd()
+    else:
+        outputFileBase = outputFileFolder
+    print(outputFileBase)
+    print(os.getcwd())
+    if not chosePath:
+        outfile = os.path.join(outputFileBase, os.path.basename(inputFilePath).replace(".txt", ".csv"))
+        print(outfile)
+    else:
+        outfile = str(os.path.join(outputPath, os.path.basename(inputFilePath).replace(".txt", ".csv")))
+        print(outfile)
 
-        err = processData(file,inputFilePath,outfile, progressBar, dataTranslationProgressLabel, progressBarPage, progressBarPage)
-        if err != None:
-             messagebox.showerror("Error!", err)
-        # destroy the progress bar page
-        progressBarPage.destroy()
-        #unhide the parent page
-        parentPage.deiconify()
+    dataTranslationProgressLabel = tk.Label(progressBarPage, text="Data Translation Progress")
+    dataTranslationProgressLabel.pack()
+    progressBar = ttk.Progressbar(progressBarPage, mode = "determinate", length=100)
+    progressBar.pack(padx=20, pady=20, fill="x")
+
+    err = processData(file,inputFilePath,outfile, progressBar, dataTranslationProgressLabel, progressBarPage, progressBarPage)
+    if err != None:
+         messagebox.showerror("Error!", err)
+    # destroy the progress bar page
+    progressBarPage.destroy()
+    #unhide the parent page
+    parentPage.deiconify()
 
 # Returns 0 if success, -1 otherwise
 def processData(config_file, input_file, output_file, progressBar, dataTranslationProgressLabel, progressBarPage, verbose=True):
@@ -90,5 +100,3 @@ def processData(config_file, input_file, output_file, progressBar, dataTranslati
     if stderr:
          return stderr
     return None
-    
-    
