@@ -42,9 +42,10 @@ int main(int argc, char *argv[]) {
     }
     openFiles(&in_file, inputFileName, &out_file, outputFileName, &config_file, configFileName);
 
+    size_t input_file_size = getFileSize(inputFileName);
     readConfigFile(&config_file);
 
-    convertInputFile(&in_file, &out_file);
+    convertInputFile(&in_file, &out_file, input_file_size);
 
 
 
@@ -160,14 +161,34 @@ void openFiles(ifstream *in_file, std::string inputFileName, ofstream *out_file,
     }
 }
 
-void convertInputFile(std::ifstream *inf, std::ofstream *of) {
+void convertInputFile(std::ifstream *inf, std::ofstream *of, size_t input_file_size) {
     auto startTime = std::chrono::system_clock::now();
     char line_buffer[LINE_BUFFER_SIZE];
-    // While getline() does not result in an error (i.e end of file), keep adding result of line to line_buffer
+
+    LOG_INFO("Input File size is: %lld bits", input_file_size);
+
+    //Ammount of data processed, in bits
+    size_t processed_size = 0;
+
+    //Output an update every this number of lines
+    constexpr int LINE_UPDATE_RATIO = 1000;
+
+    //Current line number
     int line_num = 0;
+
+    // While getline() does not result in an error (i.e end of file), keep adding result of line to line_buffer
     while (inf->getline(line_buffer, LINE_BUFFER_SIZE)) {
+        //Add size of last line to processed_data size
+        processed_size += inf->gcount();
+
+        //Process the line
         processInputLine(line_buffer, of);
         line_num++;
+
+        //Provide an update every so often
+        if (line_num % LINE_UPDATE_RATIO == 0) {
+            printf("Update: %f\%\n", (static_cast<double>(processed_size) / input_file_size) * 100);
+        }
     }
     LOG_INFO("Converted %d lines from input file!", line_num);
     auto endTime = std::chrono::system_clock::now();
@@ -176,6 +197,7 @@ void convertInputFile(std::ifstream *inf, std::ofstream *of) {
 }
 
 void processInputLine(char* line_buffer, std::ofstream *of) {
+2
     //A line segment is the token of chars that is bordered by commas, should correspond to a sensor
     //Set the length that each line_segment can occupy
     int constexpr LINE_SEGMENT_SIZE = 25;
@@ -250,8 +272,14 @@ cvf::Time getTimeFromLine(char* line) {
     }
     return time;
 }
+//Code taken from: https://stackoverflow.com/questions/2409504/using-c-filestreams-fstream-how-can-you-determine-the-size-of-a-file
+size_t getFileSize(std::string inputFileName) {
+    size_t f_size = std::filesystem::file_size(inputFileName);
+    return f_size;
+}
 
 //Print helper tip 
 void printHelp() {
     printf("Command format: dataprocess [-ico] [-v] [--help]\n-c [filename.txt]: Specifies config file\n-i [filename.txt]: Specifies input file\n-o [filename.csv]: Specifies output file\n-v: Verbose, prints information logging messages\n--help: Prints this debug message\n");
 }
+

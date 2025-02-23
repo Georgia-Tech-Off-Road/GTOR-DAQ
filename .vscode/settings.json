@@ -56,7 +56,14 @@
         "unordered_map": "cpp",
         "unordered_set": "cpp",
         "xhash": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "chrono": "cpp",
+        "forward_list": "cpp",
+        "iomanip": "cpp",
+        "optional": "cpp",
+        "ratio": "cpp",
+        "algorithm": "cpp",
+        "filesystem": "cpp"
     },
     "cmake.ignoreCMakeListsMissing": true,
     "C_Cpp.errorSquiggles": "disabled"

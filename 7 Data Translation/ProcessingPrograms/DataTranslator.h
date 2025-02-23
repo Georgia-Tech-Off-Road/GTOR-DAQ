@@ -9,6 +9,7 @@
 #include <ctime>
 #include <chrono>
 #include <bits/stdc++.h>
+#include <filesystem>
 #include "../ConversionLibraries/ConversionFunctions.h"
 #include "DAQSensor.h"
 //Must be above macrologger.h, decides log level, see macrologger.h for levels. Defined at compile time
@@ -29,13 +30,16 @@ void readConfigFile(std::ifstream *cf);
 
 int processCLIArgs(int argc, char *argv[], std::string *inputFileName, std::string *outputFileName, std::string *configFileName);
 
-void convertInputFile(std::ifstream *inf, std::ofstream *of);
+void convertInputFile(std::ifstream *inf, std::ofstream *of, size_t input_file_size);
+
+size_t getFileSize(std::string inputFileName);
 
 void openFiles(std::ifstream *in_file, std::string inputFileName, std::ofstream *out_file, std::string outputFileName, std::ifstream *config_file, std::string configFileName);
 
+//Returns the number of bits of the input line
 void processInputLine(char* line_buffer, std::ofstream *of);
 
 void printHelp();
 
 
-cvf::Time getTimeFromLine(char*);
+cvf::Time getTimeFromLine(char* line);
