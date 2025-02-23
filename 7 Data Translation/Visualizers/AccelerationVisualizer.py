@@ -17,12 +17,12 @@ def accel(fname, accelVisualizationPage):
 
     # Create df from a text file
     df = pd.read_csv(fname, delimiter=',')
-    time = df.iloc[:, 0]
+    time = df.iloc[:, 1] * 10**(-6)
 
     # Get ADC values from DF
-    accelx = df.iloc[:, 11]
-    accely = df.iloc[:, 12]
-    accelz = df.iloc[:, 13]
+    accelx = df.iloc[:, 12]
+    accely = df.iloc[:, 13]
+    accelz = df.iloc[:, 14]
 
     # Plot all on one figure
     """
@@ -44,7 +44,7 @@ def accel(fname, accelVisualizationPage):
     plt.figure()
     plt.plot(time, accelx, label='Accel X')
     plt.title('Accel X')
-    plt.xlabel('Time')
+    plt.xlabel('Time (Seconds)')
     plt.ylabel('Accel (X)')
     plt.grid(True)
 
@@ -52,7 +52,7 @@ def accel(fname, accelVisualizationPage):
     plt.figure()
     plt.plot(time, accely, label='Accel Y', color='orange')
     plt.title('Accel Y')
-    plt.xlabel('Time')
+    plt.xlabel('Time (Seconds)')
     plt.ylabel('Accel (Y)')
     plt.grid(True)
 
@@ -60,7 +60,7 @@ def accel(fname, accelVisualizationPage):
     plt.figure()
     plt.plot(time, accelz, label='Accel Z', color='green')
     plt.title('Accel Z')
-    plt.xlabel('Time')
+    plt.xlabel('Time (Seconds)')
     plt.ylabel('Accel (Z)')
     plt.grid(True)
 
