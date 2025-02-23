@@ -48,18 +48,14 @@ def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,o
         file = "Configs/" + configFileName
     outputFileFolder = settingsData[0][2]
     #opens output file
-    if outputFileFolder == "":
+    if outputFileFolder == "<paste file path here>":
         outputFileBase = os.getcwd()
     else:
-        outputFileBase = outputFileFolder
-    print(outputFileBase)
-    print(os.getcwd())
+        outputFileBase = outputFileFolder.replace("<", "").replace(">","")
     if not chosePath:
         outfile = os.path.join(outputFileBase, os.path.basename(inputFilePath).replace(".txt", ".csv"))
-        print(outfile)
     else:
         outfile = str(os.path.join(outputPath, os.path.basename(inputFilePath).replace(".txt", ".csv")))
-        print(outfile)
 
     dataTranslationProgressLabel = tk.Label(progressBarPage, text="Data Translation Progress")
     dataTranslationProgressLabel.pack()
