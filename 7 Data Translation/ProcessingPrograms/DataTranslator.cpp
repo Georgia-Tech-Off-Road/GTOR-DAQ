@@ -53,6 +53,7 @@ int main(int argc, char *argv[]) {
     in_file.close();
     out_file.close();
     config_file.close();
+    LOG_INFO("Terminating with success!");
     return 0;
 }
 
@@ -164,14 +165,13 @@ void openFiles(ifstream *in_file, std::string inputFileName, ofstream *out_file,
 void convertInputFile(std::ifstream *inf, std::ofstream *of, size_t input_file_size) {
     auto startTime = std::chrono::system_clock::now();
     char line_buffer[LINE_BUFFER_SIZE];
-
     LOG_INFO("Input File size is: %lld bits", input_file_size);
 
     //Ammount of data processed, in bits
     size_t processed_size = 0;
 
     //Output an update every this number of lines
-    constexpr int LINE_UPDATE_RATIO = 1000;
+    constexpr int LINE_UPDATE_RATIO = 16384;
 
     //Current line number
     int line_num = 0;
@@ -187,7 +187,8 @@ void convertInputFile(std::ifstream *inf, std::ofstream *of, size_t input_file_s
 
         //Provide an update every so often
         if (line_num % LINE_UPDATE_RATIO == 0) {
-            printf("Update: %f\%\n", (static_cast<double>(processed_size) / input_file_size) * 100);
+            fprintf(stdout, "Update: %f\%\n", (static_cast<double>(processed_size) / input_file_size) * 100);
+            fflush(stdout);
         }
     }
     LOG_INFO("Converted %d lines from input file!", line_num);
@@ -197,7 +198,6 @@ void convertInputFile(std::ifstream *inf, std::ofstream *of, size_t input_file_s
 }
 
 void processInputLine(char* line_buffer, std::ofstream *of) {
-2
     //A line segment is the token of chars that is bordered by commas, should correspond to a sensor
     //Set the length that each line_segment can occupy
     int constexpr LINE_SEGMENT_SIZE = 25;
