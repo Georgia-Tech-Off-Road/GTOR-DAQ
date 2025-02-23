@@ -11,10 +11,6 @@ def binConverter(input_file_name,chosePath,outputPath,settingsData):
         outfile = os.path.normpath(os.path.join(outputPath, output_file_name))
     else:
         outfile = output_file_name
-    print("Bin files")
-    print(output_file_name)
-    print(outfile)
-    print("^^^")
     try:
         with open(input_file_name, "rb") as binary_file, open(outfile, "w") as text_file:
             print("Writing data...........")
