@@ -65,7 +65,7 @@ static inline char *timenow();
 
 #define PRINTFUNCTION(format, ...)      objc_print(@format, __VA_ARGS__)
 #else
-#define PRINTFUNCTION(format, ...)      fprintf(stderr, format, __VA_ARGS__)
+#define PRINTFUNCTION(format, ...)      fprintf(stdout, format, __VA_ARGS__)
 
 #endif
 
@@ -122,7 +122,7 @@ static inline void objc_print(NSString *format, ...) {
     va_list args;
     va_start(args, format);
     NSString *logStr = [[NSString alloc] initWithFormat:format arguments:args];
-    fprintf(stderr, "%s", [logStr UTF8String]);
+    fprintf(stdout, "%s", [logStr UTF8String]);
     RELEASE(logStr);
     va_end(args);
     AUTORELEASEPOOL_END
