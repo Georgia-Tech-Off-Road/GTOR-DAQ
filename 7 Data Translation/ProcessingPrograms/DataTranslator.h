@@ -24,6 +24,9 @@
 
 //Buffer size for each line read from input file, should be much larger than expected line-length, no resizing!
 inline constexpr int LINE_BUFFER_SIZE = 1000;
+
+//Global Line Number
+int current_line_number = 0;
 //If you're confused why constexpr is used instead of const, read here: https://www.cppstories.com/2022/const-options-cpp20/
 
 void readConfigFile(std::ifstream *cf);
