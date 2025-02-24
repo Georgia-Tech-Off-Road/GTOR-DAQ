@@ -174,7 +174,6 @@ void convertInputFile(std::ifstream *inf, std::ofstream *of, size_t input_file_s
     constexpr int LINE_UPDATE_RATIO = 16384;
 
     //Current line number
-    int line_num = 0;
 
     // While getline() does not result in an error (i.e end of file), keep adding result of line to line_buffer
     while (inf->getline(line_buffer, LINE_BUFFER_SIZE)) {
@@ -183,15 +182,15 @@ void convertInputFile(std::ifstream *inf, std::ofstream *of, size_t input_file_s
 
         //Process the line
         processInputLine(line_buffer, of);
-        line_num++;
+        current_line_number++;
 
         //Provide an update every so often
-        if (line_num % LINE_UPDATE_RATIO == 0) {
+        if (current_line_number % LINE_UPDATE_RATIO == 0) {
             fprintf(stdout, "Update: %f\%\n", (static_cast<double>(processed_size) / input_file_size) * 100);
             fflush(stdout);
         }
     }
-    LOG_INFO("Converted %d lines from input file!", line_num);
+    LOG_INFO("Converted %d lines from input file!", current_line_number);
     auto endTime = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = endTime - startTime;
     LOG_INFO("Finished converting file in %f sec!", elapsed_seconds.count());
@@ -207,8 +206,8 @@ void processInputLine(char* line_buffer, std::ofstream *of) {
         line_segment = strtok(i > 0 ? NULL : line_buffer, ",");
         //Check to see if token is null
         if (line_segment == nullptr) {
-            char msg[200];
-            snprintf(msg, 200, "There are more sensors specified in the config than their are columns in your data file!");
+            char msg[800];
+            snprintf(msg, 200, "There are more sensors specified in the config file than there are entries at line number %d in your input .txt file!", current_line_number);
             throw std::invalid_argument(msg);
         }
         if(line_segment[0] != '\0') {
