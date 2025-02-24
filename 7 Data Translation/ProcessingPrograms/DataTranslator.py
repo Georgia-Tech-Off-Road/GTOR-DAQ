@@ -47,7 +47,6 @@ def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,o
         configFileName = os.path.basename(inputFilePath).split('.')[0]+"Config.txt"
         file = "Configs/" + configFileName
     outputFileFolder = settingsData[0][2]
-    #opens output file
     if outputFileFolder == "<paste file path here>":
         outputFileBase = os.getcwd()
     else:

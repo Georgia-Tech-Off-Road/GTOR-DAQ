@@ -48,7 +48,10 @@ def dataProcessingTool():
     dataProcessingToolPage.title("Data Downloader Tool")
     dataProcessingToolPage.geometry("800x400")
     global useDefaultConfig
-    useDefaultConfig = tk.IntVar(value=0)
+    if settingsData[1][3] == "False":
+        useDefaultConfig = tk.IntVar(value=0)
+    else:
+        useDefaultConfig = tk.IntVar(value=1)
     global outputPath
     outputPath = None
     global chosePath
@@ -84,6 +87,7 @@ def dataProcessingTool():
                 #if the filepath isn't on the main OS drive only display the download button
                 if "C:/" not in filePath:
                     downloadButton.grid(row=0, column=1, padx=20)
+                    outputButton.grid(row=0,column=2,padx=20)
                 elif ".bin" in filePath:
                     binButton.grid(row=0, column=0,padx=20)
                     outputButton.grid(row=0,column=1,padx=20)
@@ -100,6 +104,7 @@ def dataProcessingTool():
                     herztCalculatorButton.grid(row=0, column=2, padx=20)
     def downloadData():
         #create a new page for the progress bar
+        global outputPath, chosePath
         progressBarPage = tk.Toplevel(dataProcessingToolPage)
         progressBarPage.title("Download Progress")
         progressBarPage.geometry("400x200")
@@ -108,8 +113,8 @@ def dataProcessingTool():
         file = open(os.path.basename(destinationFilePath), "a")
         file.close()
         #use multithreading to allow the download to run seperately from the progress bar updater (more zoom zoom)
-        downloadThread = threading.Thread(target = DataDownloader.downloadData, args = (filePath, destinationFilePath))
-        progressBarThread = threading.Thread(target = DataDownloader.updateProgressBar, args = (filePath, destinationFilePath, progressBarPage, dataProcessingToolPage))
+        downloadThread = threading.Thread(target = DataDownloader.downloadData, args = (filePath, destinationFilePath, outputPath, chosePath))
+        progressBarThread = threading.Thread(target = DataDownloader.updateProgressBar, args = (filePath, destinationFilePath, progressBarPage, dataProcessingToolPage, outputPath, chosePath))
         #start threads
         downloadThread.start()
         progressBarThread.start()
@@ -130,7 +135,7 @@ def dataProcessingTool():
         configSRC = "/".join(configSRCLIST)
         sourceFileSize = os.path.getsize(configSRC)
         #create the thread and download the config file (this isn't tracked since it's such a short download)
-        configDownloadThread = threading.Thread(target = DataDownloader.downloadData, args = (configSRC, configDST))
+        configDownloadThread = threading.Thread(target = DataDownloader.downloadData, args = (configSRC, configDST, outputPath, chosePath))
         configDownloadThread.start()
     def outputDestination():
         global chosePath
@@ -266,6 +271,7 @@ def settings():
         os.system(f'notepad.exe {settingsPath}')
     elif sys.platform.startswith("darwin"):  # Mac
         os.system(f'open {settingsPath}')
+    updateButtons()
 
 #pack the main page
 frame = tk.Frame(root)
