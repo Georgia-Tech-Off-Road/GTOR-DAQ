@@ -271,7 +271,7 @@ def settings():
         os.system(f'notepad.exe {settingsPath}')
     elif sys.platform.startswith("darwin"):  # Mac
         os.system(f'open {settingsPath}')
-    updateButtons()
+    #updateButtons()
 
 #pack the main page
 frame = tk.Frame(root)
