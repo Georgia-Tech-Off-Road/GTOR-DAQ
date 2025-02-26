@@ -29,7 +29,7 @@
  */
 
 #include "AMT22_lib.h"
-#include <SPI.h>
+#include "SPI.h"
 
 /* Serial rates for UART */
 #define BAUDRATE        115200
@@ -44,7 +44,7 @@
 #define RES14           14
 
 /* SPI pins */
-#define CS             10
+#define ENC             10
 
 /*Object creation*/
 AMT22* Encoder;
@@ -53,50 +53,31 @@ void setup(){
   //Initialize the UART serial connection for debugging
   Serial.begin(BAUDRATE);
   //Initialize the SPI communication
-  printf("Check 1");
-  SPI.begin();
-  pinMode(CS, OUTPUT);
+  SPI.begin(); //This operation only needs to be done once, not once for each Encoder object.
   //Initialize the encoder object with necessary parameters 
-  Encoder = new AMT22(CS,RES12);
+  Encoder = new AMT22(ENC,RES12);
+  pinMode(ENC, OUTPUT);
+  digitalWrite(ENC, HIGH);
 }
 
 void loop() 
 {
   //create a 16 bit variable to hold the encoders position
-  uint16_t encoderPosition;
+  uint16_t currentPosition;
   //let's also create a variable where we can count how many times we've tried to obtain the position in case there are errors
-  uint8_t attempts;
-
-
+  bool binaryArray[16];           //after receiving the position we will populate this array and use it for calculating the checksum
   //if you want to set the zero position before beggining uncomment the following function call
   //Encoder->setZeroSPI();
-
+  uint8_t data;
   //once we enter this loop we will run forever
   while(1)
   {
-    //set attemps counter at 0 so we can try again if we get bad position    
-    attempts = 0;
-
-    //this function gets the encoder position and returns it as a uint16_t
-    encoderPosition = Encoder->getPositionSPI();
-
-    //if the position returned was 0xFFFF we know that there was an error calculating the checksum
-    //make 3 attempts for position. we will pre-increment attempts because we'll use the number later and want an accurate count
-    while(encoderPosition == 0xFFFF && ++attempts < 3)
-      encoderPosition = Encoder->getPositionSPI(); //try again
-
-    if(encoderPosition == 0xFFFF){ //position is bad, let the user know how many times we tried
-      Serial.print("Encoder 0 error. Attempts: ");
-      Serial.print(attempts, DEC); //print out the number in decimal format. attempts - 1 is used since we post incremented the loop
-      Serial.write(NEWLINE);
-    }else{ //position was good, print to serial stream
-      Serial.print("Encoder 0: ");
-      Serial.print(encoderPosition, DEC); //print the position in decimal format
-      Serial.write(NEWLINE);
-    }
-
-    //For the purpose of this demo we don't need the position returned that quickly so let's wait a half second between reads
-    //delay() is in milliseconds
-    delay(500);
+    digitalWrite(ENC, LOW);
+    delay(0.004);
+    data = SPI.transfer(0x00);
+    delay(0.004);
+    digitalWrite(ENC, HIGH);
+    Serial.printf("%d\n", data);
+    delay(200);
   }
 }
