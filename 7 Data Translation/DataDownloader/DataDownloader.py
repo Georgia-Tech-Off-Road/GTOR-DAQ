@@ -7,6 +7,7 @@ from tkinter import ttk
 
 #handles data download and includes basic progress bar
 def downloadData(src, dst, outputPath, chosePath):
+    global filePath
     if chosePath:
         dst = outputPath+ "\\"+ str(os.path.basename(src))
 

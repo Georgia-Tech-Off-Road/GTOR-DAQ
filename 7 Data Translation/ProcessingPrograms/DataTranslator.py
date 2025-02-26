@@ -1,4 +1,3 @@
-#I still lose the last final bit of an average I think (like a hundredth of a second) kinda a good thing tho so you don't pretend you have proepr (andrew you suck at spelling) averages when you don't
 import os
 from DataDownloader import DataDownloader
 import math
@@ -73,11 +72,11 @@ def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,o
 def processData(config_file, input_file, output_file, progressBar, dataTranslationProgressLabel, progressBarPage, verbose=True):
     #Gets complete path to executable
     executable_location = shutil.which(os.path.join('ProcessingPrograms','Build', 'Windows', 'dataprocess.exe'))
-    print("Executable location: " + executable_location)
+    #print("Executable location: " + executable_location)
     cmd = [executable_location,"-c", config_file, "-i", input_file, "-o", output_file]
     if verbose:
         cmd.append("-v")
-    print(cmd)
+    #print(cmd)
     processData = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
     while True:
         if processData.poll() != None:

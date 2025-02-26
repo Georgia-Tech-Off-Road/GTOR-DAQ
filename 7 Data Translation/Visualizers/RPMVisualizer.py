@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 import tkinter as tk
 from tkinter import ttk
 
-
-
 warnings.filterwarnings("ignore", category=UserWarning)
 # Creates a line graph of brake pressure vs. time
 

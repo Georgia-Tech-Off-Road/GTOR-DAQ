@@ -137,6 +137,7 @@ def dataProcessingTool():
         #create the thread and download the config file (this isn't tracked since it's such a short download)
         configDownloadThread = threading.Thread(target = DataDownloader.downloadData, args = (configSRC, configDST, outputPath, chosePath))
         configDownloadThread.start()
+
     def outputDestination():
         global chosePath
         global outputPath

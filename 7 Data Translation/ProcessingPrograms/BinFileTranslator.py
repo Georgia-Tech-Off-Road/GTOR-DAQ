@@ -15,7 +15,14 @@ def binConverter(input_file_name,chosePath,outputPath,settingsData):
     if outputFileFolder == "<paste file path here>":
         outputDest = os.getcwd()
     else:
-        outfile = output_file_name
+        outputDest = outputFileFolder.replace("<", "").replace(">","")
+
+    # If the user selected a directory, override with outputPath
+    if chosePath:
+        outfile = os.path.join(outputPath, output_file_name)
+    else:
+        outfile = os.path.join(outputDest, output_file_name)
+
     try:
         with open(input_file_name, "rb") as binary_file, open(outfile, "w") as text_file:
             print("Writing data...........")
