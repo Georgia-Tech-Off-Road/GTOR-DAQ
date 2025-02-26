@@ -223,7 +223,7 @@ def dataProcessingTool():
     #create a label to show the file selected
     fileSelectLabel = tk.Label(dataProcessingToolPage, text="No file selected")
     fileSelectLabel.pack(pady=5)
-    
+
     outputSelectLabel = tk.Label(dataProcessingToolPage, text = "No output path selected")
     outputSelectLabel.pack(pady=5)
 

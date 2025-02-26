@@ -2,7 +2,7 @@ def binConverter(input_file_name,chosePath,outputPath,settingsData):
     import struct
     import os
 
-    #outputPath equals, for example, None or C:/Users/Bill/OneDrive/Pictures
+    #outputPath equals, for example, None or C:/Users/Bill/Pictures
 
     # Define the format for the binary data (including padding to match Arduino's structure size)
     data_format = "Q L 3i 4i 3f 3f 3f 4f 4i 3f 3f 3f 4f 4i"  # Add 4 bytes of padding (x4)
