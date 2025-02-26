@@ -12,7 +12,7 @@ def binConverter(input_file_name,chosePath,outputPath,settingsData):
 
     outputFileFolder = settingsData[0][2]
 
-    if outputFileFolder == "<paste file path here>":  # Default case: no path provided
+    if outputFileFolder == "<paste file path here>":
         outputDest = os.getcwd()
     else:
         outputDest = outputFileFolder.replace("<", "").replace(">","")

@@ -101,7 +101,7 @@ def dataProcessingTool():
                     configCheckbox.grid(row=2, column=1, padx=20)
                     outputButton.grid(row=2, column=0, padx=20)
                     configEditButton.grid(row=0, column=1, padx=20)
-                    herztCalculatorButton.grid(row=0, column=2, padx=20)
+                    hertzCalculatorButton.grid(row=0, column=2, padx=20)
     def downloadData():
         #create a new page for the progress bar
         global outputPath, chosePath
@@ -242,7 +242,7 @@ def dataProcessingTool():
     processButton = tk.Button(buttonFrame, text="Process Data", command=lambda: processData())
     configCheckbox = tk.Checkbutton(buttonFrame, text="Use default config", variable=useDefaultConfig)
     configEditButton = tk.Button(buttonFrame, text="Edit Config", command=lambda: editConfig())
-    herztCalculatorButton = tk.Button(buttonFrame, text="Calculate Hertz Info", command=lambda: calculateHertz())
+    hertzCalculatorButton = tk.Button(buttonFrame, text="Calculate Hertz Info", command=lambda: calculateHertz())
     outputButton = tk.Button(buttonFrame, text = "Choose output destination...", command=lambda: outputDestination())
     updateButtons()
 
@@ -271,7 +271,6 @@ def settings():
         os.system(f'notepad.exe {settingsPath}')
     elif sys.platform.startswith("darwin"):  # Mac
         os.system(f'open {settingsPath}')
-    #updateButtons()
 
 #pack the main page
 frame = tk.Frame(root)
@@ -286,7 +285,7 @@ buttonFrame = tk.Frame(root)
 buttonFrame.pack(pady=20)
 
 #create the dataProcessingToolButton
-dataProcessingToolButton = tk.Button(buttonFrame, text="Data Tool", command=lambda: dataProcessingTool())
+dataProcessingToolButton = tk.Button(buttonFrame, text="    Data Tool    ", command=lambda: dataProcessingTool())
 dataProcessingToolButton.grid(row=1, column=0, padx=20)
 
 # Create button 2
