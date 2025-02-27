@@ -48,6 +48,8 @@
 
 /*Object creation*/
 AMT22* Encoder;
+//tried halfing the data rate to hopefully get the data bits to line up with clocks properly
+SPISettings settingsA(100000, MSBFIRST, SPI_MODE0); 
 
 void setup(){
   //Initialize the UART serial connection for debugging
@@ -65,19 +67,43 @@ void loop()
   //create a 16 bit variable to hold the encoders position
   uint16_t currentPosition;
   //let's also create a variable where we can count how many times we've tried to obtain the position in case there are errors
-  bool binaryArray[16];           //after receiving the position we will populate this array and use it for calculating the checksum
   //if you want to set the zero position before beggining uncomment the following function call
-  //Encoder->setZeroSPI();
-  uint8_t data;
   //once we enter this loop we will run forever
+  uint8_t data;
+
+  //Binary array
+  bool binaryArray[16];
   while(1)
   {
     digitalWrite(ENC, LOW);
-    delay(0.004);
+    delayMicroseconds(3);
+    //SPI.beginTransaction(settingsA);
     data = SPI.transfer(0x00);
-    delay(0.004);
+    currentPosition = data << 8;
+    delayMicroseconds(3);
+    //SPI.beginTransaction(settingsA);
+    data = SPI.transfer(0x00);
+    currentPosition |= data;
+    delayMicroseconds(3);
     digitalWrite(ENC, HIGH);
-    Serial.printf("%d\n", data);
-    delay(200);
+    //run through the 16 bits of position and put each bit into a slot in the array so we can do the checksum calculation
+    for(int i = 0; i < 16; i++) binaryArray[i] = (0x01) & (currentPosition >> (i));
+
+    //using the equation on the datasheet we can calculate the checksums and then make sure they match what the encoder sent
+    if ((binaryArray[15] == !(binaryArray[13] ^ binaryArray[11] ^ binaryArray[9] ^ binaryArray[7] ^ binaryArray[5] ^ binaryArray[3] ^ binaryArray[1])) && (binaryArray[14] == !(binaryArray[12] ^ binaryArray[10] ^ binaryArray[8] ^ binaryArray[6] ^ binaryArray[4] ^ binaryArray[2] ^ binaryArray[0])))
+        currentPosition &= 0x3FFF; //we got back a good position, so just mask away the checkbits
+    else
+        currentPosition = 0xFFFF; //bad position
+
+    //If the resolution is 12-bits, and wasn't 0xFFFF, then shift position, otherwise do nothing
+    if (currentPosition != 0xFFFF) currentPosition = currentPosition >> 2;
+    Serial.printf("%f\n", convertToDegrees(currentPosition));
+    delayMicroseconds(40);
   }
 }
+
+float convertToDegrees(uint16_t value) {
+  return (static_cast<float>(value) * 360) / 4095;
+}
+
+
