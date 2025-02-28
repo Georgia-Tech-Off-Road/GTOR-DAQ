@@ -1,0 +1,56 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.16 Chrome/132.0.6834.196 Electron/34.2.0 Safari/537.36" version="26.0.16">
+  <diagram name="Page-1" id="yV1bvj_6CElzbHHtzOR5">
+    <mxGraphModel dx="1134" dy="829" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="i3V2oBISHXyVfY_Yzues-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="i3V2oBISHXyVfY_Yzues-4" target="i3V2oBISHXyVfY_Yzues-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="i3V2oBISHXyVfY_Yzues-4" value="" style="html=1;shape=mxgraph.electrical.electro-mechanical.singleSwitch;aspect=fixed;elSwitchState=off;" vertex="1" parent="1">
+          <mxGeometry x="30" y="100" width="75" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="i3V2oBISHXyVfY_Yzues-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.8;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="i3V2oBISHXyVfY_Yzues-5" target="i3V2oBISHXyVfY_Yzues-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="i3V2oBISHXyVfY_Yzues-5" value="" style="html=1;shape=mxgraph.electrical.electro-mechanical.singleSwitch;aspect=fixed;elSwitchState=off;" vertex="1" parent="1">
+          <mxGeometry x="30" y="139" width="75" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="i3V2oBISHXyVfY_Yzues-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.8;exitDx=0;exitDy=0;" edge="1" parent="1" source="i3V2oBISHXyVfY_Yzues-6" target="i3V2oBISHXyVfY_Yzues-8">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="300" y="195" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="i3V2oBISHXyVfY_Yzues-6" value="" style="html=1;shape=mxgraph.electrical.electro-mechanical.singleSwitch;aspect=fixed;elSwitchState=off;" vertex="1" parent="1">
+          <mxGeometry x="30" y="179" width="75" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="i3V2oBISHXyVfY_Yzues-7" value="Switches on Teensy control which sensors &#39; data is recorded" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="10" y="219" width="142" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="i3V2oBISHXyVfY_Yzues-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="i3V2oBISHXyVfY_Yzues-8" target="i3V2oBISHXyVfY_Yzues-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="i3V2oBISHXyVfY_Yzues-8" value="Program tries to communicate with sensors, if sensor is connected, record a one in its position in the bit mask, if not, record zero.&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="300" y="100" width="360" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="i3V2oBISHXyVfY_Yzues-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="i3V2oBISHXyVfY_Yzues-12" target="i3V2oBISHXyVfY_Yzues-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="i3V2oBISHXyVfY_Yzues-12" value="Bit mask, records which sensors are connected:&lt;div&gt;&lt;b&gt;&lt;font style=&quot;font-size: 17px;&quot;&gt;Ex: uint_16 sensorBitMask = 101110000&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="330" y="10" width="330" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="i3V2oBISHXyVfY_Yzues-17" value="&lt;font size=&quot;1&quot;&gt;&lt;b&gt;sizeOfData[16] = {sizeof(int), sizeof(double), sizeof(imuStruct),...}&lt;/b&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="219" width="415" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="i3V2oBISHXyVfY_Yzues-19" value="sizeOfData holds the size ofdata each sensor will store, this could be primative data types or even structs. The elements in this array will correspond to the bitmask. For example, if the LSB of the bitmask is 0, then the program will no not to allocate space in the packets for an int, which is found at sizeOfData[0]." style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="305" y="300" width="395" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="i3V2oBISHXyVfY_Yzues-20" value="size_t totalPacketSize = for(int i = 0; i &amp;lt; 16; i++) sizeOfData[i] * ((bitMask &amp;gt;&amp;gt; i) &amp;amp; 0x1);" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="420" width="475" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
