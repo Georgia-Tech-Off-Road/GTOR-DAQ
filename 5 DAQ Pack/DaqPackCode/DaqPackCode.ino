@@ -11,6 +11,9 @@
 #include <Adafruit_ADS1X15.h>
 #include <i2c_driver.h>
 #include <i2c_driver_wire.h>
+//threading library that allows all of our code to split off into seperate things
+#include <TeensyThreads.h>
+#include <AMT22.h>
 
 #define BAUD 230400
 
@@ -22,9 +25,14 @@ struct {
   unsigned long int micros;
   int binaryValues[3];
   int analogValues[4];
+  float steeringPosition;
 } dataStruct;
 
 File outputFile;
+
+//declare variables for thread ids
+int mainThread;
+int AMT22PositionThread;
 
 bool isRecording = false;
 
@@ -38,7 +46,11 @@ volatile bool analogValueFlag = false;
 //saves the last time data was saved 
 ulong lastSaveTimeInMillis = 0;
 
+//declare AMT22 sensor
+AMT22 steeringPositionSensor(10, 12);
+
 void setup() {
+  Serial.printf("%d", sizeof(dataStruct))
   pinMode(8, OUTPUT); //white LED (powered on)
   Serial.begin(115200);
   //set up time stuff for rtc
@@ -79,25 +91,38 @@ void setup() {
   digitalWrite(9, HIGH); //turn on red LED
   //start first ADC reading to begin the cycle
   ads.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
-  //setup communication between the two
+  //set thread slices
+  threads.setSliceMicros(10);
+  //add a thread for the main dataAquisitionAndSavingLoop
+  mainThread = threads.addThread(dataAquisitionAndSavingLoop);
+  //add a thread for steering position sensor
+  AMT22PositionThread = threads.addThread(updateAMT22Reading);
+  //set AMT22 thread to super high priority
+  //threads.setTimeSlice(AMT22PositionThread, 100000);
+  //suspend steeing position thread
+  //have data board communicated with controller/transmitter board
   Wire.setClock(1000000);
-  Wire.begin(0x40);        // join i2c bus with address #8
-  Wire.onRequest(requestEvent); // register event
+  Wire.begin(0x40);
+  Wire.onRequest(requestEvent);
+  SPI.begin();
 }
+//do nothing here
+void loop(){}
 //writes data to SD card
-void loop() {
-  dataStruct.seconds = now();
-  dataStruct.micros = micros();
-  //size of is apparently computed at compile time
-  outputFile.write(&dataStruct, sizeof(dataStruct));
-  if (analogValueFlag) {
-    readAnalogValues();
-    analogValueFlag = false;
+void dataAquisitionAndSavingLoop() {
+  while(1) {
+    dataStruct.seconds = now();
+    dataStruct.micros = micros();
+    //size of is apparently computed at compile time
+    outputFile.write(&dataStruct, sizeof(dataStruct));
+    if (analogValueFlag) {
+      readAnalogValues();
+      analogValueFlag = false;
+    }
+    if (digitalRead(7) && lastSaveTimeInMillis + 1000 < millis()) {
+      changeRecordingState();
+    }
   }
-  if (digitalRead(7) && lastSaveTimeInMillis + 1000 < millis()) {
-    changeRecordingState();
-  }
-
 }
 //method needed to get time
 time_t getTeensy3Time()
@@ -116,11 +141,19 @@ void updateFrontLeftHalleffect() {
 void updateFrontRightHalleffect() {
   dataStruct.binaryValues[2] = !dataStruct.binaryValues[2];
 }
+void updateAMT22Reading() {
+  //get steering data
+  while(1) {
+    dataStruct.steeringPosition = steeringPositionSensor.getPosition();
+    threads.delay(1);
+  }
+}
 void changeRecordingState() {
     noInterrupts();
     if(isRecording == true) {
       while(digitalRead(7) == 1) {
         delay(10);
+        Serial.println("Button Engaged");
       }
       outputFile.close();
       digitalWrite(9, LOW); //turn off red LED
@@ -168,5 +201,5 @@ void readAnalogValues() {
 
 void requestEvent()
 {
-  Serial.printf("Transmit: %d\n", Wire.write((byte *)&dataStruct, sizeof(dataStruct))); 
+  Wire.write((byte *)&dataStruct, sizeof(dataStruct)); 
 }

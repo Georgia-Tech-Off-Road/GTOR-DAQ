@@ -3,7 +3,7 @@ def binConverter(input_file_name,chosePath,outputPath,settingsData):
     import os
 
     # Define the format for the binary data (including padding to match Arduino's structure size)
-    data_format = "Q L 3i 4i 3f 3f 3f 4f 4i 3f 3f 3f 4f 4i"  # Add 4 bytes of padding (x4)
+    data_format = "Q L 3i 4i 1f 4x"  # Add 4 bytes of padding (4x)
     data_size = struct.calcsize(data_format)
     output_file_name = os.path.splitext(os.path.basename(input_file_name))[0] + ".txt"
     # Check if the user has selected a directory
