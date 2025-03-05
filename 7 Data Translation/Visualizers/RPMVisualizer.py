@@ -21,7 +21,8 @@ def rpm(fname, rpmVisualizationPage):
     #file = 'Test2.txt.csv'
     df = pd.read_csv(fname, delimiter=',')
 
-    time = df.iloc[:, 1] * 10**(-6)
+    time = df.iloc[:, 1] * 10**(-6) - df.iloc[0, 1]* 10**(-6)
+
     val = df.iloc[:, 2]
 
     # Create line graph
