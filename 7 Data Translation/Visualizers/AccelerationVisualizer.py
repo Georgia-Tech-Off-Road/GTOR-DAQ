@@ -17,7 +17,7 @@ def accel(fname, accelVisualizationPage):
 
     # Create df from a text file
     df = pd.read_csv(fname, delimiter=',')
-    time = df.iloc[:, 1] * 10**(-6)
+    time = df.iloc[:, 1] * 10**(-6) - df.iloc[0, 1]* 10**(-6)
 
     # Get ADC values from DF
     accelx = df.iloc[:, 12]
