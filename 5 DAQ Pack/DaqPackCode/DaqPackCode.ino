@@ -11,7 +11,6 @@
 #include <Adafruit_ADS1X15.h>
 #include <i2c_driver.h>
 #include <i2c_driver_wire.h>
-#include <Wire.h>
 
 #define BAUD 230400
 
@@ -80,7 +79,7 @@ void setup() {
   digitalWrite(9, HIGH); //turn on red LED
   //start first ADC reading to begin the cycle
   ads.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
-
+  //setup communication between the two
   Wire.setClock(3000000);
   Wire.begin(0x40);        // join i2c bus with address #8
   Wire.onRequest(requestEvent); // register event
