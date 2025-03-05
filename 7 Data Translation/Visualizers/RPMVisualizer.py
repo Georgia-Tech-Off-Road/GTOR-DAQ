@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 import tkinter as tk
 from tkinter import ttk
 
-
-
 warnings.filterwarnings("ignore", category=UserWarning)
 # Creates a line graph of brake pressure vs. time
 
@@ -23,13 +21,13 @@ def rpm(fname, rpmVisualizationPage):
     #file = 'Test2.txt.csv'
     df = pd.read_csv(fname, delimiter=',')
 
-    time = df.iloc[:, 0]
-    val = df.iloc[:, 1]
+    time = df.iloc[:, 1] * 10**(-6)
+    val = df.iloc[:, 2]
 
     # Create line graph
     plt.plot(time, val)
     plt.title('RPM')
-    plt.xlabel('Microseconds')
+    plt.xlabel('Time (Seconds)')
     plt.ylabel('RPM')
     rpmVisualizationPage.destroy()
     plt.show() # Displays graph

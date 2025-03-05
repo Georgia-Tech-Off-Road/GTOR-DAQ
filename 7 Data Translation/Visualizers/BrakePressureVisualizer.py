@@ -20,16 +20,14 @@ def brake(fname, brakeVisualizationPage):
     df = pd.read_csv(fname, delimiter=',')
 
     # Extract time and ADC values
-    time = df.iloc[:, 0]
-    val = df.iloc[:,4]
-
-    # val = 50 + (((val / 32767) * 4.096 - 0.5) / 4) * 7950  # Uncomment to convert ADC to PSI (already done in data conversion)
+    time = df.iloc[:, 1] * 10**(-6)
+    val = df.iloc[:, 5]
 
     # Create the line graph
     plt.plot(time, val, label="Brake Pressure",color="green")
     plt.title("Brake Pressure")
-    plt.xlabel("Time")
-    plt.ylabel("Pressure")
+    plt.xlabel("Time (Seconds)")
+    plt.ylabel("Pressure (PSI)")
     plt.grid(True)
     plt.tight_layout()
 
