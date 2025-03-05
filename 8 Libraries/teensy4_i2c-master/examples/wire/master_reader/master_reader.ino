@@ -51,9 +51,10 @@ void setup()
 void loop()
 {
   if (millis() > pastTime + 10) {
-    if(Wire.requestFrom(0x40, sizeof(dataStruct)))) {
-      Wire.readBytes((byte*) &dataStruct, sizeof(dataStruct)));
-      outputFile.printf("%llu\n", myData.seconds);
+    pastTime = millis();
+    if(Wire.requestFrom(0x40, sizeof(dataStruct))) {
+      Wire.readBytes((byte*) &dataStruct, sizeof(dataStruct));
+      outputFile.printf("%llu\n", dataStruct.seconds);
       if (digitalRead(22) == 1) {
         outputFile.close();
         Serial.println("FileCLOSED");

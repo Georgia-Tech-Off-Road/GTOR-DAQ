@@ -62,7 +62,7 @@ Adafruit_ADS1115::Adafruit_ADS1115() {
     @return true if successful, otherwise false
 */
 /**************************************************************************/
-bool Adafruit_ADS1X15::begin(uint8_t i2c_addr, TwoWire *wire) {
+bool Adafruit_ADS1X15::begin(uint8_t i2c_addr, I2CDriverWire *wire) {
   m_i2c_dev = new Adafruit_I2CDevice(i2c_addr, wire);
   return m_i2c_dev->begin();
 }
