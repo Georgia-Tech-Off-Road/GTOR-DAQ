@@ -2,12 +2,12 @@
 #define Adafruit_I2CDevice_h
 
 #include <Arduino.h>
-#include <Wire.h>
+#include <i2c_driver_wire.h>
 
 ///< The class which defines how we will talk to this device over I2C
 class Adafruit_I2CDevice {
 public:
-  Adafruit_I2CDevice(uint8_t addr, TwoWire *theWire = &Wire);
+  Adafruit_I2CDevice(uint8_t addr, I2CDriverWire *theWire = &Wire);
   uint8_t address(void);
   bool begin(bool addr_detect = true);
   void end(void);
