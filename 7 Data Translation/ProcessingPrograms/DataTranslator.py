@@ -1,4 +1,4 @@
-#I still lose the last final bit of an average I think (like a hundredth of a second)kinda a good thing tho so you don't pretend you have proepr averages when you don't
+#I still lose the last final bit of an average I think (like a hundredth of a second) kinda a good thing tho so you don't pretend you have proepr (andrew you suck at spelling) averages when you don't
 import os
 from DataDownloader import DataDownloader
 import math
@@ -6,10 +6,8 @@ import importlib
 import tkinter as tk
 from tkinter import ttk
 
-
-os.chdir("./")
-
 #imports all data libraries from ConversionLibrary folder
+os.chdir("./")
 for fileName in os.listdir("ConversionLibraries"):
         if fileName.endswith('.py') and not fileName.startswith('__'):
             moduleName = fileName[:-3]  # Remove .py extension
@@ -38,7 +36,7 @@ class Sensor:
     def __repr__(self):
         return f"Sensor(dataType='{self.dataType}', name='{self.name}', pollingRate={self.pollingRate})"
 
-def translateData (inputFilePath, progressBarPage, parentPage):
+def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,outputPath,chosePath):
         #create a label to tell the user how the download is progressing
         dataTranslationProgressLabel = tk.Label(progressBarPage, text="Data Translation Progress")
         dataTranslationProgressLabel.pack()
@@ -54,8 +52,12 @@ def translateData (inputFilePath, progressBarPage, parentPage):
         #index of last analog sensor
         lastAnalogIndex = 0
         #open config file (found by navigating to the configs folder and looking for a file called fileNameConfig.txt)
-        configFileName = os.path.basename(inputFilePath)+"Config.txt"
-        file = open("Configs/" + configFileName)
+        if useDefaultConfig == 1:
+            file = open("Configs/defaultConfig.txt")
+        else:
+            configFileName = os.path.basename(inputFilePath).split('.')[0]+"Config.txt"
+            file = open("Configs/" + configFileName)
+
         #get rid of the header
         header = file.readline()
         #get the config data
@@ -83,7 +85,10 @@ def translateData (inputFilePath, progressBarPage, parentPage):
         #opens input data file
         inFile = open(inputFilePath)
         #opens output file
-        outfile = open("output.txt", "w")
+        if not chosePath:
+            outfile = open("output.txt","w")
+        else:
+            outfile = open(os.path.join(outputPath, "output.txt"), "w")
         #whether this is the first run
         firstRun = True
         #time scalar (multiplies the period of the largest PR by num dataBuffers written)
@@ -174,7 +179,10 @@ def translateData (inputFilePath, progressBarPage, parentPage):
             outfile.write(str(dataBuffer[i]).replace('[','').replace(']','')+"\n")
         inFile.close()
         outfile.close()
-        outFile = open("output.txt", "r")
+        if not chosePath:
+            outFile = open("output.txt","w")
+        else:
+            outFile = open(os.path.join(outputPath, "output.txt"), "r")
         finalOutFile = open(str(os.path.basename(inputFilePath) + ".csv"), "w")
         counter = 0
         #for line in output.txt plug in RPM value and save to final Output file
