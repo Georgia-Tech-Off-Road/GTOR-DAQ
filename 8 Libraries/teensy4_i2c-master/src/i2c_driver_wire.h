@@ -20,8 +20,8 @@
 class I2CDriverWire : public Stream {
 public:
     // Size of RX and TX buffers. Feel free to change sizes if necessary.
-    static const size_t rx_buffer_length = 32;
-    static const size_t tx_buffer_length = 32;
+    static const size_t rx_buffer_length = 256;
+    static const size_t tx_buffer_length = 256;
 
     // Time to wait for a read or write to complete in millis
     static const uint32_t timeout_millis = 200;
@@ -89,6 +89,11 @@ public:
     }
 
     int read() override;
+
+    //addition from Andrew Rissler (DAQ Lead) to allow control board to get the rxBuffer pointer so it can use memcpy to more easily copy data into the dataStruct
+    uint8_t * get_RX_Buffer_Pointer() {
+        return (byte *)&rxBuffer;
+    }
 
     int peek() override;
 
