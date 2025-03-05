@@ -9,30 +9,21 @@
 //time stuff
 #include <TimeLib.h>
 #include <Adafruit_ADS1X15.h>
+#include <i2c_driver.h>
+#include <i2c_driver_wire.h>
 #include <Wire.h>
-#include <Adafruit_BNO055.h>
 
 #define BAUD 230400
 
 #define serialMonitor Serial
+
 
 struct {
   unsigned long long int seconds;
   unsigned long int micros;
   int binaryValues[3];
   int analogValues[4];
-  float orientation[3];
-  float acceleration[3];
-  float linearAcceleration[3];
-  float quaternionCoords[4];
-  int calibration[4];
-  float orientation1[3];
-  float acceleration1[3];
-  float linearAcceleration1[3];
-  float quaternionCoords1[4];
-  int calibration1[4];
 } dataStruct;
-
 
 File outputFile;
 
@@ -43,20 +34,7 @@ Adafruit_ADS1115 ads;
 //current analog sensor number being polled
 int currentAnalogSensor = 0;
 
-//create an interval timer for BNO05
-IntervalTimer BNO05Timer;
-
-//creates a new instance of the BNO055 class
-Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x29, &Wire);
-Adafruit_BNO055 bno1 = Adafruit_BNO055(55, 0x28, &Wire);
-
-//varaibles for data from BNO05
-sensors_event_t orientationData, linearAccelData, accelerometerData;
-uint8_t BNO05System, gyro, accel, mag = 0;
-imu::Quaternion quat;
-
 volatile bool analogValueFlag = false;
-volatile bool BNO05flag = false;
 
 //saves the last time data was saved 
 ulong lastSaveTimeInMillis = 0;
@@ -89,7 +67,6 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(21), updateRearDiff, CHANGE); //rear diff
   attachInterrupt(digitalPinToInterrupt(20), updateFrontLeftHalleffect, CHANGE); // front left halleffect
   attachInterrupt(digitalPinToInterrupt(22), updateFrontRightHalleffect, CHANGE); // front right halleffect
-  BNO05Timer.begin(updatBNO05Flag, 5000); //BNO05 polling flag
   //sets up interupt pin for ADS1115 ADC (have to pullup alert pin in accordance with ADS1115 datasheet)
   pinMode(15, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(15), updateAnalogValueFlag, FALLING);
@@ -101,12 +78,12 @@ void setup() {
   ads.setGain(GAIN_ONE);
   isRecording = true;
   digitalWrite(9, HIGH); //turn on red LED
-  //start the BNO05
-  bno.begin();
-  bno1.begin();
   //start first ADC reading to begin the cycle
   ads.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
-  updateBNO05Readings();
+
+  Wire.setClock(3000000);
+  Wire.begin(0x40);        // join i2c bus with address #8
+  Wire.onRequest(requestEvent); // register event
 }
 //writes data to SD card
 void loop() {
@@ -114,10 +91,6 @@ void loop() {
   dataStruct.micros = micros();
   //size of is apparently computed at compile time
   outputFile.write(&dataStruct, sizeof(dataStruct));
-  if(BNO05flag) {
-    updateBNO05Readings();
-    BNO05flag = false;
-  }
   if (analogValueFlag) {
     readAnalogValues();
     analogValueFlag = false;
@@ -127,45 +100,6 @@ void loop() {
   }
 
 }
-//method to update BNO05 readings
-void updateBNO05Readings() {
-  bno.getEvent(&orientationData, Adafruit_BNO055::VECTOR_EULER);
-  bno.getEvent(&linearAccelData, Adafruit_BNO055::VECTOR_LINEARACCEL);
-  bno.getEvent(&accelerometerData, Adafruit_BNO055::VECTOR_ACCELEROMETER);
-  bno.getCalibration(&BNO05System, &gyro, &accel, &mag);
-  quat = bno.getQuat();
-  dataStruct.orientation[0] = orientationData.orientation.x;
-  dataStruct.orientation[1] = orientationData.orientation.y;
-  dataStruct.orientation[2] = orientationData.orientation.z;
-  dataStruct.linearAcceleration[0] = linearAccelData.acceleration.x;
-  dataStruct.linearAcceleration[1] = linearAccelData.acceleration.y;
-  dataStruct.linearAcceleration[2] = linearAccelData.acceleration.z;
-  dataStruct.acceleration[0] = accelerometerData.acceleration.x;
-  dataStruct.acceleration[1] = accelerometerData.acceleration.y;
-  dataStruct.acceleration[2] = accelerometerData.acceleration.z;
-  dataStruct.calibration[0] = BNO05System;
-  dataStruct.calibration[1] = gyro;
-  dataStruct.calibration[2] = accel;
-  dataStruct.calibration[3] = mag;
-  bno1.getEvent(&orientationData, Adafruit_BNO055::VECTOR_EULER);
-  bno1.getEvent(&linearAccelData, Adafruit_BNO055::VECTOR_LINEARACCEL);
-  bno1.getEvent(&accelerometerData, Adafruit_BNO055::VECTOR_ACCELEROMETER);
-  bno1.getCalibration(&BNO05System, &gyro, &accel, &mag);
-  quat = bno1.getQuat();
-  dataStruct.orientation1[0] = orientationData.orientation.x;
-  dataStruct.orientation1[1] = orientationData.orientation.y;
-  dataStruct.orientation1[2] = orientationData.orientation.z;
-  dataStruct.linearAcceleration1[0] = linearAccelData.acceleration.x;
-  dataStruct.linearAcceleration1[1] = linearAccelData.acceleration.y;
-  dataStruct.linearAcceleration1[2] = linearAccelData.acceleration.z;
-  dataStruct.acceleration1[0] = accelerometerData.acceleration.x;
-  dataStruct.acceleration1[1] = accelerometerData.acceleration.y;
-  dataStruct.acceleration1[2] = accelerometerData.acceleration.z;
-  dataStruct.calibration1[0] = BNO05System;
-  dataStruct.calibration1[1] = gyro;
-  dataStruct.calibration1[2] = accel;
-  dataStruct.calibration1[3] = mag;
-}
 //method needed to get time
 time_t getTeensy3Time()
 {
@@ -173,9 +107,6 @@ time_t getTeensy3Time()
 }
 void updateAnalogValueFlag() {
   analogValueFlag = true;
-}
-void updatBNO05Flag() {
-  BNO05flag = true;
 }
 void updateRearDiff() {
   dataStruct.binaryValues[0] = !dataStruct.binaryValues[0];
@@ -236,3 +167,7 @@ void readAnalogValues() {
   }
 }
 
+void requestEvent()
+{
+  Wire.write((byte *)&dataStruct, sizeof(dataStruct)); 
+}
