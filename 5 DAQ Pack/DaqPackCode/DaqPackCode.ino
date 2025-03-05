@@ -80,7 +80,7 @@ void setup() {
   //start first ADC reading to begin the cycle
   ads.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
   //setup communication between the two
-  Wire.setClock(3000000);
+  Wire.setClock(1000000);
   Wire.begin(0x40);        // join i2c bus with address #8
   Wire.onRequest(requestEvent); // register event
 }
@@ -168,5 +168,5 @@ void readAnalogValues() {
 
 void requestEvent()
 {
-  Wire.write((byte *)&dataStruct, sizeof(dataStruct)); 
+  Serial.printf("Transmit: %d\n", Wire.write((byte *)&dataStruct, sizeof(dataStruct))); 
 }

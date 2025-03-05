@@ -105,7 +105,6 @@ int I2CDriverWire::peek() {
     }
     return no_more_bytes;
 }
-
 // Gives the application a chance to set up the transmit buffer
 // during the ISR.
 void I2CDriverWire::before_transmit(uint16_t address) {
