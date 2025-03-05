@@ -1,0 +1,36 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Nodes -->
+  <rect x="50" y="50" width="200" height="50" fill="#add8e6" stroke="#000"/>
+  <text x="150" y="80" text-anchor="middle">Start</text>
+  
+  <rect x="50" y="120" width="200" height="50" fill="#90ee90" stroke="#000"/>
+  <text x="150" y="150" text-anchor="middle">Read Config File</text>
+  
+  <rect x="50" y="190" width="200" height="50" fill="#ffcccb" stroke="#000"/>
+  <text x="150" y="220" text-anchor="middle">Process CLI Args</text>
+  
+  <rect x="50" y="260" width="200" height="50" fill="#f0e68c" stroke="#000"/>
+  <text x="150" y="290" text-anchor="middle">Open Files</text>
+  
+  <rect x="50" y="330" width="200" height="50" fill="#dda0dd" stroke="#000"/>
+  <text x="150" y="360" text-anchor="middle">Convert Input File</text>
+  
+  <rect x="50" y="400" width="200" height="50" fill="#ffa07a" stroke="#000"/>
+  <text x="150" y="430" text-anchor="middle">Process Each Line</text>
+  
+  <rect x="50" y="470" width="200" height="50" fill="#98fb98" stroke="#000"/>
+  <text x="150" y="500" text-anchor="middle">Apply Sensor Conversions</text>
+  
+  <rect x="50" y="540" width="200" height="50" fill="#87ceeb" stroke="#000"/>
+  <text x="150" y="570" text-anchor="middle">Write to CSV</text>
+  
+  <!-- Arrows -->
+  <line x1="150" y1="100" x2="150" y2="120" stroke="#000"/>
+  <line x1="150" y1="170" x2="150" y2="190" stroke="#000"/>
+  <line x1="150" y1="240" x2="150" y2="260" stroke="#000"/>
+  <line x1="150" y1="310" x2="150" y2="330" stroke="#000"/>
+  <line x1="150" y1="380" x2="150" y2="400" stroke="#000"/>
+  <line x1="150" y1="450" x2="150" y2="470" stroke="#000"/>
+  <line x1="150" y1="520" x2="150" y2="540" stroke="#000"/>
+</svg>
+
