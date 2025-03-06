@@ -8,12 +8,17 @@
 class AMT22 {
     public:
         AMT22(uint8_t cs, uint8_t resolution);
-        float getPosition() volatile;
-        float zeroPosition();
-        float resetAMT22();
+        void getPosition() volatile;
+        void zeroPosition();
+        void resetAMT22();
+        //volatile to make thread/interrupt safe
+        volatile float steeringPosition;
+        //volatile flag to reduce num bits loaded per loop
+        volatile bool steeringPositionUpdateFlag;
+
     private:
         uint8_t _cs, _resolution;
-        float transmitOpCode(int opCode) volatile;
+        void transmitOpCode(int opCode) volatile;
 };
 
 #endif
