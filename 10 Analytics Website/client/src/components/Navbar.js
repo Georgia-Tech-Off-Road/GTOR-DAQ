@@ -1,40 +1,43 @@
 import '../App.css';
 import { useState, useEffect } from "react";
 
-export default function Navbar() {
+export default function Navbar({socket}) {
     const [ping, setPing] = useState(null);
 
     useEffect(() => {
-        const ws = new WebSocket("ws://localhost:8080");
 
-        ws.onopen = () => {
+
+        if (!socket) return;
+        socket.onopen = () => {
             console.log("WebSocket Connected");
         };
 
-        ws.onmessage = (event) => {
+        const lonmessage = (event) => {
             const timestamps = event.data.split(",");
             const serverTime = parseInt(timestamps[0]) * 1000 + parseInt(timestamps[1]);
             const clientTime = new Date().getUTCSeconds() * 1000 + new Date().getUTCMilliseconds();
             setPing(clientTime - serverTime); // Compute latency
         };
+        socket.onmessage = lonmessage;
 
         // Send ping every second
         const interval = setInterval(() => {
-            if (ws.readyState === WebSocket.OPEN) {
-                ws.send("ping");
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send("ping");
             }
         }, 1000);
 
-        ws.onclose = () => {
+
+
+        socket.onclose = () => {
             console.log("WebSocket Disconnected");
             clearInterval(interval);
         };
 
         return () => {
-            ws.close();
             clearInterval(interval); // Cleanup on unmount
         };
-    }, []);
+    }, [socket]);
 
     return (
         <nav className="navbar">

@@ -16,9 +16,21 @@ import reportWebVitals from './reportWebVitals';
 import { RouterProvider } from 'react-router-dom';
 import router from './routes';
 
+//Initialize WebSocket connection once and pass it down
+const socket = new WebSocket("ws://localhost:9000");
+
+socket.onopen = () => {
+    console.log("WebSocket Connected");
+};
+
+socket.onclose = () => {
+    console.log("WebSocket Disconnected");
+};
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+      <Navbar socket={socket} />
     <RouterProvider router={router}/>
   </React.StrictMode>
 );
