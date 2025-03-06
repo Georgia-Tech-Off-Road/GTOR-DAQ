@@ -15,23 +15,23 @@ AMT22 :: AMT22(uint8_t cs, uint8_t resolution) {
 }
 
 //public function to get position
-float AMT22 :: getPosition() volatile
+void AMT22 :: getPosition() volatile
 {
-    return transmitOpCode(0x00);
+    transmitOpCode(0x00);
 }
 
 //public function to zero sensor position
-float AMT22 :: zeroPosition() {
-    return transmitOpCode(0x70);
+void AMT22 :: zeroPosition() {
+    transmitOpCode(0x70);
 }
 
 //public function to reset sensor
-float AMT22 :: resetAMT22() {
-    return transmitOpCode(0x60);
+void AMT22 :: resetAMT22() {
+    transmitOpCode(0x60);
 }
 
 //local fucntion that returns position and sends whatever opCode is requested (returned degrees on a reset/zero can be used for any software needs in main program)
-float AMT22 :: transmitOpCode(int opCode) volatile
+void AMT22 :: transmitOpCode(int opCode) volatile
 {
     //create a binary array to make the checksum computation easier
     bool binaryArray[16];
@@ -63,9 +63,13 @@ float AMT22 :: transmitOpCode(int opCode) volatile
     //If data is valid return degree representation, if not return all 1s
     if (currentPosition != 0xFFFF && _resolution == 12){
         currentPosition = currentPosition >> 2;
-        return (static_cast<float>(currentPosition) * 360) / 4095;
+        steeringPosition =  (static_cast<float>(currentPosition) * 360) / 4095;
     }  else if (currentPosition != 0xFFFF && _resolution == 14) {
-        return (static_cast<float>(currentPosition) * 360) / 16383;
+        steeringPosition =  (static_cast<float>(currentPosition) * 360) / 16383;
+    } else {
+        //set steeringPosition variable
+        steeringPosition = static_cast<float>(currentPosition);
     }
-    return static_cast<float>(currentPosition);
+    //set flag
+    steeringPositionUpdateFlag = true;
 }
