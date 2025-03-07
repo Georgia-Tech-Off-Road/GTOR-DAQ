@@ -3,9 +3,11 @@ def binConverter(input_file_name,chosePath,outputPath,settingsData):
     import os
 
     #outputPath equals, for example, None or C:/Users/Bill/Pictures
-
+    configFileName = os.path.basename(input_file_name).split('.')[0]+"Config.txt"
+    file = open("Configs/" + configFileName)
+    data_format = file.readline()
     # Define the format for the binary data (including padding to match Arduino's structure size)
-    data_format = "Q L 3i 4i 3f 3f 3f 4f 4i 3f 3f 3f 4f 4i"  # Add 4 bytes of padding (x4)
+    #data_format = "Q L 3i 4i 3f 3f 3f 4f 4i 3f 3f 3f 4f 4i" # Add 4 bytes of padding (x4)
     data_size = struct.calcsize(data_format)
     output_file_name = os.path.splitext(os.path.basename(input_file_name))[0] + ".txt"
     #output_file_name equals ONLY, for example, Test2.txt
