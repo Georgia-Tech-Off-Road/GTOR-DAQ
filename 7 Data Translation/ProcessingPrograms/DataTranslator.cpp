@@ -65,6 +65,9 @@ void readConfigFile(ifstream *cf) {
     // Get rid of header
     cf->getline(line_buffer, CONFIG_BUFFER_SIZE);
 
+    //Get rid of binary conversion info
+    cf->getline(line_buffer, CONFIG_BUFFER_SIZE);
+
     while (cf->getline(line_buffer, CONFIG_BUFFER_SIZE)) {
         // Declare an empty Sensor
         Sensor currSensor;
