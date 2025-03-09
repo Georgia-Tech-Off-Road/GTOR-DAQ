@@ -8,8 +8,8 @@ import Data from "./pages/Data"
 
 //Main router for web app
 //Inspiration from: https://www.geeksforgeeks.org/create-a-basic-navbar-using-react-router-v6/?ref=next_article
-const router = createBrowserRouter([
-    {
+export default function createRouter ({socket}) {
+    return createBrowserRouter([{
         path: "/",
         element: <App />
         
@@ -20,9 +20,8 @@ const router = createBrowserRouter([
     },
     {
         path: "/data",
-        element: <Data />
+        element: <Data socket={socket}/>
     }
-]);
-
-export default router
+    ])
+}
 

@@ -13,10 +13,14 @@ export default function Navbar({socket}) {
         };
 
         const lonmessage = (event) => {
-            const timestamps = event.data.split(",");
-            const serverTime = parseInt(timestamps[0]) * 1000 + parseInt(timestamps[1]);
-            const clientTime = new Date().getUTCSeconds() * 1000 + new Date().getUTCMilliseconds();
-            setPing(clientTime - serverTime); // Compute latency
+            console.log(event)
+            let res = JSON.parse(event.data) 
+            if(res.msgType === "ping") {
+                const timestamps = res.content.split(",");
+                const serverTime = parseInt(timestamps[0]) * 1000 + parseInt(timestamps[1]);
+                const clientTime = new Date().getUTCSeconds() * 1000 + new Date().getUTCMilliseconds();
+                setPing(clientTime - serverTime); // Compute latency
+            }
         };
         socket.onmessage = lonmessage;
 
