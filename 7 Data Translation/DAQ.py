@@ -111,6 +111,7 @@ def dataProcessingTool():
         #open the file to create it to prevent any problems with later code being unable to find the target
         file = open(os.path.basename(destinationFilePath), "a")
         file.close()
+        #if the user does not select a file path, default to current CWD
         if not chosePath:
             destinationFilePath = os.getcwd() + "\\Configs\\" + os.path.basename(filePath)
         else:
@@ -145,6 +146,7 @@ def dataProcessingTool():
         global chosePath
         global outputPath
         outputPath = filedialog.askdirectory(title="Select Output Folder")
+        #lets the user choose a different file path
         if outputPath:
             chosePath = True
         else:
