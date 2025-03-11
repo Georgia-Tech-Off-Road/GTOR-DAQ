@@ -18,7 +18,6 @@ def rpm(fname, rpmVisualizationPage):
     progressBar.start()
 
     # Create df from a text file
-    #file = 'Test2.txt.csv'
     df = pd.read_csv(fname, delimiter=',')
 
     time = df.iloc[:, 1] * 10**(-6) - df.iloc[0, 1]* 10**(-6)
