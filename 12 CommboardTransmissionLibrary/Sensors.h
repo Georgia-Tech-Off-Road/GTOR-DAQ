@@ -1,3 +1,4 @@
+#include "Sensor/millisec.h"
 #ifndef CMBTL_SENSORS_H
 #define CMBTL_SENSORS_H
 //--------------- Define Sensor Indexes ----------------------------------------------------
@@ -23,13 +24,8 @@ enum SensorIndex {
     BRAKE_TEMP_BACK,
     STEERING_ROTATION,
     //COUNT IS NOT A REAL SENSOR, it is used to determine how many elements are in this enum
+    //COUNT SHOULD ALWAYS BE THE LAST ELEMENT
     COUNT,
 };
 static constexpr int NUM_SENSORS = SensorIndex::COUNT;
-
-//--------------- Define Data Types for Different Sensors ---------------------------------
-struct SensorInfo {
-
-    typedef SensorDataType;
-};
 #endif
