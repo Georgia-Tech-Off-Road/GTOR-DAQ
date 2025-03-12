@@ -18,23 +18,30 @@ Ex: socket.send("data")
 
 Backend to frontend packets are a lot more complicated than vice-versa. These messages are composed as follows:
 
-{
-    msgType: "msgType"
-    content: ""
-}
+{\
+    msgType: "msgType"\
+    content: ""\
+}\
 msgType can be any string that describes the type of message that the backend is sending. For example a ping response packet will look as follows:
-{
-    msgType: "ping"
-    content: "timeInSec,timeInMillisec"
-}
+{\
+    msgType: "ping"\
+    content: "timeInSec,timeInMillisec"\
+}\
 It is important to note that content can be of ANY data type. All packets with the same msgType value should return the same data type of content.
 
 ## Requests
 
 ### ping
+{\
+    msgType: "ping"\
+    content: "timeInSec,timeInMillisec"\
+}\
+Pretty self explanatory, not too complicated.
 
-{
-    msgType: "msgType"
-    content: "sensorData"
-}
+### data
+
+{\
+    msgType: "msgType"\
+    content: "sensorData"\
+}\
 Here sensorData is stand in for whatever our current sensor data object is. This sensorData structure should contain fields for every possible sensor that we might include on the vehicle. The "" arround sensorData indicate that it must be stringified with JSON.stringify() before sending (otherwise I believe it would not be sent correctly).
