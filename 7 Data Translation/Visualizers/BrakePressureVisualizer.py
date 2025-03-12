@@ -20,7 +20,7 @@ def brake(fname, brakeVisualizationPage):
     df = pd.read_csv(fname, delimiter=',')
 
     # Extract time and ADC values
-    time = df.iloc[:, 1] * 10**(-6)
+    time = df.iloc[:, 1] * 10**(-6) - df.iloc[0, 1]* 10**(-6)
     val = df.iloc[:, 5]
 
     # Create the line graph

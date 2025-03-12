@@ -40,18 +40,26 @@ class Sensor:
         return f"Sensor(dataType='{self.dataType}', name='{self.name}', pollingRate={self.pollingRate})"
 
 def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,outputPath,chosePath,settingsData):
+    #if the user checks "Use Default Config"
     if useDefaultConfig == 1:
         file = "Configs/defaultConfig.txt"
+    #o/w uses config from the CWD
     else:
         configFileName = os.path.basename(inputFilePath).split('.')[0]+"Config.txt"
         file = "Configs/" + configFileName
+
+    #if there is no set default file path
     outputFileFolder = settingsData[0][2]
     if outputFileFolder == "<paste file path here>":
         outputFileBase = os.getcwd()
+    #if the user changed Settings.txt (removes <> if they are a dumME)
     else:
         outputFileBase = outputFileFolder.replace("<", "").replace(">","")
+
+    #if the user did not choose a download directory
     if not chosePath:
         outfile = os.path.join(outputFileBase, os.path.basename(inputFilePath).replace(".txt", ".csv"))
+    #if the user changed the download directory
     else:
         outfile = str(os.path.join(outputPath, os.path.basename(inputFilePath).replace(".txt", ".csv")))
 

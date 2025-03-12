@@ -4,16 +4,24 @@ def binConverter(input_file_name,chosePath,outputPath,settingsData):
 
     #outputPath equals, for example, None or C:/Users/Bill/Pictures
 
-    # Define the format for the binary data (including padding to match Arduino's structure size)
-    data_format = "Q L 3i 4i 3f 3f 3f 4f 4i 3f 3f 3f 4f 4i"  # Add 4 bytes of padding (x4)
+    #gets the first line of Config to define the format for the binary data
+    configFileName = os.path.basename(input_file_name).split('.')[0]+"Config.txt"
+    file = open("Configs/" + configFileName)
+
+    #this is the format
+    data_format = file.readline()
     data_size = struct.calcsize(data_format)
+
     output_file_name = os.path.splitext(os.path.basename(input_file_name))[0] + ".txt"
     #output_file_name equals ONLY, for example, Test2.txt
 
+    #The default file path set by user in Settings.txt
     outputFileFolder = settingsData[0][2]
 
+    #if there is no set default file path
     if outputFileFolder == "<paste file path here>":
         outputDest = os.getcwd()
+    #if the user changed settings.txt (removes <> if they are a dumME)
     else:
         outputDest = outputFileFolder.replace("<", "").replace(">","")
 

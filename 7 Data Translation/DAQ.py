@@ -28,7 +28,6 @@ for fileName in os.listdir("ProcessingPrograms"):
             module = importlib.import_module(f'ProcessingPrograms.{moduleName}')
             globals()[moduleName] = module
 
-
 # Creates the main window
 root = tk.Tk()
 root.title("Main Page")
@@ -112,6 +111,11 @@ def dataProcessingTool():
         #open the file to create it to prevent any problems with later code being unable to find the target
         file = open(os.path.basename(destinationFilePath), "a")
         file.close()
+        #if the user does not select a file path, default to current CWD
+        if not chosePath:
+            destinationFilePath = os.getcwd() + "\\Configs\\" + os.path.basename(filePath)
+        else:
+            destinationFilePath = outputPath + "\\" + os.path.basename(filePath)
         #use multithreading to allow the download to run seperately from the progress bar updater (more zoom zoom)
         downloadThread = threading.Thread(target = DataDownloader.downloadData, args = (filePath, destinationFilePath, outputPath, chosePath))
         progressBarThread = threading.Thread(target = DataDownloader.updateProgressBar, args = (filePath, destinationFilePath, progressBarPage, dataProcessingToolPage, outputPath, chosePath))
@@ -142,6 +146,7 @@ def dataProcessingTool():
         global chosePath
         global outputPath
         outputPath = filedialog.askdirectory(title="Select Output Folder")
+        #lets the user choose a different file path
         if outputPath:
             chosePath = True
         else:

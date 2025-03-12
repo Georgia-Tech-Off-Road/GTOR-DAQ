@@ -8,9 +8,6 @@ from tkinter import ttk
 #handles data download and includes basic progress bar
 def downloadData(src, dst, outputPath, chosePath):
     global filePath
-    if chosePath:
-        dst = outputPath+ "\\"+ str(os.path.basename(src))
-
     #sets oldTime
     oldTime = time.time()
     #initializes a variable to keep track of last download speed
@@ -57,11 +54,7 @@ def downloadData(src, dst, outputPath, chosePath):
 
 def updateProgressBar(src, dst, progressBarPage, parentPage, outputPath, chosePath):
     #get the basePath
-    if chosePath:
-        basePath = outputPath
-        dst = outputPath+ "\\"+ str(os.path.basename(src))
-    else:
-        basePath = os.getcwd()
+    basePath = os.getcwd()
     #get the size of the source file
     sourceFileSize = os.path.getsize(src)
     #create a label to say how far along the download is

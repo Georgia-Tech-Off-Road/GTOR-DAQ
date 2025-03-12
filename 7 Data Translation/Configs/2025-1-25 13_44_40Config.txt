@@ -1,0 +1,45 @@
+Q L 3i 4i 3f 3f 3f 4f 4i 3f 3f 3f 4f 4i
+index,dataType,name,pollingRate,numTeeth
+0,analog,time sec,10000,0
+1,analog,time millisec,10000,0
+2,digital,rear diff (RPM),10000,33
+3,digital,front left halleffect (RPM),10000,40
+4,digital,front right halleffect (RPM),10000,40
+5,analog,front brake pressure,10000,35
+6,analog,rear brake pressure,10000,35
+7,analog,NA,10000,35
+8,analog,NA,10000,35
+9,analog,NA,10000,35
+10,analog,NA,10000,35
+11,analog,NA,10000,35
+12,analog,NA,10000,35
+13,analog,NA,10000,35
+14,analog,NA,10000,35
+15,analog,NA,10000,35
+16,analog,NA,10000,35
+17,analog,NA,10000,35
+18,analog,NA,10000,35
+19,analog,NA,10000,35
+20,analog,NA,10000,35
+21,analog,NA,10000,35
+22,analog,NA,10000,35
+23,analog,NA,10000,35
+24,analog,NA,10000,35
+25,analog,NA,10000,35
+26,analog,NA,10000,35
+27,analog,NA,10000,35
+28,analog,NA,10000,35
+29,analog,NA,10000,35
+30,analog,NA,10000,35
+31,analog,NA,10000,35
+32,analog,NA,10000,35
+33,analog,NA,10000,35
+34,analog,NA,10000,35
+35,analog,NA,10000,35
+36,analog,NA,10000,35
+37,analog,NA,10000,35
+38,analog,NA,10000,35
+39,analog,NA,10000,35
+40,analog,NA,10000,35
+41,analog,NA,10000,35
+42,analog,NA,10000,35
