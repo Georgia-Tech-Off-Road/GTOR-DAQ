@@ -1,3 +1,4 @@
+Q L 3i 4i 3f 3f 3f 4f 4i 3f 3f 3f 4f 4i
 index,dataType,name,pollingRate,numTeeth
 0,analog,time sec,10000,0
 1,analog,time millisec,10000,0
