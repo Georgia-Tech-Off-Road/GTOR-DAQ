@@ -6,7 +6,7 @@ import {useRef, useEffect} from "react";
 
 Chart.register(ChartStreaming)
 
-export default function SensorGraph() {
+export default function SensorGraph({socket}) {
 
     //Reference to <canvas> in DOM
     const canvasRef = useRef(null);
@@ -20,6 +20,22 @@ export default function SensorGraph() {
             generateInitialGraph();
         }
     }, [chartRendered])
+
+    //Setup the socket connection
+    useEffect(() => {
+        if (socket) {
+            //Request data as part of setup
+            requestData(socket)
+            socket.addEventListener("message", (msg) => {
+            let res = JSON.parse(msg.data)
+            if (res.msgType.toString() === "data") {
+              //JSON.parse convert a string to a json object, like in index.js of live-data-test!
+              //
+              let content = JSON.parse(res.content)
+              updateGraph(content)
+            }
+          })
+      }}, [socket]);
 
     //Generate graph using Chart.js
     async function generateInitialGraph() {
@@ -76,3 +92,25 @@ export default function SensorGraph() {
         </div>
     )
 }
+
+function requestData(socket) {
+    //If socket is open, request data immediately
+    if (socket.readyState === WebSocket.OPEN) {
+      socket.send("data");
+    } else { //Otherwise wait
+      socket.addEventListener(
+        "open",
+        () => {
+          alert("Requesting data!")
+          socket.send("data")
+        },
+        { once: true}
+      );
+   }
+  }
+  
+  //For y'all to implement!!!
+  function updateGraph(sensorData) {
+    console.log(JSON.stringify(sensorData))
+    return;
+  }

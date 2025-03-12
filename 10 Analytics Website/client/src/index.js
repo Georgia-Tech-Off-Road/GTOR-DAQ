@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom/client';
 
 //CSS
 import './index.css';
-
 //Website React Components
 import App from './pages/App';
 import Navbar from './components/Navbar'
