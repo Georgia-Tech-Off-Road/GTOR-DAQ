@@ -1,0 +1,24 @@
+{
+  "name": "live-data-test",
+  "version": "1.0.0",
+  "description": "Mimic the transfer of live data to the website",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run live-data-test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Georgia-Tech-Off-Road/GTOR-DAQ.git"
+  },
+  "author": "Alaric Jenkins",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Georgia-Tech-Off-Road/GTOR-DAQ/issues"
+  },
+  "homepage": "https://github.com/Georgia-Tech-Off-Road/GTOR-DAQ#readme",
+  "dependencies": {
+    "n-readlines": "^1.0.1",
+    "papaparse": "^5.5.2",
+    "ws": "^8.18.1"
+  }
+}
