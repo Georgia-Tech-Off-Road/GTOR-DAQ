@@ -12,13 +12,16 @@ namespace cmbtl {
 			assert((sizeof(src) * 8) >= N && "Your encoded value takes more bits than the size of your stored value!");
 			//Clear all bits
 			dest->reset();
+			char* buffer = static_cast<char*>(malloc(sizeof(src)));
+			memcpy(buffer, &src, sizeof(src));
 			for (uint16_t i = 0; i < dest->size(); i++) {
 				//ith bit in src is 1
-				if (((src >> i) & 0x1) == 1) {
+				if (((buffer[i/(sizeof(char) * 8)] >> i) & 0x1) == 1) {
 					//Set bit
 					(*dest)[i] = 1;
 				}
 			}
+			free(buffer);
 		}
 		//SV: Stored Value
 		template <std::size_t N, typename SV>
