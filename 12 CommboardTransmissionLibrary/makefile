@@ -1,3 +1,5 @@
+#Taken from: https://www.geeksforgeeks.org/makefile-in-c-and-its-applications/
+
 # Compiler
 CXX = g++
 
