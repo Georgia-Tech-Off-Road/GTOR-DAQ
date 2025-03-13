@@ -4,7 +4,7 @@
 namespace cmbtl {
     struct SensorData {
         //Time since data aquisition began
-        cmbtl::millisec::millisecSV millisec;
+        cmbtl::millisec::SV millisec;
         //Is clutch engaged or not?
         unsigned int clutchEngaged : 1;
         //Pit stop requested?
