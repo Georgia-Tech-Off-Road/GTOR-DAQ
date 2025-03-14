@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Sensors.h"
 #include <cstdio>
+#include "misc/BinaryBuffer.h"
 int main() {
 	FILE* fi = fopen("test_output.dat", "wb");
 	uint32_t test = 0xAAAAFFFF;
@@ -12,4 +13,8 @@ int main() {
 	std::bitset<32> encoded_example_2;
 	cmbtl::misc::copyBits(&encoded_example_2, example_2);
 	printf("\nComparison 2: %x %x\n", encoded_example, encoded_example_2);
+}
+
+void testBinaryBuffer() {
+	
 }

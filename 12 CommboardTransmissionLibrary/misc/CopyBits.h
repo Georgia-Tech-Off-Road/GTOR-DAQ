@@ -17,7 +17,7 @@ namespace cmbtl {
 			//We can't use >> operators to shift and get bits from the SV because the >> is overloaded for
 			//both big and little endian integers and floats. Basically bigEndian >> 1 and littleEndian >> 1 will shift
 			//towards the least significant bit. Great for most things, but we just want to copy bits! So we need to use a buffer.
-			char buffer[sizeof(src) / sizeof(char)];
+			unsigned char buffer[sizeof(src) / sizeof(char)];
 			memcpy(buffer, &src, sizeof(src)); 
 			for (uint16_t i = dest->size() - 1; i > 0; i--) {
 				//First get which char our desired bit is in, then bit shifts to place the bit in the least significant position,
