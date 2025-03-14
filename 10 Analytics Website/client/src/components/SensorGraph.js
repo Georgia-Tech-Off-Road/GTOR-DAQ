@@ -31,7 +31,7 @@ export default function SensorGraph({socket}) {
             if (res.msgType.toString() === "data") {
               //JSON.parse convert a string to a json object, like in index.js of live-data-test!
               //
-              let content = JSON.parse(res.content)
+              let content = res.content
               updateGraph(content)
             }
           })

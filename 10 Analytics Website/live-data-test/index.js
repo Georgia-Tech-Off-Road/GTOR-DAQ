@@ -1,12 +1,13 @@
 const WebSocket = require("ws")
 const nReadLines = require("n-readlines")
 
-//------------------- IMPORTANT EDIT THIS ----------------------
+//------------------- IMPORTANT EDIT THESE ----------------------
 const TEST_FILE_NAME = "Test2.csv"
-
+const PACKETS_PER_SEC = 10
+const NUM_LINES_TO_SKIP = 1000
+//---------------------------------------------------------------
 const pparse = require("papaparse")
 let currLine = ""
-const numLinesToSkip = 5000
 let startSec = 0
 let startMicroSec = 0
 
@@ -44,17 +45,23 @@ console.log("Hello World!")
 
 function testLiveData(wss) {
     let testFileLines = new nReadLines(TEST_FILE_NAME)
-    currLine = testFileLines.next()
+    let currLine = testFileLines.next()
     currLine = currLine.toString("ascii")
     let data = currLine.split(",")
     startSec = data[0]
     startMicroSec = data[1]
     console.log(`Start Sec: ${startSec}`)
     console.log(`Start Microsec: ${startMicroSec}`)
-    while (currLine = testFileLines.next()) {
-        for (let i = 0; i < numLinesToSkip; i++) {
+    const sendInterval = setInterval(sendNext, (1 / PACKETS_PER_SEC) * 1000)
+
+    function sendNext() {
+        if (!testFileLines.next()) {
+            clearInterval(sendInterval);
+        }
+        for (let i = 0; i < NUM_LINES_TO_SKIP - 1; i++) {
             testFileLines.next()
         }
+        currLine = testFileLines.next();
         currLine = currLine.toString("ascii")
         let data = currLine.split(",")
         console.log(data + "\n")
@@ -78,10 +85,9 @@ function testLiveData(wss) {
         }
         msg = JSON.stringify({
             msgType: "data",
-            content: JSON.stringify(dataJSON)
+            content: dataJSON
         });
         console.log(msg)
         wss.send(msg)
-
     }
 }

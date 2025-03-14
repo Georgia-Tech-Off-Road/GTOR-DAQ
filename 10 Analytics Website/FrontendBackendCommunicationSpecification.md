@@ -44,4 +44,21 @@ Pretty self explanatory, not too complicated.
     msgType: "msgType"\
     content: "sensorData"\
 }\
-Here sensorData is stand in for whatever our current sensor data object is. This sensorData structure should contain fields for every possible sensor that we might include on the vehicle. The "" arround sensorData indicate that it must be stringified with JSON.stringify() before sending (otherwise I believe it would not be sent correctly).
+Here sensorData is stand in for whatever our current sensor data object is. This sensorData structure should contain fields for every possible sensor that we might include on the vehicle. Here is an example of what a Sensor Data object could look like:\
+{\
+    timeSinceStartMilli: 12345,\
+    clutchEngaged: null,\
+    pitRequest: null,\
+    speed: null,\
+    position: null,\
+    brakePresssureFront: 100,\
+    brakePressureRear: 200,\
+    RPMFrontLeft: 1000,\
+    RPMFrontRight: 1350,\
+    RPMRear: 1250,\
+    linearAcceleration: null,\
+    CVTTemp: null,\
+    transferCaseTemp: null,\
+    brakeTemp: null,\
+    steeringAngle: null\
+}\
