@@ -21,8 +21,8 @@ SRCS = Test.cpp
 # Object files
 OBJS = $(SRCS:.cpp=.o)
 
-# Default rule to build and run the executable
-all: $(TARGET) run
+all: $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
 
 # Rule to link object files into the target executable
 $(TARGET): $(OBJS)
