@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Sensors.h"
 #include <cstdio>
-#include "misc/BinaryBuffer.h"
+#include "misc/BinaryBuffer/BinaryBuffer.h"
 int main() {
 	FILE* fi = fopen("test_output.dat", "wb");
 	uint32_t test = 0xAAAAFFFF;
