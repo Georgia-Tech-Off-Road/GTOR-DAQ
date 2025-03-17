@@ -9,14 +9,14 @@
 namespace cmbtl {
     class BinaryBuffer {
         private:
-            unsigned char *buffer;
+            unsigned char* buffer;
             //Number of bits that buffer is designed to hold
             uint32_t capacity;
 
             //Holds the value of the index after the index of the furthest bit written
             uint32_t bits_written;
 
-            //Holds the index of the bit that should be written (or overwritten) on the next write
+            //Holds the index of the bit that should be written (or overwritten) on the next writeValue
             //For most use cases write_cursor_pos = bits_written
             uint32_t write_cursor_pos;
 
@@ -27,14 +27,14 @@ namespace cmbtl {
             //For most use cases read_cursor_pos = bits_read
             uint32_t read_cursor_pos;
 
-        public:
-            //Length: Number of BITS (NOT BYTES) the buffer should store
-            inline BinaryBuffer(uint32_t capacity) {
+            //Tracks ownership of the buffer so that it does not free memory that is used elsewhere
+            bool should_free_buffer_memory;
 
-                bits_written = 0;
-                write_cursor_pos = 0;
-                bits_read = 0;
-                read_cursor_pos = 0;
+        public:
+            //Parameter capacity: Number of BITS (NOT BYTES) the buffer should store
+            inline BinaryBuffer(uint32_t capacity) {
+                should_free_buffer_memory = true;
+                resetIOValues();
 
                 cmbtl::BinaryBuffer::capacity = capacity;
 
@@ -42,8 +42,22 @@ namespace cmbtl {
                 clearBuffer();
                 
             }
+            //Constructs BinaryBuffer from an existing unsigned char* assuming that unsigned char* buffer
+            //was created by the BinaryBuffer class
+            //Parameter *buffer: unsigned char array created by the binary buffer class
+            //Parameter capacity: capacity of the 
+            inline BinaryBuffer (unsigned char* buffer, uint32_t capacity) {
+                should_free_buffer_memory = false;
+                resetIOValues();
+
+                cmbtl::BinaryBuffer::capacity = capacity;
+                cmbtl::BinaryBuffer::buffer = buffer;
+
+            }
             inline ~BinaryBuffer() {
-                delete[] buffer;
+                if (should_free_buffer_memory) {
+                    delete[] buffer;
+                }
             }
 
             BinaryBuffer(const BinaryBuffer&) = delete;
@@ -52,7 +66,10 @@ namespace cmbtl {
 
             //---------------------- GETTERS --------------------
 
-            const unsigned char* getBuffer() const {
+            //Note: once getBuffer() is called then the BinaryBuffer class is not longer responsible for
+            // freeing the memory of unsigned char* buffer (unless setShouldFreeBufferMemory(true) is called)
+            const unsigned char* getBuffer() {
+                should_free_buffer_memory = false;
                 return buffer;
             }
 
@@ -74,13 +91,16 @@ namespace cmbtl {
                 return read_cursor_pos;
             }
 
+            inline bool shouldFreeBufferMemory() const {
+                return should_free_buffer_memory;
+            }
+
             // Returns the size of the buffer in terms of bytes. This is the number of char elements in the unsigned char* buffer array
             inline size_t getSize() const {
                 return (capacity - 1) / CHAR_BIT + 1;
             }
 
-            //---------------- BASIC FUNCTIONS --------------------
-
+            //------------------- SETTERS ---------------------------
             //Sets write_cursor_pos to a custom user defined index
             inline void setWriteCursorPos(uint32_t new_pos) {
                 assert(new_pos < capacity && "New cursor position must be within range [0, capacity).");
@@ -102,6 +122,11 @@ namespace cmbtl {
                 read_cursor_pos = bits_read;
             }
 
+            inline void setShouldFreeBufferMemory(bool value) {
+                should_free_buffer_memory = value;
+            }
+            //---------------- BASIC FUNCTIONS --------------------
+
             inline void clearBuffer() {
                 memset(buffer, 0, getSize());
 
@@ -121,6 +146,8 @@ namespace cmbtl {
             //Does modify read_cursor_pos or bits_read
             inline uint8_t readBit() {
                 uint8_t bit = getBit(read_cursor_pos);
+
+                //Update read_cursor_poos and bits_read
                 read_cursor_pos++;
                 if (read_cursor_pos > bits_read) {
                     bits_read = read_cursor_pos;
@@ -128,16 +155,9 @@ namespace cmbtl {
                 return bit;
             }
 
-            inline void writeBit(uint8_t bit) {
-                assert((bit == 0 || bit == 1) && "Bit value must be 0 or 1.");
-                assert(write_cursor_pos < capacity && "Binary buffer is already full! You cannot write anymore bits!");
-                if (bit) {
-                    //Write bit
-                    buffer[getBufferArrayIndex(write_cursor_pos)] |= 0x1 << getDistanceFromLSB(write_cursor_pos);
-                } else {
-                    //Reset bit
-                    buffer[getBufferArrayIndex(write_cursor_pos)] &= ~(0x1 << getDistanceFromLSB(write_cursor_pos));
-                }
+            //Does modify write_cursor_pos and bits_written
+            inline void write(uint8_t bit) {
+                writeBit(bit, write_cursor_pos);
 
                 //Update write_cursor_pos and bits_written
                 write_cursor_pos++;
@@ -145,34 +165,50 @@ namespace cmbtl {
                     bits_written = write_cursor_pos;
                 }
             }
+            
+            //Does NOT modify write_cursor_pos and bits_written
+            inline void writeBit(uint8_t bit, uint32_t bit_index) {
+                assert((bit == 0 || bit == 1) && "Bit value must be 0 or 1.");
+                assert(bit_index < capacity && "Parameter: bit_index must be in range [0, capacity)");
+                if (bit) {
+                    //Write bit
+                    buffer[getBufferArrayIndex(bit_index)] |= 0x1 << getDistanceFromLSB(bit_index);
+                } else {
+                    //Reset bit
+                    buffer[getBufferArrayIndex(bit_index)] &= ~(0x1 << getDistanceFromLSB(bit_index));
+                }
+            }
 
             //---------------------- DERIVED FUNCTIONS ------------------------------
-
+            //Assumes big endian values
             template<typename V>
-            inline void write(V val) {
-                write(val, sizeof(V) * CHAR_BIT);
+            inline void writeValue(V val) {
+                writeValue(val, sizeof(V) * CHAR_BIT);
             }
         
             template<typename V>
             //Writes num_bits from variable val, the range is shifted to include the rightmost (i.e LSB)
-            inline void write(V val, uint32_t num_bits) {
+            //Assumes big endian values
+            inline void writeValue(V val, uint32_t num_bits) {
                 constexpr size_t val_size = sizeof(V);
                 unsigned char temp_buffer[val_size];
 
                 memcpy(temp_buffer, &val, val_size);
                 for (uint32_t i = (val_size * CHAR_BIT - num_bits); i < val_size * CHAR_BIT; i++) {
                     uint8_t bit = (temp_buffer[getBufferArrayIndex(i)] >> getDistanceFromLSB(i)) & 0x01;
-                    writeBit(bit);
+                    write(bit);
                 }
             }
 
             //Reads value type V from the buffer.
+            //Assumes big endian values
             template<typename V>
-            inline V read() {
-                return read<V>(sizeof(V) * CHAR_BIT);
+            inline V readValue() {
+                return readValue<V>(sizeof(V) * CHAR_BIT);
             }
 
             //Reads num_bits from the buffer and places then and returns a variable of type V
+            //Assumes big endian values
             //This functions reads bits from least to most significant (right to left in binary)
             //If num_bits is less than the number of bits V takes up, 
             //only the num_bits rightmost bits will be stored in the returned value
@@ -180,7 +216,7 @@ namespace cmbtl {
             //V: Type that you would like to read from buffer
             //Parameter: num_bits, number of bits that you would like to read from the buffer.
             template<typename V>
-            inline V read(uint32_t num_bits) {
+            inline V readValue(uint32_t num_bits) {
                 constexpr size_t val_size = sizeof(V);
                 unsigned char temp_buffer[val_size];
 
@@ -209,7 +245,7 @@ namespace cmbtl {
                 //Initialize bitset
                 std::bitset<L> bitset;
                 for (uint32_t count = 0; count < L; count++) {
-                    bitset[count] = getBit(start_bit_index + count);
+                    bitset[L - 1 - count] = getBit(start_bit_index + count);
                 }
                 return bitset;
             }
@@ -222,6 +258,12 @@ namespace cmbtl {
             }
             static constexpr inline uint32_t getDistanceFromLSB(uint32_t bit_index) {
                 return CHAR_BIT - 1 - (bit_index % CHAR_BIT);
+            }
+            inline void resetIOValues() {
+                bits_written = 0;
+                write_cursor_pos = 0;
+                bits_read = 0;
+                read_cursor_pos = 0;
             } 
     };
 }
