@@ -7,3 +7,9 @@ Dockerfile
 /10 Analytics Website/swagger-editor
 7 Data Translation/Config
 **/.vs/
+*.cmake
+*.pyc
+*.o
+**/.vscode/
+**/CMakeFiles/
+**/_deps/
