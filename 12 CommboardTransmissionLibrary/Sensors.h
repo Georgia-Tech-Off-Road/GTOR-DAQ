@@ -1,4 +1,4 @@
-#include "Sensor/millisec.h"
+#include "Sensors/millisec.h"
 #ifndef CMBTL_SENSORS_H
 #define CMBTL_SENSORS_H
 namespace cmbtl {
