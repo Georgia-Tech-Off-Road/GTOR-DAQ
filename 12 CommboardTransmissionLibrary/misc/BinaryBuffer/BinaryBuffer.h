@@ -14,18 +14,18 @@ namespace cmbtl {
             uint32_t capacity;
 
             //Holds the value of the index after the index of the furthest bit written
-            uint32_t bits_written;
+            mutable uint32_t bits_written;
 
             //Holds the index of the bit that should be written (or overwritten) on the next writeValue
             //For most use cases write_cursor_pos = bits_written
-            uint32_t write_cursor_pos;
+            mutable uint32_t write_cursor_pos;
 
             //Holds the value of the index after the index of the furthest bit read
-            uint32_t bits_read;
+            mutable uint32_t bits_read;
 
             //Holds the index of the bit that should read next
             //For most use cases read_cursor_pos = bits_read
-            uint32_t read_cursor_pos;
+            mutable uint32_t read_cursor_pos;
 
             //Tracks ownership of the buffer so that it does not free memory that is used elsewhere
             bool should_free_buffer_memory;
@@ -102,23 +102,23 @@ namespace cmbtl {
 
             //------------------- SETTERS ---------------------------
             //Sets write_cursor_pos to a custom user defined index
-            inline void setWriteCursorPos(uint32_t new_pos) {
+            inline void setWriteCursorPos(uint32_t new_pos) const {
                 assert(new_pos < capacity && "New cursor position must be within range [0, capacity).");
                 write_cursor_pos = new_pos;
             }
             //Resets write_cursor_pos to bits_written, i.e index after the furthest bit written
-            inline void resetWriteCursorPos() {
+            inline void resetWriteCursorPos() const {
                 write_cursor_pos = bits_written;
             }
 
             //Sets read_cursor_pos to a custom user defined index
-            inline void setReadCursorPos(uint32_t new_pos) {
+            inline void setReadCursorPos(uint32_t new_pos) const {
                 assert(new_pos < capacity && "New cursor position must be within range [0, capacity).");
                 read_cursor_pos = new_pos;
             }
 
             //Resets read_cursor_pos to bits_read, i.e index after the furthest bit read
-            inline void resetReadCursorPos() {
+            inline void resetReadCursorPos() const {
                 read_cursor_pos = bits_read;
             }
 
@@ -144,7 +144,7 @@ namespace cmbtl {
             }
 
             //Does modify read_cursor_pos or bits_read
-            inline uint8_t readBit() {
+            inline uint8_t readBit() const {
                 uint8_t bit = getBit(read_cursor_pos);
 
                 //Update read_cursor_poos and bits_read
@@ -203,7 +203,7 @@ namespace cmbtl {
             //Reads value type V from the buffer.
             //Assumes big endian values
             template<typename V>
-            inline V readValue() {
+            inline V readValue() const {
                 return readValue<V>(sizeof(V) * CHAR_BIT);
             }
 
@@ -216,7 +216,7 @@ namespace cmbtl {
             //V: Type that you would like to read from buffer
             //Parameter: num_bits, number of bits that you would like to read from the buffer.
             template<typename V>
-            inline V readValue(uint32_t num_bits) {
+            inline V readValue(uint32_t num_bits) const {
                 constexpr size_t val_size = sizeof(V);
                 unsigned char temp_buffer[val_size];
 
