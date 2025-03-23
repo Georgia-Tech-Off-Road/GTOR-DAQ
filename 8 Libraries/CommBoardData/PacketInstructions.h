@@ -1,7 +1,7 @@
 #include "SensorInfo.h"
 #ifndef PACKET_INSTRUCTIONS_H
 #define PACKET_INSTRUCTIONS_H
-struct PacketInfo {
+struct PacketBuilderParams {
     //Include millisec should always be true
     bool include_millisec = true;
     bool include_clutch_engaged = false;
@@ -42,10 +42,10 @@ struct PacketInfo {
 // 2.) Do not include RPM (index 1)
 // 3.) Do include speed (index 2)
 // 4.) And finally, do not include brake pressure (index 3)
-// This PacketInstructions class is just a nice way to create these instructions
-class PacketInstructions {
+// This PacketBuilder class is just a nice way to create these instructions
+class PacketBuilder {
     unsigned int packetInstructions : NUM_SENSORS;
-    PacketInstructions(PacketInfo packetInfo) {
+    PacketBuilder(PacketBuilderParams packetInfo) {
         //Should be this already, do it just to be sure
         packetInstructions = 0x0;
         if (packetInfo.include_millisec) {

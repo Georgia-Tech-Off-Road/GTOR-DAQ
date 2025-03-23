@@ -28,7 +28,7 @@ namespace cmb {
         public:
             typedef data_return_type(Data::*getDataFunction)(void);
 
-            std::vector<PacketInstructions> packets; 
+            std::vector<PacketBuilder> packets; 
 
             //Stores info about which function in Data retrieves data for each sensor, and the size of that data (in bits)
             //The indice of the information for each sensor should be the same as its SensorIndex::SensorName value.
