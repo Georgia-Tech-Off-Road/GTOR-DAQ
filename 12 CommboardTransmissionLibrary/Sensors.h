@@ -1,6 +1,10 @@
+#include "SensorInfo.h"
 #include "Sensors/millisec.h"
+#include <vector>
 #ifndef CMBTL_SENSORS_H
 #define CMBTL_SENSORS_H
+
+using std::vector;
 namespace cmbtl {
     //--------------- Define Sensor Indexes ----------------------------------------------------
     enum SensorIndex {
@@ -28,6 +32,16 @@ namespace cmbtl {
         //COUNT SHOULD ALWAYS BE THE LAST ELEMENT
         COUNT,
     };
-    static constexpr int NUM_SENSORS = SensorIndex::COUNT;
+    constexpr int NUM_SENSORS = SensorIndex::COUNT;
+
+    constexpr vector<SensorInfo> SENSORS = createSensorArray();
+
+    constexpr vector<SensorInfo> createSensorArray() {
+        constexpr vector<SensorInfo> SENSORS;
+
+        SENSORS.add(SensorIndex::MILLI_SEC, cmbtl::millisec::MILLISEC_SENSOR_INFO);
+
+        return SENSORS;
+    }
 }
 #endif

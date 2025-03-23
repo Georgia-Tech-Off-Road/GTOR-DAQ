@@ -31,7 +31,7 @@ namespace cmbtl {
 		}
 
 		//The millisec sensor
-		constexpr cmbtl::SensorInfo<SV, RV> MILLISEC_SENSOR = {ENCODED_BIT_SIZE, encodeMillisec, decodeMillisec, convert};
+		constexpr cmbtl::SensorInfo<SV, RV> MILLISEC_SENSOR_INFO = {ENCODED_BIT_SIZE, encodeMillisec, decodeMillisec, convert};
 	}
 }
 #endif
