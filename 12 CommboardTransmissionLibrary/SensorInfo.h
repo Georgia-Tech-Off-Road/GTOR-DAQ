@@ -10,13 +10,22 @@ namespace cmbtl {
     template <typename SV, typename RV>
     struct SensorInfo {
         //Numbers of bits that the SV will be stored as in the buffer
-        constexpr uint32_t ENCODED_BIT_SIZE;
+        uint32_t ENCODED_BIT_SIZE;
         //Takes data from data and stores it in buffer
         void (*encode)(SensorData& const data, BinaryBuffer& buffer);
         //Takes data from buffer and updates data
         void (*decode)(SensorData& data, BinaryBuffer& const buffer);
         //Convert to a more natural (and probably less space efficient) data type after data is sent over.
         RV(*convert)(SV);
+
+        //We use an initializer list for constexpr to work
+        constexpr SensorInfo(uint32_t bit_size, 
+            void (*enc)(SensorData& const data, BinaryBuffer& buffer), 
+            void (*dec)(SensorData& data, BinaryBuffer& const buffer), 
+            RV(*conv)(SV)) : ENCODED_BIT_SIZE(bit_size), 
+            encode(enc),
+            decode(dec), 
+            convert(conv) {}
     };
 }
 #endif

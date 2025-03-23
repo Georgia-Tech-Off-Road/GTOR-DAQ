@@ -1,4 +1,5 @@
 #include "misc/BinaryBuffer/BinaryBuffer.h"
+#include "PacketInstructions.h"
 #include "Sensors.h"
 
 #ifndef CMBTL_PACKET_INSTRUCTIONS_BUILDER_H
@@ -36,14 +37,6 @@ using cmbtl::SensorIndex;
         bool include_brake_temp_back = false;
         bool include_steering_rotation = false;
     };
-
-
-    class PacketInstructions : BinaryBuffer {
-        public:
-            PacketInstructions() {
-                BinaryBuffer(cmbtl::NUM_SENSORS);
-            }
-    }
 
     //Packet Instructions work like this:
     //Imagine that we have four sensors with the following indices:
