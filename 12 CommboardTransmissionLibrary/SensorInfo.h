@@ -1,7 +1,8 @@
-#include "SensorData.h"
 #include "misc/BinaryBuffer/BinaryBuffer.h"
 #ifndef CMBTL_SENSOR_INFO_H
 #define CMBTL_SENSOR_INFO_H
+//Included after include guard because of circular dependency
+#include "SensorData.h"
 namespace cmbtl {
     //--------------- Define Data Types for Different Sensors ---------------------------------
     //SV: Stored Value, value that is stored in the Data struct
