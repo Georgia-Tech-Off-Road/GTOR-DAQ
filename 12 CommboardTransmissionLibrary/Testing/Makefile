@@ -132,14 +132,14 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(CMAKE_COMMAND) -E cmake_progress_start "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary/CMakeFiles" "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary/misc/BinaryBuffer//CMakeFiles/progress.marks"
-	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 misc/BinaryBuffer/all
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(CMAKE_COMMAND) -E cmake_progress_start "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary/CMakeFiles" "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary/Testing//CMakeFiles/progress.marks"
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Testing/all
 	$(CMAKE_COMMAND) -E cmake_progress_start "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary/CMakeFiles" 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 misc/BinaryBuffer/clean
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Testing/clean
 .PHONY : clean
 
 # The main clean target
@@ -148,12 +148,12 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 misc/BinaryBuffer/preinstall
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Testing/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 misc/BinaryBuffer/preinstall
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Testing/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
@@ -162,42 +162,42 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-misc/BinaryBuffer/CMakeFiles/BinaryBufferTest.dir/rule:
-	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 misc/BinaryBuffer/CMakeFiles/BinaryBufferTest.dir/rule
-.PHONY : misc/BinaryBuffer/CMakeFiles/BinaryBufferTest.dir/rule
+Testing/CMakeFiles/SensorsTest.dir/rule:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Testing/CMakeFiles/SensorsTest.dir/rule
+.PHONY : Testing/CMakeFiles/SensorsTest.dir/rule
 
 # Convenience name for target.
-BinaryBufferTest: misc/BinaryBuffer/CMakeFiles/BinaryBufferTest.dir/rule
-.PHONY : BinaryBufferTest
+SensorsTest: Testing/CMakeFiles/SensorsTest.dir/rule
+.PHONY : SensorsTest
 
 # fast build rule for target.
-BinaryBufferTest/fast:
-	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f misc/BinaryBuffer/CMakeFiles/BinaryBufferTest.dir/build.make misc/BinaryBuffer/CMakeFiles/BinaryBufferTest.dir/build
-.PHONY : BinaryBufferTest/fast
+SensorsTest/fast:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/SensorsTest.dir/build.make Testing/CMakeFiles/SensorsTest.dir/build
+.PHONY : SensorsTest/fast
 
-BinaryBuffer_unittest.o: BinaryBuffer_unittest.cpp.o
-.PHONY : BinaryBuffer_unittest.o
+Sensors_unittest.o: Sensors_unittest.cpp.o
+.PHONY : Sensors_unittest.o
 
 # target to build an object file
-BinaryBuffer_unittest.cpp.o:
-	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f misc/BinaryBuffer/CMakeFiles/BinaryBufferTest.dir/build.make misc/BinaryBuffer/CMakeFiles/BinaryBufferTest.dir/BinaryBuffer_unittest.cpp.o
-.PHONY : BinaryBuffer_unittest.cpp.o
+Sensors_unittest.cpp.o:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/SensorsTest.dir/build.make Testing/CMakeFiles/SensorsTest.dir/Sensors_unittest.cpp.o
+.PHONY : Sensors_unittest.cpp.o
 
-BinaryBuffer_unittest.i: BinaryBuffer_unittest.cpp.i
-.PHONY : BinaryBuffer_unittest.i
+Sensors_unittest.i: Sensors_unittest.cpp.i
+.PHONY : Sensors_unittest.i
 
 # target to preprocess a source file
-BinaryBuffer_unittest.cpp.i:
-	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f misc/BinaryBuffer/CMakeFiles/BinaryBufferTest.dir/build.make misc/BinaryBuffer/CMakeFiles/BinaryBufferTest.dir/BinaryBuffer_unittest.cpp.i
-.PHONY : BinaryBuffer_unittest.cpp.i
+Sensors_unittest.cpp.i:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/SensorsTest.dir/build.make Testing/CMakeFiles/SensorsTest.dir/Sensors_unittest.cpp.i
+.PHONY : Sensors_unittest.cpp.i
 
-BinaryBuffer_unittest.s: BinaryBuffer_unittest.cpp.s
-.PHONY : BinaryBuffer_unittest.s
+Sensors_unittest.s: Sensors_unittest.cpp.s
+.PHONY : Sensors_unittest.s
 
 # target to generate assembly for a file
-BinaryBuffer_unittest.cpp.s:
-	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f misc/BinaryBuffer/CMakeFiles/BinaryBufferTest.dir/build.make misc/BinaryBuffer/CMakeFiles/BinaryBufferTest.dir/BinaryBuffer_unittest.cpp.s
-.PHONY : BinaryBuffer_unittest.cpp.s
+Sensors_unittest.cpp.s:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/SensorsTest.dir/build.make Testing/CMakeFiles/SensorsTest.dir/Sensors_unittest.cpp.s
+.PHONY : Sensors_unittest.cpp.s
 
 # Help Target
 help:
@@ -211,10 +211,10 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
-	@echo "... BinaryBufferTest"
-	@echo "... BinaryBuffer_unittest.o"
-	@echo "... BinaryBuffer_unittest.i"
-	@echo "... BinaryBuffer_unittest.s"
+	@echo "... SensorsTest"
+	@echo "... Sensors_unittest.o"
+	@echo "... Sensors_unittest.i"
+	@echo "... Sensors_unittest.s"
 .PHONY : help
 
 
