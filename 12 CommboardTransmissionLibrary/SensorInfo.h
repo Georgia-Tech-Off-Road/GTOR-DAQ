@@ -1,8 +1,6 @@
 #include "misc/BinaryBuffer/BinaryBuffer.h"
 #ifndef CMBTL_SENSOR_INFO_H
 #define CMBTL_SENSOR_INFO_H
-//Included after include guard because of circular dependency
-#include "SensorData.h"
 namespace cmbtl {
     //--------------- Define Data Types for Different Sensors ---------------------------------
     //SV: Stored Value, value that is stored in the Data struct
@@ -13,16 +11,16 @@ namespace cmbtl {
         //Numbers of bits that the SV will be stored as in the buffer
         uint32_t ENCODED_BIT_SIZE;
         //Takes data from data and stores it in buffer
-        void (*encode)(SensorData& const data, BinaryBuffer& buffer);
+        void (*encode)(SV data, BinaryBuffer& buffer);
         //Takes data from buffer and updates data
-        void (*decode)(SensorData& data, BinaryBuffer& const buffer);
+        SV (*decode)(const BinaryBuffer& buffer);
         //Convert to a more natural (and probably less space efficient) data type after data is sent over.
         RV(*convert)(SV);
 
         //We use an initializer list for constexpr to work
         constexpr SensorInfo(uint32_t bit_size, 
-            void (*enc)(SensorData& const data, BinaryBuffer& buffer), 
-            void (*dec)(SensorData& data, BinaryBuffer& const buffer), 
+            void (*enc)(SV data, BinaryBuffer& buffer), 
+            SV (*dec)(const BinaryBuffer& buffer), 
             RV(*conv)(SV)) : ENCODED_BIT_SIZE(bit_size), 
             encode(enc),
             decode(dec), 

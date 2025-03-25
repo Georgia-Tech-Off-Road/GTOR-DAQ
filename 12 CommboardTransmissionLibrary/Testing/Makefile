@@ -65,6 +65,16 @@ CMAKE_BINARY_DIR = "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
+	/usr/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+.PHONY : test/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -175,6 +185,82 @@ SensorsTest/fast:
 	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/SensorsTest.dir/build.make Testing/CMakeFiles/SensorsTest.dir/build
 .PHONY : SensorsTest/fast
 
+# Convenience name for target.
+Testing/CMakeFiles/SensorInfoTests.dir/rule:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Testing/CMakeFiles/SensorInfoTests.dir/rule
+.PHONY : Testing/CMakeFiles/SensorInfoTests.dir/rule
+
+# Convenience name for target.
+SensorInfoTests: Testing/CMakeFiles/SensorInfoTests.dir/rule
+.PHONY : SensorInfoTests
+
+# fast build rule for target.
+SensorInfoTests/fast:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/SensorInfoTests.dir/build.make Testing/CMakeFiles/SensorInfoTests.dir/build
+.PHONY : SensorInfoTests/fast
+
+# Convenience name for target.
+Testing/CMakeFiles/SensorDataTests.dir/rule:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Testing/CMakeFiles/SensorDataTests.dir/rule
+.PHONY : Testing/CMakeFiles/SensorDataTests.dir/rule
+
+# Convenience name for target.
+SensorDataTests: Testing/CMakeFiles/SensorDataTests.dir/rule
+.PHONY : SensorDataTests
+
+# fast build rule for target.
+SensorDataTests/fast:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/SensorDataTests.dir/build.make Testing/CMakeFiles/SensorDataTests.dir/build
+.PHONY : SensorDataTests/fast
+
+SensorData_unittest.o: SensorData_unittest.cpp.o
+.PHONY : SensorData_unittest.o
+
+# target to build an object file
+SensorData_unittest.cpp.o:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/SensorDataTests.dir/build.make Testing/CMakeFiles/SensorDataTests.dir/SensorData_unittest.cpp.o
+.PHONY : SensorData_unittest.cpp.o
+
+SensorData_unittest.i: SensorData_unittest.cpp.i
+.PHONY : SensorData_unittest.i
+
+# target to preprocess a source file
+SensorData_unittest.cpp.i:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/SensorDataTests.dir/build.make Testing/CMakeFiles/SensorDataTests.dir/SensorData_unittest.cpp.i
+.PHONY : SensorData_unittest.cpp.i
+
+SensorData_unittest.s: SensorData_unittest.cpp.s
+.PHONY : SensorData_unittest.s
+
+# target to generate assembly for a file
+SensorData_unittest.cpp.s:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/SensorDataTests.dir/build.make Testing/CMakeFiles/SensorDataTests.dir/SensorData_unittest.cpp.s
+.PHONY : SensorData_unittest.cpp.s
+
+SensorInfo_unittest.o: SensorInfo_unittest.cpp.o
+.PHONY : SensorInfo_unittest.o
+
+# target to build an object file
+SensorInfo_unittest.cpp.o:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/SensorInfoTests.dir/build.make Testing/CMakeFiles/SensorInfoTests.dir/SensorInfo_unittest.cpp.o
+.PHONY : SensorInfo_unittest.cpp.o
+
+SensorInfo_unittest.i: SensorInfo_unittest.cpp.i
+.PHONY : SensorInfo_unittest.i
+
+# target to preprocess a source file
+SensorInfo_unittest.cpp.i:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/SensorInfoTests.dir/build.make Testing/CMakeFiles/SensorInfoTests.dir/SensorInfo_unittest.cpp.i
+.PHONY : SensorInfo_unittest.cpp.i
+
+SensorInfo_unittest.s: SensorInfo_unittest.cpp.s
+.PHONY : SensorInfo_unittest.s
+
+# target to generate assembly for a file
+SensorInfo_unittest.cpp.s:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/SensorInfoTests.dir/build.make Testing/CMakeFiles/SensorInfoTests.dir/SensorInfo_unittest.cpp.s
+.PHONY : SensorInfo_unittest.cpp.s
+
 Sensors_unittest.o: Sensors_unittest.cpp.o
 .PHONY : Sensors_unittest.o
 
@@ -211,7 +297,16 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
+	@echo "... test"
+	@echo "... SensorDataTests"
+	@echo "... SensorInfoTests"
 	@echo "... SensorsTest"
+	@echo "... SensorData_unittest.o"
+	@echo "... SensorData_unittest.i"
+	@echo "... SensorData_unittest.s"
+	@echo "... SensorInfo_unittest.o"
+	@echo "... SensorInfo_unittest.i"
+	@echo "... SensorInfo_unittest.s"
 	@echo "... Sensors_unittest.o"
 	@echo "... Sensors_unittest.i"
 	@echo "... Sensors_unittest.s"
