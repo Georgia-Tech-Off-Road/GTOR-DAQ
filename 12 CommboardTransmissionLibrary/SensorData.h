@@ -2,6 +2,7 @@
 #ifndef CMBTL_SENSOR_DATA_H
 #define CMBTL_SENSOR_DATA_H
 namespace cmbtl {
+    template<
     struct SensorData {
         //Time since data aquisition began
         cmbtl::millisec::SV millisec;

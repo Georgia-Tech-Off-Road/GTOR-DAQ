@@ -34,7 +34,7 @@ namespace cmbtl {
     };
     constexpr int NUM_SENSORS = SensorIndex::COUNT;
 
-    constexpr std::array<SensorInfo> SENSORS = createSensorArray();
+    constexpr std::array<SensorInfo, NUM_SENSORS> SENSORS = createSensorArray();
 
     constexpr std::array<SensorInfo> createSensorArray() {
         constexpr std::array<SensorInfo> SENSORS;
