@@ -1,116 +1,147 @@
 import Chart from "chart.js/auto";
 import 'chartjs-adapter-luxon';
-//Use Chart Streaming plugin: https://nagix.github.io/chartjs-plugin-streaming/master/guide/getting-started.html#integration
 import ChartStreaming from 'chartjs-plugin-streaming';
-import {useRef, useEffect} from "react";
+import { useRef, useEffect } from "react";
 
-Chart.register(ChartStreaming)
+Chart.register(ChartStreaming);
 
-export default function SensorGraph({socket}) {
-
-    //Reference to <canvas> in DOM
+export default function SensorGraph({ socket }) {
     const canvasRef = useRef(null);
-    let chart = null;
-    let chartRendered = false;
+    const chartRef = useRef(null);
+    const chartRenderedRef = useRef(false);
     let currentIndex = 1;
-    //After DOM has been commited to, get graph data, declare chartRendered as a dependency
-    //See: https://react.dev/learn/synchronizing-with-effects
+
     useEffect(() => {
-        if(!chartRendered) {
+        if (!chartRenderedRef.current) {
             generateInitialGraph();
         }
-    }, [chartRendered])
+    }, []);
 
-    //Setup the socket connection
     useEffect(() => {
         if (socket) {
-            //Request data as part of setup
-            requestData(socket)
+            requestData(socket);
             socket.addEventListener("message", (msg) => {
-            let res = JSON.parse(msg.data)
-            if (res.msgType.toString() === "data") {
-              //JSON.parse convert a string to a json object, like in index.js of live-data-test!
-              //
-              let content = res.content
-              updateGraph(content)
-            }
-          })
-      }}, [socket]);
-
-    //Generate graph using Chart.js
-    async function generateInitialGraph() {
-        //Test data
-        let data = {
-            datasets: [{
-                axis: "y",
-                label: "Sensor Data",
-                data: [],
-                fill: false,
-                borderColor: "rgba(255, 0, 0, 1)",
-                backgroundColor: "(0, 255, 0, 1)",
-            }]
+                let res = JSON.parse(msg.data);
+                if (res.msgType.toString() === "data") {
+                    updateGraph(res.content);
+                }
+            });
         }
-        chart = new Chart(
-            canvasRef.current,
-              {
-                options: {
-                    plugins: {
-                        streaming: {
-                            duration: 5000
+    }, [socket]);
+
+    async function generateInitialGraph() {
+        const data = {
+            datasets: [
+                {
+                    label: "Brake Pressure Front",
+                    data: [],
+                    borderColor: "rgba(255, 99, 132, 1)", // Red
+                    fill: false,
+                    tension: 0.1
+                },
+                {
+                    label: "Brake Pressure Rear",
+                    data: [],
+                    borderColor: "rgba(54, 162, 235, 1)", // Blue
+                    fill: false,
+                    tension: 0.1
+                }
+            ]
+        };
+
+        chartRef.current = new Chart(canvasRef.current, {
+            type: "line",
+            data: data,
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        type: "realtime",
+                        realtime: {
+                            duration: 20000,
+                            refresh: 1000,
+                            delay: 1000
+                        },
+                        title: {
+                            display: true,
+                            text: "Time"
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: "Brake Pressure"
                         }
                     }
                 },
-                 type: "line",
-                 data: data,
-                 scales: {
-                    x: {
-                        type: "realtime"
+                plugins: {
+                    streaming: {
+                        duration: 5000
                     }
-                 }
-           }
-        )
+                }
+            }
+        });
 
+        chartRenderedRef.current = true;
+    }
 
-        //Update chartRendered
-        chartRendered = true
+    function updateGraph(sensorData) {
+        if (!chartRef.current || !sensorData) return;
+
+        const front = parseFloat(sensorData.brakePresssureFront);
+        const rear = parseFloat(sensorData.brakePressureRear);
+        const now = Date.now();
+
+        if (!isNaN(front)) {
+            chartRef.current.data.datasets[0].data.push({ x: now, y: front });
+        }
+        if (!isNaN(rear)) {
+            chartRef.current.data.datasets[1].data.push({ x: now, y: rear });
+        }
+
+        chartRef.current.update('quiet');
     }
 
     function testDataPush() {
-        let intervalID = setInterval(() => {
-            chart.data.datasets[0].data.push({x: Date.now(), y: currentIndex});
-            currentIndex = currentIndex + 1;
-            chart.update('quiet');
-        }, 10)
+        let y1 = 10;
+        let y2 = 8;
+
+        const intervalID = setInterval(() => {
+            y1 += (Math.random() - 0.5) * 0.5;
+            y2 += (Math.random() - 0.5) * 0.5;
+
+            const now = Date.now();
+
+            chartRef.current.data.datasets[0].data.push({ x: now, y: y1 });
+            chartRef.current.data.datasets[1].data.push({ x: now, y: y2 });
+
+            chartRef.current.update('quiet');
+        }, 100);
+
         setTimeout(() => {
-            clearInterval(intervalID)
-        }, 10 * 1000)
+            clearInterval(intervalID);
+        }, 10000);
     }
-    return(
-        <div style={{width: "800px"}}>
+
+    return (
+        <div style={{ width: "800px" }}>
             <canvas ref={canvasRef}></canvas>
             <button onClick={testDataPush}>Click Me</button>
         </div>
-    )
+    );
 }
 
 function requestData(socket) {
-    //If socket is open, request data immediately
     if (socket.readyState === WebSocket.OPEN) {
-      socket.send("data");
-    } else { //Otherwise wait
-      socket.addEventListener(
-        "open",
-        () => {
-          alert("Requesting data!")
-          socket.send("data")
-        },
-        { once: true}
-      );
-   }
-  }
-  
-  //For y'all to implement!!!
-  function updateGraph(sensorData) {
-    console.log(JSON.stringify(sensorData))
-    return;
-  }
+        socket.send("data");
+    } else {
+        socket.addEventListener(
+            "open",
+            () => {
+                alert("Requesting data!");
+                socket.send("data");
+            },
+            { once: true }
+        );
+    }
+}
