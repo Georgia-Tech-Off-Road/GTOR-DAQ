@@ -1,11 +1,36 @@
+#include "SensorInfo.h"
 #include "Sensors.h"
+#include <tuple>
+#include <type_traits>
+
 #ifndef CMBTL_SENSOR_DATA_H
 #define CMBTL_SENSOR_DATA_H
 namespace cmbtl {
-    template<
+
+    //------------- Helps deduces at compile time if variadic template arguments are actually all instances of SensorInfo
+    template<typename T>
+    struct is_sensor_info : std::false_type {};
+
+    template<typename SV, typename RV>
+    struct is_sensor_info<cmbtl::SensorInfo<SV, RV>> : std::true_type {};
+    //----------------------------------------------------------------------------------------------------------------------
+    template <typename... CTSensors>
     struct SensorData {
+
+        // First get the CompileTimeSensorInfo type
+        template<size_t N>
+        using CompileSensorAt = typename std::tuple_element<N, std::tuple<CTSensors...>>::type;
+
+        // Then get the SensorInfo instance
+        template<size_t N>
+        using SensorInfoAt = decltype(CompileSensorAt<N>::value);
+
+        // Finally get the stored value type
+        template<size_t N>
+        using SensorSV = typename SensorInfoAt<N>::STORED_VALUE;
+        
         //Time since data aquisition began
-        cmbtl::millisec::SV millisec;
+        SensorSV<0> millisec;
         //Is clutch engaged or not?
         unsigned int clutchEngaged : 1;
         //Pit stop requested?

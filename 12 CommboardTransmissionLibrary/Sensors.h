@@ -32,16 +32,5 @@ namespace cmbtl {
         //COUNT SHOULD ALWAYS BE THE LAST ELEMENT
         COUNT,
     };
-    constexpr int NUM_SENSORS = SensorIndex::COUNT;
-
-    constexpr std::array<SensorInfo, NUM_SENSORS> SENSORS = createSensorArray();
-
-    constexpr std::array<SensorInfo> createSensorArray() {
-        constexpr std::array<SensorInfo> SENSORS;
-
-        SENSORS.add(SensorIndex::MILLI_SEC, cmbtl::millisec::MILLISEC_SENSOR_INFO);
-
-        return SENSORS;
-    }
 }
 #endif

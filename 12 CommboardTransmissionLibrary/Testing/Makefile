@@ -65,7 +65,6 @@ CMAKE_BINARY_DIR = "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/
 #=============================================================================
 # Targets provided globally by CMake.
 
-<<<<<<< HEAD
 # Special rule for the target test
 test:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
@@ -76,8 +75,6 @@ test:
 test/fast: test
 .PHONY : test/fast
 
-=======
->>>>>>> 038d0c9c22c866c18d3ad23a59a4946df5a71809
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -188,7 +185,6 @@ SensorsTest/fast:
 	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/SensorsTest.dir/build.make Testing/CMakeFiles/SensorsTest.dir/build
 .PHONY : SensorsTest/fast
 
-<<<<<<< HEAD
 # Convenience name for target.
 Testing/CMakeFiles/SensorInfoTests.dir/rule:
 	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Testing/CMakeFiles/SensorInfoTests.dir/rule
@@ -265,8 +261,6 @@ SensorInfo_unittest.cpp.s:
 	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/SensorInfoTests.dir/build.make Testing/CMakeFiles/SensorInfoTests.dir/SensorInfo_unittest.cpp.s
 .PHONY : SensorInfo_unittest.cpp.s
 
-=======
->>>>>>> 038d0c9c22c866c18d3ad23a59a4946df5a71809
 Sensors_unittest.o: Sensors_unittest.cpp.o
 .PHONY : Sensors_unittest.o
 
@@ -303,7 +297,6 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
-<<<<<<< HEAD
 	@echo "... test"
 	@echo "... SensorDataTests"
 	@echo "... SensorInfoTests"
@@ -314,9 +307,6 @@ help:
 	@echo "... SensorInfo_unittest.o"
 	@echo "... SensorInfo_unittest.i"
 	@echo "... SensorInfo_unittest.s"
-=======
-	@echo "... SensorsTest"
->>>>>>> 038d0c9c22c866c18d3ad23a59a4946df5a71809
 	@echo "... Sensors_unittest.o"
 	@echo "... Sensors_unittest.i"
 	@echo "... Sensors_unittest.s"
