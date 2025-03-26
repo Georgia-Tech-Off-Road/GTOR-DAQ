@@ -17,12 +17,9 @@
 //Builds the googlemock subproject
 BUILD_GMOCK:BOOL=ON
 
-<<<<<<< HEAD
 //Build the testing tree.
 BUILD_TESTING:BOOL=ON
 
-=======
->>>>>>> 038d0c9c22c866c18d3ad23a59a4946df5a71809
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=/usr/bin/addr2line
 
@@ -290,7 +287,6 @@ CMBTL_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 CMBTL_SOURCE_DIR:STATIC=/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary
 
-<<<<<<< HEAD
 //Path to the coverage program that CTest uses for performing coverage
 // inspection
 COVERAGE_COMMAND:FILEPATH=/usr/bin/gcov
@@ -307,8 +303,6 @@ CTEST_SUBMIT_RETRY_DELAY:STRING=5
 //Maximum time allowed before CTest will kill the test.
 DART_TESTING_TIMEOUT:STRING=1500
 
-=======
->>>>>>> 038d0c9c22c866c18d3ad23a59a4946df5a71809
 //Directory under which to collect all populated content
 FETCHCONTENT_BASE_DIR:PATH=/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary/_deps
 
@@ -333,7 +327,6 @@ FETCHCONTENT_UPDATES_DISCONNECTED_GOOGLETEST:BOOL=OFF
 // may want to turn this OFF.)
 INSTALL_GTEST:BOOL=ON
 
-<<<<<<< HEAD
 //Command to build the project
 MAKECOMMAND:STRING=/usr/bin/cmake --build . --config "${CTEST_CONFIGURATION_TYPE}" -- -i
 
@@ -346,8 +339,6 @@ MEMORYCHECK_SUPPRESSIONS_FILE:FILEPATH=
 //Name of the computer/site where compile is being run
 SITE:STRING=LPT006
 
-=======
->>>>>>> 038d0c9c22c866c18d3ad23a59a4946df5a71809
 //Value Computed by CMake
 gmock_BINARY_DIR:STATIC=/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary/_deps/googletest-build/googlemock
 
@@ -424,11 +415,8 @@ CMAKE_COLOR_MAKEFILE-ADVANCED:INTERNAL=1
 CMAKE_COMMAND:INTERNAL=/usr/bin/cmake
 //Path to cpack program executable.
 CMAKE_CPACK_COMMAND:INTERNAL=/usr/bin/cpack
-<<<<<<< HEAD
 //ADVANCED property for variable: CMAKE_CTEST_COMMAND
 CMAKE_CTEST_COMMAND-ADVANCED:INTERNAL=1
-=======
->>>>>>> 038d0c9c22c866c18d3ad23a59a4946df5a71809
 //Path to ctest program executable.
 CMAKE_CTEST_COMMAND:INTERNAL=/usr/bin/ctest
 //ADVANCED property for variable: CMAKE_CXX_COMPILER
@@ -590,7 +578,6 @@ CMAKE_STRIP-ADVANCED:INTERNAL=1
 CMAKE_UNAME:INTERNAL=/usr/bin/uname
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
-<<<<<<< HEAD
 //ADVANCED property for variable: COVERAGE_COMMAND
 COVERAGE_COMMAND-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: COVERAGE_EXTRA_FLAGS
@@ -601,13 +588,10 @@ CTEST_SUBMIT_RETRY_COUNT-ADVANCED:INTERNAL=1
 CTEST_SUBMIT_RETRY_DELAY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: DART_TESTING_TIMEOUT
 DART_TESTING_TIMEOUT-ADVANCED:INTERNAL=1
-=======
->>>>>>> 038d0c9c22c866c18d3ad23a59a4946df5a71809
 //Details about finding Python
 FIND_PACKAGE_MESSAGE_DETAILS_Python:INTERNAL=[/usr/bin/python3.10][cfound components: Interpreter ][v3.10.12()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
-<<<<<<< HEAD
 //ADVANCED property for variable: MAKECOMMAND
 MAKECOMMAND-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: MEMORYCHECK_COMMAND
@@ -616,8 +600,6 @@ MEMORYCHECK_COMMAND-ADVANCED:INTERNAL=1
 MEMORYCHECK_SUPPRESSIONS_FILE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: SITE
 SITE-ADVANCED:INTERNAL=1
-=======
->>>>>>> 038d0c9c22c866c18d3ad23a59a4946df5a71809
 //CMAKE_INSTALL_PREFIX during last run
 _GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=/usr/local
 //Path to a program.

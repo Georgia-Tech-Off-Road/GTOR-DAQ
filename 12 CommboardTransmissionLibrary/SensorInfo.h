@@ -8,6 +8,8 @@ namespace cmbtl {
     //      it will be encoded and decoded as a uint, but is proabably most useful as a float afterwards
     template <typename SV, typename RV>
     struct SensorInfo {
+        using STORED_VALUE = SV;
+        using REAL_VALUE = RV;
         //Numbers of bits that the SV will be stored as in the buffer
         uint32_t ENCODED_BIT_SIZE;
         //Takes data from data and stores it in buffer
@@ -25,6 +27,16 @@ namespace cmbtl {
             encode(enc),
             decode(dec), 
             convert(conv) {}
+    };
+
+    template <typename SV, 
+    typename RV, 
+    uint32_t BIT_SIZE,
+    void (*ENCODE)(SV data, BinaryBuffer& buffer),
+    SV (*DECODE)(const BinaryBuffer& buffer),
+    RV (*CONVERT)(SV)>
+    struct CompileTimeSensorInfo {
+        static constexpr SensorInfo<SV, RV> value{BIT_SIZE, ENCODE, DECODE, CONVERT};
     };
 }
 #endif

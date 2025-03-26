@@ -6,8 +6,6 @@
 #include <bitset>
 #ifndef CMBTL_MILLIS_H
 #define CMBTL_MILLIS_H
-
-#include "SensorData.h"
 namespace cmbtl {
 	namespace millisec {
 		//Number of bits that its encoded value should store
@@ -19,12 +17,12 @@ namespace cmbtl {
 		//'Real Value' of millisec
 		using RV = uint32_t;
 
-		inline void encodeMillisec(SensorData& const data, BinaryBuffer& buffer) {
-			buffer.writeValue(data.millisec, ENCODED_NUM_BITS);
+		inline void encodeMillisec(SV value, BinaryBuffer& buffer) {
+			buffer.writeValue(value, ENCODED_BIT_SIZE);
 		}
 
-		inline void decodeMillisec(SensorData& data, BinaryBuffer& const buffer) {
-			data.millisec = buffer.readValue<SV>(ENCODED_NUM_BITS);
+		inline SV decodeMillisec(const BinaryBuffer& buffer) {
+			return buffer.readValue<SV>(ENCODED_BIT_SIZE);
 		}
 
 		inline RV convert(SV stored_val) {
@@ -33,7 +31,7 @@ namespace cmbtl {
 		}
 
 		//The millisec sensor
-		constexpr cmbtl::SensorInfo<SV, RV> MILLISEC_SENSOR_INFO(ENCODED_BIT_SIZE, &encodeMillisec, &decodeMillisec, &convert);
+		using MILLI_SEC_SENSOR_INFO = cmbtl::CompileTimeSensorInfo<SV, RV, ENCODED_BIT_SIZE, encodeMillisec, decodeMillisec, convert>;
 	}
 }
 #endif
