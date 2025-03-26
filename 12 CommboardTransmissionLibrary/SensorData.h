@@ -14,21 +14,23 @@ namespace cmbtl {
     template<typename SV, typename RV>
     struct is_sensor_info<cmbtl::SensorInfo<SV, RV>> : std::true_type {};
     //----------------------------------------------------------------------------------------------------------------------
-    template <typename... CTSensors>
+    template <typename SensorIndicesWrapper, typename... CTSensors>
     struct SensorData {
 
-        // First get the CompileTimeSensorInfo type
         template<size_t N>
         using CompileSensorAt = typename std::tuple_element<N, std::tuple<CTSensors...>>::type;
 
-        // Then get the SensorInfo instance
         template<size_t N>
-        using SensorInfoAt = decltype(CompileSensorAt<N>::value);
+        using SensorInfoTypeAt = decltype(CompileSensorAt<N>::value);
+    
+        //Template to deduce stored value type
+        template<size_t N>
+        using SensorSV = typename SensorInfoTypeAt<N>::STORED_VALUE;
 
-        // Finally get the stored value type
+        //Template to deduce real value type (See SensorInfo.h for more info on both of these)
         template<size_t N>
-        using SensorSV = typename SensorInfoAt<N>::STORED_VALUE;
-        
+        using SensorRV = typename SensorInfoTypeAt<N>::REAL_VALUE;
+
         //Time since data aquisition began
         SensorSV<0> millisec;
         //Is clutch engaged or not?
