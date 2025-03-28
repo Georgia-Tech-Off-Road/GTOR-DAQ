@@ -70,34 +70,47 @@ void loop()
   //if you want to set the zero position before beggining uncomment the following function call
   //once we enter this loop we will run forever
   uint8_t data;
-
+  float steeringPosition;
   //Binary array
   bool binaryArray[16];
   while(1)
   {
+    //create a binary array to make the checksum computation easier
+    bool binaryArray[16];
+    //integer value to be returned from sensor
+    uint16_t currentPosition;
+    //lower cs line
     digitalWrite(ENC, LOW);
-    delayMicroseconds(3);
-    //SPI.beginTransaction(settingsA);
-    data = SPI.transfer(0x00);
-    currentPosition = data << 8;
-    delayMicroseconds(3);
-    //SPI.beginTransaction(settingsA);
-    data = SPI.transfer(0x00);
-    currentPosition |= data;
-    delayMicroseconds(3);
+    //have thread sleep for one millisecond (minimum time) (have to do this because AMT22 needs a 3 microscecond minimum wait between each packet and cs line going high and low )
+    delay(1);
+    //get first half of data
+    currentPosition = SPI.transfer(0x00);
+    //shift first packet into upper 8 bits
+    currentPosition <<= 8;
+    //have thread sleep for one millisecond (minimum time) (have to do this because AMT22 needs a 3 microscecond minimum wait between each packet and cs line going high and low )
+    delay(1);
+    //get second half of data
+    currentPosition |= SPI.transfer(0x00);
+    //have thread sleep for one millisecond (minimum time) (have to do this because AMT22 needs a 3 microscecond minimum wait between each packet and cs line going high and low )
+    delay(1);
+    //raise cs line again
     digitalWrite(ENC, HIGH);
-    //run through the 16 bits of position and put each bit into a slot in the array so we can do the checksum calculation
+    //transfer integer respresentation of position to boolean array
     for(int i = 0; i < 16; i++) binaryArray[i] = (0x01) & (currentPosition >> (i));
-
-    //using the equation on the datasheet we can calculate the checksums and then make sure they match what the encoder sent
+    //evaluate the checksums and return all 1s if we got bad data
     if ((binaryArray[15] == !(binaryArray[13] ^ binaryArray[11] ^ binaryArray[9] ^ binaryArray[7] ^ binaryArray[5] ^ binaryArray[3] ^ binaryArray[1])) && (binaryArray[14] == !(binaryArray[12] ^ binaryArray[10] ^ binaryArray[8] ^ binaryArray[6] ^ binaryArray[4] ^ binaryArray[2] ^ binaryArray[0])))
         currentPosition &= 0x3FFF; //we got back a good position, so just mask away the checkbits
     else
         currentPosition = 0xFFFF; //bad position
-
-    //If the resolution is 12-bits, and wasn't 0xFFFF, then shift position, otherwise do nothing
-    if (currentPosition != 0xFFFF) currentPosition = currentPosition >> 2;
-    Serial.printf("%f\n", convertToDegrees(currentPosition));
+    //If data is valid return degree representation, if not return all 1s
+    if (currentPosition != 0xFFFF){
+        currentPosition = currentPosition >> 2;
+        steeringPosition =  (static_cast<float>(currentPosition) * 360) / 4095;
+    } else {
+        //set steeringPosition variable
+        steeringPosition = static_cast<float>(currentPosition);
+    }
+    Serial.printf("%f\n", steeringPosition);
     delayMicroseconds(40);
   }
 }

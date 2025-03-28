@@ -1,5 +1,17 @@
 #include "DaqPack.h"
 
+//intialize ADCs
+Adafruit_ADS1115 ads1;
+Adafruit_ADS1115 ads2;
+
+//initialize analog value flags
+volatile bool analogValueFlag1 = false;
+volatile bool analogValueFlag2 = false;
+
+//current analog sensor number being polled
+int currentAnalogSensor1 = 0;
+int currentAnalogSensor2 = 0;
+
 //initialize AMT22 sensor
 AMT22 steeringPositionSensor(10, AMT22RES);
 
@@ -13,12 +25,30 @@ void setup() {
   setupTeensyTime();
   //initiliaze serial monitor
   serialMonitor.begin(BAUD);
+  //setup pin modes
+  setupPinModes();
   //perform outFile init
   setUpSD();
+
+  //set up ADC interrupts
+  pinMode(40, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(40), updateAnalogValueFlag1, FALLING);
+  pinMode(41, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(41), updateAnalogValueFlag2, FALLING);
+
+  //configure ADCs
+  ads1.begin(0x48, &Wire);
+  ads1.setDataRate(RATE_ADS1115_64SPS);
+  ads1.setGain(GAIN_ONE);
+
+  ads2.begin(0x49, &Wire);
+  ads2.setDataRate(RATE_ADS1115_64SPS);
+  ads2.setGain(GAIN_ONE);
+
   //zero out all data fields
   initDataStructValues();
   //initialize I2C link
-  initializeI2CCommLink();
+  //initializeI2CCommLink();
   //initialize SPI busses/ports
   initializeSPI();
   //setup execution threads
@@ -27,6 +57,10 @@ void setup() {
   turnOnLEDS();
   //set recording flag
   isRecording = true;
+  //start ADCs
+  ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
+  ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
+  updateAMT22Reading();
 }
 
 //do nothing here
@@ -52,10 +86,19 @@ void dataAquisitionAndSavingLoop() {
       dataStruct.RPMs[2] = frontRight.RPM;
       frontRight.RPMUpdateFlag = false;
     }
+    if (analogValueFlag1) {
+      readAnalogValues1();
+      analogValueFlag1 = false;
+    }
+    if (analogValueFlag2) {
+      readAnalogValues2();
+      analogValueFlag2 = false;
+    }
     if(steeringPositionSensor.steeringPositionUpdateFlag) {
       dataStruct.steeringPosition = steeringPositionSensor.steeringPosition;
       steeringPositionSensor.steeringPositionUpdateFlag = false;
     }
+    //Serial.printf("Steering Positon: %f\n", dataStruct.steeringPosition);
     if (digitalRead(7) && lastSaveTimeInMillis + 1000 < millis()) {
       changeRecordingState();
     }
@@ -66,34 +109,94 @@ void dataAquisitionAndSavingLoop() {
 void updateAMT22Reading() {
   while(1) {
     steeringPositionSensor.getPosition();
-    threads.delay(1);
+    threads.delay_us(500);
   }
 }
-
 //changes recording state and saves file
 void changeRecordingState() {
-    noInterrupts();
-    if(isRecording == true) {
-      while(digitalRead(7) == 1) {
-        delay(10);
-        Serial.println("Button Engaged");
-      }
-      outputFile.close();
-      digitalWrite(9, LOW); //turn off red LED
-      Serial.println("Data Recording Stopped");
-      isRecording = false;
+  //suspend position thread to prevent it from interfering in saving process
+  threads.suspend(AMT22PositionThread);
+  noInterrupts();
+  if(isRecording == true) {
+    while(digitalRead(7) == 1) {
+      delay(10);
+      Serial.println("Button Engaged");
     }
-    else {
-      while(digitalRead(7) == 1) {
-        delay(10);
-      }
-      String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
-      Serial.println(time.c_str());
-      //turn on red LED
-      digitalWrite(9, HIGH);
-      outputFile = SD.open(time.c_str(),  FILE_WRITE);
-      isRecording = true;
+    outputFile.close();
+    digitalWrite(9, LOW); //turn off red LED
+    Serial.println("Data Recording Stopped");
+    isRecording = false;
+  }
+  else {
+    while(digitalRead(7) == 1) {
+      delay(10);
+      Serial.println("Button Engaged");
     }
-    lastSaveTimeInMillis = millis();
-    interrupts();    
+    String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
+    Serial.println(time.c_str());
+    //turn on red LED
+    digitalWrite(9, HIGH);
+    outputFile = SD.open(time.c_str(),  FILE_WRITE);
+    isRecording = true;
+  }
+  lastSaveTimeInMillis = millis();
+  interrupts();   
+  threads.restart(AMT22PositionThread); 
+}
+
+void updateAnalogValueFlag1() {
+  analogValueFlag1 = true;
+}
+
+void updateAnalogValueFlag2() {
+  analogValueFlag2 = true;
+}
+
+void readAnalogValues1() {
+  switch (currentAnalogSensor1) {
+      case 0:
+        dataStruct.analogValues1[0] =  ads1.getLastConversionResults();
+        currentAnalogSensor1 = 1;
+        ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
+        break;
+      case 1:
+        dataStruct.analogValues1[1] =  ads1.getLastConversionResults();
+        currentAnalogSensor1 = 2;
+        ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
+        break;
+      case 2:
+        dataStruct.analogValues1[2] =  ads1.getLastConversionResults();
+        currentAnalogSensor1 = 3;
+        ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
+        break;
+      case 3:
+        dataStruct.analogValues1[3] =  ads1.getLastConversionResults();
+        currentAnalogSensor1 = 0;
+        ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
+        break;
+  }
+}
+void readAnalogValues2() {
+  switch (currentAnalogSensor2) {
+      case 0:
+        dataStruct.analogValues2[0] =  ads2.getLastConversionResults();
+        currentAnalogSensor2 = 1;
+        ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
+        break;
+      case 1:
+        dataStruct.analogValues2[1] =  ads2.getLastConversionResults();
+        currentAnalogSensor2 = 2;
+        ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
+        break;
+      case 2:
+        dataStruct.analogValues2[2] =  ads2.getLastConversionResults();
+        currentAnalogSensor2 = 3;
+        ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
+        break;
+      case 3:
+        dataStruct.analogValues2[3] =  ads2.getLastConversionResults();
+        currentAnalogSensor2 = 0;
+        ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
+        break;
+  }
 }
