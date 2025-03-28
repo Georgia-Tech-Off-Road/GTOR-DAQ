@@ -4,5 +4,5 @@
 using cmbtl::SensorData;
 
 TEST(SensorDataTests, Initialize) {
-    SensorData<cmbtl::SENSOR_INDICES, cmbtl::millisec::MILLI_SEC_SENSOR_INFO> data;
+    SensorData<std::tuple<cmbtl::millisec::MILLI_SEC_SENSOR_INFO>> data;
 }

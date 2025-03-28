@@ -16,13 +16,13 @@ namespace cmbtl {
         using STORED_VALUE = SV;
         using REAL_VALUE = RV;
         //Numbers of bits that the SV will be stored as in the buffer
-        static constexpr ENCODED_BIT_SIZE = BIT_SIZE;
+        static constexpr uint32_t ENCODED_BIT_SIZE = BIT_SIZE;
         //Takes data from data and stores it in buffer
         static constexpr void (*encode)(SV data, BinaryBuffer& buffer) = ENCODE;
         //Takes data from buffer and updates data
-        static constexpr (*decode)(const BinaryBuffer& buffer) = DECODE;
+        static constexpr SV (*decode)(const BinaryBuffer& buffer) = DECODE;
         //Convert to a more natural (and probably less space efficient) data type after data is sent over.
         static constexpr RV(*convert)(SV) = CONVERT;
-    }
+    };
 }
 #endif
