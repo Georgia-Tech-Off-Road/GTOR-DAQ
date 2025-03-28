@@ -31,7 +31,7 @@ namespace cmbtl {
 		}
 
 		//The millisec sensor
-		using MILLI_SEC_SENSOR_INFO = cmbtl::CompileTimeSensorInfo<SV, RV, ENCODED_BIT_SIZE, encodeMillisec, decodeMillisec, convert>;
+		using MILLI_SEC_SENSOR_INFO = cmbtl::SensorInfo<SV, RV, ENCODED_BIT_SIZE, encodeMillisec, decodeMillisec, convert>;
 	}
 }
 #endif
