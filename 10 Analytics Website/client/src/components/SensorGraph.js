@@ -74,6 +74,11 @@ export default function SensorGraph({ socket }) {
                         }
                     }
                 },
+                elements: {
+                    point: {
+                        radius: 0
+                    }
+                },
                 plugins: {
                     streaming: {
                         duration: 5000

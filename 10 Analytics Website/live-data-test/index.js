@@ -3,8 +3,8 @@ const nReadLines = require("n-readlines")
 
 //------------------- IMPORTANT EDIT THESE ----------------------
 const TEST_FILE_NAME = "Test2.csv"
-const PACKETS_PER_SEC = 10
-const NUM_LINES_TO_SKIP = 1000
+const PACKETS_PER_SEC = 5
+const NUM_LINES_TO_SKIP = 100
 //---------------------------------------------------------------
 const pparse = require("papaparse")
 let currLine = ""
