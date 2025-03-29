@@ -58,11 +58,14 @@ int main(int argc, char *argv[]) {
 }
 
 void readConfigFile(ifstream *cf) {
-    const int CONFIG_BUFFER_SIZE = 70;
+    constexpr int CONFIG_BUFFER_SIZE = 100;
     // Stores the text of ONE line from the file
     char line_buffer[CONFIG_BUFFER_SIZE];
 
-    // Get rid of header
+    // Binary header
+    cf->getline(line_buffer, CONFIG_BUFFER_SIZE);
+
+    // Get rid of main header
     cf->getline(line_buffer, CONFIG_BUFFER_SIZE);
 
     while (cf->getline(line_buffer, CONFIG_BUFFER_SIZE)) {
@@ -207,7 +210,7 @@ void processInputLine(char* line_buffer, std::ofstream *of) {
         //Check to see if token is null
         if (line_segment == nullptr) {
             char msg[800];
-            snprintf(msg, 200, "There are more sensors specified in the config file than there are entries at line number %d in your input .txt file!", current_line_number);
+            snprintf(msg, 200, "There are more sensors specified in the config file than there are entries at line number %d in your input .txt file!", current_line_number + 1);
             throw std::invalid_argument(msg);
         }
         if(line_segment[0] != '\0') {
