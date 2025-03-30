@@ -1,6 +1,10 @@
 #include "misc/BinaryBuffer/BinaryBuffer.h"
 #ifndef CMBTL_SENSOR_INFO_H
 #define CMBTL_SENSOR_INFO_H
+
+using cmbtl::BinaryBuffer;
+
+    
 namespace cmbtl {
     //--------------- Define Data Types for Different Sensors ---------------------------------
     //SV: Stored Value, value that is stored in the Data struct
@@ -24,5 +28,22 @@ namespace cmbtl {
         //Convert to a more natural (and probably less space efficient) data type after data is sent over.
         static constexpr RV(*convert)(SV) = CONVERT;
     };
+
+    // ----------------------------------------- META PROGRAMMING TEMPLATES ---------------------------------------------
+
+    //------------- Helps deduces at compile time if variadic template arguments are actually all instances of SensorInfo
+    template<typename T>
+    struct is_sensor_info : std::false_type {};
+
+
+    //If this template can be substituted then we know that T is of type SensorInfo!
+    template <typename SV, 
+    typename RV, 
+    uint32_t BIT_SIZE,
+    void (*ENCODE)(SV data, BinaryBuffer& buffer),
+    SV (*DECODE)(const BinaryBuffer& buffer),
+    RV (*CONVERT)(SV)>
+    struct is_sensor_info<cmbtl::SensorInfo<SV, RV,  BIT_SIZE, ENCODE, DECODE, CONVERT>> : std::true_type {};
+    //-------------------------------------------------------------------------------------------------------------------
 }
 #endif
