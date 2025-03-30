@@ -2,25 +2,35 @@
 #include <vector>
 #include "SensorData.h"
 #include "Sensors.h"
+#include "MP.h"
 #include "Packets/PacketInstructions.h"
+#include "boost/mp11/list.hpp"
 #include "misc/BinaryBuffer/BinaryBuffer.h"
 
 #ifndef CMBTL_PACKET_ENCODE_DECODE_H
 #define CMBTL_PACKET_ENCODE_DECODE_H
-template<typename T>
-struct DependentFalse : std::false_type{};
+
+
 namespace cmbtl {
-    template<PacketInstructions Instructions, typename SensorDataType>
+
+    template<typename I, typename T, typename = void>
     inline std::pair<char*, size_t> createPacket(const T&) {
-        static_assert(DependentFalse<T>::value, "Template parameter: SensorDataType must be of type SensorData<T...>");
+        static_assert(always_false<T>::value, "Template parameter: SensorDataType must be of type SensorData<T...>");
     }
 
-    template<PacketInstructions Instructions, typename... T>
-    inline std::pair<char*, size_t> createPacket<Instructions, SensorData<T...>>(const SensorDataType& data) {
+    template<
+    typename Instructions, 
+    typename SensorDataType, 
+    >
+    inline std::pair<char*, size_t> createPacket<
+    Instructions,
+    SensorDataType,
+    std::enable_if<is_sensor_data<SensorDataType>::value && boost::mp11::mp_is_list<Instructions>::value>::type
+    >(SensorDataType const &data) {
         static_assert(std::tuple_Size<Instructions> == data::NUM_SENSORS);
 
         //How many bits the buffer should store, calculated from the packet instructions
-        uint32_t bit_size = instructions.getPacketEncodedBitSize();
+        constexpr uint32_t bit_size = getTotalBitSize();
 
         //Create a binary buffer
         BinaryBuffer buffer(bit_size);

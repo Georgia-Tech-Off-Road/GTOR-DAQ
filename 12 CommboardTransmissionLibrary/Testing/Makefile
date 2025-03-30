@@ -213,6 +213,44 @@ SensorDataTests/fast:
 	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/SensorDataTests.dir/build.make Testing/CMakeFiles/SensorDataTests.dir/build
 .PHONY : SensorDataTests/fast
 
+# Convenience name for target.
+Testing/CMakeFiles/PacketEncodeDecodeTests.dir/rule:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Testing/CMakeFiles/PacketEncodeDecodeTests.dir/rule
+.PHONY : Testing/CMakeFiles/PacketEncodeDecodeTests.dir/rule
+
+# Convenience name for target.
+PacketEncodeDecodeTests: Testing/CMakeFiles/PacketEncodeDecodeTests.dir/rule
+.PHONY : PacketEncodeDecodeTests
+
+# fast build rule for target.
+PacketEncodeDecodeTests/fast:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/PacketEncodeDecodeTests.dir/build.make Testing/CMakeFiles/PacketEncodeDecodeTests.dir/build
+.PHONY : PacketEncodeDecodeTests/fast
+
+PacketEncodeDecode_unittest.o: PacketEncodeDecode_unittest.cpp.o
+.PHONY : PacketEncodeDecode_unittest.o
+
+# target to build an object file
+PacketEncodeDecode_unittest.cpp.o:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/PacketEncodeDecodeTests.dir/build.make Testing/CMakeFiles/PacketEncodeDecodeTests.dir/PacketEncodeDecode_unittest.cpp.o
+.PHONY : PacketEncodeDecode_unittest.cpp.o
+
+PacketEncodeDecode_unittest.i: PacketEncodeDecode_unittest.cpp.i
+.PHONY : PacketEncodeDecode_unittest.i
+
+# target to preprocess a source file
+PacketEncodeDecode_unittest.cpp.i:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/PacketEncodeDecodeTests.dir/build.make Testing/CMakeFiles/PacketEncodeDecodeTests.dir/PacketEncodeDecode_unittest.cpp.i
+.PHONY : PacketEncodeDecode_unittest.cpp.i
+
+PacketEncodeDecode_unittest.s: PacketEncodeDecode_unittest.cpp.s
+.PHONY : PacketEncodeDecode_unittest.s
+
+# target to generate assembly for a file
+PacketEncodeDecode_unittest.cpp.s:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/PacketEncodeDecodeTests.dir/build.make Testing/CMakeFiles/PacketEncodeDecodeTests.dir/PacketEncodeDecode_unittest.cpp.s
+.PHONY : PacketEncodeDecode_unittest.cpp.s
+
 SensorData_unittest.o: SensorData_unittest.cpp.o
 .PHONY : SensorData_unittest.o
 
@@ -298,9 +336,13 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... test"
+	@echo "... PacketEncodeDecodeTests"
 	@echo "... SensorDataTests"
 	@echo "... SensorInfoTests"
 	@echo "... SensorsTest"
+	@echo "... PacketEncodeDecode_unittest.o"
+	@echo "... PacketEncodeDecode_unittest.i"
+	@echo "... PacketEncodeDecode_unittest.s"
 	@echo "... SensorData_unittest.o"
 	@echo "... SensorData_unittest.i"
 	@echo "... SensorData_unittest.s"
