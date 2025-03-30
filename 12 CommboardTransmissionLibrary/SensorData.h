@@ -23,7 +23,7 @@ namespace cmbtl {
     struct is_sensor_info<cmbtl::SensorInfo<SV, RV,  BIT_SIZE, ENCODE, DECODE, CONVERT>> : std::true_type {};
     //----------------------------------------------------------------------------------------------------------------------
 
-    //------------- Helps to check if all elements in ...Ts match a certain type
+    //------------- Helps to check if all elements in Ts.. match a certain type
 
     //Template declaration
     template<template<typename> class F, typename... Ts>
@@ -33,7 +33,9 @@ namespace cmbtl {
     template<template<typename> class F>
     struct all_are<F> : std::true_type {};
 
+    //Parameters
     //F: Metafunction (like is_sensor_info) that checks whether T matches a certain type
+    //
     //Recursively expands parameter pack Ts...
     template<template<typename> class F, typename T, typename... Ts>
     struct all_are<F, T, Ts...> : std::integral_constant<bool, F<T>::value && all_are<F,Ts...>::value> {};
@@ -72,6 +74,31 @@ namespace cmbtl {
 
         //Finally actually declare a data tuple for our data
         SVTupleType sensorData;
+
+        //Returns the data stored at the specified index by value
+        template<size_t SensorIndex>
+        inline typename std::enable_if<SensorIndex < NUM_SENSORS, SVTypeAt<SensorIndex>>::type getData() const {
+            return std::get<SensorIndex>(sensorData);
+        }
+
+        //Returns a reference to data (to allow modification of more complex types)
+        template<size_t SensorIndex>
+        inline typename std::enable_if<SensorIndex < NUM_SENSORS, SVTypeAt<SensorIndex>&>::type getRefToData() {
+            return std::get<SensorIndex>(sensorData);
+        }
+
+        //Returns a reference to constant data (use case: returning larger data types that might take up too much stack space)
+        template<size_t SensorIndex>
+        inline typename std::enable_if<SensorIndex < NUM_SENSORS, SVTypeAt<SensorIndex> const &>::type getConstRefToData() const {
+            return std::get<SensorIndex>(sensorData);
+        }
+
+        //Sets data at a specific index. Not technically necessary, always can use getRefToData()
+        template<size_t SensorIndex>
+        inline typename std::enable_if<SensorIndex < NUM_SENSORS, void>::type setData(SVTypeAt<SensorIndex> newValue) {
+            getRefToData<SensorIndex>() = newValue;
+        }
+
     };
 }
 #endif
