@@ -3,7 +3,7 @@
 #ifndef CMBTL_PACKET_INSTRUCTIONS_H
 #define CMBTL_PACKET_INSTRUCTIONS_H
 namespace cmbtl {
-    template <size_t N>
-    using PacketInstructions = std::array<bool, N>;
+    template <size_t NUM_SENSORS>
+    using PacketInstructions = std::array<bool, NUM_SENSORS>;
 }
 #endif

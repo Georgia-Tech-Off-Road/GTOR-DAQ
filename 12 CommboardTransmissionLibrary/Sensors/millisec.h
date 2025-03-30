@@ -1,7 +1,7 @@
-#include "SensorInfo.h"
-#include "misc/BinaryBuffer/BinaryBuffer.h"
-#include "boost/endian/arithmetic.hpp"
-#include "boost/endian/conversion.hpp"
+#include "../SensorInfo.h"
+#include "../misc/BinaryBuffer/BinaryBuffer.h"
+#include "../boost/endian/arithmetic.hpp"
+#include "../boost/endian/conversion.hpp"
 #include <cstdint>
 #include <bitset>
 #ifndef CMBTL_MILLIS_H
