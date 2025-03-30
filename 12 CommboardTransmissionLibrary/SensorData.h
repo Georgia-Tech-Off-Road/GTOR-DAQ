@@ -49,9 +49,18 @@ namespace cmbtl {
     template<typename... Ts>
     struct is_sensor_info_tuple<std::tuple<Ts...>, typename std::enable_if<all_are<is_sensor_info, Ts...>::value>::type> : std::true_type {};
     //----------------------------------------------------------------------------------------------------------------------
+    template<typename>
+    constexpr bool always_false = false;
 
-    template<typename SensorsTuple, typename = typename std::enable_if<is_sensor_info_tuple<SensorsTuple>::value>::type>
-    struct SensorData  {
+    template<class T> using extract_SV = typename T::STORED_VALUE;
+
+    template<typename T, typename Enable = void>
+    struct SensorData {
+        static_assert(always_false<T>, "Template parameter: SensorsTuple must be of type std::tuple<SensorInfo<SV, RV, ENCODE, DECODE, CONVERT>...>");
+    };
+
+    template<typename SensorsTuple>
+    struct SensorData<SensorsTuple, typename std::enable_if<is_sensor_info_tuple<SensorsTuple>::value>::type>  {
 
         static constexpr size_t NUM_SENSORS = std::tuple_size<SensorsTuple>::value;
 
@@ -63,34 +72,29 @@ namespace cmbtl {
     
         template<size_t N>
         using RVTypeAt = typename SensorAt<N>::REAL_VALUE;
-    
-        template<class SensorInfo>
-        struct ExtractSV {
-            using fn = typename SensorInfo::STORED_VALUE;
-        };
-        
-        //Create a new type by apply metafunction ExtractSV to each element in SensorsTuple
-        using SVTupleType = typename boost::mp11::mp_transform<ExtractSV, SensorsTuple>;
 
-        //Finally actually declare a data tuple for our data
-        SVTupleType sensorData;
+        
+        // First apply the transform to get the types
+        using SVTupleType = boost::mp11::mp_transform<extract_SV, SensorsTuple>;
+
+        SVTupleType data;
 
         //Returns the data stored at the specified index by value
         template<size_t SensorIndex>
-        inline typename std::enable_if<SensorIndex < NUM_SENSORS, SVTypeAt<SensorIndex>>::type getData() const {
-            return std::get<SensorIndex>(sensorData);
+        inline SVTypeAt<SensorIndex> getData() const {
+            return std::get<SensorIndex>(data);
         }
 
         //Returns a reference to data (to allow modification of more complex types)
         template<size_t SensorIndex>
         inline typename std::enable_if<SensorIndex < NUM_SENSORS, SVTypeAt<SensorIndex>&>::type getRefToData() {
-            return std::get<SensorIndex>(sensorData);
+            return std::get<SensorIndex>(data);
         }
 
         //Returns a reference to constant data (use case: returning larger data types that might take up too much stack space)
         template<size_t SensorIndex>
         inline typename std::enable_if<SensorIndex < NUM_SENSORS, SVTypeAt<SensorIndex> const &>::type getConstRefToData() const {
-            return std::get<SensorIndex>(sensorData);
+            return std::get<SensorIndex>(data);
         }
 
         //Sets data at a specific index. Not technically necessary, always can use getRefToData()
