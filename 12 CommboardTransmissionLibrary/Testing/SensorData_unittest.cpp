@@ -33,6 +33,23 @@ TEST(SensorDataTests, getData) {
 
     ASSERT_EQ(sensorData.getData<0>(), 35);
     ASSERT_TRUE((std::is_same<decltype(sensorData.getData<0>()),cmbtl::millisec::MILLI_SEC_SENSOR_INFO::STORED_VALUE>::value));
+}
 
-    
+TEST(SensorDataTests, getRefToData) {
+    SensorDataType sensorData;
+
+    cmbtl::millisec::MILLI_SEC_SENSOR_INFO::STORED_VALUE& millisecRef = sensorData.getRefToData<0>();
+    millisecRef = 42;
+
+    ASSERT_EQ(sensorData.getRefToData<0>(), 42);
+    ASSERT_TRUE((std::is_same<decltype(sensorData.getData<0>()), cmbtl::millisec::MILLI_SEC_SENSOR_INFO::STORED_VALUE>::value));
+}
+
+TEST(SensorDataTests, getConstRefToData) {
+    SensorDataType sensorData;
+    sensorData.setData<0>(47);
+    cmbtl::millisec::MILLI_SEC_SENSOR_INFO::STORED_VALUE const  &constMillisecRef = sensorData.getConstRefToData<0>();
+
+    ASSERT_EQ(constMillisecRef, 47);
+
 }
