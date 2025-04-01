@@ -53,3 +53,13 @@ TEST(SensorDataTests, getConstRefToData) {
     ASSERT_EQ(constMillisecRef, 47);
 
 }
+
+TEST(SensorDataTests, encodeData) {
+    SensorDataType sensorData;
+    sensorData.setData<0>(251);
+    BinaryBuffer buffer(cmbtl::millisec::MILLI_SEC_SENSOR_INFO::ENCODED_BIT_SIZE);
+    sensorData.encodeData<0>(buffer);
+    cmbtl::millisec::MILLI_SEC_SENSOR_INFO::STORED_VALUE actual = buffer.readValue<cmbtl::millisec::MILLI_SEC_SENSOR_INFO::STORED_VALUE>(cmbtl::millisec::MILLI_SEC_SENSOR_INFO::ENCODED_BIT_SIZE);
+
+    ASSERT_EQ(actual, 251);
+}

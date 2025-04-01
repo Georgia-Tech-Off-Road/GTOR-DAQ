@@ -41,19 +41,19 @@ namespace cmbtl {
         //TODO: Make nicer template substitution error messages for these functions
         //Returns the data stored at the specified index by value
         template<size_t SensorIndex>
-        inline SVTypeAt<SensorIndex> () const {
+        inline SVTypeAt<SensorIndex> getData() const {
             return std::get<SensorIndex>(data);
         }
 
         //Returns a reference to data (to allow modification of more complex types)
         template<size_t SensorIndex>
-        inline typename SVTypeAt<SensorIndex>& getRefToData() {
+        inline SVTypeAt<SensorIndex>& getRefToData() {
             return std::get<SensorIndex>(data);
         }
 
         //Returns a reference to constant data (use case: returning larger data types that might take up too much stack space)
         template<size_t SensorIndex>
-        inline SVTypeAt<SensorIndex>const & getConstRefToData() const {
+        inline SVTypeAt<SensorIndex> const & getConstRefToData() const {
             return std::get<SensorIndex>(data);
         }
 
@@ -62,6 +62,15 @@ namespace cmbtl {
         inline void setData(SVTypeAt<SensorIndex> newValue) {
             getRefToData<SensorIndex>() = newValue;
         }
+
+        //Calls encode at SV
+        template<size_t SensorIndex>
+        inline void encodeData(BinaryBuffer &buffer) {
+            static_assert(SensorIndex < NUM_SENSORS, "Template parameter: SensorIndex must be less than NUM_SENSORS!!!");
+            SensorAt<SensorIndex>::encode(getData<SensorIndex>(), buffer);
+        }
+
+
     };
 
     template<typename T>
