@@ -37,27 +37,29 @@ namespace cmbtl {
 
         SVTupleType data;
 
+
+        //TODO: Make nicer template substitution error messages for these functions
         //Returns the data stored at the specified index by value
         template<size_t SensorIndex>
-        inline SVTypeAt<SensorIndex> getData() const {
+        inline SVTypeAt<SensorIndex> () const {
             return std::get<SensorIndex>(data);
         }
 
         //Returns a reference to data (to allow modification of more complex types)
         template<size_t SensorIndex>
-        inline typename std::enable_if<SensorIndex < NUM_SENSORS, SVTypeAt<SensorIndex>&>::type getRefToData() {
+        inline typename SVTypeAt<SensorIndex>& getRefToData() {
             return std::get<SensorIndex>(data);
         }
 
         //Returns a reference to constant data (use case: returning larger data types that might take up too much stack space)
         template<size_t SensorIndex>
-        inline typename std::enable_if<SensorIndex < NUM_SENSORS, SVTypeAt<SensorIndex> const &>::type getConstRefToData() const {
+        inline SVTypeAt<SensorIndex>const & getConstRefToData() const {
             return std::get<SensorIndex>(data);
         }
 
         //Sets data at a specific index. Not technically necessary, always can use getRefToData()
         template<size_t SensorIndex>
-        inline typename std::enable_if<SensorIndex < NUM_SENSORS, void>::type setData(SVTypeAt<SensorIndex> newValue) {
+        inline void setData(SVTypeAt<SensorIndex> newValue) {
             getRefToData<SensorIndex>() = newValue;
         }
     };
@@ -68,5 +70,6 @@ namespace cmbtl {
     template <typename... Ts>
     struct is_sensor_data<SensorData<std::tuple<Ts...>>> : std::true_type {};
 
+    
 }
 #endif
