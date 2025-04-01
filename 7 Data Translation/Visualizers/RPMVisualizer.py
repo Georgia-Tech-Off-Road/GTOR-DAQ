@@ -22,12 +22,18 @@ def rpm(fname, rpmVisualizationPage):
 
     time = df.iloc[:, 1] * 10**(-6) - df.iloc[0, 1]* 10**(-6)
 
-    val = df.iloc[:, 2]
+    left = df.iloc[:, 2]
+    right = df.iloc[:, 3]
 
     # Create line graph
     plt.plot(time, val)
-    plt.title('RPM')
+    plt.title('RPM Left')
     plt.xlabel('Time (Seconds)')
-    plt.ylabel('RPM')
+    plt.ylabel('RPM Left')
+    plt.plot(time, val)
+    plt2.title('RPM Right')
+    plt2.xlabel('Time (Seconds)')
+    plt2.ylabel('RPM Right')
     rpmVisualizationPage.destroy()
     plt.show() # Displays graph
+    plt2.show()
