@@ -15,10 +15,11 @@ int currentAnalogSensor2 = 0;
 //initialize AMT22 sensor
 AMT22 steeringPositionSensor(10, AMT22RES);
 
-//initialize RPM sensors=
+//initialize RPM sensors
 RPMSensor rearDiff(RPM1, RDTEETH);
 RPMSensor frontLeft(RPM2, FLTEETH);
 RPMSensor frontRight(RPM3, FRTEETH);
+
 
 void setup() {
   //set up time 
@@ -35,6 +36,10 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(40), updateAnalogValueFlag1, FALLING);
   pinMode(41, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(41), updateAnalogValueFlag2, FALLING);
+
+  attachInterrupt(digitalPinToInterrupt(RPM3), frontRightInterrupt, RISING);
+  attachInterrupt(digitalPinToInterrupt(RPM1), rearDiffInterrupt, RISING);
+  attachInterrupt(digitalPinToInterrupt(RPM2), frontLeftInterrupt, RISING);
 
   //configure ADCs
   ads1.begin(0x48, &Wire);
@@ -72,19 +77,27 @@ void dataAquisitionAndSavingLoop() {
     dataStruct.seconds = now();
     dataStruct.micros = micros();
     //size of is apparently computed at compile time
-    outputFile.write(&dataStruct, sizeof(dataStruct));
+    if (isRecording) {
+      outputFile.write(&dataStruct, sizeof(dataStruct));
+    }
     //check for RPM updates
     if (rearDiff.RPMUpdateFlag) {
       dataStruct.RPMs[0] = rearDiff.RPM;
       rearDiff.RPMUpdateFlag = false;
+    } else {
+      dataStruct.RPMs[0] = rearDiff.checkRPM();
     }
     if (frontLeft.RPMUpdateFlag) {
       dataStruct.RPMs[1] = frontLeft.RPM;
       frontLeft.RPMUpdateFlag = false;
+    } else {
+      dataStruct.RPMs[1] = frontLeft.checkRPM();
     }
     if (frontRight.RPMUpdateFlag) {
       dataStruct.RPMs[2] = frontRight.RPM;
       frontRight.RPMUpdateFlag = false;
+    } else {
+      dataStruct.RPMs[2] = frontRight.checkRPM();
     }
     if (analogValueFlag1) {
       readAnalogValues1();
@@ -99,7 +112,7 @@ void dataAquisitionAndSavingLoop() {
       steeringPositionSensor.steeringPositionUpdateFlag = false;
     }
     //Serial.printf("Steering Positon: %f\n", dataStruct.steeringPosition);
-    if (digitalRead(7) && lastSaveTimeInMillis + 1000 < millis()) {
+    if (digitalRead(7) && lastSaveTimeInMillis + 2000 < millis()) {
       changeRecordingState();
     }
   }
@@ -109,7 +122,7 @@ void dataAquisitionAndSavingLoop() {
 void updateAMT22Reading() {
   while(1) {
     steeringPositionSensor.getPosition();
-    threads.delay_us(500);
+    delayMicroseconds(50);
   }
 }
 //changes recording state and saves file
@@ -119,18 +132,13 @@ void changeRecordingState() {
   noInterrupts();
   if(isRecording == true) {
     while(digitalRead(7) == 1) {
-      delay(10);
-      Serial.println("Button Engaged");
     }
     outputFile.close();
     digitalWrite(9, LOW); //turn off red LED
-    Serial.println("Data Recording Stopped");
     isRecording = false;
   }
   else {
     while(digitalRead(7) == 1) {
-      delay(10);
-      Serial.println("Button Engaged");
     }
     String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
     Serial.println(time.c_str());
@@ -199,4 +207,16 @@ void readAnalogValues2() {
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
         break;
   }
+}
+
+void rearDiffInterrupt() {
+  rearDiff.calculateRPM();
+}
+
+void frontLeftInterrupt() {
+  frontLeft.calculateRPM();
+}
+
+void frontRightInterrupt() {
+  frontRight.calculateRPM();
 }

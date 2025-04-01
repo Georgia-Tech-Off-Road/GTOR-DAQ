@@ -44,9 +44,9 @@ struct {
 
 //enums for AUXDAQ ports
 enum AUXDAQ_Ports {
-  RPM1 = 20,
-  RPM2 = 21,
-  RPM3 = 21,
+  RPM1 = 30,
+  RPM2 = 28,
+  RPM3 = 31,
   LDS1 = 22,
   LDS2 = 23,
   SPIO = 24,
@@ -67,8 +67,8 @@ enum AUXDAQ_Ports {
 enum Sensor_Constants {
   AMT22RES = 12,
   RDTEETH = 33,
-  FRTEETH = 33,
-  FLTEETH = 34
+  FRTEETH = 4,
+  FLTEETH = 4
 };
 
 //outputFile
@@ -147,7 +147,7 @@ inline void initializeThreads() {
   //add a thread for steering position sensor
   AMT22PositionThread = threads.addThread(updateAMT22Reading);
   //set AMT22 time slice to be massive since it has enough yields to let the save loop run a bunch
-  threads.setTimeSlice(AMT22PositionThread, 100);
+  //threads.setTimeSlice(AMT22PositionThread, 100);
 }
 
 //function to turn on power/recording LEDs
