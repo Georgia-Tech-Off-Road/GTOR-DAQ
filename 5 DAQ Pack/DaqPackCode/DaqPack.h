@@ -140,13 +140,12 @@ inline void setUpSD() {
 
 //function to initialize TeensyThreads
 inline void initializeThreads() {
-  //set thread slices
   threads.setSliceMicros(10);
   //add a thread for the main dataAquisitionAndSavingLoop
   mainThread = threads.addThread(dataAquisitionAndSavingLoop);
-  //add a thread for steering position sensor
+  //add a thread for steering po;sition sensor
   AMT22PositionThread = threads.addThread(updateAMT22Reading);
-  //set AMT22 time slice to be massive since it has enough yields to let the save loop run a bunch
+    //set AMT22 time slice to be massive since it has enough yields to let the save loop run a bunch
   //threads.setTimeSlice(AMT22PositionThread, 100);
 }
 

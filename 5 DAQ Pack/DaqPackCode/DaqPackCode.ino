@@ -122,7 +122,7 @@ void dataAquisitionAndSavingLoop() {
 void updateAMT22Reading() {
   while(1) {
     steeringPositionSensor.getPosition();
-    delayMicroseconds(50);
+    threads.delay(10);
   }
 }
 //changes recording state and saves file
