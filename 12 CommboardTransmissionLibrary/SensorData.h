@@ -3,6 +3,7 @@
 #include "boost/mp11/algorithm.hpp"
 #include "MP.h"
 #include <tuple>
+#include <exception>
 #include <type_traits>
 
 #ifndef CMBTL_SENSOR_DATA_H
@@ -72,7 +73,14 @@ namespace cmbtl {
             SensorAt<SensorIndex>::encode(getData<SensorIndex>(), buffer);
         }
 
-
+        private:
+            //Runtime encode
+            inline void encodeDataRuntime(size_t sensor_index) {
+                if (sensor_index > NUM_SENSORS) {
+                    throw std::exception("Parameter: sensor_index must be less than NUM_SENSORS");
+                }
+                encodeFunctionTable[sensor_index]();
+            }
     };
 
     template<typename T>
