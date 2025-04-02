@@ -38,7 +38,11 @@ namespace cmbtl {
 
         SVTupleType data;
 
+        //Array container to allow runtime access to SensorInfo encode functions
         static constexpr std::array<void (*)(void), NUM_SENSORS> encodeFunctionTable = {SensorInfos::encode...};
+
+        //Array container to allow runtime access to ENCODED_BIT_SIZE for each SensorInfo
+        static constexpr std::array<uint32_t, NUM_SENSORS> sensorEncodeSizeTable = {SensorInfos::ENCODED_BIT_SIZE...};
 
 
         //TODO: Make nicer template substitution error messages for these functions
@@ -74,12 +78,20 @@ namespace cmbtl {
         }
 
         private:
-            //Runtime encode
+            //Runtime access to encode function of sensor infos
             inline void encodeDataRuntime(size_t sensor_index) {
                 if (sensor_index > NUM_SENSORS) {
                     throw std::exception("Parameter: sensor_index must be less than NUM_SENSORS");
                 }
                 encodeFunctionTable[sensor_index]();
+            }
+
+            //Runtime access to size property of sensor infos
+            inline uint32_t sensorEncodedBitSizeRuntime(size_t sensor_index) {
+                if (sensor_index > NUM_SENSORS) {
+                    throw std::exception("Parameter: sensor_index must be less than NUM_SENSORS");
+                }
+                return sensorEncodedBitSizeRuntime[sensor_index];
             }
     };
 
