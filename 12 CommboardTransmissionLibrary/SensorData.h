@@ -16,9 +16,9 @@ namespace cmbtl {
         static_assert(always_false<T>, "Template parameter: SensorsTuple must be of type std::tuple<SensorInfo<SV, RV, ENCODE, DECODE, CONVERT>...>");
     };
 
-    template<typename SensorInfoTuple>
-    struct SensorData<SensorInfoTuple, typename std::enable_if<is_sensor_info_tuple<SensorInfoTuple>::value>::type>  {
-        using SensorsTuple = SensorInfoTuple;
+    template<typename... SensorInfos>
+    struct SensorData<std::tuple<SensorInfos...>, typename std::enable_if<is_sensor_info_tuple<std::tuple<SensorInfos...>>::value>::type>  {
+        using SensorsTuple = std::tuple<SensorInfos...>;
 
         static constexpr size_t NUM_SENSORS = std::tuple_size<SensorsTuple>::value;
 
@@ -36,6 +36,8 @@ namespace cmbtl {
         using SVTupleType = boost::mp11::mp_transform<extract_SV, SensorsTuple>;
 
         SVTupleType data;
+
+        static constexpr std::array<void (*)(void), NUM_SENSORS> encodeFunctionTable = {SensorInfos::encode...};
 
 
         //TODO: Make nicer template substitution error messages for these functions
