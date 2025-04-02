@@ -61,12 +61,11 @@ void dataAquisitionAndSavingLoop() {
     }
   }
 }
-
 //gets steering data
 void updateAMT22Reading() {
   while(1) {
     steeringPositionSensor.getPosition();
-    threads.delay(1);
+    threads.delay_us(400);
   }
 }
 

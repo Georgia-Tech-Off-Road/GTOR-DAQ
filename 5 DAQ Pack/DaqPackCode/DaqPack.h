@@ -134,7 +134,7 @@ inline void setUpSD() {
 //function to initialize TeensyThreads
 inline void initializeThreads() {
   //set thread slices
-  threads.setSliceMicros(10);
+  threads.setSliceMicros(100);
   //add a thread for the main dataAquisitionAndSavingLoop
   mainThread = threads.addThread(dataAquisitionAndSavingLoop);
   //add a thread for steering position sensor
