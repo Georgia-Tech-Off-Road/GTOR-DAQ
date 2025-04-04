@@ -3,7 +3,7 @@
 //Allocate 19 characters (1 being taken by EOL) for result of conversion
 inline constexpr size_t RESULT_LENGTH = 20;
 
-inline char* convertBrakePressure(char* line) {
+inline char* CVTTempSensor(char* line) {
     static char res[RESULT_LENGTH];
     int32_t analog_value = std::stoi(line);
     double db;
