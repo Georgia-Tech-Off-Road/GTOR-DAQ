@@ -4,4 +4,5 @@ namespace cvf {
     #include "./Time/TimeConvert.h"
     #include "./RPM/RPMConvert.h"
     #include "./Copy/CopyConvert.h"
+    #include "./CVTTempSensor/CVTTempSensor.h"
 }
