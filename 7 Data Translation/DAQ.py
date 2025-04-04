@@ -17,6 +17,7 @@ from Updater import DataTranslatorUpdater
 from Visualizers import AccelerationVisualizer
 from Visualizers import BrakePressureVisualizer
 from Visualizers import RPMVisualizer
+from Visualizers import TestVisualizer
 from ProcessingPrograms import BinFileTranslator
 
 #imports the processing programs (hertz calculator, data processor, etc etc) 
@@ -87,6 +88,7 @@ def dataProcessingTool():
                     accelButton.grid(row=1, column=0, padx=20)
                     brakeButton.grid(row=1, column=1, padx=20)
                     rpmButton.grid(row=1, column=2, padx=20)
+                    customButton.grid(row=1,column=3,padx=20)
                 #otherwise display everything but the download button
                 else: 
                     processButton.grid(row=0, column=0, padx=20)
@@ -201,6 +203,25 @@ def dataProcessingTool():
         rpmVisualizationPage.geometry("400x200")
         rpmThread = threading.Thread(target = RPMVisualizer.rpm, args = (filePath, rpmVisualizationPage))
         rpmThread.start()
+    def custom():
+        customWindow = tk.Toplevel()
+        customWindow.title("Custom Visualizer")
+        customWindow.geometry("800x300")
+
+        # Label and Entry for column number
+        label = tk.Label(customWindow, text="Enter 1 index or 2 indeces separated by commas (i.e. 2,3 or just 2)\nNote that index 0 = column #1.")
+        label.pack(pady=5)
+
+        columnEntry = tk.Entry(customWindow)
+        columnEntry.pack(pady=5)
+
+        def runVisualizer():
+            columnNumber = columnEntry.get()
+            columnNumber = list(map(int, columnNumber.split(",")))
+            visualizerThread = threading.Thread(target = TestVisualizer.testVisualizer, args = (filePath, columnNumber,customWindow))
+            visualizerThread.start()
+        createGraphButton = tk.Button(customWindow, text="Create Graph", command=runVisualizer)
+        createGraphButton.pack(pady=10)
 
     #howToButton
     howToButton = tk.Button(dataProcessingToolPage, text="How To", command=lambda: openHowTo())
@@ -229,6 +250,7 @@ def dataProcessingTool():
     accelButton = tk.Button(buttonFrame, text="Acceleration", command=lambda: acceleration())
     brakeButton = tk.Button(buttonFrame, text="Brake Pressure", command=lambda: brakepressure())
     rpmButton = tk.Button(buttonFrame, text="RPM", command=lambda: rpm())
+    customButton = tk.Button(buttonFrame, text="Custom Visualizer", command=lambda: custom())
 
     processButton = tk.Button(buttonFrame, text="Process Data", command=lambda: processData())
     configCheckbox = tk.Checkbutton(buttonFrame, text="Use default config", variable=useDefaultConfig)
