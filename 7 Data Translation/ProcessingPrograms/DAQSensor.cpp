@@ -4,7 +4,8 @@ DAQSensor::DAQSensor() {
     //Initialize the function maps
     convertFunctionMap = {
         {"brake", cvf::convertBrakePressure},
-        {"time", cvf::convertTime}
+        {"time", cvf::convertTime},
+        {"CVTTempSensor", cvf::CVTTempSensor}
     };
     convertDigitalFunctionMap = {
         {"RPM", cvf::convertRPM}
