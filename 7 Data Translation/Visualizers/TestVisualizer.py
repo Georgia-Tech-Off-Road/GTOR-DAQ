@@ -18,31 +18,15 @@ def testVisualizer(filePath, columnName, customWindow):
     #df = df[~df.iloc[:, columnName].between(65534.99999999999999999999, 65535.1)]
     time = df.iloc[:, 1]/(10**6)
 
-    if len(columnName) == 1:
-        val = df.iloc[:, columnName[0]]
-        plt.figure()
-        plt.plot(time, val, label='Value')
-        plt.title('Graph!')
-        plt.ylabel('Value')
-        plt.xlabel('Time (Seconds)')
-        plt.grid(True)
-        plt.legend()
+    plt.figure()
+    for i, col in enumerate(columnName):
+        val = df.iloc[:, col]
+        plt.plot(time, val, label=f'Value {i+1}')
+    plt.title('Graph!')
+    plt.ylabel('Value')
+    plt.xlabel('Time (Seconds)')
+    plt.grid(True)
+    plt.legend()
 
-        customWindow.destroy()
-        plt.show()
-    elif len(columnName) == 2:
-        val1 = df.iloc[:, columnName[0]]
-        val2 = df.iloc[:, columnName[1]]
-        plt.figure()
-        plt.plot(time, val1, label = 'Value 1')
-        plt.plot(time, val2, label = 'Value 2')
-        plt.title('DOUBLE GRAPH!')
-        plt.ylabel('Values')
-        plt.xlabel('Time (Seconds)')
-        plt.grid(True)
-        plt.legend()
-
-        customWindow.destroy()
-        plt.show()
-    else:
-        print("Do a max of 2 columns only...")
+    customWindow.destroy()
+    plt.show()
