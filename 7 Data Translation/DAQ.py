@@ -19,6 +19,8 @@ from Visualizers import BrakePressureVisualizer
 from Visualizers import RPMVisualizer
 from Visualizers import TestVisualizer
 from ProcessingPrograms import BinFileTranslator
+from ProcessingPrograms import FileSplitter
+from ProcessingPrograms import FlagValue
 
 #imports the processing programs (hertz calculator, data processor, etc etc) 
 os.chdir("./")
@@ -95,7 +97,9 @@ def dataProcessingTool():
                     configCheckbox.grid(row=2, column=1, padx=20)
                     outputButton.grid(row=2,column=0,padx=20)
                     configEditButton.grid(row=0, column=1, padx=20)
+                    splitButton.grid(row=3, column=0, padx=20)
                     herztCalculatorButton.grid(row=0, column=2, padx=20)
+                    flagButton.grid(row = 3, column = 1, padx=20)
     def downloadData():
         #create a new page for the progress bar
         progressBarPage = tk.Toplevel(dataProcessingToolPage)
@@ -209,7 +213,7 @@ def dataProcessingTool():
         customWindow.geometry("800x300")
 
         # Label and Entry for column number
-        label = tk.Label(customWindow, text="Enter 1 index or 2 indeces separated by commas (i.e. 2,3 or just 2)\nNote that index 0 = column #1.")
+        label = tk.Label(customWindow, text="Enter 1+ indeces separated by commas (i.e. 2,3,4 or just 2)\nNote that index 0 = column #1.")
         label.pack(pady=5)
 
         columnEntry = tk.Entry(customWindow)
@@ -222,6 +226,18 @@ def dataProcessingTool():
             visualizerThread.start()
         createGraphButton = tk.Button(customWindow, text="Create Graph", command=runVisualizer)
         createGraphButton.pack(pady=10)
+    def splitFile():
+        fileSplitPage = tk.Toplevel()
+        fileSplitPage.title("File Splitter")
+        fileSplitPage.geometry("800x300")
+        splitThread = threading.Thread(target = FileSplitter.split, args = (filePath, fileSplitPage))
+        splitThread.start()
+    def flagValue():
+        flagPage = tk.Toplevel()
+        flagPage.title("Flag RPM Nonzero Value")
+        flagPage.geometry("800x300")
+        flagThread = threading.Thread(target = FlagValue.flag, args = (filePath, flagPage))
+        flagThread.start()
 
     #howToButton
     howToButton = tk.Button(dataProcessingToolPage, text="How To", command=lambda: openHowTo())
@@ -245,7 +261,8 @@ def dataProcessingTool():
     #Create and place the buttons in a single row on the second page
     downloadButton = tk.Button(buttonFrame, text="Download Data File", command=lambda: downloadData())
     binButton = tk.Button(buttonFrame, text = "Convert .bin to .txt", command=lambda: binConvert())
-
+    splitButton = tk.Button(buttonFrame, text = "Split large txt file into smaller files", command = lambda: splitFile())
+    flagButton = tk.Button(buttonFrame, text = "Flag first nonzero RPM value", command = lambda: flagValue())
 
     accelButton = tk.Button(buttonFrame, text="Acceleration", command=lambda: acceleration())
     brakeButton = tk.Button(buttonFrame, text="Brake Pressure", command=lambda: brakepressure())
