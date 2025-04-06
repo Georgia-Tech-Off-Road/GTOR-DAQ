@@ -5,20 +5,27 @@
 #include <tuple>
 #include <exception>
 #include <type_traits>
+#include <stdexcept>
 
 #ifndef CMBTL_SENSOR_DATA_H
 #define CMBTL_SENSOR_DATA_H
 namespace cmbtl {
 
+
     template<class T> using extract_SV = typename T::STORED_VALUE;
 
     template<typename T, typename Enable = void>
     struct SensorData {
-        static_assert(always_false<T>, "Template parameter: SensorsTuple must be of type std::tuple<SensorInfo<SV, RV, ENCODE, DECODE, CONVERT>...>");
+        static_assert(always_false<T>, "Template parameter: SensorsTuple must be of type std::tuple<SensorInfo<SV, RV, BIT_SIZE, ENCODE, DECODE, CONVERT>...>");
     };
 
     template<typename... SensorInfos>
     struct SensorData<std::tuple<SensorInfos...>, typename std::enable_if<is_sensor_info_tuple<std::tuple<SensorInfos...>>::value>::type>  {
+
+        SensorData() : 
+        encodeFunctionTable(createEncodeDataTable(boost::mp11::make_index_sequence<NUM_SENSORS>{})) 
+        {};
+
         using SensorsTuple = std::tuple<SensorInfos...>;
 
         static constexpr size_t NUM_SENSORS = std::tuple_size<SensorsTuple>::value;
@@ -38,11 +45,23 @@ namespace cmbtl {
 
         SVTupleType data;
 
+
         //Array container to allow runtime access to SensorInfo encode functions
-        static constexpr std::array<void (*)(void), NUM_SENSORS> encodeFunctionTable = {SensorInfos::encode...};
+        const std::array<void (SensorData::*)(BinaryBuffer&), NUM_SENSORS> encodeFunctionTable;
+
+        //Create an array of the encoded bit size values for runtime access
+        template<class T>
+        struct create_encode_bit_size_arr {
+            static constexpr std::array<uint32_t, NUM_SENSORS> value = {};
+        };
+
+        template<size_t... I>
+        struct create_encode_bit_size_arr<boost::mp11::index_sequence<I...>> {
+            static constexpr std::array<uint32_t, NUM_SENSORS> value = {(SensorAt<I>::ENCODED_BIT_SIZE)...};
+        };
 
         //Array container to allow runtime access to ENCODED_BIT_SIZE for each SensorInfo
-        static constexpr std::array<uint32_t, NUM_SENSORS> sensorEncodeSizeTable = {SensorInfos::ENCODED_BIT_SIZE...};
+        static constexpr std::array<uint32_t, NUM_SENSORS> sensorEncodeSizeTable = create_encode_bit_size_arr<boost::mp11::make_index_sequence<NUM_SENSORS>>::value;
 
 
         //TODO: Make nicer template substitution error messages for these functions
@@ -72,27 +91,37 @@ namespace cmbtl {
 
         //Calls encode at SV
         template<size_t SensorIndex>
-        inline void encodeData(BinaryBuffer &buffer) {
+        inline void encodeSensorData(BinaryBuffer &buffer) {
             static_assert(SensorIndex < NUM_SENSORS, "Template parameter: SensorIndex must be less than NUM_SENSORS!!!");
             SensorAt<SensorIndex>::encode(getData<SensorIndex>(), buffer);
         }
 
-        private:
+        //TODO: Make private again after testing
+        public:
             //Runtime access to encode function of sensor infos
-            inline void encodeDataRuntime(size_t sensor_index) {
-                if (sensor_index > NUM_SENSORS) {
-                    throw std::exception("Parameter: sensor_index must be less than NUM_SENSORS");
+            inline void encodeDataRuntime(size_t sensor_index, BinaryBuffer &buffer) {
+                if (sensor_index >= NUM_SENSORS) {
+                    throw std::invalid_argument("Parameter: sensor_index must be less than NUM_SENSORS");
                 }
-                encodeFunctionTable[sensor_index]();
+                //Call encodeSensorData
+                (this->*encodeFunctionTable[sensor_index])(buffer);
             }
 
             //Runtime access to size property of sensor infos
             inline uint32_t sensorEncodedBitSizeRuntime(size_t sensor_index) {
-                if (sensor_index > NUM_SENSORS) {
-                    throw std::exception("Parameter: sensor_index must be less than NUM_SENSORS");
+                if (sensor_index >= NUM_SENSORS) {
+                    throw std::invalid_argument("Parameter: sensor_index must be less than NUM_SENSORS");
                 }
-                return sensorEncodedBitSizeRuntime[sensor_index];
+                return sensorEncodeSizeTable[sensor_index];
             }
+
+            //Yes this could be done at compile time, but the solution in C++11 is... nasty
+            //So we will just bite the bullet and define it at runtime (simpler and easier to maintain)
+            template<size_t... Is>
+            static inline std::array<void (SensorData::*)(BinaryBuffer&), NUM_SENSORS> createEncodeDataTable(boost::mp11::index_sequence<Is...>) {
+                return {&SensorData::template encodeSensorData<Is>...};
+            }
+        
     };
 
     template<typename T>
