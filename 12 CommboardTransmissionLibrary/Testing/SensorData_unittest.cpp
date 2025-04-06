@@ -7,8 +7,6 @@ using cmbtl::SensorData;
 using SensorsTuple = std::tuple<cmbtl::millisec::MILLI_SEC_SENSOR_INFO>;
 using SensorDataType = SensorData<SensorsTuple>; 
 
-template<typename T> struct ShowType;
-
 TEST(SensorDataTests, Initialize) {
     SensorData<std::tuple<cmbtl::millisec::MILLI_SEC_SENSOR_INFO>> sensorData;
 }
@@ -82,4 +80,20 @@ TEST(SensorDataTests, runtimeDecodeData) {
     sensorData.decodeSensorData<0>(buffer);
     cmbtl::millisec::MILLI_SEC_SENSOR_INFO::STORED_VALUE actual = sensorData.getData<0>();
     ASSERT_EQ(actual, 359);
+}
+
+TEST(SensorDataTests, runtimeEncodeAndDecodeData) {
+    SensorDataType sensorData;
+    BinaryBuffer buffer(cmbtl::millisec::MILLI_SEC_SENSOR_INFO::ENCODED_BIT_SIZE);
+
+    sensorData.setData<0>(789);
+    sensorData.encodeDataRuntime(0, buffer);
+    
+    //Change value so we know if decode actually works
+    sensorData.setData<0>(0);
+
+    sensorData.decodeDataRuntime(0, buffer);
+
+    ASSERT_EQ(sensorData.getData<0>(), 789);
+
 }
