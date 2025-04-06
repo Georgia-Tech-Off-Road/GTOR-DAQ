@@ -62,6 +62,12 @@ TEST(SensorDataTests, encodeData) {
     ASSERT_EQ(actual, 251);
 }
 
+TEST(SensorDataTests, encodedSizeTable) {
+    std::array<uint32_t, SensorDataType::NUM_SENSORS> actual = SensorDataType::encodedSizeTable;
+    std::array<uint32_t, SensorDataType::NUM_SENSORS> expected = {cmbtl::millisec::MILLI_SEC_SENSOR_INFO::ENCODED_BIT_SIZE};
+    ASSERT_TRUE(actual == expected);
+}
+
 
 TEST(SensorDataTests, runtimeEncodeData) {
     SensorDataType sensorData;
