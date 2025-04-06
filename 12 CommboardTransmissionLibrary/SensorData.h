@@ -2,10 +2,14 @@
 #include "Sensors.h"
 #include "boost/mp11/algorithm.hpp"
 #include "MP.h"
+#include "Packets/PacketInstructions.h"
 #include <tuple>
+#include <sstream>
+#include <string>
 #include <exception>
 #include <type_traits>
 #include <stdexcept>
+#include <memory>
 
 #ifndef CMBTL_SENSOR_DATA_H
 #define CMBTL_SENSOR_DATA_H
@@ -43,7 +47,7 @@ namespace cmbtl {
         //Array container to allow runtime access to SensorInfo encode functions
         const std::array<void (SensorData::*)(BinaryBuffer&), NUM_SENSORS> encodeFunctionTable;
 
-        const std::array<void (SensorData::*)(BinaryBuffer&), NUM_SENSORS> decodeFunctionTable;
+        const std::array<void (SensorData::*)(BinaryBuffer const &), NUM_SENSORS> decodeFunctionTable;
 
         //Create an array of the encoded bit size values for runtime access
         template<class T>
@@ -94,9 +98,64 @@ namespace cmbtl {
 
         //Updates data<SensorIndex> from value in binary buffer by calling SensorAt<SensorIndex>::decode
         template<size_t SensorIndex>
-        inline void decodeSensorData(BinaryBuffer &buffer) {
+        inline void decodeSensorData(BinaryBuffer const &buffer) {
             static_assert(SensorIndex < NUM_SENSORS, "Template parameter: SensorIndex must be less than NUM_SENSORS!!!");
             setData<SensorIndex>(SensorAt<SensorIndex>::decode(buffer));
+        }
+
+        template<size_t InstructionsSensorCount>
+        inline BinaryBuffer encodePacket(PacketInstructions<InstructionsSensorCount> const &instructions) {
+            if (InstructionsSensorCount > NUM_SENSORS) {
+                std::ostringstream err;
+                err << "The number of sensors specified in parameter instructions: " 
+                << instructions.to_string() << " (" << instructions.size() << ")" 
+                << std::endl
+                << "is greater than NUM_SENSORS of SensorData: " << NUM_SENSORS;
+                throw std::invalid_argument(err.str());
+            }
+            //Calculate total number of bits needed for the packet
+            const uint32_t total_num_encoded_bits = packetEncodedBitSize(instructions);
+
+            BinaryBuffer buffer(total_num_encoded_bits);
+
+            //Iterate through instructions
+            for (size_t i = 0; i < instructions.size(); i++) {
+                if (instructions[i] == true) {
+                    //If instructions[SensorIndex] is true, then we call encodeDataRuntime(sensorIndex, buffer)
+                    encodeDataRuntime(i, buffer);
+                }
+            }
+
+            return buffer;
+        }
+
+        template<size_t InstructionsSensorCount>
+        inline void decodePacket(PacketInstructions<InstructionsSensorCount> const &instructions, BinaryBuffer const &buffer) {
+            if (InstructionsSensorCount > NUM_SENSORS) {
+                std::ostringstream err;
+                err << "The number of sensors specified in parameter instructions: " 
+                << instructions.to_string() << " (" << instructions.size() << ")" 
+                << std::endl
+                << "is greater than NUM_SENSORS of SensorData: " << NUM_SENSORS;
+                throw std::invalid_argument(err.str());
+            }
+
+            //Calculate total number of bits needed for the packet
+            const uint32_t total_num_encoded_bits = packetEncodedBitSize(instructions);
+
+            if (total_num_encoded_bits != buffer.getCapacity() - buffer.getReadCursorPos()) {
+                std::ostringstream err;
+                err << "The calculated bit size of packet (from SensorInfos): " << total_num_encoded_bits
+                << ". Does not equal the capacity of function parameter buffer: " << buffer.getCapacity();
+                throw std::invalid_argument(err.str());
+            }
+
+            //Iterate through instructions
+            for (size_t i = 0; i < instructions.size(); i++) {
+                if (instructions[i] == true) {
+                    decodeDataRuntime(i, buffer);
+                }
+            }
         }
 
         SensorData() :
@@ -115,12 +174,23 @@ namespace cmbtl {
                 (this->*encodeFunctionTable[sensor_index])(buffer);
             }
 
-            inline void decodeDataRuntime(size_t sensor_index, BinaryBuffer &buffer) {
+            inline void decodeDataRuntime(size_t sensor_index, BinaryBuffer const &buffer) {
                 if (sensor_index >= NUM_SENSORS) {
                     throw std::invalid_argument("Parameter: sensor_index must be less than NUM_SENSORS");
                 }
                 //Call decodeSensorData
                 (this->*decodeFunctionTable[sensor_index])(buffer);
+            }
+
+            template<size_t InstructionsSensorCount>
+            static inline uint32_t const packetEncodedBitSize(PacketInstructions<InstructionsSensorCount> const &instructions) { 
+                uint32_t bit_size = 0;
+                for (int i = 0; i < instructions.size(); i++) {
+                    if (instructions[i] == true) {
+                        bit_size += encodedSizeTable.at(i);
+                    }
+                }
+                return bit_size;
             }
 
             //Yes this could be done at compile time, but the solution in C++11 is... nasty
@@ -132,7 +202,7 @@ namespace cmbtl {
 
             //Similar scenario to createEncodeDataTable
             template<size_t ... Is>
-            static constexpr inline std::array<void (SensorData::*)(BinaryBuffer&), NUM_SENSORS> createDecodeDataTable(boost::mp11::index_sequence<Is...>) {
+            static constexpr inline std::array<void (SensorData::*)(BinaryBuffer const &), NUM_SENSORS> createDecodeDataTable(boost::mp11::index_sequence<Is...>) {
                 return {&SensorData::template decodeSensorData<Is>...};
             }
     };
