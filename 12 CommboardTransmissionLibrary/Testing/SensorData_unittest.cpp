@@ -74,3 +74,12 @@ TEST(SensorDataTests, runtimeEncodeData) {
 
     ASSERT_EQ(actual, 251);
 }
+
+TEST(SensorDataTests, runtimeDecodeData) {
+    SensorDataType sensorData;
+    BinaryBuffer buffer(cmbtl::millisec::MILLI_SEC_SENSOR_INFO::ENCODED_BIT_SIZE);
+    buffer.writeValue<cmbtl::millisec::MILLI_SEC_SENSOR_INFO::STORED_VALUE>(359, cmbtl::millisec::MILLI_SEC_SENSOR_INFO::ENCODED_BIT_SIZE);
+    sensorData.decodeSensorData<0>(buffer);
+    cmbtl::millisec::MILLI_SEC_SENSOR_INFO::STORED_VALUE actual = sensorData.getData<0>();
+    ASSERT_EQ(actual, 359);
+}

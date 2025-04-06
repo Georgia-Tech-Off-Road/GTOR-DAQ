@@ -22,10 +22,6 @@ namespace cmbtl {
     template<typename... SensorInfos>
     struct SensorData<std::tuple<SensorInfos...>, typename std::enable_if<is_sensor_info_tuple<std::tuple<SensorInfos...>>::value>::type>  {
 
-        SensorData() : 
-        encodeFunctionTable(createEncodeDataTable(boost::mp11::make_index_sequence<NUM_SENSORS>{})) 
-        {};
-
         using SensorsTuple = std::tuple<SensorInfos...>;
 
         static constexpr size_t NUM_SENSORS = std::tuple_size<SensorsTuple>::value;
@@ -44,10 +40,10 @@ namespace cmbtl {
         using SVTupleType = boost::mp11::mp_transform<extract_SV, SensorsTuple>;
 
         SVTupleType data;
-
-
         //Array container to allow runtime access to SensorInfo encode functions
         const std::array<void (SensorData::*)(BinaryBuffer&), NUM_SENSORS> encodeFunctionTable;
+
+        const std::array<void (SensorData::*)(BinaryBuffer&), NUM_SENSORS> decodeFunctionTable;
 
         //Create an array of the encoded bit size values for runtime access
         template<class T>
@@ -96,6 +92,18 @@ namespace cmbtl {
             SensorAt<SensorIndex>::encode(getData<SensorIndex>(), buffer);
         }
 
+        //Updates data<SensorIndex> from value in binary buffer by calling SensorAt<SensorIndex>::decode
+        template<size_t SensorIndex>
+        inline void decodeSensorData(BinaryBuffer &buffer) {
+            static_assert(SensorIndex < NUM_SENSORS, "Template parameter: SensorIndex must be less than NUM_SENSORS!!!");
+            setData<SensorIndex>(SensorAt<SensorIndex>::decode(buffer));
+        }
+
+        SensorData() :
+        encodeFunctionTable(createEncodeDataTable(boost::mp11::make_index_sequence<NUM_SENSORS>{})),
+        decodeFunctionTable(createDecodeDataTable(boost::mp11::make_index_sequence<NUM_SENSORS>{}))
+        {};
+
         //TODO: Make private again after testing
         public:
             //Runtime access to encode function of sensor infos
@@ -107,6 +115,14 @@ namespace cmbtl {
                 (this->*encodeFunctionTable[sensor_index])(buffer);
             }
 
+            inline void decodeDataRuntime(size_t sensor_index, BinaryBuffer &buffer) {
+                if (sensor_index >= NUM_SENSORS) {
+                    throw std::invalid_argument("Parameter: sensor_index must be less than NUM_SENSORS");
+                }
+                //Call decodeSensorData
+                (this->*decodeFunctionTable[sensor_index])(buffer);
+            }
+
             //Runtime access to size property of sensor infos
             inline uint32_t sensorEncodedBitSizeRuntime(size_t sensor_index) {
                 if (sensor_index >= NUM_SENSORS) {
@@ -116,12 +132,17 @@ namespace cmbtl {
             }
 
             //Yes this could be done at compile time, but the solution in C++11 is... nasty
-            //So we will just bite the bullet and define it at runtime (simpler and easier to maintain)
+            //So we will just bite the bullet and instantiate it at runtime (simpler and easier to maintain)
             template<size_t... Is>
-            static inline std::array<void (SensorData::*)(BinaryBuffer&), NUM_SENSORS> createEncodeDataTable(boost::mp11::index_sequence<Is...>) {
+            static constexpr inline std::array<void (SensorData::*)(BinaryBuffer&), NUM_SENSORS> createEncodeDataTable(boost::mp11::index_sequence<Is...>) {
                 return {&SensorData::template encodeSensorData<Is>...};
             }
-        
+
+            //Similar scenario to createEncodeDataTable
+            template<size_t ... Is>
+            static constexpr inline std::array<void (SensorData::*)(BinaryBuffer&), NUM_SENSORS> createDecodeDataTable(boost::mp11::index_sequence<Is...>) {
+                return {&SensorData::template decodeSensorData<Is>...};
+            }
     };
 
     template<typename T>
