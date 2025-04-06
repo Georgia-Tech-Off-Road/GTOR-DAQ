@@ -57,7 +57,7 @@ namespace cmbtl {
         };
 
         //Array container to allow runtime access to ENCODED_BIT_SIZE for each SensorInfo
-        static constexpr std::array<uint32_t, NUM_SENSORS> sensorEncodeSizeTable = create_encode_bit_size_arr<boost::mp11::make_index_sequence<NUM_SENSORS>>::value;
+        static constexpr std::array<uint32_t, NUM_SENSORS> encodedSizeTable = create_encode_bit_size_arr<boost::mp11::make_index_sequence<NUM_SENSORS>>::value;
 
 
         //TODO: Make nicer template substitution error messages for these functions
@@ -121,14 +121,6 @@ namespace cmbtl {
                 }
                 //Call decodeSensorData
                 (this->*decodeFunctionTable[sensor_index])(buffer);
-            }
-
-            //Runtime access to size property of sensor infos
-            inline uint32_t sensorEncodedBitSizeRuntime(size_t sensor_index) {
-                if (sensor_index >= NUM_SENSORS) {
-                    throw std::invalid_argument("Parameter: sensor_index must be less than NUM_SENSORS");
-                }
-                return sensorEncodeSizeTable[sensor_index];
             }
 
             //Yes this could be done at compile time, but the solution in C++11 is... nasty
