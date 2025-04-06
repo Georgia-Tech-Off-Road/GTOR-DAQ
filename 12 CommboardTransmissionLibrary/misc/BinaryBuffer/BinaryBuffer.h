@@ -60,8 +60,6 @@ namespace cmbtl {
                 }
             }
 
-            BinaryBuffer(const BinaryBuffer&) = delete;
-
             BinaryBuffer& operator=(const BinaryBuffer&) = delete;
 
             //---------------------- GETTERS --------------------
@@ -109,6 +107,14 @@ namespace cmbtl {
             //Resets write_cursor_pos to bits_written, i.e index after the furthest bit written
             inline void resetWriteCursorPos() const {
                 write_cursor_pos = bits_written;
+            }
+
+            inline void setBitsRead(uint32_t new_val) const {
+                bits_read = new_val;
+            }
+
+            inline void setBitsWritten(uint32_t new_val) const {
+                bits_written = new_val;
             }
 
             //Sets read_cursor_pos to a custom user defined index
