@@ -116,7 +116,9 @@ namespace cmbtl {
             //Calculate total number of bits needed for the packet
             const uint32_t total_num_encoded_bits = packetEncodedBitSize(instructions);
 
-            BinaryBuffer buffer(total_num_encoded_bits);
+            //Experimentally (with unit tests) clearBuffer() takes a looong time (~150 ms) for no apparent reason
+            // luckily (because we will write over every bit in buffer anyway) we set should_clear_buffer to false in the constructor
+            BinaryBuffer buffer(total_num_encoded_bits, false);
 
             //Iterate through instructions
             for (size_t i = 0; i < instructions.size(); i++) {
