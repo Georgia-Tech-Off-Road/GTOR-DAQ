@@ -30,15 +30,16 @@ namespace cmbtl {
 
         public:
             //Parameter capacity: Number of BITS (NOT BYTES) the buffer should store
-            inline BinaryBuffer(uint32_t capacity) {
+            inline BinaryBuffer(uint32_t capacity, bool should_clear_buffer = true) {
                 resetIOValues();
 
                 cmbtl::BinaryBuffer::capacity = capacity;
 
                 buffer = std::shared_ptr<unsigned char[]>(new unsigned char[getSize()], std::default_delete<unsigned char[]>());
 
-                clearBuffer();
-                
+                if (should_clear_buffer) {
+                    clearBuffer();
+                }
             }
             //Constructs BinaryBuffer from an existing unsigned char* assuming that unsigned char* buffer
             //was created by the BinaryBuffer class
