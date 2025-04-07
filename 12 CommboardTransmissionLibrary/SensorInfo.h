@@ -6,6 +6,16 @@ using cmbtl::BinaryBuffer;
 
     
 namespace cmbtl {
+    template<typename SV, uint32_t BIT_SIZE>
+    void defaultEncode(const SV&, BinaryBuffer&);
+
+    template<typename SV, uint32_t BIT_SIZE>
+    SV defaultDecode(const BinaryBuffer&);
+
+    template<typename SV, typename RV>
+    RV defaultConvert(const SV&);
+
+
     //--------------- Define Data Types for Different Sensors ---------------------------------
     //SV: Stored Value, value that is stored in the Data struct
     //RV: Real Value, value that we would commonly use this as. Ex. temp is stored most efficiently as a uint (we get that from the ADC),
@@ -13,21 +23,36 @@ namespace cmbtl {
     template <typename SV, 
     typename RV, 
     uint32_t BIT_SIZE,
-    void (*ENCODE)(SV data, BinaryBuffer& buffer),
-    SV (*DECODE)(const BinaryBuffer& buffer),
-    RV (*CONVERT)(SV)>
+    void (*ENCODE)(const SV &data, BinaryBuffer&) = defaultEncode<SV, BIT_SIZE>,
+    SV (*DECODE)(const BinaryBuffer&) = defaultDecode<SV, BIT_SIZE>,
+    RV (*CONVERT)(const SV&) = defaultConvert<SV, RV>>
     struct SensorInfo {
         using STORED_VALUE = SV;
         using REAL_VALUE = RV;
         //Numbers of bits that the SV will be stored as in the buffer
         static constexpr uint32_t ENCODED_BIT_SIZE = BIT_SIZE;
         //Takes data from data and stores it in buffer
-        static constexpr void (*encode)(SV data, BinaryBuffer& buffer) = ENCODE;
+        static constexpr void (*encode)(const SV& data, BinaryBuffer& buffer) = ENCODE;
         //Takes data from buffer and updates data
         static constexpr SV (*decode)(BinaryBuffer const &buffer) = DECODE;
         //Convert to a more natural (and probably less space efficient) data type after data is sent over.
-        static constexpr RV(*convert)(SV) = CONVERT;
+        static constexpr RV(*convert)(const SV&) = CONVERT;
     };
+    
+    template<typename SV, uint32_t BIT_SIZE>
+    void defaultEncode(const SV& val, BinaryBuffer& buffer) {
+        buffer.writeValue<SV>(val, BIT_SIZE);
+    }
+
+    template<typename SV, uint32_t BIT_SIZE>
+    SV defaultDecode(BinaryBuffer const &buffer) {
+        return buffer.readValue<SV>(BIT_SIZE);
+    }
+
+    template<typename SV, typename RV>
+    RV defaultConvert(SV const &val) {
+        return static_cast<RV>(val);
+    }
 
     // ----------------------------------------- META PROGRAMMING TEMPLATES ---------------------------------------------
 
@@ -40,9 +65,9 @@ namespace cmbtl {
     template <typename SV, 
     typename RV, 
     uint32_t BIT_SIZE,
-    void (*ENCODE)(SV data, BinaryBuffer& buffer),
-    SV (*DECODE)(const BinaryBuffer& buffer),
-    RV (*CONVERT)(SV)>
+    void (*ENCODE)(const SV &data, BinaryBuffer&),
+    SV (*DECODE)(const BinaryBuffer&),
+    RV (*CONVERT)(const SV&)>
     struct is_sensor_info<cmbtl::SensorInfo<SV, RV,  BIT_SIZE, ENCODE, DECODE, CONVERT>> : std::true_type {};
     //-------------------------------------------------------------------------------------------------------------------
 }
