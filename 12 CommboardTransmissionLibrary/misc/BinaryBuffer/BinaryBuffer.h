@@ -4,12 +4,13 @@
 #include <limits.h>
 #include <string.h>
 #include <bitset>
+#include <memory>
 #ifndef CMBTL_BINARY_BUFFER_H
 #define CMBTL_BINARY_BUFFER_H
 namespace cmbtl {
     class BinaryBuffer {
         private:
-            unsigned char* buffer;
+            std::shared_ptr<unsigned char[]> buffer;
             //Number of bits that buffer is designed to hold
             uint32_t capacity;
 
@@ -27,18 +28,15 @@ namespace cmbtl {
             //For most use cases read_cursor_pos = bits_read
             mutable uint32_t read_cursor_pos;
 
-            //Tracks ownership of the buffer so that it does not free memory that is used elsewhere
-            bool should_free_buffer_memory;
-
         public:
             //Parameter capacity: Number of BITS (NOT BYTES) the buffer should store
             inline BinaryBuffer(uint32_t capacity) {
-                should_free_buffer_memory = true;
                 resetIOValues();
 
                 cmbtl::BinaryBuffer::capacity = capacity;
 
-                buffer = new unsigned char[getSize()];
+                buffer = std::shared_ptr<unsigned char[]>(new unsigned char[getSize()], std::default_delete<unsigned char[]>());
+
                 clearBuffer();
                 
             }
@@ -46,29 +44,26 @@ namespace cmbtl {
             //was created by the BinaryBuffer class
             //Parameter *buffer: unsigned char array created by the binary buffer class
             //Parameter capacity: capacity of the 
-            inline BinaryBuffer (unsigned char* buffer, uint32_t capacity) {
-                should_free_buffer_memory = false;
+            inline BinaryBuffer (unsigned char* raw_buffer, uint32_t capacity) {
                 resetIOValues();
 
                 cmbtl::BinaryBuffer::capacity = capacity;
-                cmbtl::BinaryBuffer::buffer = buffer;
+                cmbtl::BinaryBuffer::buffer = std::shared_ptr<unsigned char[]>(raw_buffer, [](unsigned char*){});
 
             }
-            inline ~BinaryBuffer() {
-                if (should_free_buffer_memory) {
-                    delete[] buffer;
-                }
-            }
 
-            BinaryBuffer& operator=(const BinaryBuffer&) = delete;
+            //Default copy constructor and assignment
+            BinaryBuffer(const BinaryBuffer&) = default;
+            BinaryBuffer& operator=(const BinaryBuffer&) = default;
+
+            //Default move constructor and assignment
+            BinaryBuffer(BinaryBuffer&&) = default;
+            BinaryBuffer& operator=(BinaryBuffer&&) = default;
 
             //---------------------- GETTERS --------------------
 
-            //Note: once getBuffer() is called then the BinaryBuffer class is not longer responsible for
-            // freeing the memory of unsigned char* buffer (unless setShouldFreeBufferMemory(true) is called)
             const unsigned char* getBuffer() {
-                should_free_buffer_memory = false;
-                return buffer;
+                return buffer.get();
             }
 
             inline uint32_t getCapacity() const {
@@ -87,10 +82,6 @@ namespace cmbtl {
             }
             inline uint32_t getReadCursorPos() const {
                 return read_cursor_pos;
-            }
-
-            inline bool shouldFreeBufferMemory() const {
-                return should_free_buffer_memory;
             }
 
             // Returns the size of the buffer in terms of bytes. This is the number of char elements in the unsigned char* buffer array
@@ -127,14 +118,10 @@ namespace cmbtl {
             inline void resetReadCursorPos() const {
                 read_cursor_pos = bits_read;
             }
-
-            inline void setShouldFreeBufferMemory(bool value) {
-                should_free_buffer_memory = value;
-            }
             //---------------- BASIC FUNCTIONS --------------------
 
             inline void clearBuffer() {
-                memset(buffer, 0, getSize());
+                memset(buffer.get(), 0, getSize());
 
                 bits_written = 0;
                 write_cursor_pos = 0;
@@ -206,6 +193,7 @@ namespace cmbtl {
                 }
             }
 
+            //NOTE: This const method modifies the internal read cursor position
             //Reads value type V from the buffer.
             //Assumes big endian values
             template<typename V>
@@ -213,6 +201,7 @@ namespace cmbtl {
                 return readValue<V>(sizeof(V) * CHAR_BIT);
             }
 
+            //NOTE: This const method modifies the internal read cursor position
             //Reads num_bits from the buffer and places then and returns a variable of type V
             //Assumes big endian values
             //This functions reads bits from least to most significant (right to left in binary)
