@@ -15,7 +15,11 @@ def testVisualizer(filePath, columnName, customWindow):
     progressBar.start()
 
     df = pd.read_csv(filePath, delimiter=',')
-    #df = df[~df.iloc[:, columnName].between(65534.99999999999999999999, 65535.1)]
+    df = df[~df.iloc[:, 13].between(60000, 70000)]
+    """
+    df = df[~df.iloc[:, 3].between(-.1,.1)]
+    df = df[~df.iloc[:, 4].between(-.1,.1)]
+    """
     time = df.iloc[:, 1]/(10**6)
 
     plt.figure()
