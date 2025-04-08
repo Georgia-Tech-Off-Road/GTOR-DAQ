@@ -6,7 +6,6 @@ Dockerfile
 /10 Analytics Website/backend/node_modules
 /10 Analytics Website/swagger-editor
 7 Data Translation/Config
-<<<<<<< HEAD
 **/.vs/
 *.cmake
 *.pyc
@@ -14,7 +13,6 @@ Dockerfile
 **/.vscode/
 **/CMakeFiles/
 **/_deps/
-=======
 /7 Data Translation/LocalTestFiles
 .vscode/
 *.o
@@ -31,4 +29,3 @@ Dockerfile
 *.csv
 *.xml
 *.iml
->>>>>>> main
