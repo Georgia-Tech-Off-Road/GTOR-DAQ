@@ -1,10 +1,13 @@
-#I still lose the last final bit of an average I think (like a hundredth of a second) kinda a good thing tho so you don't pretend you have proepr (andrew you suck at spelling) averages when you don't
 import os
 from DataDownloader import DataDownloader
 import math
 import importlib
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
+import subprocess
+import shutil
+import threading
 
 #imports all data libraries from ConversionLibrary folder
 os.chdir("./")
@@ -37,200 +40,65 @@ class Sensor:
         return f"Sensor(dataType='{self.dataType}', name='{self.name}', pollingRate={self.pollingRate})"
 
 def translateData (inputFilePath, progressBarPage, parentPage,useDefaultConfig,outputPath,chosePath,settingsData):
-        #create a label to tell the user how the download is progressing
-        dataTranslationProgressLabel = tk.Label(progressBarPage, text="Data Translation Progress")
-        dataTranslationProgressLabel.pack()
-        #create the progress bar
-        progressBar = ttk.Progressbar(progressBarPage, mode = "determinate", maximum=100)
-        progressBar.pack(padx=20, pady=20, fill="x")
-        #list of sensors
-        sensorList = []
-        #maximum polling rate of all analog sensors
-        prLCM = 0
-        #name of last sensor with highest polling rate
-        timeController = ""
-        #index of last analog sensor
-        lastAnalogIndex = 0
-        #open config file (found by navigating to the configs folder and looking for a file called fileNameConfig.txt)
-        if useDefaultConfig == 1:
-            file = open("Configs/defaultConfig.txt")
-        else:
-            configFileName = os.path.basename(inputFilePath).split('.')[0]+"Config.txt"
-            file = open("Configs/" + configFileName)
+    #if the user checks "Use Default Config"
+    if useDefaultConfig == 1:
+        file = "Configs/defaultConfig.txt"
+    #o/w uses config from the CWD
+    else:
+        configFileName = os.path.basename(inputFilePath).split('.')[0]+"Config.txt"
+        file = "Configs/" + configFileName
 
-        #get rid of the header
-        header = file.readline()
-        #get the config data
-        data = file.readlines()
-        #loops through config file and creates sensor list
-        for line in data:
-            #strips and splits line
-            lineList = line.strip().split(",")
-            try:
-                #tries to create a new sensor
-                sensorList.append(Sensor(lineList[0], lineList[1], lineList[2], lineList[3], lineList[4]))
-            except:
-                #throws an error if sensor creation fails
-                print("Inproper config! Please find and fix the following line\n" + str(line))
-            if lineList[1] == "analog":
-                #make prLCM start at the first polling rate value
-                if prLCM == 0:
-                    prLCM = int(lineList[3])
-                prLCM = math.lcm(int(lineList[3]), prLCM)
-                timeController = lineList[2]
-                lastAnalogIndex = int(lineList[0])
-        file.close()
-        #create a data buffer the width of the sensor list plus a time stamp and the length of prLCM
-        dataBuffer = [[0 for _ in range(len(sensorList) + 1)] for _ in range(prLCM)]
-        #opens input data file
-        inFile = open(inputFilePath)
-        #opens output file
-        if not chosePath:
-            outfile = open("output.txt","w")
-        else:
-            outfile = open(os.path.join(outputPath, "output.txt"), "w")
-        #whether this is the first run
-        firstRun = True
-        #time scalar (multiplies the period of the largest PR by num dataBuffers written)
-        timeScalar = 1
-        #counter to handle final partial buffer flush
-        currentRowForBuffer = 0
-        # Process each data entry
-        #progress bar counter
-        counter = 0
-        for line in inFile:
-            lineList = line.strip().split(",")
-            #if first run set baseTime to microsecond time
-            if firstRun:
-                baseTime = int(lineList[1])
-                for sensor in sensorList:
-                    sensor.sumList[2] = baseTime
-                firstRun = False
-            #get current time
-            currentTime = lineList[1]
-            #for i in range num sensors (could just be sensor list but still)
-            for i in range(0,len(lineList[2:])):
-                #get current sensor
-                currentSensor = sensorList[i]
-                #set current sensor based on sensor index in config file (IF THIS FAILS THEN THINGS BREAK)
-                for sensor in sensorList:
-                    if sensor.index == i + 2:
-                        currentSensor = sensor
-                if currentSensor.dataType == "analog":
-                    #if current time is greater than last time recorded + period in microseconds
-                    if float(currentTime) > float(currentSensor.sumList[2]) + float((1/currentSensor.pollingRate)*10**6):
-                        #set entry to average of values in time frame
-                        avg = float(currentSensor.sumList[0]/currentSensor.sumList[1])
-                        #propogate average value from last entry to last entry + num entries of lower polling rate sensor to max polling rate sensor
-                        for j in range(int(currentSensor.sumList[3]*(prLCM/currentSensor.pollingRate)), int((currentSensor.sumList[3] + 1)*(prLCM/currentSensor.pollingRate))):
-                            #have to subtract one since there's only one seconds column in the output file
-                            dataBuffer[j][currentSensor.index - 1] = avg
-                            if currentSensor.name == timeController:
-                                #propagate time along first column
-                                dataBuffer[j][0] = round(1/currentSensor.pollingRate * timeScalar, 10)
-                                timeScalar += 1
-                            #if last analog sensor and dataBuffer is full, write data buffer to file and reset all num times averaged to 0
-                            if i + 2 == lastAnalogIndex:
-                                currentRowForBuffer = j
-                                if j == prLCM - 1:
-                                    for row in dataBuffer:
-                                        outfile.write(str(row).replace('[','').replace(']','')+"\n")
-                                    for sensor in sensorList:
-                                        sensor.sumList[3] = 0
-                        #update/reset all sumList values
-                        currentSensor.sumList[0] = 0
-                        currentSensor.sumList[1] = 0
-                        currentSensor.sumList[2] = currentSensor.sumList[2] + float((1/currentSensor.pollingRate)*10**6)
-                        currentSensor.sumList[3] += 1
-                    #add entry to sumLists (prior logic runs on data before this)
-                    currentSensor.sumList[0] =  currentSensor.sumList[0] + float(lineList[i + 2])
-                    currentSensor.sumList[1] += 1
-                #if digital compute current RPM and save it with the time stamp to the sensors RPMlist
-                if currentSensor.dataType == "digital":
-                    #if line list value has changed
-                    if int(lineList[i + 2]) != currentSensor.digitalList[0]:
-                        #if line list value is 1
-                        if int(lineList[i + 2]) == 1:
-                            #compute the stuff
-                            numTeeth = currentSensor.numTeeth
-                            timeDif = int(currentTime) - int(currentSensor.digitalList[1])
-                            RPM = ((1/timeDif) * (10**6)) * (1/numTeeth) * 60
-                            currentSensor.digitalList[0] = int(lineList[i + 2])
-                            currentSensor.digitalList[1] = int(currentTime)
-                            #subtract 
-                            currentSensor.rpmValueList.append([RPM, int(currentTime) - baseTime])
-                        #otherwise just update last sensor binary value entry
-                        else:
-                            currentSensor.digitalList[0] = int(lineList[i + 2])
-                #if counter is high enough update the progress bar value
-                if counter == 1000000:
-                        percentage = round((os.path.getsize(outfile.name)/(os.path.getsize(inFile.name) * (prLCM/20000)) * 75), 2)
-                        progressBar["value"] = percentage
-                        dataTranslationProgressLabel.config(text = str("Analog Averaging Progress " + str(round(percentage,2)) + "%"))
-                        dataTranslationProgressLabel.pack()
-                        progressBar.pack()
-                        progressBarPage.update()
-                        counter = 0
-                counter += 1
-        #write any lines remaining in file
-        for i in range(0, len(dataBuffer)):
-            if i == currentRowForBuffer:
-                break
-            outfile.write(str(dataBuffer[i]).replace('[','').replace(']','')+"\n")
-        inFile.close()
-        outfile.close()
-        if not chosePath:
-            outFile = open("output.txt","r")
-            finalOutFile = open(str(os.path.basename(inputFilePath) + ".csv"), "w")
-        else:
-            outFile = open(os.path.join(outputPath, "output.txt"), "r")
-            finalOutFile = open(os.path.join(outputPath, os.path.splitext(os.path.basename(inputFilePath))[0] + ".csv"), "w")
-        counter = 0
-        #for line in output.txt plug in RPM value and save to final Output file
-        for line in outFile:
-            lineList = line.strip().split(",")
-            for sensor in sensorList:
-                if sensor.dataType == "digital":
-                    #if 1 or 0 entries just type zero (since data collection is only stopped when car is stationary we can assume end rpm is 0)
-                    if len(sensor.rpmValueList) <= 1:
-                        lineList[sensor.index - 1] = '0'
-                        continue
-                    rpmValue = sensor.rpmValueList[0]
-                    #if next time stamp less than current time then use that one instead
-                    if float(lineList[0]) * (10 ** 6) > sensor.rpmValueList[1][1]:
-                        sensor.rpmValueList.pop(0)
-                        rpmValue = sensor.rpmValueList[0]
-                    #have to subtract one since only one time stamp
-                    lineList[sensor.index - 1] = str(rpmValue[0])
-                #finds sensor type by name, may not be the best way to do this but itll be fineeeeee
-                elif "brake pressure" in sensor.name:
-                        lineList[sensor.index - 1] = str(BrakePressureSensor.convertBrakePressure(float(lineList[sensor.index - 1])))
-            finalOutFile.write(",".join(lineList) + "\n")
-            #if counter is high enough update the progress bar value
-            if counter == 1000000:
-                    percentage = round((os.path.getsize(finalOutFile.name)/(os.path.getsize(outFile.name)*1.25) * 25 + 75), 2)
-                    progressBar["value"] = percentage
-                    dataTranslationProgressLabel.config(text = str("RPM propogation and sensory library application " + str(round(percentage,2)) + "%"))
-                    dataTranslationProgressLabel.pack()
-                    progressBar.pack()
-                    progressBarPage.update()
-                    counter = 0
-            counter += 1
-        finalOutFile.close()
-        outFile.close()
-        if not chosePath:
-            filePath = "output.txt"
-            try:
-                os.remove(filePath)
-            except:
-                print("File deletion failed.")
-        else:
-            filePath = os.path.join(outputPath, "output.txt")
-            try:
-                os.remove(filePath)
-            except:
-                print("File deletion failed.")
-        #destroy the progress bar page
-        progressBarPage.destroy()
-        #unhide the parent page
-        parentPage.deiconify()
+    #if there is no set default file path
+    outputFileFolder = settingsData[0][2]
+    if outputFileFolder == "<paste file path here>":
+        outputFileBase = os.getcwd()
+    #if the user changed Settings.txt (removes <> if they are a dumME)
+    else:
+        outputFileBase = outputFileFolder.replace("<", "").replace(">","")
+
+    #if the user did not choose a download directory
+    if not chosePath:
+        outfile = os.path.join(outputFileBase, os.path.basename(inputFilePath).replace(".txt", ".csv"))
+    #if the user changed the download directory
+    else:
+        outfile = str(os.path.join(outputPath, os.path.basename(inputFilePath).replace(".txt", ".csv")))
+
+    dataTranslationProgressLabel = tk.Label(progressBarPage, text="Data Translation Progress")
+    dataTranslationProgressLabel.pack()
+    progressBar = ttk.Progressbar(progressBarPage, mode = "determinate", length=100)
+    progressBar.pack(padx=20, pady=20, fill="x")
+
+    err = processData(file,inputFilePath,outfile, progressBar, dataTranslationProgressLabel, progressBarPage, progressBarPage)
+    if err != None:
+         messagebox.showerror("Error!", err)
+    # destroy the progress bar page
+    progressBarPage.destroy()
+    #unhide the parent page
+    parentPage.deiconify()
+
+# Returns 0 if success, -1 otherwise
+def processData(config_file, input_file, output_file, progressBar, dataTranslationProgressLabel, progressBarPage, verbose=True):
+    #Gets complete path to executable
+    executable_location = shutil.which(os.path.join('ProcessingPrograms','Build', 'Windows', 'dataprocess.exe'))
+    #print("Executable location: " + executable_location)
+    cmd = [executable_location,"-c", config_file, "-i", input_file, "-o", output_file]
+    if verbose:
+        cmd.append("-v")
+    #print(cmd)
+    processData = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+    while True:
+        if processData.poll() != None:
+            break
+        out = processData.stdout.readline()
+        if out:
+            if "Update: " in out:
+                 percentage = round(float(out[8:-2].strip()),2)
+                 progressBar["value"] = percentage
+                 dataTranslationProgressLabel.config(text = str("Percentage " + str(percentage)) + "%")
+                 dataTranslationProgressLabel.pack()
+                 progressBar.pack()
+                 progressBarPage.update()
+    stderr = processData.stderr.read()
+    if stderr:
+         return stderr
+    return None
