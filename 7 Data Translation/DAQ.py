@@ -7,6 +7,7 @@ import threading
 import time
 import matplotlib
 import sys
+import csv
 
 #libraries used for program
 #NOTE: NEVER PUT ANYTHING IN FRONT OF IMPORTS AND ALWAYS KEEP IMPORTANTS IN THIS NOTATION, OTHERWISE THE UPDATER WILL LIKELY BREAK
@@ -27,14 +28,16 @@ for fileName in os.listdir("ProcessingPrograms"):
             module = importlib.import_module(f'ProcessingPrograms.{moduleName}')
             globals()[moduleName] = module
 
-
 # Creates the main window
 root = tk.Tk()
 root.title("Main Page")
 root.geometry("600x200")
 
-settingsf = open("Settings/Settings.csv")
-settingsData = settingsf.readlines()[1:]
+with open("Settings/Settings.csv") as settingsf:
+    reader = csv.reader(settingsf)
+    settingsData = list(reader)
+settingsHeader = settingsData[0]
+settingsData = settingsData[1:]
 
 # Function to go to Data Processing Tool
 def dataProcessingTool():
@@ -44,7 +47,10 @@ def dataProcessingTool():
     dataProcessingToolPage.title("Data Downloader Tool")
     dataProcessingToolPage.geometry("800x400")
     global useDefaultConfig
-    useDefaultConfig = tk.IntVar(value=0)
+    if settingsData[1][3] == "False":
+        useDefaultConfig = tk.IntVar(value=0)
+    else:
+        useDefaultConfig = tk.IntVar(value=1)
     global outputPath
     outputPath = None
     global chosePath
@@ -80,6 +86,7 @@ def dataProcessingTool():
                 #if the filepath isn't on the main OS drive only display the download button
                 if "C:/" not in filePath:
                     downloadButton.grid(row=0, column=1, padx=20)
+                    outputButton.grid(row=0,column=2,padx=20)
                 elif ".bin" in filePath:
                     binButton.grid(row=0, column=0,padx=20)
                     outputButton.grid(row=0,column=1,padx=20)
@@ -91,11 +98,12 @@ def dataProcessingTool():
                 else: 
                     processButton.grid(row=0, column=0, padx=20)
                     configCheckbox.grid(row=2, column=1, padx=20)
-                    outputButton.grid(row=2,column=0,padx=20)
+                    outputButton.grid(row=2, column=0, padx=20)
                     configEditButton.grid(row=0, column=1, padx=20)
-                    herztCalculatorButton.grid(row=0, column=2, padx=20)
+                    hertzCalculatorButton.grid(row=0, column=2, padx=20)
     def downloadData():
         #create a new page for the progress bar
+        global outputPath, chosePath
         progressBarPage = tk.Toplevel(dataProcessingToolPage)
         progressBarPage.title("Download Progress")
         progressBarPage.geometry("400x200")
@@ -103,9 +111,14 @@ def dataProcessingTool():
         #open the file to create it to prevent any problems with later code being unable to find the target
         file = open(os.path.basename(destinationFilePath), "a")
         file.close()
+        #if the user does not select a file path, default to current CWD
+        if not chosePath:
+            destinationFilePath = os.getcwd() + "\\Configs\\" + os.path.basename(filePath)
+        else:
+            destinationFilePath = outputPath + "\\" + os.path.basename(filePath)
         #use multithreading to allow the download to run seperately from the progress bar updater (more zoom zoom)
-        downloadThread = threading.Thread(target = DataDownloader.downloadData, args = (filePath, destinationFilePath))
-        progressBarThread = threading.Thread(target = DataDownloader.updateProgressBar, args = (filePath, destinationFilePath, progressBarPage, dataProcessingToolPage))
+        downloadThread = threading.Thread(target = DataDownloader.downloadData, args = (filePath, destinationFilePath, outputPath, chosePath))
+        progressBarThread = threading.Thread(target = DataDownloader.updateProgressBar, args = (filePath, destinationFilePath, progressBarPage, dataProcessingToolPage, outputPath, chosePath))
         #start threads
         downloadThread.start()
         progressBarThread.start()
@@ -126,12 +139,14 @@ def dataProcessingTool():
         configSRC = "/".join(configSRCLIST)
         sourceFileSize = os.path.getsize(configSRC)
         #create the thread and download the config file (this isn't tracked since it's such a short download)
-        configDownloadThread = threading.Thread(target = DataDownloader.downloadData, args = (configSRC, configDST))
+        configDownloadThread = threading.Thread(target = DataDownloader.downloadData, args = (configSRC, configDST, outputPath, chosePath))
         configDownloadThread.start()
+
     def outputDestination():
         global chosePath
         global outputPath
         outputPath = filedialog.askdirectory(title="Select Output Folder")
+        #lets the user choose a different file path
         if outputPath:
             chosePath = True
         else:
@@ -213,7 +228,7 @@ def dataProcessingTool():
     #create a label to show the file selected
     fileSelectLabel = tk.Label(dataProcessingToolPage, text="No file selected")
     fileSelectLabel.pack(pady=5)
-    
+
     outputSelectLabel = tk.Label(dataProcessingToolPage, text = "No output path selected")
     outputSelectLabel.pack(pady=5)
 
@@ -233,7 +248,7 @@ def dataProcessingTool():
     processButton = tk.Button(buttonFrame, text="Process Data", command=lambda: processData())
     configCheckbox = tk.Checkbutton(buttonFrame, text="Use default config", variable=useDefaultConfig)
     configEditButton = tk.Button(buttonFrame, text="Edit Config", command=lambda: editConfig())
-    herztCalculatorButton = tk.Button(buttonFrame, text="Calculate Hertz Info", command=lambda: calculateHertz())
+    hertzCalculatorButton = tk.Button(buttonFrame, text="Calculate Hertz Info", command=lambda: calculateHertz())
     outputButton = tk.Button(buttonFrame, text = "Choose output destination...", command=lambda: outputDestination())
     updateButtons()
 
@@ -276,7 +291,7 @@ buttonFrame = tk.Frame(root)
 buttonFrame.pack(pady=20)
 
 #create the dataProcessingToolButton
-dataProcessingToolButton = tk.Button(buttonFrame, text="Data Tool", command=lambda: dataProcessingTool())
+dataProcessingToolButton = tk.Button(buttonFrame, text="    Data Tool    ", command=lambda: dataProcessingTool())
 dataProcessingToolButton.grid(row=1, column=0, padx=20)
 
 # Create button 2
@@ -288,7 +303,7 @@ howToButton = tk.Button(buttonFrame, text="How To", command=lambda: openHowTo())
 howToButton.grid(row=1, column=5, padx=20)
 
 #Create button 4
-settingsButton = tk.Button(buttonFrame, text="Settings", command=lambda: settings())
+settingsButton = tk.Button(buttonFrame, text="View/Edit Settings", command=lambda: settings())
 settingsButton.grid(row=1, column=6,padx=20)
 
 # Run the application
