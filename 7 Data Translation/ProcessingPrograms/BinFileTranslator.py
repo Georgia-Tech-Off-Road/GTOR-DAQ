@@ -2,10 +2,6 @@ def binConverter(input_file_name,chosePath,outputPath,settingsData):
     import struct
     import os
 
-<<<<<<< HEAD
-    # Define the format for the binary data (including padding to match Arduino's structure size)
-    data_format = "Q L 3f 4i 1f 4x"  # Add 4 bytes of padding (4x)
-=======
     #outputPath equals, for example, None or C:/Users/Bill/Pictures
 
     #gets the first line of Config to define the format for the binary data
@@ -14,7 +10,6 @@ def binConverter(input_file_name,chosePath,outputPath,settingsData):
 
     #this is the format
     data_format = file.readline()
->>>>>>> main
     data_size = struct.calcsize(data_format)
 
     output_file_name = os.path.splitext(os.path.basename(input_file_name))[0] + ".txt"
