@@ -4,11 +4,8 @@ DAQSensor::DAQSensor() {
     //Initialize the function maps
     convertFunctionMap = {
         {"brake", cvf::convertBrakePressure},
-        {"time", cvf::convertTime},
-        {"CVTTempSensor", cvf::CVTTempSensor}
-    };
-    convertDigitalFunctionMap = {
-        {"RPM", cvf::convertRPM}
+        {"time", cvf::copy},
+        {"RPM", cvf::copy}
     };
 }
 
@@ -30,8 +27,8 @@ void DAQSensor::initializeSensor(char* line) {
         LOG_ERROR("In line: %s of your config file, your index parameter %s is misformatted", line, sensorInfo[0]);
     }
 
-    //Assign sensor data type
-    sensorType = strToSensorType(sensorInfo[1]);
+    //Assign sensor data type. NO LONGER USED. ONLY HAVE Analog Sensors Currently
+    //sensorType = strToSensorType(sensorInfo[1]);
     
     // Initialize sensorName
     sensorName.assign(sensorInfo[2]);
@@ -57,26 +54,20 @@ void DAQSensor::initializeSensor(char* line) {
 std::string DAQSensor::toStr() {
     constexpr int bufferSize = 200;
     char buffer[bufferSize];
-    snprintf(buffer, bufferSize, "|---------Sensor---------|\nName: %s\nSensor Type: %s\nIndex: %d\nPolling Rate: %d\nNum Teeth: %d\n\n", 
-        this->sensorName.c_str(), sensorTypeToStr(this->sensorType), this->index, this->pollingRate, this->numTeeth);
+    snprintf(buffer, bufferSize, "|---------Sensor---------|\nName: %s\nIndex: %d\nPolling Rate: %d\nNum Teeth: %d\n\n", 
+        this->sensorName.c_str(), this->index, this->pollingRate, this->numTeeth);
     return std::string(buffer);
 }
 
 char* DAQSensor::convertLineSegment(char* line, Time *time) {
-    if (sensorType == DAQSensorType::analog) {
-        return convert(line);
-    } else {
-        return convertDigital(line, time);
-    }
+    return convert(line);
 }
 
 void DAQSensor::assignConvertFunctionsFromName(std::string name) {
-    //Assign analog functions
-    if(sensorType == DAQSensorType::analog) {
         bool foundConvertFunction;
         for (auto pair = convertFunctionMap.begin(); pair != convertFunctionMap.end(); ++pair) {
             if (name.find(pair->first) != std::string::npos) {
-                printf("Function Name Token: %s\n", pair->first.c_str());
+                printf("Found conversion function for: %s sensor!\n", pair->first.c_str());
                 convert = convertFunctionMap[pair->first];
                 foundConvertFunction = true;
                 return;
@@ -86,24 +77,6 @@ void DAQSensor::assignConvertFunctionsFromName(std::string name) {
         printf("Could not find a custom conversion function for %s: will just copy data\n", name.c_str());
         //Literally will just copy and paste value
         convert=cvf::copy;
-    }
-    //Now assign digital functions
-    else {
-        for(auto pair = convertDigitalFunctionMap.begin(); pair != convertDigitalFunctionMap.end(); ++pair) {
-            if (name.find(pair->first) != std::string::npos) {
-                convertDigital = convertDigitalFunctionMap[pair->first];
-                return;
-            }
-        }
-        char msg[400];
-        sprintf(msg, "%s is not a known sensor token. Here is a list of valid sensor tokens:\n", name.c_str());
-        for (auto pair : convertDigitalFunctionMap) {
-            strcat(msg, pair.first.c_str());
-            strcat(msg, "\n");
-        }
-        strcat(msg, "The name of sensor only needs to include one of these tokens, it does not have to match this token exactly!");
-        throw std::invalid_argument(msg);
-    }
 }
 
 std::string DAQSensor::getSensorName() {
