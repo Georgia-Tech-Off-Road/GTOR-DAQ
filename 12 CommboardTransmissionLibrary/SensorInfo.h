@@ -6,6 +6,8 @@ using cmbtl::BinaryBuffer;
 
     
 namespace cmbtl {
+
+    //Forward declare default functions
     template<typename SV, uint32_t BIT_SIZE>
     void defaultEncode(const SV&, BinaryBuffer&);
 
@@ -14,7 +16,6 @@ namespace cmbtl {
 
     template<typename SV, typename RV>
     RV defaultConvert(const SV&);
-
 
     //--------------- Define Data Types for Different Sensors ---------------------------------
     //SV: Stored Value, value that is stored in the Data struct
@@ -38,6 +39,19 @@ namespace cmbtl {
         //Convert to a more natural (and probably less space efficient) data type after data is sent over.
         static constexpr RV(*convert)(const SV&) = CONVERT;
     };
+
+    //Forward declare functions for a 
+
+    void defaultBoolEncode(const bool& val, BinaryBuffer& buffer);
+
+    bool defaultBoolDecode(BinaryBuffer const &buffer);
+
+    bool defaultBoolConvert(const bool& val);
+
+    using DefaultBoolSensorInfo = SensorInfo<bool, bool, 1, defaultBoolEncode, defaultBoolDecode, defaultBoolConvert>;
+
+
+    //----------------------- DEFINE COMMONLY USED FUNCTIONS ------------------------------------
     
     template<typename SV, uint32_t BIT_SIZE>
     void defaultEncode(const SV& val, BinaryBuffer& buffer) {
@@ -52,6 +66,22 @@ namespace cmbtl {
     template<typename SV, typename RV>
     RV defaultConvert(SV const &val) {
         return static_cast<RV>(val);
+    }
+
+    void defaultBoolEncode(const bool& val, BinaryBuffer& buffer) {
+        if (val) {
+            buffer.writeValue<uint8_t>(1, 1);
+        }  else {
+            buffer.writeValue<uint8_t>(0, 1);
+        }
+    }
+
+    bool defaultBoolDecode(BinaryBuffer const &buffer) {
+        return buffer.readValue<uint8_t>(1) == 1 ? true : false;
+    }
+
+    bool defaultBoolConvert(const bool& val) {
+        return val;
     }
 
     // ----------------------------------------- META PROGRAMMING TEMPLATES ---------------------------------------------
