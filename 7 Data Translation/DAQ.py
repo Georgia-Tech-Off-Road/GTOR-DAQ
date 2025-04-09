@@ -21,6 +21,7 @@ from Visualizers import TestVisualizer
 from ProcessingPrograms import BinFileTranslator
 from ProcessingPrograms import FileSplitter
 from ProcessingPrograms import FlagValue
+from ProcessingPrograms import hertzCalculator
 
 #imports the processing programs (hertz calculator, data processor, etc etc) 
 os.chdir("./")
