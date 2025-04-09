@@ -25,6 +25,54 @@ struct {
   int analogValues[4];
 } dataStruct;
 
+//------------------------------------
+
+class Data {
+
+  public:
+    //Time since data aquisition began
+    uint16_t millis;
+    //Is clutch engaged or not?
+    unsigned int clutchEngaged : 1;
+    //Pit stop requested?
+    unsigned int pitRequested : 1;
+
+    //Speed X
+    float speed_x;
+    //Speed Y
+    float speed_y;
+    //Speed Z
+    float speed_z;
+
+    //Position X
+    float position_x;
+    //Position Y
+    float position_y;
+    //Position Z
+    float position_z;
+
+    unsigned int brake_pressure_front : 12;
+    unsigned int brake_pressure_back : 12; 
+
+    unsigned int RPM : 14;
+
+    //Linear Accelerations
+    float linear__acceleration_x;
+    float linear_acceleration_y;
+    float linear_acceleartion_z;
+
+    //Continuously Variable Transmission Temp
+    unsigned int cvt_temp : 12;
+
+    //Transfer Case Temp
+    unsigned int transfer_case_temp : 12;
+
+  void sendPacket(packet_num);
+}
+
+
+//------------------------------------
+
 long long unsigned int pastTime;
 int led = LED_BUILTIN;
 File outputFile;

@@ -32,5 +32,3 @@ def binConverter(input_file_name,chosePath,outputPath,settingsData):
         print("File not found")
     except Exception as e:
         print(f"An error occurred: {e}")
-
-
