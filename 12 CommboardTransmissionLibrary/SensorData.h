@@ -1,5 +1,5 @@
 #include "SensorInfo.h"
-#include "Sensors.h"
+#include "Sensors/AllSensors.h"
 #include "boost/mp11/algorithm.hpp"
 #include "MP.h"
 #include "Packets/PacketInstructions.h"
