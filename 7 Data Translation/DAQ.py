@@ -99,6 +99,7 @@ def dataProcessingTool():
                     brakeButton.grid(row=1, column=1, padx=20)
                     rpmButton.grid(row=1, column=2, padx=20)
                     customButton.grid(row=1,column=3,padx=20)
+                    configCheckbox.grid(row=2, column=3, padx=20)
                 #otherwise display everything but the download button
                 else: 
                     processButton.grid(row=0, column=0, padx=20)
@@ -238,7 +239,7 @@ def dataProcessingTool():
         def runVisualizer():
             columnNumber = columnEntry.get()
             columnNumber = list(map(int, columnNumber.split(",")))
-            visualizerThread = threading.Thread(target = TestVisualizer.testVisualizer, args = (filePath, columnNumber,customWindow))
+            visualizerThread = threading.Thread(target = TestVisualizer.testVisualizer, args = (filePath, columnNumber,customWindow,int(useDefaultConfig.get())))
             visualizerThread.start()
         createGraphButton = tk.Button(customWindow, text="Create Graph", command=runVisualizer)
         createGraphButton.pack(pady=10)
