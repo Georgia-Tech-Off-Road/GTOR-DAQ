@@ -1,0 +1,2 @@
+# Do not force CRLF conversion for bash files (seriously messes with stuff)
+*.sh eol=lf
