@@ -84,7 +84,7 @@ def processData(config_file, input_file, output_file, progressBar, dataTranslati
     cmd = [executable_location,"-c", config_file, "-i", input_file, "-o", output_file]
     if verbose:
         cmd.append("-v")
-    #print(cmd)
+    print(cmd)
     processData = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
     while True:
         if processData.poll() != None:
