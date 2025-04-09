@@ -14,7 +14,7 @@ def split(filePath, fileSplitPage):
     #start the bouncing
     progressBar.start()
 
-    lines_per_file = 10000000 #1,000,000
+    lines_per_file = 10000000 #10,000,000
     file_count = 1
     line_count = 0
     output = None
