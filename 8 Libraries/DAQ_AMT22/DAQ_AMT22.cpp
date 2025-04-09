@@ -1,7 +1,4 @@
-#include <AMT22.h>
-#include <TeensyThreads.h>
-#include <SPI.h>
-#include <Arduino.h>
+#include <DAQ_AMT22.h>
 
 //functions that are involved with threads have to be declared volatile
 
@@ -39,18 +36,18 @@ void AMT22 :: transmitOpCode(int opCode) volatile
     uint16_t currentPosition;
     //lower cs line
     digitalWrite(_cs, LOW);
-    //have thread sleep for one millisecond (minimum time) (have to do this because AMT22 needs a 3 microscecond minimum wait between each packet and cs line going high and low )
-    threads.delay(1);
+    //have threads yield for 30 microseconds (have to do this because AMT22 needs a 3 microscecond minimum wait between each packet and cs line going high and low plus lot of buffer)
+    threads.delay_us(500);
     //get first half of data
     currentPosition = SPI.transfer(0x00);
     //shift first packet into upper 8 bits
     currentPosition <<= 8;
-    //have thread sleep for one millisecond (minimum time) (have to do this because AMT22 needs a 3 microscecond minimum wait between each packet and cs line going high and low )
-    threads.delay(1);
+    //have threads yield for 30 microseconds (have to do this because AMT22 needs a 3 microscecond minimum wait between each packet and cs line going high and low plus lot of buffer)
+    threads.delay_us(500);
     //get second half of data
     currentPosition |= SPI.transfer(opCode);
-    //have thread sleep for one millisecond (minimum time) (have to do this because AMT22 needs a 3 microscecond minimum wait between each packet and cs line going high and low )
-    threads.delay(1);
+    //have threads yield for 30 microseconds (have to do this because AMT22 needs a 3 microscecond minimum wait between each packet and cs line going high and low plus lot of buffer)
+    threads.delay_us(500);
     //raise cs line again
     digitalWrite(_cs, HIGH);
     //transfer integer respresentation of position to boolean array

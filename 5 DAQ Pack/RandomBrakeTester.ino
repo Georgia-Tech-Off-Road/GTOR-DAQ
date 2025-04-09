@@ -12,6 +12,9 @@ volatile bool analogValueFlag2 = false;
 int currentAnalogSensor1 = 0;
 int currentAnalogSensor2 = 0;
 
+double maxBrakePressure1 = 0;
+double maxBrakePressure2 = 0;
+
 //initialize AMT22 sensor
 AMT22 steeringPositionSensor(10, AMT22RES);
 
@@ -57,7 +60,7 @@ void setup() {
   //initialize SPI busses/ports
   initializeSPI();
   //setup execution threads
-  initializeThreads();
+  //initializeThreads();
   //turn on diagnostic LEDS
   turnOnLEDS();
   //set recording flag
@@ -65,7 +68,7 @@ void setup() {
   //start ADCs
   ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
   ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
-  updateAMT22Reading();
+  dataAquisitionAndSavingLoop();
 }
 
 //do nothing here
@@ -114,10 +117,25 @@ void dataAquisitionAndSavingLoop() {
     //Serial.printf("Steering Positon: %f\n", dataStruct.steeringPosition);
     if (digitalRead(7) && lastSaveTimeInMillis + 2000 < millis()) {
       changeRecordingState();
+      maxBrakePressure1 = 0;
+      maxBrakePressure2 = 0;
     }
+    Serial.printf("Brake Pressure rear: %lf,  MAX: %lf\n", getBrakePressure(dataStruct.analogValues1[0]), maxBrakePressure1);
+    Serial.printf("Brake Pressure front: %lf,  MAX: %lf\n", getBrakePressure(dataStruct.analogValues2[3]), maxBrakePressure2);
+    if (getBrakePressure(dataStruct.analogValues1[0]) > maxBrakePressure1) {
+      maxBrakePressure1 = getBrakePressure(dataStruct.analogValues1[0]);
+    } 
+    if (getBrakePressure(dataStruct.analogValues2[3]) > maxBrakePressure2) {
+      maxBrakePressure2 = getBrakePressure(dataStruct.analogValues2[3]);
+    }
+    delay(100);
   }
 }
-
+double getBrakePressure(int analog_value) {
+  double db;
+  db = static_cast<double>(50+((((analog_value/32767.0))*4.096-0.5)/4.0)*7950.0);
+  return db;
+}
 //gets steering data
 void updateAMT22Reading() {
   while(1) {
