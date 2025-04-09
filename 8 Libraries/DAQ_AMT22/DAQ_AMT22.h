@@ -1,6 +1,9 @@
-#ifndef AMT22_H
-#define AMT22_H
+#ifndef DAQ_AMT22_H
+#define DAQ_AMT22_H
 
+#include <Arduino.h>
+#include <TeensyThreads.h>
+#include <SPI.h>
 #include <Arduino.h>
 /* Library for AMT22 absolute rotary encoder heavily based off of Simone Di Blasi's version available online.*/
 
