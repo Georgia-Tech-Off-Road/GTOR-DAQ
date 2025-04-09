@@ -4,7 +4,7 @@
 Adafruit_ADS1015 ads;     /* Use this for the 12-bit version */
 
 // Pin connected to the ALERT/RDY signal for new sample notification.
-constexpr int READY_PIN = 15;
+constexpr int READY_PIN = 3;
 
 // This is required on ESP32 to put the ISR in IRAM. Define as
 // empty for other platforms. Be careful - other platforms may have
