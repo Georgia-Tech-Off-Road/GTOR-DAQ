@@ -1,4 +1,3 @@
-index,name,text,bool
 0,defaultFilePath,<paste file path here>,
 1,checkDefaultConfig,,True
 2,name,<>,
