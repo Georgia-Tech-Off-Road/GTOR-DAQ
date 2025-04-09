@@ -1,6 +1,6 @@
 #include "SensorData.h"
 #include "gtest/gtest.h"
-#include "Sensors.h"
+#include "../Sensors/AllSensors.h"
 #include "Packets/PacketInstructions.h"
 #include <iostream>
 using cmbtl::SensorData;

@@ -84,6 +84,11 @@ namespace cmbtl {
         return val;
     }
 
+    template<typename T>
+    T noConvert(const T& val) {
+        return val;
+    }
+
     // ----------------------------------------- META PROGRAMMING TEMPLATES ---------------------------------------------
 
     //------------- Helps deduces at compile time if variadic template arguments are actually all instances of SensorInfo
