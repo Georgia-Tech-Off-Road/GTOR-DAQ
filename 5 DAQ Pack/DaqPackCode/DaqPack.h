@@ -2,10 +2,8 @@
 #include <SPI.h>
 #include <TimeLib.h>
 #include <Adafruit_ADS1X15.h>
-#include <i2c_driver.h>
-#include <i2c_driver_wire.h>
 #include <TeensyThreads.h>
-#include <AMT22.h>
+#include <DAQ_AMT22.h>
 #include <DAQ_RPM_Sensor.h>
 
 #define BAUD 230400
@@ -18,8 +16,12 @@ inline void initializeI2CCommLink();
 inline void initializeSPI();
 inline void setupPinModes();
 inline void setUpSD();
+inline void initializeADS1();
+inline void initializeADS2();
 inline void initializeThreads();
 inline void turnOnLEDS();
+void updateAnalogValueFlag1();
+void updateAnalogValueFlag2();
 
 //declare non setup functions
 inline void requestEvent();
@@ -35,15 +37,16 @@ struct {
   unsigned long long int seconds;
   unsigned long int micros;
   float RPMs[3];
-  int analogValues[4];
+  int analogValues1[4];
+  int analogValues2[4];
   float steeringPosition;
 } dataStruct;
 
 //enums for AUXDAQ ports
 enum AUXDAQ_Ports {
-  RPM1 = 20,
-  RPM2 = 21,
-  RPM3 = 21,
+  RPM1 = 30,
+  RPM2 = 28,
+  RPM3 = 31,
   LDS1 = 22,
   LDS2 = 23,
   SPIO = 24,
@@ -64,8 +67,8 @@ enum AUXDAQ_Ports {
 enum Sensor_Constants {
   AMT22RES = 12,
   RDTEETH = 33,
-  FRTEETH = 33,
-  FLTEETH = 34
+  FRTEETH = 4,
+  FLTEETH = 4
 };
 
 //outputFile
@@ -88,10 +91,14 @@ inline void initDataStructValues() {
   dataStruct.RPMs[0] = 0;
   dataStruct.RPMs[1] = 0;
   dataStruct.RPMs[2] = 0;
-  dataStruct.analogValues[0] = 0;
-  dataStruct.analogValues[1] = 0;
-  dataStruct.analogValues[2] = 0;
-  dataStruct.analogValues[3] = 0;
+  dataStruct.analogValues1[0] = 0;
+  dataStruct.analogValues1[1] = 0;
+  dataStruct.analogValues1[2] = 0;
+  dataStruct.analogValues1[3] = 0;
+  dataStruct.analogValues2[0] = 0;
+  dataStruct.analogValues2[1] = 0;
+  dataStruct.analogValues2[2] = 0;
+  dataStruct.analogValues2[3] = 0;
   dataStruct.steeringPosition = 0;
 }
 
@@ -133,12 +140,13 @@ inline void setUpSD() {
 
 //function to initialize TeensyThreads
 inline void initializeThreads() {
-  //set thread slices
   threads.setSliceMicros(10);
   //add a thread for the main dataAquisitionAndSavingLoop
   mainThread = threads.addThread(dataAquisitionAndSavingLoop);
-  //add a thread for steering position sensor
+  //add a thread for steering po;sition sensor
   AMT22PositionThread = threads.addThread(updateAMT22Reading);
+    //set AMT22 time slice to be massive since it has enough yields to let the save loop run a bunch
+  //threads.setTimeSlice(AMT22PositionThread, 100);
 }
 
 //function to turn on power/recording LEDs
