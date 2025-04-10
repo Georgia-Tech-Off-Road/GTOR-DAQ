@@ -10,16 +10,22 @@
 
 HX711 scale;
 
-volatile float RPM;
+volatile float RPMOutput;
 
-int numTeethInGear = 30;
+volatile float RPMInput;
 
-uint32_t prevMicros = 0;
+int numTeethInOutput = 30;
+
+int numTeethInInput = 0;
+
+uint32_t prevMicrosOutput = 0;
+
+uint32_t prevMicrosInput = 0;
 
 float calibration_factor = -7050; //-7050 worked for my 440lb max scale setup
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(19200);
   Serial.println("HX711 calibration sketch");
   Serial.println("Remove all weight from scale");
   Serial.println("After readings begin, place known weight on scale");
@@ -36,7 +42,10 @@ void setup() {
 
   //interrupt for RPM
   pinMode(4, INPUT_PULLDOWN);
-  attachInterrupt(digitalPinToInterrupt(4), updateRPM, RISING);
+  attachInterrupt(digitalPinToInterrupt(4), updateRPMOutput, RISING);
+  //interrupt for RPM
+  pinMode(6, INPUT_PULLDOWN);
+  attachInterrupt(digitalPinToInterrupt(6), updateRPMInput, RISING);
   //interrupt for Tare 
   pinMode(5, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(5), tare, FALLING);
@@ -44,11 +53,20 @@ void setup() {
 
 }
 
+//define rest function (jumps to memory address 0)
+void (* resetFunc)(void) = 0;
+
 void loop() {
-  Serial.printf("RPM: %f  Load: %.1f lbs\n", RPM, scale.get_units());
+  Serial.printf("%llu,%f,%f,%.1f\n", micros(), RPMInput, RPMOutput, scale.get_units());
+  if(Serial.available())
+    {
+      char temp = Serial.read();
+      if(temp == '~') {
+          resetFunc();
+      }
+    }
   checkRPM();
 }
-
 
 void setCalibrationFactor() {
   Serial.println("Remove all weight from scale");
@@ -76,18 +94,30 @@ void setCalibrationFactor() {
       else if(temp =='~') 
         break;
     }
+    delay(100);
   }
 }
 
-void updateRPM() {
+void updateRPMOutput() {
   //calculate time dif in minutes
-  float timeDiff = (static_cast<float>((micros() - prevMicros)) /1e6);
+  float timeDiff = (static_cast<float>((micros() - prevMicrosOutput)) /1e6);
   //calculate time per rev
-  float timePerRev = timeDiff * numTeethInGear;
+  float timePerRev = timeDiff * numTeethInOutput;
   //set _RPM to product
-  RPM = static_cast<float>(60/timePerRev);
+  RPMOutput = static_cast<float>(60/timePerRev);
   //update _prevMicros
-  prevMicros = micros();
+  prevMicrosOutput = micros();
+}
+
+void updateRPMInput() {
+  //calculate time dif in minutes
+  float timeDiff = (static_cast<float>((micros() - prevMicrosInput)) /1e6);
+  //calculate time per rev
+  float timePerRev = timeDiff * numTeethInInput;
+  //set _RPM to product
+  RPMInput = static_cast<float>(60/timePerRev);
+  //update _prevMicros
+  prevMicrosInput = micros();
 }
 
 void tare() {
@@ -95,8 +125,10 @@ void tare() {
 }
 
 void checkRPM() {
-    if (prevMicros + 500000 < micros()) {
-        RPM = 0;
+    if (prevMicrosInput + 250000 < micros()) {
+        RPMInput = 0;
     }
-    return RPM;
+    if (prevMicrosOutput + 250000 < micros()) {
+        RPMOutput = 0;
+    }
 }
