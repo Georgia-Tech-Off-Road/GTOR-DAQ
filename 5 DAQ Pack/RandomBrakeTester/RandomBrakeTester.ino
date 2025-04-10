@@ -120,13 +120,13 @@ void dataAquisitionAndSavingLoop() {
       maxBrakePressure1 = 0;
       maxBrakePressure2 = 0;
     }
-    Serial.printf("Brake Pressure rear: %lf,  MAX: %lf\n", getBrakePressure(dataStruct.analogValues1[0]), maxBrakePressure1);
-    Serial.printf("Brake Pressure front: %lf,  MAX: %lf\n", getBrakePressure(dataStruct.analogValues2[3]), maxBrakePressure2);
-    if (getBrakePressure(dataStruct.analogValues1[0]) > maxBrakePressure1) {
-      maxBrakePressure1 = getBrakePressure(dataStruct.analogValues1[0]);
+    Serial.printf("Brake Pressure rear: %lf,  MAX: %lf\n", getBrakePressure(dataStruct.analogValues2[2]), maxBrakePressure1);
+    Serial.printf("Brake Pressure front: %lf,  MAX: %lf\n", getBrakePressure(dataStruct.analogValues1[3]), maxBrakePressure2);
+    if (getBrakePressure(dataStruct.analogValues2[2]) > maxBrakePressure1) {
+      maxBrakePressure1 = getBrakePressure(dataStruct.analogValues2[2]);
     } 
-    if (getBrakePressure(dataStruct.analogValues2[3]) > maxBrakePressure2) {
-      maxBrakePressure2 = getBrakePressure(dataStruct.analogValues2[3]);
+    if (getBrakePressure(dataStruct.analogValues1[3]) > maxBrakePressure2) {
+      maxBrakePressure2 = getBrakePressure(dataStruct.analogValues1[3]);
     }
     delay(100);
   }

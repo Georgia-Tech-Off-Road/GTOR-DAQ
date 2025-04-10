@@ -37,8 +37,11 @@ void setup() {
   pinMode(41, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(41), updateAnalogValueFlag2, FALLING);
 
+  pinMode(RPM3, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM3), frontRightInterrupt, RISING);
+  pinMode(RPM1, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM1), rearDiffInterrupt, RISING);
+  pinMode(RPM2, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM2), frontLeftInterrupt, RISING);
 
   //configure ADCs
@@ -140,7 +143,7 @@ void changeRecordingState() {
   else {
     while(digitalRead(7) == 1) {
     }
-    String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
+    String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second()+".bin");
     Serial.println(time.c_str());
     //turn on red LED
     digitalWrite(9, HIGH);
