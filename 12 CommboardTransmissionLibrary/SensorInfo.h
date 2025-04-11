@@ -151,20 +151,27 @@ namespace cmbtl {
     //These encode and decode function reduce a float value to an int, then multiply / divide it to shift the bits
     // around an imaginary decimal position so that they can be compressed to values that are between integers
     // ex. DECIMAL_BITS = 1 allows interval of 0.5, DECIMAL_BITS = 2 allows intervals of 0.25, 3 decimal bits 0.125 etc.
+    
+    /**
+     * @brief Only works with positive (or unsigned) float values
+     */
     template<size_t ENCODED_BIT_SIZE, uint8_t DECIMAL_BITS>
-    void floatEncode(const float& val, BinaryBuffer& buffer) {
+    void unsignedFloatEncode(const float& val, BinaryBuffer& buffer) {
         //Multiply val by 2^(PRECISION_FACTOR) to get extra encoded precision
-        boost::endian::big_uint64_t newVal = std::round(static_cast<uint64_t>(val * std::pow(2, DECIMAL_BITS)));
+        boost::endian::big_uint64_t newVal = static_cast<uint64_t>(std::round(val * std::pow(2, DECIMAL_BITS)));
 
         buffer.writeValue<boost::endian::big_uint64_t>(newVal, ENCODED_BIT_SIZE);
     }
 
+    /**
+     * @brief Only works with positive (or unsigned) float values
+     */
     template<size_t ENCODED_BIT_SIZE, uint8_t DECIMAL_BITS>
-    float floatDecode(const BinaryBuffer& buffer) {
+    float unsignedFloatDecode(const BinaryBuffer& buffer) {
         boost::endian::big_uint64_t val = buffer.readValue<boost::endian::big_uint64_t>(ENCODED_BIT_SIZE);
 
         //Divide by 2^(PRECISION_FACTOR)
-        return static_cast<float>(val / std::pow(2, DECIMAL_BITS));
+        return static_cast<float>(val) / std::pow(2, DECIMAL_BITS);
     }
 
     // ----------------------------------------- META PROGRAMMING TEMPLATES ---------------------------------------------
