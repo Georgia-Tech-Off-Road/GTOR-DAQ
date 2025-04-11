@@ -227,6 +227,44 @@ PacketEncodeDecodeTests/fast:
 	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/PacketEncodeDecodeTests.dir/build.make Testing/CMakeFiles/PacketEncodeDecodeTests.dir/build
 .PHONY : PacketEncodeDecodeTests/fast
 
+# Convenience name for target.
+Testing/CMakeFiles/DAQInfrastructureTests.dir/rule:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Testing/CMakeFiles/DAQInfrastructureTests.dir/rule
+.PHONY : Testing/CMakeFiles/DAQInfrastructureTests.dir/rule
+
+# Convenience name for target.
+DAQInfrastructureTests: Testing/CMakeFiles/DAQInfrastructureTests.dir/rule
+.PHONY : DAQInfrastructureTests
+
+# fast build rule for target.
+DAQInfrastructureTests/fast:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/DAQInfrastructureTests.dir/build.make Testing/CMakeFiles/DAQInfrastructureTests.dir/build
+.PHONY : DAQInfrastructureTests/fast
+
+DAQInfrastructure_unittest.o: DAQInfrastructure_unittest.cpp.o
+.PHONY : DAQInfrastructure_unittest.o
+
+# target to build an object file
+DAQInfrastructure_unittest.cpp.o:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/DAQInfrastructureTests.dir/build.make Testing/CMakeFiles/DAQInfrastructureTests.dir/DAQInfrastructure_unittest.cpp.o
+.PHONY : DAQInfrastructure_unittest.cpp.o
+
+DAQInfrastructure_unittest.i: DAQInfrastructure_unittest.cpp.i
+.PHONY : DAQInfrastructure_unittest.i
+
+# target to preprocess a source file
+DAQInfrastructure_unittest.cpp.i:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/DAQInfrastructureTests.dir/build.make Testing/CMakeFiles/DAQInfrastructureTests.dir/DAQInfrastructure_unittest.cpp.i
+.PHONY : DAQInfrastructure_unittest.cpp.i
+
+DAQInfrastructure_unittest.s: DAQInfrastructure_unittest.cpp.s
+.PHONY : DAQInfrastructure_unittest.s
+
+# target to generate assembly for a file
+DAQInfrastructure_unittest.cpp.s:
+	cd "/mnt/c/Users/alari/Documents/Programming/GTOffroad/GTOR-DAQ/12 CommboardTransmissionLibrary" && $(MAKE) $(MAKESILENT) -f Testing/CMakeFiles/DAQInfrastructureTests.dir/build.make Testing/CMakeFiles/DAQInfrastructureTests.dir/DAQInfrastructure_unittest.cpp.s
+.PHONY : DAQInfrastructure_unittest.cpp.s
+
 PacketEncodeDecode_unittest.o: PacketEncodeDecode_unittest.cpp.o
 .PHONY : PacketEncodeDecode_unittest.o
 
@@ -336,10 +374,14 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... test"
+	@echo "... DAQInfrastructureTests"
 	@echo "... PacketEncodeDecodeTests"
 	@echo "... SensorDataTests"
 	@echo "... SensorInfoTests"
 	@echo "... SensorsTest"
+	@echo "... DAQInfrastructure_unittest.o"
+	@echo "... DAQInfrastructure_unittest.i"
+	@echo "... DAQInfrastructure_unittest.s"
 	@echo "... PacketEncodeDecode_unittest.o"
 	@echo "... PacketEncodeDecode_unittest.i"
 	@echo "... PacketEncodeDecode_unittest.s"
