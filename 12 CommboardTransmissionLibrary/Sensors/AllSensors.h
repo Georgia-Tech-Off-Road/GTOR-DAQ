@@ -1,4 +1,5 @@
 #include "SensorInfo.h"
+#include "SensorData.h"
 #include <tuple>
 
 #include "Sensors/millisec.h"
@@ -18,12 +19,8 @@ namespace cmbtl {
         MILLI_SEC,
         CLUTCH_ENGAGED,
         PIT_REQUESTED,
-        SPEED_X,
-        SPEED_Y,
-        SPEED_Z,
-        POSITION_X,
-        POSITION_Y,
-        POSITION_Z,
+        SPEED,
+        POSITION,
         BRAKE_PRESSURE_FRONT,
         BRAKE_PRESSURE_BACK,
         RPM,
@@ -48,5 +45,8 @@ namespace cmbtl {
     cmbtl::position::POSITION_SENSOR_INFO,
     cmbtl::brake_pressure::BRAKE_PRESSURE_FRONT_SENSOR_INFO,
     cmbtl::brake_pressure::BRAKE_PRESSURE_BACK_SENSOR_INFO>;
+
+    using DAQSensorDataType = SensorData<SensorInfoTuple>;
+
 }
 #endif
