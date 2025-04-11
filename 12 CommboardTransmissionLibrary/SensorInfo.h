@@ -1,4 +1,6 @@
 #include "misc/BinaryBuffer/BinaryBuffer.h"
+#include "boost/endian/arithmetic.hpp"
+#include <cmath>
 #ifndef CMBTL_SENSOR_INFO_H
 #define CMBTL_SENSOR_INFO_H
 
@@ -143,6 +145,22 @@ namespace cmbtl {
 
     bool defaultBoolDecode(BinaryBuffer const &buffer) {
         return buffer.readValue<uint8_t>(1) == 1 ? true : false;
+    }
+
+    template<size_t ENCODED_BIT_SIZE, uint8_t PRECISION_FACTOR>
+    void floatEncode(const float& val, BinaryBuffer& buffer) {
+        //Multiply val by 2^(PRECISION_FACTOR) to get extra encoded precision
+        boost::endian::big_uint16_t newVal = std::round(static_cast<uint16_t>(val * std::pow(2, PRECISION_FACTOR)));
+
+        buffer.writeValue<boost::endian::big_uint16_t>(newVal, ENCODED_BIT_SIZE);
+    }
+
+    template<size_t ENCODED_BIT_SIZE, uint8_t PRECISION_FACTOR>
+    float floatDecode(const BinaryBuffer& buffer) {
+        boost::endian::big_uint16_t val = buffer.readValue<boost::endian::big_uint16_t>(ENCODED_BIT_SIZE);
+
+        //Divide by 2^(PRECISION_FACTOR)
+        return static_cast<float>(val / std::pow(2, PRECISION_FACTOR));
     }
 
     // ----------------------------------------- META PROGRAMMING TEMPLATES ---------------------------------------------
