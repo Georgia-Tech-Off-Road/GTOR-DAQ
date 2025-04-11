@@ -35,3 +35,4 @@ TEST(SensorDataPacketTests, encodePacket) {
     instructions.set(0, false);
     ASSERT_TRUE(sensorData.encodePacket(instructions).getCapacity() == 0);
 }
+
