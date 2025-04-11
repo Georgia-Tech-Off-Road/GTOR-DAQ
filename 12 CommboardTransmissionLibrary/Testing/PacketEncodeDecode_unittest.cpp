@@ -1,6 +1,6 @@
 #include "SensorData.h"
 #include "gtest/gtest.h"
-#include "Sensors.h"
+#include "../Sensors/AllSensors.h"
 #include "Packets/PacketInstructions.h"
 #include <iostream>
 using cmbtl::SensorData;
@@ -35,3 +35,4 @@ TEST(SensorDataPacketTests, encodePacket) {
     instructions.set(0, false);
     ASSERT_TRUE(sensorData.encodePacket(instructions).getCapacity() == 0);
 }
+
