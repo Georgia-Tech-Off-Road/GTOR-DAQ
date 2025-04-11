@@ -11,6 +11,8 @@
 #include "Sensors/RPM.h"
 #include "Sensors/linear_acceleration.h"
 #include "Sensors/CVT_temp.h"
+#include "Sensors/brake_temp.h"
+#include "Sensors/steering_rotation.h"
 
 #ifndef CMBTL_ALL_SENSORS_H
 #define CMBTL_ALL_SENSORS_H
@@ -38,6 +40,7 @@ namespace cmbtl {
         COUNT,
     };
 
+    // The order that the sensor appear in the enum and this tuple MUST MUST BE THE SAME
     using SensorInfoTuple = std::tuple<
     cmbtl::millisec::MILLI_SEC_SENSOR_INFO,
     cmbtl::clutch_engaged::CLUTCH_ENGAGED_SENSOR_INFO,
@@ -48,7 +51,11 @@ namespace cmbtl {
     cmbtl::brake_pressure::BRAKE_PRESSURE_BACK_SENSOR_INFO,
     cmbtl::rpm::RPM_SENSOR_INFO,
     cmbtl::linear_acceleration::LINEAR_ACCELERATION_SENSOR_INFO,
-    cmbtl::cvt_temp::CVT_TEMP_SENSOR_INFO>;
+    cmbtl::cvt_temp::CVT_TEMP_SENSOR_INFO,
+    cmbtl::brake_temp::BRAKE_TEMP_FRONT_LEFT_SENSOR_INFO,
+    cmbtl::brake_temp::BRAKE_TEMP_FRONT_RIGHT_SENSOR_INFO,
+    cmbtl::brake_temp::BRAKE_TEMP_BACK_SENSOR_INFO,
+    cmbtl::steering_rotation::STEERING_ROTATION_SENSOR_INFO>;
 
     using DAQSensorDataType = SensorData<SensorInfoTuple>;
 
