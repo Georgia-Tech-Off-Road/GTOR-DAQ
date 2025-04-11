@@ -5,6 +5,7 @@
 #include "Sensors/clutch_engaged.h"
 #include "Sensors/pit_requested.h"
 #include "Sensors/speed.h"
+#include "Sensors/position.h"
 
 #ifndef CMBTL_ALL_SENSORS_H
 #define CMBTL_ALL_SENSORS_H
