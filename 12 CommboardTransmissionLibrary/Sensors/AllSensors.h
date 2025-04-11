@@ -9,6 +9,8 @@
 #include "Sensors/position.h"
 #include "Sensors/brake_pressure.h"
 #include "Sensors/RPM.h"
+#include "Sensors/linear_acceleration.h"
+#include "Sensors/CVT_temp.h"
 
 #ifndef CMBTL_ALL_SENSORS_H
 #define CMBTL_ALL_SENSORS_H
@@ -25,9 +27,7 @@ namespace cmbtl {
         BRAKE_PRESSURE_FRONT,
         BRAKE_PRESSURE_BACK,
         RPM,
-        LINEAR_ACCELERATION_X,
-        LINEAR_ACCELERATION_Y,
-        LINEAR_ACCELERATION_Z,
+        LINEAR_ACCELERATION,
         CVT_TEMP,
         BRAKE_TEMP_FRONT_LEFT,
         BRAKE_TEMP_FRONT_RIGHT,
@@ -46,7 +46,9 @@ namespace cmbtl {
     cmbtl::position::POSITION_SENSOR_INFO,
     cmbtl::brake_pressure::BRAKE_PRESSURE_FRONT_SENSOR_INFO,
     cmbtl::brake_pressure::BRAKE_PRESSURE_BACK_SENSOR_INFO,
-    cmbtl::rpm::RPM_SENSOR_INFO>;
+    cmbtl::rpm::RPM_SENSOR_INFO,
+    cmbtl::linear_acceleration::LINEAR_ACCELERATION_SENSOR_INFO,
+    cmbtl::cvt_temp::CVT_TEMP_SENSOR_INFO>;
 
     using DAQSensorDataType = SensorData<SensorInfoTuple>;
 
