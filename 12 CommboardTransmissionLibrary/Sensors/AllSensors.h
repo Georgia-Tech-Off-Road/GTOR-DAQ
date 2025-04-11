@@ -6,6 +6,7 @@
 #include "Sensors/pit_requested.h"
 #include "Sensors/speed.h"
 #include "Sensors/position.h"
+#include "Sensors/brake_pressure.h"
 
 #ifndef CMBTL_ALL_SENSORS_H
 #define CMBTL_ALL_SENSORS_H
@@ -42,6 +43,10 @@ namespace cmbtl {
     using SensorInfoTuple = std::tuple<
     cmbtl::millisec::MILLI_SEC_SENSOR_INFO,
     cmbtl::clutch_engaged::CLUTCH_ENGAGED_SENSOR_INFO,
-    cmbtl::pit_requested::PIT_REQUESTED_SENSOR_INFO>;
+    cmbtl::pit_requested::PIT_REQUESTED_SENSOR_INFO,
+    cmbtl::speed::SPEED_SENSOR_INFO,
+    cmbtl::position::POSITION_SENSOR_INFO,
+    cmbtl::brake_pressure::BRAKE_PRESSURE_FRONT_SENSOR_INFO,
+    cmbtl::brake_pressure::BRAKE_PRESSURE_BACK_SENSOR_INFO>;
 }
 #endif
