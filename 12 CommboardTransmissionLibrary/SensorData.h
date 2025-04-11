@@ -65,25 +65,63 @@ namespace cmbtl {
 
 
         //TODO: Make nicer template substitution error messages for these functions
-        //Returns the data stored at the specified index by value
+        
+        /**
+         * @brief Returns data stored at index: SensorIndex
+         * 
+         * If a variable is declare as follows: @n
+         *  SensorData<std::tuple<SensorInfo<big_uint32_t, big_uint32_t, 32>, SensorInfo<bool, bool, 1>> data; @n
+         *  Then data.get<1>() returns a boolean, and data.get<0>() returns a big_uint32_t.
+         * 
+         * @tparam SensorIndex: Index to retrieve data from. @n
+         * This index corresponds to the order that SensorInfos are passed into SensorData.
+         * 
+         * @return Current sensor data of type SensorInfo::STORED_VALUE (Corresponding to order passed into std::tuple<SensorInfo...>).
+         */
         template<size_t SensorIndex>
         inline SVTypeAt<SensorIndex> getData() const {
             return std::get<SensorIndex>(data);
         }
 
-        //Returns a reference to data (to allow modification of more complex types)
+        /**
+         * @brief Identical to SensorData::getData() but returns a reference to the data
+         * 
+         * @tparam SensorIndex: Index of the data
+         * 
+         * @return Reference to the data at SensorIndex
+         */
         template<size_t SensorIndex>
         inline SVTypeAt<SensorIndex>& getRefToData() {
             return std::get<SensorIndex>(data);
         }
 
-        //Returns a reference to constant data (use case: returning larger data types that might take up too much stack space)
+        /**
+         * @brief Identical to SensorData::getData() but returns a constant reference to data instead of by value
+         * 
+         * @tparam SensorIndex: Index of the data
+         * 
+         * @return A const reference to data at SensorIndex
+         */
         template<size_t SensorIndex>
         inline SVTypeAt<SensorIndex> const & getConstRefToData() const {
             return std::get<SensorIndex>(data);
         }
 
-        //Sets data at a specific index. Not technically necessary, always can use getRefToData()
+
+        /**
+         * @brief Sets the data at index: SensorIndex
+         * 
+         * Uses getRefToData() to set the data at the specified index to value newValue
+         * 
+         * @tparam SensorIndex: Index to retrieve data from
+         * This index corresponds to the order that SensorInfos are passed into SensorData
+         * ex. If a variable is declare as follows: @n
+         *  SensorData<std::tuple<SensorInfo<big_uint32_t, big_uint32_t, 32>, SensorInfo<bool, bool, 1>> data; @n
+         *  Then data.get<1>() returns a boolean, and data.get<0>() returns a big_uint32_t.
+         * 
+         * @param newValue: New sensor value
+         * 
+         */
         template<size_t SensorIndex>
         inline void setData(SVTypeAt<SensorIndex> newValue) {
             getRefToData<SensorIndex>() = newValue;
