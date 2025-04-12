@@ -16,7 +16,7 @@ volatile float RPMInput;
 
 int numTeethInOutput = 30;
 
-int numTeethInInput = 0;
+int numTeethInInput = 8;
 
 uint32_t prevMicrosOutput = 0;
 
