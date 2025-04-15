@@ -81,7 +81,3 @@ def updateProgressBar(src, dst, progressBarPage, parentPage, outputPath, chosePa
     progressBarPage.destroy()
     #unhide the main data processor page
     parentPage.deiconify()
-    
-    
-    
-            

@@ -31,7 +31,7 @@ def testVisualizer(filePath, columnIndices, customWindow, useDefaultConfig):
     df = pd.read_csv(filePath, delimiter=',')
 
     # Optional filter
-    df = df[~df.iloc[:, 13].between(60000, 70000)]
+   # df = df[~df.iloc[:, 13].between(60000, 70000)]
 
     # Time in seconds
     time = df.iloc[:, 1] / (10 ** 6)
