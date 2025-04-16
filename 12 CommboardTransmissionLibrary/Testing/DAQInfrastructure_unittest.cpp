@@ -1014,3 +1014,11 @@ TEST(DAQSensorDataPacketTests, encodeDecodeCycle_SteeringRotation) {
     // Compare with the actual decoded value
     ASSERT_FLOAT_EQ(decodedValue, expectedRoundedValue);
 }
+
+TEST (DAQJSONSerializationTests, serializeToJSON) {
+    DAQSensorDataType sensorData;
+
+    std::cout << std::endl;
+    std::cout << sensorData.serializeDataToJSON();
+    std::cout << std::endl;
+}

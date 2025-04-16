@@ -176,8 +176,21 @@ namespace cmbtl {
          * 
          * @returns A tuple converted of the data in @var data converted to its "real" values
          */
-        inline RVTupleType convertData() {
+        inline RVTupleType convertData() const {
             return convertDataImpl(boost::mp11::make_index_sequence<NUM_SENSORS>{});
+        }
+
+        /**
+         * @brief Serialize the data to JSON format
+         */
+        std::string serializeDataToJSON() const {
+            std::stringstream ss;
+            ss << "{" << "\n";
+            serializeDataToJSONImpl(boost::mp11::make_index_sequence<NUM_SENSORS>{}, ss);
+            ss << "}";
+
+            return ss.str().c_str();
+
         }
 
         template <size_t SensorIndex>
@@ -254,6 +267,26 @@ namespace cmbtl {
             template <size_t... Is>
             inline RVTupleType convertDataImpl(boost::mp11::index_sequence<Is...>) const {
                 return std::make_tuple(convertedDataAt<Is>()...);
+            }
+
+            template<size_t... Is>
+            inline void serializeDataToJSONImpl(boost::mp11::index_sequence<Is...>, std::stringstream& ss) const {
+                //Dummy array to call methods
+                int dummy[] = {(seralizeSensorToJSON<Is>(convertedDataAt<Is>(), ss, !(Is < NUM_SENSORS)), 0)...};
+                (void)dummy;
+            }
+
+            /**
+             * Calls serialiseToJSON on sensor N
+             */
+            template<size_t N>
+            inline void seralizeSensorToJSON(RVTypeAt<N> convertedData, std::stringstream& ss, bool isFinal) const {
+                ss << "\t";
+                SensorAt<N>::serializeToJSON(convertedData, ss);
+                if (!isFinal) {
+                    ss << ",";
+                } 
+                ss << "\n";
             }
 
             //Yes this could be done at compile time, but the solution in C++11 is... nasty
