@@ -11,13 +11,13 @@ namespace cmbtl {
 
     //Forward declare default functions
     template<typename SV, uint32_t BIT_SIZE>
-    void defaultEncode(const SV&, BinaryBuffer&);
+    inline void defaultEncode(const SV&, BinaryBuffer&);
 
     template<typename SV, uint32_t BIT_SIZE>
-    SV defaultDecode(const BinaryBuffer&);
+    inline SV defaultDecode(const BinaryBuffer&);
 
     template<typename SV, typename RV>
-    RV defaultConvert(const SV&);
+    inline RV defaultConvert(const SV&);
 
     //--------------- Define Data Types for Different Sensors ---------------------------------
     /**
@@ -55,13 +55,13 @@ namespace cmbtl {
     };
 
     //Forward declare default functions for the bool sensor (default functions would probably work but I'm paranoid)
-    void defaultBoolEncode(const bool& val, BinaryBuffer& buffer);
+    inline void boolEncode(const bool& val, BinaryBuffer& buffer);
 
-    bool defaultBoolDecode(BinaryBuffer const &buffer);
+    inline bool boolDecode(BinaryBuffer const &buffer);
 
-    bool defaultBoolConvert(const bool& val);
+    inline bool defaultBoolConvert(const bool& val);
 
-    using DefaultBoolSensorInfo = SensorInfo<bool, bool, 1, defaultBoolEncode, defaultBoolDecode>;
+    using DefaultBoolSensorInfo = SensorInfo<bool, bool, 1, boolEncode, boolDecode>;
 
 
     //----------------------- DEFINE COMMONLY USED FUNCTIONS ------------------------------------
@@ -79,7 +79,7 @@ namespace cmbtl {
      * 
      */
     template<typename SV, uint32_t BIT_SIZE>
-    void defaultEncode(const SV& val, BinaryBuffer& buffer) {
+    inline void defaultEncode(const SV& val, BinaryBuffer& buffer) {
         buffer.writeValue<SV>(val, BIT_SIZE);
     }
 
@@ -96,7 +96,7 @@ namespace cmbtl {
      *  Loads from the buffer and places the bits into the returned type starting at the LSB
      */
     template<typename SV, uint32_t BIT_SIZE>
-    SV defaultDecode(BinaryBuffer const &buffer) {
+    inline SV defaultDecode(BinaryBuffer const &buffer) {
         return buffer.readValue<SV>(BIT_SIZE);
     }
 
@@ -111,7 +111,7 @@ namespace cmbtl {
      * @return: Val converted to type RV
      */
     template<typename SV, typename RV>
-    RV defaultConvert(SV const &val) {
+    inline RV defaultConvert(SV const &val) {
         return static_cast<RV>(val);
     }
 
@@ -128,14 +128,14 @@ namespace cmbtl {
      * 
      */
     template<typename T>
-    T defaultConvert(T const &val) {
+    inline T defaultConvert(T const &val) {
         return val;
     }
 
     // ---------------- VERSIONS OF ENCODE AND DECODE FOR BOOLS ---------------------------------------------------------
     // defaultEncode and defaultDecode would proabably be fine but I'm paranoid
 
-    void defaultBoolEncode(const bool& val, BinaryBuffer& buffer) {
+    inline void boolEncode(const bool& val, BinaryBuffer& buffer) {
         if (val) {
             buffer.writeValue<uint8_t>(1, 1);
         }  else {
@@ -143,7 +143,7 @@ namespace cmbtl {
         }
     }
 
-    bool defaultBoolDecode(BinaryBuffer const &buffer) {
+    inline bool boolDecode(BinaryBuffer const &buffer) {
         return buffer.readValue<uint8_t>(1) == 1 ? true : false;
     }
 
@@ -153,10 +153,10 @@ namespace cmbtl {
     // ex. DECIMAL_BITS = 1 allows interval of 0.5, DECIMAL_BITS = 2 allows intervals of 0.25, 3 decimal bits 0.125 etc.
     
     /**
-     * @brief Only works with positive (or unsigned) float values
+     * @brief Only works with positive (or unsigned) float values. This function has undefined behaviour with negative floats.
      */
     template<size_t ENCODED_BIT_SIZE, uint8_t DECIMAL_BITS>
-    void unsignedFloatEncode(const float& val, BinaryBuffer& buffer) {
+    inline void unsignedFloatEncode(const float& val, BinaryBuffer& buffer) {
         //Multiply val by 2^(PRECISION_FACTOR) to get extra encoded precision
         boost::endian::big_uint64_t newVal = static_cast<uint64_t>(std::round(val * std::pow(2, DECIMAL_BITS)));
 
@@ -164,14 +164,48 @@ namespace cmbtl {
     }
 
     /**
-     * @brief Only works with positive (or unsigned) float values
+     * @brief Only works with positive float values. This function has undefined behaviour with negative floats.
      */
     template<size_t ENCODED_BIT_SIZE, uint8_t DECIMAL_BITS>
-    float unsignedFloatDecode(const BinaryBuffer& buffer) {
+    inline float unsignedFloatDecode(const BinaryBuffer& buffer) {
         boost::endian::big_uint64_t val = buffer.readValue<boost::endian::big_uint64_t>(ENCODED_BIT_SIZE);
 
         //Divide by 2^(PRECISION_FACTOR)
         return static_cast<float>(val) / std::pow(2, DECIMAL_BITS);
+    }
+    
+    /**
+     * @brief Works for all floats (positive and negative)
+     */
+    template<size_t ENCODED_BIT_SIZE, uint8_t DECIMAL_BITS>
+    inline void floatEncode(const float& val, BinaryBuffer& buffer) {
+
+        float newVal = val;
+        //Write 1 at beginning for negative values
+        if (val < 0) {
+            boolEncode(true, buffer);
+            newVal *= -1;
+        } else { //Otherwise write 1
+            boolEncode(false, buffer);
+        }
+        //Write rest of bits
+        unsignedFloatEncode<ENCODED_BIT_SIZE - 1, DECIMAL_BITS>(newVal, buffer);
+    }
+
+    /**
+     * @brief Decodes floats. Works for positive and negative floats
+     */
+    template <size_t ENCODED_BIT_SIZE, uint8_t DECIMAL_BITS>
+    inline float floatDecode(const BinaryBuffer& buffer) {
+
+        //Read signed bit first
+        bool isNegative = boolDecode(buffer);
+
+        // Read unsigned float value
+        float unsignedVal = unsignedFloatDecode<ENCODED_BIT_SIZE - 1, DECIMAL_BITS>(buffer);
+
+        return isNegative ? -1 * unsignedVal : unsignedVal;
+
     }
 
     // ----------------------------------------- META PROGRAMMING TEMPLATES ---------------------------------------------
