@@ -1,6 +1,9 @@
 #include "misc/BinaryBuffer/BinaryBuffer.h"
 #include "boost/endian/arithmetic.hpp"
 #include <cmath>
+#include <string>
+#include <iostream>
+#include <sstream>
 #ifndef CMBTL_SENSOR_INFO_H
 #define CMBTL_SENSOR_INFO_H
 
@@ -19,6 +22,9 @@ namespace cmbtl {
     template<typename SV, typename RV>
     inline RV defaultConvert(const SV&);
 
+    template<typename RV>
+    void defaultJSONSerialize(RV, std::stringstream&);
+
     //--------------- Define Data Types for Different Sensors ---------------------------------
     /**
      * @brief Metaprograming type to store sensor information at compile time
@@ -34,13 +40,15 @@ namespace cmbtl {
      * @tparam ENCODE: Reference to a function that writes the data to a binary buffer, should write exactly BIT_SIZE bits
      * @tparam DECODE: Reference to a function that retrives the data from a binary buffer, should read exactly BIT_SIZE bits
      * @tparam CONVERT: Function that converts from the stored value (SV) to the real value (RV)
+     * @tparam JSONSERIALIZE: Function that serialises the data to .json
      */
     template <typename SV, 
     typename RV, 
     uint32_t BIT_SIZE,
     void (*ENCODE)(const SV &data, BinaryBuffer&) = defaultEncode<SV, BIT_SIZE>,
     SV (*DECODE)(const BinaryBuffer&) = defaultDecode<SV, BIT_SIZE>,
-    RV (*CONVERT)(const SV&) = defaultConvert<SV, RV>>
+    RV (*CONVERT)(const SV&) = defaultConvert<SV, RV>,
+    void (*JSONSERIALIZE)(RV, std::stringstream&) = defaultJSONSerialize<RV>>
     struct SensorInfo {
         using STORED_VALUE = SV;
         using REAL_VALUE = RV;
@@ -52,6 +60,8 @@ namespace cmbtl {
         static constexpr SV (*decode)(BinaryBuffer const &buffer) = DECODE;
         //Convert to a more natural (and probably less space efficient) data type after data is sent over.
         static constexpr RV(*convert)(const SV&) = CONVERT;
+
+        static constexpr void (*serializeToJSON)(RV, std::stringstream&) = JSONSERIALIZE;
     };
 
     //Forward declare default functions for the bool sensor (default functions would probably work but I'm paranoid)
@@ -113,6 +123,11 @@ namespace cmbtl {
     template<typename SV, typename RV>
     inline RV defaultConvert(SV const &val) {
         return static_cast<RV>(val);
+    }
+
+    template<typename RV>
+    void defaultJSONSerialize(RV val, std::stringstream& ss) {
+        ss << "NO_SERIALIZATION_DEFINED: " << "TRUE"; 
     }
 
 
@@ -221,8 +236,9 @@ namespace cmbtl {
     uint32_t BIT_SIZE,
     void (*ENCODE)(const SV &data, BinaryBuffer&),
     SV (*DECODE)(const BinaryBuffer&),
-    RV (*CONVERT)(const SV&)>
-    struct is_sensor_info<cmbtl::SensorInfo<SV, RV,  BIT_SIZE, ENCODE, DECODE, CONVERT>> : std::true_type {};
+    RV (*CONVERT)(const SV&),
+    void (*JSONSERIALIZE)(RV, std::stringstream&)>
+    struct is_sensor_info<cmbtl::SensorInfo<SV, RV,  BIT_SIZE, ENCODE, DECODE, CONVERT, JSONSERIALIZE>> : std::true_type {};
     //-------------------------------------------------------------------------------------------------------------------
 }
 #endif
