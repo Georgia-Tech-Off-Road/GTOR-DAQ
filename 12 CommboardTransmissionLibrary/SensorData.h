@@ -17,6 +17,8 @@ namespace cmbtl {
 
     template<class T> using extract_SV = typename T::STORED_VALUE;
 
+    template<class T> using extract_RV = typename T::REAL_VALUE;
+
     template<typename T, typename Enable = void>
     struct SensorData {
         static_assert(always_false<T>, "Template parameter: SensorsTuple must be of type std::tuple<SensorInfo<SV, RV, BIT_SIZE, ENCODE, DECODE, CONVERT>...>");
@@ -42,12 +44,13 @@ namespace cmbtl {
         // First apply the transform to get the types
         using SVTupleType = boost::mp11::mp_transform<extract_SV, SensorsTuple>;
 
+        using RVTupleType = boost::mp11::mp_transform<extract_RV, SensorsTuple>;
+
         SVTupleType data;
         //Array container to allow runtime access to SensorInfo encode functions
         const std::array<void (SensorData::*)(BinaryBuffer&), NUM_SENSORS> encodeFunctionTable;
 
         const std::array<void (SensorData::*)(BinaryBuffer const &), NUM_SENSORS> decodeFunctionTable;
-
         //Create an array of the encoded bit size values for runtime access
         template<class T>
         struct create_encode_bit_size_arr {
@@ -141,7 +144,7 @@ namespace cmbtl {
         }
 
         template<size_t InstructionsSensorCount>
-        inline BinaryBuffer encodePacket(PacketInstructions<InstructionsSensorCount> const &instructions) {
+        inline BinaryBuffer encodePacket(packet::PacketInstructions<InstructionsSensorCount> const &instructions) {
             if (InstructionsSensorCount > NUM_SENSORS) {
                 std::ostringstream err;
                 err << "The number of sensors specified in parameter instructions: " 
@@ -168,8 +171,24 @@ namespace cmbtl {
             return buffer;
         }
 
+        /**
+         * @brief converts the elements in data to their real values (See Sensor.h for more info)
+         * 
+         * @returns A tuple converted of the data in @var data converted to its "real" values
+         */
+        inline RVTupleType convertData() {
+            return convertDataImpl(boost::mp11::make_index_sequence<NUM_SENSORS>{});
+        }
+
+        template <size_t SensorIndex>
+        inline RVTypeAt<SensorIndex> convertedDataAt() const {
+            static_assert(SensorIndex < NUM_SENSORS, "Template parameter: SensorIndex must be less than NUM_SENSORS!");
+            return SensorAt<SensorIndex>::convert(getData<SensorIndex>());
+        }
+
+
         template<size_t InstructionsSensorCount>
-        inline void decodePacket(PacketInstructions<InstructionsSensorCount> const &instructions, BinaryBuffer const &buffer) {
+        inline void decodePacket(packet::PacketInstructions<InstructionsSensorCount> const &instructions, BinaryBuffer const &buffer) {
             if (InstructionsSensorCount > NUM_SENSORS) {
                 std::ostringstream err;
                 err << "The number of sensors specified in parameter instructions: " 
@@ -222,7 +241,7 @@ namespace cmbtl {
             }
 
             template<size_t InstructionsSensorCount>
-            static inline uint32_t const packetEncodedBitSize(PacketInstructions<InstructionsSensorCount> const &instructions) { 
+            static inline uint32_t const packetEncodedBitSize(packet::PacketInstructions<InstructionsSensorCount> const &instructions) { 
                 uint32_t bit_size = 0;
                 for (int i = 0; i < instructions.size(); i++) {
                     if (instructions[i] == true) {
@@ -230,6 +249,11 @@ namespace cmbtl {
                     }
                 }
                 return bit_size;
+            }
+
+            template <size_t... Is>
+            inline RVTupleType convertDataImpl(boost::mp11::index_sequence<Is...>) const {
+                return std::make_tuple(convertedDataAt<Is>()...);
             }
 
             //Yes this could be done at compile time, but the solution in C++11 is... nasty

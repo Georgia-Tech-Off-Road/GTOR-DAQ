@@ -5,7 +5,7 @@
 #include <iostream>
 
 using cmbtl::SensorData;
-using cmbtl::PacketInstructions;
+using cmbtl::packet::PacketInstructions;
 using cmbtl::DAQSensorDataType;
 using cmbtl::SensorIndex;
 
