@@ -272,7 +272,7 @@ namespace cmbtl {
             template<size_t... Is>
             inline void serializeDataToJSONImpl(boost::mp11::index_sequence<Is...>, std::stringstream& ss) const {
                 //Dummy array to call methods
-                int dummy[] = {(seralizeSensorToJSON<Is>(convertedDataAt<Is>(), ss, !(Is < NUM_SENSORS)), 0)...};
+                int dummy[] = {(seralizeSensorToJSON<Is>(convertedDataAt<Is>(), ss, !(Is < NUM_SENSORS - 1)), 0)...};
                 (void)dummy;
             }
 
