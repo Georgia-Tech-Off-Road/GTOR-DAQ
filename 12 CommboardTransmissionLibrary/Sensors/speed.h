@@ -2,6 +2,9 @@
 #include "../misc/BinaryBuffer/BinaryBuffer.h"
 #include "SensorInfo.h"
 #include <cstdint>
+#include <string>
+#include <sstream>
+
 #ifndef CMBTL_SPEED_H
 #define CMBTL_SPEED_H
 namespace cmbtl {
@@ -38,7 +41,11 @@ namespace cmbtl {
             return data;
         }
 
-        using SPEED_SENSOR_INFO = SensorInfo<Speed, Speed, ENCODED_BIT_SIZE, encodeSpeed, decodeSpeed>;
+        inline void serializeToJSON(const Speed& val, std::stringstream& ss) {
+            ss << "\"speed\": {\"x\": " << val.x << ", " << "\"y\": " << val.y << ", " << "\"z\": " << val.z << "}";
+        }
+
+        using SPEED_SENSOR_INFO = SensorInfo<Speed, Speed, ENCODED_BIT_SIZE, encodeSpeed, decodeSpeed, defaultConvert<Speed, Speed>, serializeToJSON>;
     }
 }
 #endif

@@ -39,7 +39,11 @@ namespace cmbtl {
             return position;
         }
 
-        using POSITION_SENSOR_INFO = SensorInfo<Position, Position, ENCODED_BIT_SIZE, encodePosition, decodePosition>;
+        inline void serializeToJSON(const Position& val, std::stringstream& ss) {
+            ss << "\"position\": {\"x\": " << val.x << ", " << "\"y\": " << val.y << ", " << "\"z\": " << val.z << "}";
+        }
+
+        using POSITION_SENSOR_INFO = SensorInfo<Position, Position, ENCODED_BIT_SIZE, encodePosition, decodePosition, defaultConvert<Position, Position>, serializeToJSON>;
 
     }
 }

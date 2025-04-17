@@ -18,8 +18,8 @@ namespace cmbtl {
 		//'Real Value' of millisec
 		using RV = uint32_t;
 
-		void serializeToJSON(const RV& convertedVal, std::stringstream& ss) {
-			ss << "millisec: " << convertedVal;
+		inline void serializeToJSON(const RV& convertedVal, std::stringstream& ss) {
+			ss << "\"millisec\": " << convertedVal;
 		}
 
 		//The millisec sensor
