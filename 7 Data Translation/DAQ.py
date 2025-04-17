@@ -40,8 +40,6 @@ root.geometry("600x200")
 with open("Settings/Settings.csv") as settingsf:
     reader = csv.reader(settingsf)
     settingsData = list(reader)
-settingsHeader = settingsData[0]
-settingsData = settingsData[1:]
 
 # Function to go to Data Processing Tool
 def dataProcessingTool():
