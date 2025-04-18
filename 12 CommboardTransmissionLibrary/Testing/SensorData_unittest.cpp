@@ -1,10 +1,16 @@
 #include "SensorData.h"
 #include "gtest/gtest.h"
-#include "../Sensors/AllSensors.h"
+#include "../Sensors/DAQSensors.h"
 #include "Packets/PacketInstructions.h"
 #include <iostream>
 using cmbtl::SensorData;
-using cmbtl::PacketInstructions;
+using cmbtl::packet::PacketInstructions;
+
+float testSensorConvert(const uint16_t& data) {
+    return static_cast<float>(data) + 10.0f;
+}
+
+using TestSensorInfo = cmbtl::SensorInfo<uint16_t, float, 16, nullptr, nullptr, testSensorConvert>;
 
 using SensorsTuple = std::tuple<cmbtl::millisec::MILLI_SEC_SENSOR_INFO>;
 using SensorDataType = SensorData<SensorsTuple>; 
@@ -104,4 +110,16 @@ TEST(SensorDataTests, runtimeEncodeAndDecodeData) {
     sensorData.decodeDataRuntime(0, buffer);
 
     ASSERT_EQ(sensorData.getData<0>(), 789);
+}
+
+TEST(SensorDataTests, convertData) {
+    SensorData<std::tuple<cmbtl::millisec::MILLI_SEC_SENSOR_INFO, TestSensorInfo>> sensorData;
+
+    sensorData.setData<0>(32);
+    sensorData.setData<1>(32);
+
+    std::tuple<uint32_t, float> convertedData = sensorData.convertData();
+
+    ASSERT_EQ(std::get<0>(convertedData), 32);
+    ASSERT_EQ(std::get<1>(convertedData), 42.0f);
 }
