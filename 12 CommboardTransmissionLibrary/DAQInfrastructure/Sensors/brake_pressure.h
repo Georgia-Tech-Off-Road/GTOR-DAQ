@@ -10,22 +10,43 @@
 
 namespace cmbtl {
     namespace brake_pressure {
-        constexpr uint32_t ENCODED_BIT_SIZE = 12;
 
-        using SV = boost::endian::big_uint32_t;
-        using RV = boost::endian::big_float32_t;
+        constexpr uint32_t AXIS_ENCODED_BIT_SIZE = 12;
 
-        void serializeFrontToJSON(const RV& convertedVal, std::stringstream& ss) {
-            ss << "\"brakePressureFront\": " << convertedVal;
+        using AXIS_SV = boost::endian::big_uint32_t;
+
+        constexpr uint32_t ENCODED_BIT_SIZE = AXIS_ENCODED_BIT_SIZE * 2;
+
+        struct BrakePressure {
+            AXIS_SV front;
+            AXIS_SV rear;
+        };
+
+        using SV = BrakePressure;
+        using RV = BrakePressure;
+
+        inline void encodeBrakePressure(const SV& data, BinaryBuffer& buffer) {
+            buffer.writeValue<AXIS_SV>(data.front, AXIS_ENCODED_BIT_SIZE);
+            buffer.writeValue<AXIS_SV>(data.rear, AXIS_ENCODED_BIT_SIZE);
         }
 
-        void serializeBackToJSON(const RV& convertedVal, std::stringstream& ss) {
-            ss << "\"brakePressureBack\": " << convertedVal;
+        inline SV decodeBrakePressure(const BinaryBuffer& buffer) {
+            BrakePressure data;
+
+            data.front = buffer.readValue<AXIS_SV>(AXIS_ENCODED_BIT_SIZE);
+            data.rear = buffer.readValue<AXIS_SV>(AXIS_ENCODED_BIT_SIZE);
+
+            return data;
         }
 
+        inline void serializeToJSON(const RV& val, std::stringstream& ss) {
+            ss << "\"brakePressure\": {";
+            ss <<  "\"front\": " << val.front << ", ";
+            ss << "\"rear\": " << val.rear;
+            ss << "}";
+        }
         //Two should be the exact same
-        using BRAKE_PRESSURE_FRONT_SENSOR_INFO = DefaultSensor<SV, RV, ENCODED_BIT_SIZE, serializeFrontToJSON>;
-        using BRAKE_PRESSURE_BACK_SENSOR_INFO = DefaultSensor<SV, RV, ENCODED_BIT_SIZE, serializeBackToJSON>;
+        using BRAKE_PRESSURE_SENSOR_INFO = SensorInfo<SV, RV, ENCODED_BIT_SIZE, encodeBrakePressure, decodeBrakePressure, defaultConvert<SV, RV>, serializeToJSON>;
     }
 }
 
