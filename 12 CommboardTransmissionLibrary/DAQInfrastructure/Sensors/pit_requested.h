@@ -1,4 +1,4 @@
-#include "../SensorInfo.h"
+#include "../../SensorInfo.h"
 #ifndef CMBTL_PIT_REQUESTED_H
 #define CMBTL_PIT_REQUESTED_H
 namespace cmbtl {
