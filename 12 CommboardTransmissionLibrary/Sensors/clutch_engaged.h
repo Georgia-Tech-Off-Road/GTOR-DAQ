@@ -9,7 +9,7 @@ namespace cmbtl {
     namespace clutch_engaged {
 
         inline void serializeToJSON(const bool& convertedVal, std::stringstream& ss) {
-            ss << "\"clutch_engaged\": " << (convertedVal ? "true" : "false");
+            ss << "\"clutchEngaged\": " << (convertedVal ? "true" : "false");
         }
 
         using CLUTCH_ENGAGED_SENSOR_INFO = DefaultBoolSensorInfo<serializeToJSON>;

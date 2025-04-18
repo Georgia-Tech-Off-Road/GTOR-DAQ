@@ -8,7 +8,8 @@ using cmbtl::SensorData;
 using cmbtl::packet::PacketInstructions;
 using cmbtl::DAQSensorDataType;
 using cmbtl::SensorIndex;
-
+using cmbtl::unsignedFloatEncode;
+using cmbtl::unsignedFloatDecode;
 // Tests specifically of implementations that DAQ will use
 
 // * Disclaimer: these tests were created by AI but reviewed and modified by a human
@@ -396,51 +397,19 @@ TEST(DAQSensorDataPacketTests, decodePacket_BrakePressureBack) {
 }
 
 // RPM TESTS
-// Note: RPM values are encoded with a precision of 0.125 (1/8) due to the 
-// multiplication/division by 8 in the encoding/decoding process
-TEST(DAQSensorDataPacketTests, encodePacket_RPM) {
-    DAQSensorDataType sensorData;
-    PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
-    instructions.set(SensorIndex::RPM);
-    
-    // Set RPM to a value that is exactly representable in 0.125 intervals
-    sensorData.setData<SensorIndex::RPM>(3250.375f);  // 3250 + 3/8
-
-    BinaryBuffer buffer = sensorData.encodePacket(instructions);
-    
-    // When reading back, we need to simulate the RPM encoding/decoding
-    boost::endian::big_uint16_t encodedVal = buffer.readValue<boost::endian::big_uint16_t>(cmbtl::rpm::ENCODED_BIT_SIZE);
-    float decodedRPM = static_cast<float>(encodedVal) / 8.0f;
-    
-    ASSERT_FLOAT_EQ(decodedRPM, 3250.375f);
-}
-
-TEST(DAQSensorDataPacketTests, decodePacket_RPM) {
-    DAQSensorDataType sensorData;
-    PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
-    instructions.set(SensorIndex::RPM);
-
-    BinaryBuffer buffer(cmbtl::rpm::ENCODED_BIT_SIZE);
-    
-    // Create a value that's a multiple of 0.125
-    float originalRPM = 4500.25f;  // 4500 + 2/8
-    uint16_t encodedRPM = static_cast<uint16_t>(originalRPM * 8);
-    buffer.writeValue<boost::endian::big_uint16_t>(encodedRPM, cmbtl::rpm::ENCODED_BIT_SIZE);
-
-    sensorData.decodePacket(instructions, buffer);
-
-    ASSERT_FLOAT_EQ(sensorData.getData<SensorIndex::RPM>(), 4500.25f);
-}
-
 TEST(DAQSensorDataPacketTests, encodeDecodeCycle_RPM) {
     // First instance for encoding
     DAQSensorDataType sensorData1;
     PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
     instructions.set(SensorIndex::RPM);
     
-    // Use a value that can be exactly represented in 0.125 increments
-    // 2750.625 = 2750 + 5/8
-    sensorData1.setData<SensorIndex::RPM>(2750.625f);
+    // Create a new RPM struct with all three values
+    cmbtl::rpm::RPM testRPM;
+    testRPM.left = 2500.375f;
+    testRPM.right = 2600.5f;
+    testRPM.rear = 2700.625f;
+    
+    sensorData1.setData<SensorIndex::RPM>(testRPM);
 
     // Encode to buffer
     BinaryBuffer buffer = sensorData1.encodePacket(instructions);
@@ -450,20 +419,63 @@ TEST(DAQSensorDataPacketTests, encodeDecodeCycle_RPM) {
     sensorData2.decodePacket(instructions, buffer);
     
     // Verify data was preserved through encode/decode cycle
-    // Since we used a value exactly representable in 0.125 increments,
-    // it should be preserved exactly
-    ASSERT_FLOAT_EQ(sensorData2.getData<SensorIndex::RPM>(), 2750.625f);
-    ASSERT_FLOAT_EQ(sensorData1.getData<SensorIndex::RPM>(), sensorData2.getData<SensorIndex::RPM>());
+    cmbtl::rpm::RPM decodedRPM = sensorData2.getData<SensorIndex::RPM>();
+    ASSERT_FLOAT_EQ(decodedRPM.left, 2500.375f);
+    ASSERT_FLOAT_EQ(decodedRPM.right, 2600.5f);
+    ASSERT_FLOAT_EQ(decodedRPM.rear, 2700.625f);
     
-    // Test with a value that is not exactly representable in 0.125 increments
-    // 3333.123 will be rounded to the nearest 0.125 increment
-    sensorData1.setData<SensorIndex::RPM>(3333.123f);
-    buffer = sensorData1.encodePacket(instructions);
-    sensorData2.decodePacket(instructions, buffer);
+    // Compare the original and decoded RPM structs
+    cmbtl::rpm::RPM originalRPM = sensorData1.getData<SensorIndex::RPM>();
+    ASSERT_FLOAT_EQ(originalRPM.left, decodedRPM.left);
+    ASSERT_FLOAT_EQ(originalRPM.right, decodedRPM.right);
+    ASSERT_FLOAT_EQ(originalRPM.rear, decodedRPM.rear);
+}
+
+TEST(DAQSensorDataPacketTests, encodePacket_RPM) {
+    DAQSensorDataType sensorData;
+    PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
+    instructions.set(SensorIndex::RPM);
     
-    // The value should now be the nearest multiple of 0.125
-    // 3333.123 ≈ 3333.125 (which is 3333 + 1/8)
-    ASSERT_NEAR(sensorData2.getData<SensorIndex::RPM>(), 3333.125f, 0.125f);
+    // Create and set RPM struct with all three values
+    cmbtl::rpm::RPM testRPM;
+    testRPM.left = 3000.25f;
+    testRPM.right = 3100.375f;
+    testRPM.rear = 3200.5f;
+    
+    sensorData.setData<SensorIndex::RPM>(testRPM);
+
+    BinaryBuffer buffer = sensorData.encodePacket(instructions);
+    
+    // Read values directly from buffer and verify
+    float leftRPM = unsignedFloatDecode<cmbtl::rpm::AXIS_ENCODED_BIT_SIZE, cmbtl::rpm::DECIMAL_BITS>(buffer);
+    float rightRPM = unsignedFloatDecode<cmbtl::rpm::AXIS_ENCODED_BIT_SIZE, cmbtl::rpm::DECIMAL_BITS>(buffer);
+    float rearRPM = unsignedFloatDecode<cmbtl::rpm::AXIS_ENCODED_BIT_SIZE, cmbtl::rpm::DECIMAL_BITS>(buffer);
+    
+    ASSERT_FLOAT_EQ(leftRPM, 3000.25f);
+    ASSERT_FLOAT_EQ(rightRPM, 3100.375f);
+    ASSERT_FLOAT_EQ(rearRPM, 3200.5f);
+}
+
+TEST(DAQSensorDataPacketTests, decodePacket_RPM) {
+    DAQSensorDataType sensorData;
+    PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
+    instructions.set(SensorIndex::RPM);
+
+    BinaryBuffer buffer(cmbtl::rpm::ENCODED_BIT_SIZE);
+    
+    // Write RPM values for each axis to the buffer
+    unsignedFloatEncode<cmbtl::rpm::AXIS_ENCODED_BIT_SIZE, cmbtl::rpm::DECIMAL_BITS>(4000.25f, buffer);
+    unsignedFloatEncode<cmbtl::rpm::AXIS_ENCODED_BIT_SIZE, cmbtl::rpm::DECIMAL_BITS>(4100.375f, buffer);
+    unsignedFloatEncode<cmbtl::rpm::AXIS_ENCODED_BIT_SIZE, cmbtl::rpm::DECIMAL_BITS>(4200.5f, buffer);
+
+    sensorData.decodePacket(instructions, buffer);
+
+    // Verify the decoded RPM struct
+    cmbtl::rpm::RPM decodedRPM = sensorData.getData<SensorIndex::RPM>();
+    
+    ASSERT_FLOAT_EQ(decodedRPM.left, 4000.25f);
+    ASSERT_FLOAT_EQ(decodedRPM.right, 4100.375f);
+    ASSERT_FLOAT_EQ(decodedRPM.rear, 4200.5f);
 }
 
 // Test multiple sensors together
