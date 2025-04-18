@@ -15,58 +15,102 @@
 namespace cmbtl {
 
 
+    // ------------------------------------------ TEMPLATE METAPROGRAMMING ----------------------------------------
     template<class T> using extract_SV = typename T::STORED_VALUE;
 
     template<class T> using extract_RV = typename T::REAL_VALUE;
 
-    template<typename T, typename Enable = void>
+    /**
+     * @brief Stores and handles serialization of the sensor data specified in the tuple provided by template parameter.
+     * 
+     * Uses metaprogramming to automate much of the boilerplate serialization code. 
+     * 
+     * @tparam SensorInfoTuple: A tuple of SensorInfo<...>  types where <...> are the provided arguments that describe each sensor's capabiilities.
+     * See SensorInfo.h for more details.
+     * 
+     * @tparam Enable: Used for metaprogramming, ignore
+     */
+    template<typename SensorInfoTuple, typename Enable = void>
     struct SensorData {
-        static_assert(always_false<T>, "Template parameter: SensorsTuple must be of type std::tuple<SensorInfo<SV, RV, BIT_SIZE, ENCODE, DECODE, CONVERT>...>");
+        static_assert(always_false<SensorInfoTuple>, "Template parameter: SensorsTuple must be of type std::tuple<SensorInfo<SV, RV, BIT_SIZE, ENCODE, DECODE, CONVERT>...>");
     };
 
+    // ------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @brief The definition of SensorData when we've confirmed that SensorInfoTuple is of type std::tuple<SensorInfo<...>...>
+     */
     template<typename... SensorInfos>
     struct SensorData<std::tuple<SensorInfos...>, typename std::enable_if<is_sensor_info_tuple<std::tuple<SensorInfos...>>::value>::type>  {
 
+        // Name declaration for ease of use
         using SensorsTuple = std::tuple<SensorInfos...>;
 
+        // Number of sensors passed in via template parameter SensorInfoTuple
         static constexpr size_t NUM_SENSORS = std::tuple_size<SensorsTuple>::value;
 
+        /**
+         * Metaprogramming type that retrieves the type value of the sensor at index N
+         * 
+         * @tparam N: Index of the sensor, zero indiced
+         */
         template<size_t N>
         using SensorAt = typename std::tuple_element<N, SensorsTuple>::type;
 
+        /**
+         * @brief Metaprogramming type that retrieves the stored value of the sensor at index N
+         * 
+         * @tparam N: Index of the sensor, zero indiced
+         */
         template<size_t N>
         using SVTypeAt = typename SensorAt<N>::STORED_VALUE;
     
+        /**
+         * @brief Metaprogramming type that retrieves the real value of the sensor at index N
+         * 
+         * @tparam N: Index of the sensor, zero indiced
+         */
         template<size_t N>
         using RVTypeAt = typename SensorAt<N>::REAL_VALUE;
 
         
-        // First apply the transform to get the types
+        /**
+         * @brief Extracts the stored value from each sensor to create a tuple of stored values
+         */
         using SVTupleType = boost::mp11::mp_transform<extract_SV, SensorsTuple>;
 
+        /**
+         * @brief Extracts the real value from each sensor to create a tuple of real values
+         */
         using RVTupleType = boost::mp11::mp_transform<extract_RV, SensorsTuple>;
 
+        /***
+         * @brief Stores the data from each sensor. VIP variable.
+         */
         SVTupleType data;
-        //Array container to allow runtime access to SensorInfo encode functions
+
+        //Array of pointers to each sensor's encode function to allow runtime access
         const std::array<void (SensorData::*)(BinaryBuffer&), NUM_SENSORS> encodeFunctionTable;
 
+        // Array of pointers to each sensor's decode function to allow runtime access
         const std::array<void (SensorData::*)(BinaryBuffer const &), NUM_SENSORS> decodeFunctionTable;
-        //Create an array of the encoded bit size values for runtime access
+
+        // Metaprogramming type that create an array of the encoded bit size values to allow for (easy) runtime access
+        // Default version when provided with any type
         template<class T>
         struct create_encode_bit_size_arr {
             static constexpr std::array<uint32_t, NUM_SENSORS> value = {};
         };
 
+        // Metaprogramming type that create an array of the encoded bit size values to allow for (easy) runtime access
+        // Specialization that actually works
         template<size_t... I>
         struct create_encode_bit_size_arr<boost::mp11::index_sequence<I...>> {
             static constexpr std::array<uint32_t, NUM_SENSORS> value = {(SensorAt<I>::ENCODED_BIT_SIZE)...};
         };
 
-        //Array container to allow runtime access to ENCODED_BIT_SIZE for each SensorInfo
+        // Array container to allow for (easy) runtime access to ENCODED_BIT_SIZE from each sensor
         static constexpr std::array<uint32_t, NUM_SENSORS> encodedSizeTable = create_encode_bit_size_arr<boost::mp11::make_index_sequence<NUM_SENSORS>>::value;
-
-
-        //TODO: Make nicer template substitution error messages for these functions
         
         /**
          * @brief Returns data stored at index: SensorIndex
@@ -88,6 +132,8 @@ namespace cmbtl {
         /**
          * @brief Identical to SensorData::getData() but returns a reference to the data
          * 
+         * Because this method returns by reference it allows for modification of the data via the returned value
+         * 
          * @tparam SensorIndex: Index of the data
          * 
          * @return Reference to the data at SensorIndex
@@ -100,6 +146,9 @@ namespace cmbtl {
         /**
          * @brief Identical to SensorData::getData() but returns a constant reference to data instead of by value
          * 
+         * This is (most likely) a pointless function (most compilers optimize from pass by value to reference).
+         * Nonetheless it is provided. 
+         * 
          * @tparam SensorIndex: Index of the data
          * 
          * @return A const reference to data at SensorIndex
@@ -111,15 +160,11 @@ namespace cmbtl {
 
 
         /**
-         * @brief Sets the data at index: SensorIndex
+         * @brief Sets the data at index SensorIndex to newValue
          * 
          * Uses getRefToData() to set the data at the specified index to value newValue
          * 
          * @tparam SensorIndex: Index to retrieve data from
-         * This index corresponds to the order that SensorInfos are passed into SensorData
-         * ex. If a variable is declare as follows: @n
-         *  SensorData<std::tuple<SensorInfo<big_uint32_t, big_uint32_t, 32>, SensorInfo<bool, bool, 1>> data; @n
-         *  Then data.get<1>() returns a boolean, and data.get<0>() returns a big_uint32_t.
          * 
          * @param newValue: New sensor value
          * 
@@ -129,20 +174,41 @@ namespace cmbtl {
             getRefToData<SensorIndex>() = newValue;
         }
 
-        //Calls encode at SV
+        /**
+         * @brief Encodes the data of the sensor at index SensorIndex to the buffer
+         * 
+         * @param buffer: Buffer to encode data to
+         * 
+         * @tparam SensorIndex: Index of the sensor to encode data from
+         */
         template<size_t SensorIndex>
         inline void encodeSensorData(BinaryBuffer &buffer) {
             static_assert(SensorIndex < NUM_SENSORS, "Template parameter: SensorIndex must be less than NUM_SENSORS!!!");
             SensorAt<SensorIndex>::encode(getData<SensorIndex>(), buffer);
         }
 
-        //Updates data<SensorIndex> from value in binary buffer by calling SensorAt<SensorIndex>::decode
+        /**
+         * @brief Decodes and updates the data of the sensor at index SensorIndex from buffer
+         * 
+         * @param buffer: Buffer to retrieve data from
+         * 
+         * @tparam SensorIndex: Index of the sensor to update data
+         */
         template<size_t SensorIndex>
         inline void decodeSensorData(BinaryBuffer const &buffer) {
             static_assert(SensorIndex < NUM_SENSORS, "Template parameter: SensorIndex must be less than NUM_SENSORS!!!");
             setData<SensorIndex>(SensorAt<SensorIndex>::decode(buffer));
         }
 
+        /**
+         * @brief Encodes a packet to a buffer given instructions
+         * 
+         * @param instructions: Packet instructions for which sensors to encode
+         * 
+         * @tparam InstructionsSensorCount: Total number of sensors that the instructions contain (included AND excluded)
+         * 
+         * @return A BinaryBuffer which contains the encoded data
+         */
         template<size_t InstructionsSensorCount>
         inline BinaryBuffer encodePacket(packet::PacketInstructions<InstructionsSensorCount> const &instructions) {
             if (InstructionsSensorCount > NUM_SENSORS) {
@@ -172,34 +238,16 @@ namespace cmbtl {
         }
 
         /**
-         * @brief converts the elements in data to their real values (See Sensor.h for more info)
+         * @brief Decodes a packet from a buffer given instructions, updates sensor data
          * 
-         * @returns A tuple converted of the data in @var data converted to its "real" values
+         * @param instructions: Instructions on which sensor to decode
+         * Must be same as was called with encodePacket() to function properly
+         * 
+         * @param buffer: A binary buffer which contains the encoded data that we wish to decode
+         * 
+         * @tparam InstructionsSensorCount: Number of sensors that the instructions contain (included AND excluded)
+         * 
          */
-        inline RVTupleType convertData() const {
-            return convertDataImpl(boost::mp11::make_index_sequence<NUM_SENSORS>{});
-        }
-
-        /**
-         * @brief Serialize the data to JSON format
-         */
-        std::string serializeDataToJSON() const {
-            std::stringstream ss;
-            ss << "{" << "\n";
-            serializeDataToJSONImpl(boost::mp11::make_index_sequence<NUM_SENSORS>{}, ss);
-            ss << "}";
-
-            return ss.str().c_str();
-
-        }
-
-        template <size_t SensorIndex>
-        inline RVTypeAt<SensorIndex> convertedDataAt() const {
-            static_assert(SensorIndex < NUM_SENSORS, "Template parameter: SensorIndex must be less than NUM_SENSORS!");
-            return SensorAt<SensorIndex>::convert(getData<SensorIndex>());
-        }
-
-
         template<size_t InstructionsSensorCount>
         inline void decodePacket(packet::PacketInstructions<InstructionsSensorCount> const &instructions, BinaryBuffer const &buffer) {
             if (InstructionsSensorCount > NUM_SENSORS) {
@@ -229,6 +277,41 @@ namespace cmbtl {
             }
         }
 
+        /**
+         * @brief converts the elements in data to their "real values" (see SensorInfo.h for a definition)
+         * 
+         * @returns A tuple of the sensor data converted to their real values (see SensorInfo.h)
+         */
+        inline RVTupleType convertData() const {
+            return convertDataImpl(boost::mp11::make_index_sequence<NUM_SENSORS>{});
+        }
+
+        /**
+         * @brief Serializes  data to JSON format
+         * Serializes all current data to JSON format by calling each sensor's serializeToJSON() (See SensorInfo.h)
+         */
+        std::string serializeDataToJSON() const {
+            std::stringstream ss;
+            ss << "{" << "\n";
+            serializeDataToJSONImpl(boost::mp11::make_index_sequence<NUM_SENSORS>{}, ss);
+            ss << "}";
+
+            return ss.str().c_str();
+
+        }
+
+        /**
+         * @brief Return the data at index N converted to its "real value"
+         */
+        template <size_t N>
+        inline RVTypeAt<N> convertedDataAt() const {
+            static_assert(N < NUM_SENSORS, "Template parameter: N must be less than NUM_SENSORS!");
+            return SensorAt<N>::convert(getData<N>());
+        }
+
+        /**
+         * @brief Constructor which initializes crucial variables to default values
+         */
         SensorData() :
         encodeFunctionTable(createEncodeDataTable(boost::mp11::make_index_sequence<NUM_SENSORS>{})),
         decodeFunctionTable(createDecodeDataTable(boost::mp11::make_index_sequence<NUM_SENSORS>{}))
