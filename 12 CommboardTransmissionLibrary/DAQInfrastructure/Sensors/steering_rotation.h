@@ -16,7 +16,7 @@ namespace cmbtl {
         using RV = float;
 
         void serializeToJSON(const RV& convertedVal, std::stringstream& ss) {
-            ss << "\"steeringAngle: \"" << convertedVal;
+            ss << "\"steeringAngle\": " << convertedVal;
         }
 
         using STEERING_ROTATION_SENSOR_INFO = SensorInfo<SV, RV, ENCODED_BIT_SIZE, 

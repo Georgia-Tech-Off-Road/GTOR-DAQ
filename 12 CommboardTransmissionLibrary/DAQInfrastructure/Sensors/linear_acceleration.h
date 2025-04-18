@@ -44,11 +44,11 @@ namespace cmbtl {
             return val;
         }
 
-        void serializeToJSON(const RV& val, std::stringstream ss) {
+        void serializeToJSON(const RV& val, std::stringstream& ss) {
             ss << "\"linearAcceleration\": {\"x\": " << val.x << ", " << "\"y\": " << val.y << ", " << "\"z\": " << val.z << "}";
         }
 
-        using LINEAR_ACCELERATION_SENSOR_INFO = SensorInfo<SV, RV, ENCODED_BIT_SIZE, accelerationEncode, decodeAcceleration, defaultConvert<SV, RV>>;
+        using LINEAR_ACCELERATION_SENSOR_INFO = SensorInfo<SV, RV, ENCODED_BIT_SIZE, accelerationEncode, decodeAcceleration, defaultConvert<SV, RV>, serializeToJSON>;
 
     }
 }
