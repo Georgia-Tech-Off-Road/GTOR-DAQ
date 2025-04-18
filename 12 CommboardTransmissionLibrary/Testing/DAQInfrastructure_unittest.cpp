@@ -1,11 +1,11 @@
 #include "../SensorData.h"
 #include "gtest/gtest.h"
-#include "../Sensors/AllSensors.h"
+#include "../Sensors/DAQSensors.h"
 #include "Packets/PacketInstructions.h"
 #include <iostream>
 
 using cmbtl::SensorData;
-using cmbtl::PacketInstructions;
+using cmbtl::packet::PacketInstructions;
 using cmbtl::DAQSensorDataType;
 using cmbtl::SensorIndex;
 
@@ -1013,4 +1013,12 @@ TEST(DAQSensorDataPacketTests, encodeDecodeCycle_SteeringRotation) {
     
     // Compare with the actual decoded value
     ASSERT_FLOAT_EQ(decodedValue, expectedRoundedValue);
+}
+
+TEST (DAQJSONSerializationTests, serializeToJSON) {
+    DAQSensorDataType sensorData;
+
+    std::cout << std::endl;
+    std::cout << sensorData.serializeDataToJSON();
+    std::cout << std::endl;
 }

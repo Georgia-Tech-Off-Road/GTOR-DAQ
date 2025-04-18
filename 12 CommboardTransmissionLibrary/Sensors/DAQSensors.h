@@ -14,8 +14,8 @@
 #include "Sensors/brake_temp.h"
 #include "Sensors/steering_rotation.h"
 
-#ifndef CMBTL_ALL_SENSORS_H
-#define CMBTL_ALL_SENSORS_H
+#ifndef CMBTL_DAQ_SENSORS_H
+#define CMBTL_DAQ_SENSORS_H
 
 using std::array;
 namespace cmbtl {
