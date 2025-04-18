@@ -30,8 +30,7 @@ def testVisualizer(filePath, columnIndices, customWindow, useDefaultConfig):
     # Read CSV data
     df = pd.read_csv(filePath, delimiter=',')
 
-    # Optional filter
-   # df = df[~df.iloc[:, 13].between(60000, 70000)]
+    df.iloc[df.iloc[:, 13].between(60000, 70000), 13] = pd.NA
 
     # Time in seconds
     time = df.iloc[:, 1] / (10 ** 6)
@@ -40,7 +39,7 @@ def testVisualizer(filePath, columnIndices, customWindow, useDefaultConfig):
     plt.figure()
     for i, colIndex in enumerate(columnIndices):
         if colIndex < len(configLines):
-            label = configLines[colIndex][2]  # Use index 2 (label)
+            label = configLines[colIndex][2]
         else:
             label = f"Column {colIndex}"
         plt.plot(time, df.iloc[:, colIndex], label=label)

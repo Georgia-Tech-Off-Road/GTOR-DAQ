@@ -40,8 +40,6 @@ root.geometry("600x200")
 with open("Settings/Settings.csv") as settingsf:
     reader = csv.reader(settingsf)
     settingsData = list(reader)
-settingsHeader = settingsData[0]
-settingsData = settingsData[1:]
 
 # Function to go to Data Processing Tool
 def dataProcessingTool():
@@ -261,7 +259,7 @@ def dataProcessingTool():
     howToButton.pack()
     
     #create a button to select the file to be processed
-    fileSelectButton = tk.Button(dataProcessingToolPage, text="Choose File", command=chooseFile)
+    fileSelectButton = tk.Button(dataProcessingToolPage, text="Choose File",font=("Helvetica", 14, "bold"), command=chooseFile)
     fileSelectButton.pack(pady=10)
   
     #create a label to show the file selected
@@ -332,7 +330,7 @@ buttonFrame = tk.Frame(root)
 buttonFrame.pack(pady=20)
 
 #create the dataProcessingToolButton
-dataProcessingToolButton = tk.Button(buttonFrame, text="    Data Tool    ", command=lambda: dataProcessingTool())
+dataProcessingToolButton = tk.Button(buttonFrame, text="    Data Tool    ",font=("Helvetica", 14, "bold"), command=lambda: dataProcessingTool())
 dataProcessingToolButton.grid(row=1, column=0, padx=20)
 
 # Create button 2
