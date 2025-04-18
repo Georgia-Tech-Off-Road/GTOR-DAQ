@@ -1,7 +1,8 @@
 #include "SensorData.h"
 #include "gtest/gtest.h"
-#include "../Sensors/DAQSensors.h"
+#include "../DAQInfrastructure/DAQSensors.h"
 #include "Packets/PacketInstructions.h"
+#include "Packets/PacketScheme.h"
 #include "Packets/PacketInstructionsBuilder.h"
 #include <iostream>
 using cmbtl::SensorData;
