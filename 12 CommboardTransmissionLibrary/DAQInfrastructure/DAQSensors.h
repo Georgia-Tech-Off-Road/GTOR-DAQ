@@ -1,5 +1,5 @@
-#include "SensorInfo.h"
-#include "SensorData.h"
+#include "../SensorInfo.h"
+#include "../SensorData.h"
 #include <tuple>
 
 #include "Sensors/millisec.h"
