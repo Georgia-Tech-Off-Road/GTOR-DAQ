@@ -5,7 +5,7 @@ namespace cmbtl {
     namespace pit_requested {
 
         inline void serializeToJSON(const bool& convertedVal, std::stringstream& ss) {
-            ss << "\"pit_requested\": " << (convertedVal ? "true" : "false");
+            ss << "\"pitRequested\": " << (convertedVal ? "true" : "false");
         }
 
         using PIT_REQUESTED_SENSOR_INFO = DefaultBoolSensorInfo<serializeToJSON>;
