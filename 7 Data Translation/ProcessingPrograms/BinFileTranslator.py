@@ -7,6 +7,7 @@ def binConverter(input_file_name,chosePath,outputPath,settingsData):
     data_size = struct.calcsize(data_format)
     output_file_name = os.path.splitext(os.path.basename(input_file_name))[0] + ".txt"
     # Check if the user has selected a directory
+    print(settingsData)
     if chosePath:
         outfile = os.path.normpath(os.path.join(outputPath, output_file_name))
     else:
