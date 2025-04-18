@@ -2,6 +2,7 @@
 #include "gtest/gtest.h"
 #include "../DAQInfrastructure/DAQSensors.h"
 #include "Packets/PacketInstructions.h"
+#include "Packets/PacketScheme.h"
 #include "Packets/PacketInstructionsBuilder.h"
 #include <iostream>
 using cmbtl::SensorData;
