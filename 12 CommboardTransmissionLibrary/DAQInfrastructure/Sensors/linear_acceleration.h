@@ -1,6 +1,8 @@
-#include "../misc/BinaryBuffer/BinaryBuffer.h"
-#include "../boost/endian/arithmetic.hpp"
-#include "../SensorInfo.h"
+#include "../../misc/BinaryBuffer/BinaryBuffer.h"
+#include "../../boost/endian/arithmetic.hpp"
+#include "../../SensorInfo.h"
+#include <string>
+#include <sstream>
 
 namespace cmbtl {
     namespace linear_acceleration {
@@ -42,7 +44,11 @@ namespace cmbtl {
             return val;
         }
 
-        using LINEAR_ACCELERATION_SENSOR_INFO = SensorInfo<SV, RV, ENCODED_BIT_SIZE, accelerationEncode, decodeAcceleration>;
+        void serializeToJSON(const RV& val, std::stringstream& ss) {
+            ss << "\"linearAcceleration\": {\"x\": " << val.x << ", " << "\"y\": " << val.y << ", " << "\"z\": " << val.z << "}";
+        }
+
+        using LINEAR_ACCELERATION_SENSOR_INFO = SensorInfo<SV, RV, ENCODED_BIT_SIZE, accelerationEncode, decodeAcceleration, defaultConvert<SV, RV>, serializeToJSON>;
 
     }
 }

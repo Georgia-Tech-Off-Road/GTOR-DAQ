@@ -1,6 +1,6 @@
 #include "../SensorData.h"
 #include "gtest/gtest.h"
-#include "../Sensors/DAQSensors.h"
+#include "../DAQInfrastructure/DAQSensors.h"
 #include "Packets/PacketInstructions.h"
 #include <iostream>
 
@@ -8,7 +8,8 @@ using cmbtl::SensorData;
 using cmbtl::packet::PacketInstructions;
 using cmbtl::DAQSensorDataType;
 using cmbtl::SensorIndex;
-
+using cmbtl::unsignedFloatEncode;
+using cmbtl::unsignedFloatDecode;
 // Tests specifically of implementations that DAQ will use
 
 // * Disclaimer: these tests were created by AI but reviewed and modified by a human
@@ -303,13 +304,19 @@ TEST(DAQSensorDataPacketTests, decodePacket_Position) {
     ASSERT_FLOAT_EQ(actual.z, 678.90);
 }
 
-// BRAKE_PRESSURE_FRONT TESTS
-TEST(DAQSensorDataPacketTests, encodeDecodeCycle_BrakePressureFront) {
+// BRAKE_PRESSURE TESTS
+TEST(DAQSensorDataPacketTests, encodeDecodeCycle_BrakePressure) {
     // First instance for encoding
     DAQSensorDataType sensorData1;
     PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
-    instructions.set(SensorIndex::BRAKE_PRESSURE_FRONT);
-    sensorData1.setData<SensorIndex::BRAKE_PRESSURE_FRONT>(789);
+    instructions.set(SensorIndex::BRAKE_PRESSURE);
+    
+    // Create a brake pressure struct with front and rear values
+    cmbtl::brake_pressure::BrakePressure testPressure;
+    testPressure.front = 789;
+    testPressure.rear = 901;
+    
+    sensorData1.setData<SensorIndex::BRAKE_PRESSURE>(testPressure);
 
     // Encode to buffer
     BinaryBuffer buffer = sensorData1.encodePacket(instructions);
@@ -319,44 +326,81 @@ TEST(DAQSensorDataPacketTests, encodeDecodeCycle_BrakePressureFront) {
     sensorData2.decodePacket(instructions, buffer);
     
     // Verify data was preserved through encode/decode cycle
-    ASSERT_EQ(sensorData2.getData<SensorIndex::BRAKE_PRESSURE_FRONT>(), 789);
-    ASSERT_EQ(sensorData1.getData<SensorIndex::BRAKE_PRESSURE_FRONT>(), sensorData2.getData<SensorIndex::BRAKE_PRESSURE_FRONT>());
+    cmbtl::brake_pressure::BrakePressure decodedPressure = sensorData2.getData<SensorIndex::BRAKE_PRESSURE>();
+    ASSERT_EQ(decodedPressure.front, 789);
+    ASSERT_EQ(decodedPressure.rear, 901);
+    
+    // Compare original and decoded structs
+    cmbtl::brake_pressure::BrakePressure originalPressure = sensorData1.getData<SensorIndex::BRAKE_PRESSURE>();
+    ASSERT_EQ(originalPressure.front, decodedPressure.front);
+    ASSERT_EQ(originalPressure.rear, decodedPressure.rear);
 }
 
-TEST(DAQSensorDataPacketTests, encodePacket_BrakePressureFront) {
+TEST(DAQSensorDataPacketTests, encodePacket_BrakePressure) {
     DAQSensorDataType sensorData;
     PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
-    instructions.set(SensorIndex::BRAKE_PRESSURE_FRONT);
-    sensorData.setData<SensorIndex::BRAKE_PRESSURE_FRONT>(789);
+    instructions.set(SensorIndex::BRAKE_PRESSURE);
+    
+    // Create and set brake pressure struct
+    cmbtl::brake_pressure::BrakePressure testPressure;
+    testPressure.front = 1234;
+    testPressure.rear = 2345;
+    
+    sensorData.setData<SensorIndex::BRAKE_PRESSURE>(testPressure);
 
     BinaryBuffer buffer = sensorData.encodePacket(instructions);
     
-    cmbtl::brake_pressure::SV actual = 
-        buffer.readValue<cmbtl::brake_pressure::SV>(cmbtl::brake_pressure::ENCODED_BIT_SIZE);
-    ASSERT_EQ(actual, 789);
+    // Read values directly from buffer and verify
+    cmbtl::brake_pressure::AXIS_SV frontValue = buffer.readValue<cmbtl::brake_pressure::AXIS_SV>(
+        cmbtl::brake_pressure::AXIS_ENCODED_BIT_SIZE);
+    cmbtl::brake_pressure::AXIS_SV rearValue = buffer.readValue<cmbtl::brake_pressure::AXIS_SV>(
+        cmbtl::brake_pressure::AXIS_ENCODED_BIT_SIZE);
+    
+    ASSERT_EQ(frontValue, 1234);
+    ASSERT_EQ(rearValue, 2345);
 }
 
-TEST(DAQSensorDataPacketTests, decodePacket_BrakePressureFront) {
+TEST(DAQSensorDataPacketTests, decodePacket_BrakePressure) {
     DAQSensorDataType sensorData;
     PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
-    instructions.set(SensorIndex::BRAKE_PRESSURE_FRONT);
+    instructions.set(SensorIndex::BRAKE_PRESSURE);
 
     BinaryBuffer buffer(cmbtl::brake_pressure::ENCODED_BIT_SIZE);
-    buffer.writeValue<cmbtl::brake_pressure::SV>(890, cmbtl::brake_pressure::ENCODED_BIT_SIZE);
+    
+    // Write brake pressure values to the buffer
+    buffer.writeValue<cmbtl::brake_pressure::AXIS_SV>(3456, cmbtl::brake_pressure::AXIS_ENCODED_BIT_SIZE);
+    buffer.writeValue<cmbtl::brake_pressure::AXIS_SV>(4095, cmbtl::brake_pressure::AXIS_ENCODED_BIT_SIZE);
 
     sensorData.decodePacket(instructions, buffer);
 
-    ASSERT_EQ(sensorData.getData<SensorIndex::BRAKE_PRESSURE_FRONT>(), 890);
+    // Verify the decoded struct
+    cmbtl::brake_pressure::BrakePressure decodedPressure = sensorData.getData<SensorIndex::BRAKE_PRESSURE>();
+    
+    ASSERT_EQ(decodedPressure.front, 3456);
+    ASSERT_EQ(decodedPressure.rear, 4095);
 }
 
-// BRAKE_PRESSURE_BACK TESTS
-TEST(DAQSensorDataPacketTests, encodeDecodeCycle_BrakePressureBack) {
+// Test multiple sensors including brake pressure
+TEST(DAQSensorDataPacketTests, encodeDecodeCycle_WithBrakePressure) {
     // First instance for encoding
     DAQSensorDataType sensorData1;
     PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
-    instructions.set(SensorIndex::BRAKE_PRESSURE_BACK);
-    sensorData1.setData<SensorIndex::BRAKE_PRESSURE_BACK>(901);
-
+    
+    // Set multiple sensors to be encoded including brake pressure
+    instructions.set(SensorIndex::MILLI_SEC);
+    instructions.set(SensorIndex::BRAKE_PRESSURE);
+    instructions.set(SensorIndex::CLUTCH_ENGAGED);
+    
+    // Set values for each sensor
+    sensorData1.setData<SensorIndex::MILLI_SEC>(5000);
+    
+    cmbtl::brake_pressure::BrakePressure testPressure;
+    testPressure.front = 1200;
+    testPressure.rear = 1800;
+    sensorData1.setData<SensorIndex::BRAKE_PRESSURE>(testPressure);
+    
+    sensorData1.setData<SensorIndex::CLUTCH_ENGAGED>(true);
+    
     // Encode to buffer
     BinaryBuffer buffer = sensorData1.encodePacket(instructions);
     
@@ -364,55 +408,83 @@ TEST(DAQSensorDataPacketTests, encodeDecodeCycle_BrakePressureBack) {
     DAQSensorDataType sensorData2;
     sensorData2.decodePacket(instructions, buffer);
     
-    // Verify data was preserved through encode/decode cycle
-    ASSERT_EQ(sensorData2.getData<SensorIndex::BRAKE_PRESSURE_BACK>(), 901);
-    ASSERT_EQ(sensorData1.getData<SensorIndex::BRAKE_PRESSURE_BACK>(), sensorData2.getData<SensorIndex::BRAKE_PRESSURE_BACK>());
-}
-
-TEST(DAQSensorDataPacketTests, encodePacket_BrakePressureBack) {
-    DAQSensorDataType sensorData;
-    PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
-    instructions.set(SensorIndex::BRAKE_PRESSURE_BACK);
-    sensorData.setData<SensorIndex::BRAKE_PRESSURE_BACK>(901);
-
-    BinaryBuffer buffer = sensorData.encodePacket(instructions);
+    // Verify all values were preserved
+    ASSERT_EQ(sensorData2.getData<SensorIndex::MILLI_SEC>(), 5000);
     
-    cmbtl::brake_pressure::SV actual = 
-        buffer.readValue<cmbtl::brake_pressure::SV>(cmbtl::brake_pressure::ENCODED_BIT_SIZE);
-    ASSERT_EQ(actual, 901);
-}
-
-TEST(DAQSensorDataPacketTests, decodePacket_BrakePressureBack) {
-    DAQSensorDataType sensorData;
-    PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
-    instructions.set(SensorIndex::BRAKE_PRESSURE_BACK);
-
-    BinaryBuffer buffer(cmbtl::brake_pressure::ENCODED_BIT_SIZE);
-    buffer.writeValue<cmbtl::brake_pressure::SV>(1234, cmbtl::brake_pressure::ENCODED_BIT_SIZE);
-
-    sensorData.decodePacket(instructions, buffer);
-
-    ASSERT_EQ(sensorData.getData<SensorIndex::BRAKE_PRESSURE_BACK>(), 1234);
+    cmbtl::brake_pressure::BrakePressure decodedPressure = sensorData2.getData<SensorIndex::BRAKE_PRESSURE>();
+    ASSERT_EQ(decodedPressure.front, 1200);
+    ASSERT_EQ(decodedPressure.rear, 1800);
+    
+    ASSERT_TRUE(sensorData2.getData<SensorIndex::CLUTCH_ENGAGED>());
+    
+    // Verify all data matches between instances
+    ASSERT_EQ(sensorData1.getData<SensorIndex::MILLI_SEC>(), sensorData2.getData<SensorIndex::MILLI_SEC>());
+    
+    cmbtl::brake_pressure::BrakePressure originalPressure = sensorData1.getData<SensorIndex::BRAKE_PRESSURE>();
+    ASSERT_EQ(originalPressure.front, decodedPressure.front);
+    ASSERT_EQ(originalPressure.rear, decodedPressure.rear);
+    
+    ASSERT_EQ(sensorData1.getData<SensorIndex::CLUTCH_ENGAGED>(), sensorData2.getData<SensorIndex::CLUTCH_ENGAGED>());
 }
 
 // RPM TESTS
-// Note: RPM values are encoded with a precision of 0.125 (1/8) due to the 
-// multiplication/division by 8 in the encoding/decoding process
+TEST(DAQSensorDataPacketTests, encodeDecodeCycle_RPM) {
+    // First instance for encoding
+    DAQSensorDataType sensorData1;
+    PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
+    instructions.set(SensorIndex::RPM);
+    
+    // Create a new RPM struct with all three values
+    cmbtl::rpm::RPM testRPM;
+    testRPM.left = 2500.375f;
+    testRPM.right = 2600.5f;
+    testRPM.rear = 2700.625f;
+    
+    sensorData1.setData<SensorIndex::RPM>(testRPM);
+
+    // Encode to buffer
+    BinaryBuffer buffer = sensorData1.encodePacket(instructions);
+    
+    // Create second instance and decode the buffer
+    DAQSensorDataType sensorData2;
+    sensorData2.decodePacket(instructions, buffer);
+    
+    // Verify data was preserved through encode/decode cycle
+    cmbtl::rpm::RPM decodedRPM = sensorData2.getData<SensorIndex::RPM>();
+    ASSERT_FLOAT_EQ(decodedRPM.left, 2500.375f);
+    ASSERT_FLOAT_EQ(decodedRPM.right, 2600.5f);
+    ASSERT_FLOAT_EQ(decodedRPM.rear, 2700.625f);
+    
+    // Compare the original and decoded RPM structs
+    cmbtl::rpm::RPM originalRPM = sensorData1.getData<SensorIndex::RPM>();
+    ASSERT_FLOAT_EQ(originalRPM.left, decodedRPM.left);
+    ASSERT_FLOAT_EQ(originalRPM.right, decodedRPM.right);
+    ASSERT_FLOAT_EQ(originalRPM.rear, decodedRPM.rear);
+}
+
 TEST(DAQSensorDataPacketTests, encodePacket_RPM) {
     DAQSensorDataType sensorData;
     PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
     instructions.set(SensorIndex::RPM);
     
-    // Set RPM to a value that is exactly representable in 0.125 intervals
-    sensorData.setData<SensorIndex::RPM>(3250.375f);  // 3250 + 3/8
+    // Create and set RPM struct with all three values
+    cmbtl::rpm::RPM testRPM;
+    testRPM.left = 3000.25f;
+    testRPM.right = 3100.375f;
+    testRPM.rear = 3200.5f;
+    
+    sensorData.setData<SensorIndex::RPM>(testRPM);
 
     BinaryBuffer buffer = sensorData.encodePacket(instructions);
     
-    // When reading back, we need to simulate the RPM encoding/decoding
-    boost::endian::big_uint16_t encodedVal = buffer.readValue<boost::endian::big_uint16_t>(cmbtl::rpm::ENCODED_BIT_SIZE);
-    float decodedRPM = static_cast<float>(encodedVal) / 8.0f;
+    // Read values directly from buffer and verify
+    float leftRPM = unsignedFloatDecode<cmbtl::rpm::AXIS_ENCODED_BIT_SIZE, cmbtl::rpm::DECIMAL_BITS>(buffer);
+    float rightRPM = unsignedFloatDecode<cmbtl::rpm::AXIS_ENCODED_BIT_SIZE, cmbtl::rpm::DECIMAL_BITS>(buffer);
+    float rearRPM = unsignedFloatDecode<cmbtl::rpm::AXIS_ENCODED_BIT_SIZE, cmbtl::rpm::DECIMAL_BITS>(buffer);
     
-    ASSERT_FLOAT_EQ(decodedRPM, 3250.375f);
+    ASSERT_FLOAT_EQ(leftRPM, 3000.25f);
+    ASSERT_FLOAT_EQ(rightRPM, 3100.375f);
+    ASSERT_FLOAT_EQ(rearRPM, 3200.5f);
 }
 
 TEST(DAQSensorDataPacketTests, decodePacket_RPM) {
@@ -422,48 +494,19 @@ TEST(DAQSensorDataPacketTests, decodePacket_RPM) {
 
     BinaryBuffer buffer(cmbtl::rpm::ENCODED_BIT_SIZE);
     
-    // Create a value that's a multiple of 0.125
-    float originalRPM = 4500.25f;  // 4500 + 2/8
-    uint16_t encodedRPM = static_cast<uint16_t>(originalRPM * 8);
-    buffer.writeValue<boost::endian::big_uint16_t>(encodedRPM, cmbtl::rpm::ENCODED_BIT_SIZE);
+    // Write RPM values for each axis to the buffer
+    unsignedFloatEncode<cmbtl::rpm::AXIS_ENCODED_BIT_SIZE, cmbtl::rpm::DECIMAL_BITS>(4000.25f, buffer);
+    unsignedFloatEncode<cmbtl::rpm::AXIS_ENCODED_BIT_SIZE, cmbtl::rpm::DECIMAL_BITS>(4100.375f, buffer);
+    unsignedFloatEncode<cmbtl::rpm::AXIS_ENCODED_BIT_SIZE, cmbtl::rpm::DECIMAL_BITS>(4200.5f, buffer);
 
     sensorData.decodePacket(instructions, buffer);
 
-    ASSERT_FLOAT_EQ(sensorData.getData<SensorIndex::RPM>(), 4500.25f);
-}
-
-TEST(DAQSensorDataPacketTests, encodeDecodeCycle_RPM) {
-    // First instance for encoding
-    DAQSensorDataType sensorData1;
-    PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
-    instructions.set(SensorIndex::RPM);
+    // Verify the decoded RPM struct
+    cmbtl::rpm::RPM decodedRPM = sensorData.getData<SensorIndex::RPM>();
     
-    // Use a value that can be exactly represented in 0.125 increments
-    // 2750.625 = 2750 + 5/8
-    sensorData1.setData<SensorIndex::RPM>(2750.625f);
-
-    // Encode to buffer
-    BinaryBuffer buffer = sensorData1.encodePacket(instructions);
-    
-    // Create second instance and decode the buffer
-    DAQSensorDataType sensorData2;
-    sensorData2.decodePacket(instructions, buffer);
-    
-    // Verify data was preserved through encode/decode cycle
-    // Since we used a value exactly representable in 0.125 increments,
-    // it should be preserved exactly
-    ASSERT_FLOAT_EQ(sensorData2.getData<SensorIndex::RPM>(), 2750.625f);
-    ASSERT_FLOAT_EQ(sensorData1.getData<SensorIndex::RPM>(), sensorData2.getData<SensorIndex::RPM>());
-    
-    // Test with a value that is not exactly representable in 0.125 increments
-    // 3333.123 will be rounded to the nearest 0.125 increment
-    sensorData1.setData<SensorIndex::RPM>(3333.123f);
-    buffer = sensorData1.encodePacket(instructions);
-    sensorData2.decodePacket(instructions, buffer);
-    
-    // The value should now be the nearest multiple of 0.125
-    // 3333.123 ≈ 3333.125 (which is 3333 + 1/8)
-    ASSERT_NEAR(sensorData2.getData<SensorIndex::RPM>(), 3333.125f, 0.125f);
+    ASSERT_FLOAT_EQ(decodedRPM.left, 4000.25f);
+    ASSERT_FLOAT_EQ(decodedRPM.right, 4100.375f);
+    ASSERT_FLOAT_EQ(decodedRPM.rear, 4200.5f);
 }
 
 // Test multiple sensors together
@@ -476,7 +519,6 @@ TEST(DAQSensorDataPacketTests, encodeDecodeCycle_MultipleSensors) {
     instructions.set(SensorIndex::MILLI_SEC);
     instructions.set(SensorIndex::CLUTCH_ENGAGED);
     instructions.set(SensorIndex::POSITION);
-    instructions.set(SensorIndex::BRAKE_PRESSURE_BACK);
     
     // Set values for each sensor
     sensorData1.setData<SensorIndex::MILLI_SEC>(5000);
@@ -487,8 +529,6 @@ TEST(DAQSensorDataPacketTests, encodeDecodeCycle_MultipleSensors) {
     testPosition.y = 234.56;
     testPosition.z = 345.67;
     sensorData1.setData<SensorIndex::POSITION>(testPosition);
-    
-    sensorData1.setData<SensorIndex::BRAKE_PRESSURE_BACK>(2500);
     
     // Encode to buffer
     BinaryBuffer buffer = sensorData1.encodePacket(instructions);
@@ -506,8 +546,6 @@ TEST(DAQSensorDataPacketTests, encodeDecodeCycle_MultipleSensors) {
     ASSERT_FLOAT_EQ(decodedPosition.y, 234.56);
     ASSERT_FLOAT_EQ(decodedPosition.z, 345.67);
     
-    ASSERT_EQ(sensorData2.getData<SensorIndex::BRAKE_PRESSURE_BACK>(), 2500);
-    
     // Verify all data matches between instances
     ASSERT_EQ(sensorData1.getData<SensorIndex::MILLI_SEC>(), sensorData2.getData<SensorIndex::MILLI_SEC>());
     ASSERT_EQ(sensorData1.getData<SensorIndex::CLUTCH_ENGAGED>(), sensorData2.getData<SensorIndex::CLUTCH_ENGAGED>());
@@ -516,8 +554,6 @@ TEST(DAQSensorDataPacketTests, encodeDecodeCycle_MultipleSensors) {
     ASSERT_FLOAT_EQ(originalPosition.x, decodedPosition.x);
     ASSERT_FLOAT_EQ(originalPosition.y, decodedPosition.y);
     ASSERT_FLOAT_EQ(originalPosition.z, decodedPosition.z);
-    
-    ASSERT_EQ(sensorData1.getData<SensorIndex::BRAKE_PRESSURE_BACK>(), sensorData2.getData<SensorIndex::BRAKE_PRESSURE_BACK>());
 }
 
 TEST(DAQSensorDataPacketTests, encodePacket_MultipleSensors) {
@@ -527,12 +563,10 @@ TEST(DAQSensorDataPacketTests, encodePacket_MultipleSensors) {
     // Set multiple sensors to be encoded
     instructions.set(SensorIndex::MILLI_SEC);
     instructions.set(SensorIndex::CLUTCH_ENGAGED);
-    instructions.set(SensorIndex::BRAKE_PRESSURE_FRONT);
     
     // Set values for each sensor
     sensorData.setData<SensorIndex::MILLI_SEC>(5000);
     sensorData.setData<SensorIndex::CLUTCH_ENGAGED>(true);
-    sensorData.setData<SensorIndex::BRAKE_PRESSURE_FRONT>(2500);
     
     // Encode to buffer
     BinaryBuffer buffer = sensorData.encodePacket(instructions);
@@ -544,10 +578,6 @@ TEST(DAQSensorDataPacketTests, encodePacket_MultipleSensors) {
     
     bool clutchEngaged = buffer.readValue<uint8_t>(1) == 1;
     ASSERT_TRUE(clutchEngaged);
-    
-    cmbtl::brake_pressure::SV brakePressure = buffer.readValue<cmbtl::brake_pressure::SV>(
-        cmbtl::brake_pressure::ENCODED_BIT_SIZE);
-    ASSERT_EQ(brakePressure, 2500);
 }
 
 TEST(DAQSensorDataPacketTests, decodePacket_MultipleSensors) {
@@ -557,12 +587,10 @@ TEST(DAQSensorDataPacketTests, decodePacket_MultipleSensors) {
     // Set multiple sensors to be decoded
     instructions.set(SensorIndex::PIT_REQUESTED);
     instructions.set(SensorIndex::SPEED);
-    instructions.set(SensorIndex::BRAKE_PRESSURE_BACK);
     
     // Calculate total buffer size
     uint32_t totalSize = 1 + // PIT_REQUESTED (bool)
-                     cmbtl::speed::ENCODED_BIT_SIZE +
-                     cmbtl::brake_pressure::ENCODED_BIT_SIZE;
+                     cmbtl::speed::ENCODED_BIT_SIZE;
     
     // Create and fill buffer
     BinaryBuffer buffer(totalSize);
@@ -572,9 +600,6 @@ TEST(DAQSensorDataPacketTests, decodePacket_MultipleSensors) {
     buffer.writeValue<cmbtl::speed::speed_axis_type>(10.5, cmbtl::speed::AXIS_ENCODED_BIT_SIZE);
     buffer.writeValue<cmbtl::speed::speed_axis_type>(20.5, cmbtl::speed::AXIS_ENCODED_BIT_SIZE);
     buffer.writeValue<cmbtl::speed::speed_axis_type>(30.5, cmbtl::speed::AXIS_ENCODED_BIT_SIZE);
-    
-    // Write brake pressure
-    buffer.writeValue<cmbtl::brake_pressure::SV>(3500, cmbtl::brake_pressure::ENCODED_BIT_SIZE);
     
     // Decode the packet
     sensorData.decodePacket(instructions, buffer);
@@ -586,8 +611,6 @@ TEST(DAQSensorDataPacketTests, decodePacket_MultipleSensors) {
     ASSERT_FLOAT_EQ(speed.x, 10.5);
     ASSERT_FLOAT_EQ(speed.y, 20.5);
     ASSERT_FLOAT_EQ(speed.z, 30.5);
-    
-    ASSERT_EQ(sensorData.getData<SensorIndex::BRAKE_PRESSURE_BACK>(), 3500);
 }
 
 // LINEAR_ACCELERATION TESTS
@@ -705,39 +728,20 @@ TEST(DAQSensorDataPacketTests, encodeDecodeCycle_LinearAcceleration) {
     ASSERT_NEAR(decodedAccel.z, testAccel2.z, precision);
 }
 
-// BRAKE_TEMP_FRONT_LEFT TESTS
-TEST(DAQSensorDataPacketTests, encodePacket_BrakeTempFrontLeft) {
-    DAQSensorDataType sensorData;
-    PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
-    instructions.set(SensorIndex::BRAKE_TEMP_FRONT_LEFT);
-    sensorData.setData<SensorIndex::BRAKE_TEMP_FRONT_LEFT>(450);
-
-    BinaryBuffer buffer = sensorData.encodePacket(instructions);
-    
-    cmbtl::brake_temp::SV actual = 
-        buffer.readValue<cmbtl::brake_temp::SV>(cmbtl::brake_temp::ENCODED_BIT_SIZE);
-    ASSERT_EQ(actual, 450);
-}
-
-TEST(DAQSensorDataPacketTests, decodePacket_BrakeTempFrontLeft) {
-    DAQSensorDataType sensorData;
-    PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
-    instructions.set(SensorIndex::BRAKE_TEMP_FRONT_LEFT);
-
-    BinaryBuffer buffer(cmbtl::brake_temp::ENCODED_BIT_SIZE);
-    buffer.writeValue<cmbtl::brake_temp::SV>(520, cmbtl::brake_temp::ENCODED_BIT_SIZE);
-
-    sensorData.decodePacket(instructions, buffer);
-
-    ASSERT_EQ(sensorData.getData<SensorIndex::BRAKE_TEMP_FRONT_LEFT>(), 520);
-}
-
-TEST(DAQSensorDataPacketTests, encodeDecodeCycle_BrakeTempFrontLeft) {
+// BRAKE_TEMP TESTS
+TEST(DAQSensorDataPacketTests, encodeDecodeCycle_BrakeTemp) {
     // First instance for encoding
     DAQSensorDataType sensorData1;
     PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
-    instructions.set(SensorIndex::BRAKE_TEMP_FRONT_LEFT);
-    sensorData1.setData<SensorIndex::BRAKE_TEMP_FRONT_LEFT>(650);
+    instructions.set(SensorIndex::BRAKE_TEMP);
+    
+    // Create a brake temp struct with all three values
+    cmbtl::brake_temp::BrakeTemp testTemp;
+    testTemp.front_left = 450;
+    testTemp.front_right = 475;
+    testTemp.rear = 500;
+    
+    sensorData1.setData<SensorIndex::BRAKE_TEMP>(testTemp);
 
     // Encode to buffer
     BinaryBuffer buffer = sensorData1.encodePacket(instructions);
@@ -747,44 +751,90 @@ TEST(DAQSensorDataPacketTests, encodeDecodeCycle_BrakeTempFrontLeft) {
     sensorData2.decodePacket(instructions, buffer);
     
     // Verify data was preserved through encode/decode cycle
-    ASSERT_EQ(sensorData2.getData<SensorIndex::BRAKE_TEMP_FRONT_LEFT>(), 650);
-    ASSERT_EQ(sensorData1.getData<SensorIndex::BRAKE_TEMP_FRONT_LEFT>(), sensorData2.getData<SensorIndex::BRAKE_TEMP_FRONT_LEFT>());
+    cmbtl::brake_temp::BrakeTemp decodedTemp = sensorData2.getData<SensorIndex::BRAKE_TEMP>();
+    ASSERT_EQ(decodedTemp.front_left, 450);
+    ASSERT_EQ(decodedTemp.front_right, 475);
+    ASSERT_EQ(decodedTemp.rear, 500);
+    
+    // Compare original and decoded structs
+    cmbtl::brake_temp::BrakeTemp originalTemp = sensorData1.getData<SensorIndex::BRAKE_TEMP>();
+    ASSERT_EQ(originalTemp.front_left, decodedTemp.front_left);
+    ASSERT_EQ(originalTemp.front_right, decodedTemp.front_right);
+    ASSERT_EQ(originalTemp.rear, decodedTemp.rear);
 }
 
-// BRAKE_TEMP_FRONT_RIGHT TESTS
-TEST(DAQSensorDataPacketTests, encodePacket_BrakeTempFrontRight) {
+TEST(DAQSensorDataPacketTests, encodePacket_BrakeTemp) {
     DAQSensorDataType sensorData;
     PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
-    instructions.set(SensorIndex::BRAKE_TEMP_FRONT_RIGHT);
-    sensorData.setData<SensorIndex::BRAKE_TEMP_FRONT_RIGHT>(475);
+    instructions.set(SensorIndex::BRAKE_TEMP);
+    
+    // Create and set brake temp struct
+    cmbtl::brake_temp::BrakeTemp testTemp;
+    testTemp.front_left = 525;
+    testTemp.front_right = 550;
+    testTemp.rear = 575;
+    
+    sensorData.setData<SensorIndex::BRAKE_TEMP>(testTemp);
 
     BinaryBuffer buffer = sensorData.encodePacket(instructions);
     
-    cmbtl::brake_temp::SV actual = 
-        buffer.readValue<cmbtl::brake_temp::SV>(cmbtl::brake_temp::ENCODED_BIT_SIZE);
-    ASSERT_EQ(actual, 475);
+    // Read values directly from buffer and verify
+    cmbtl::brake_temp::AXIS_SV frontLeftValue = buffer.readValue<cmbtl::brake_temp::AXIS_SV>(
+        cmbtl::brake_temp::AXIS_ENCODED_BIT_SIZE);
+    cmbtl::brake_temp::AXIS_SV frontRightValue = buffer.readValue<cmbtl::brake_temp::AXIS_SV>(
+        cmbtl::brake_temp::AXIS_ENCODED_BIT_SIZE);
+    cmbtl::brake_temp::AXIS_SV rearValue = buffer.readValue<cmbtl::brake_temp::AXIS_SV>(
+        cmbtl::brake_temp::AXIS_ENCODED_BIT_SIZE);
+    
+    ASSERT_EQ(frontLeftValue, 525);
+    ASSERT_EQ(frontRightValue, 550);
+    ASSERT_EQ(rearValue, 575);
 }
 
-TEST(DAQSensorDataPacketTests, decodePacket_BrakeTempFrontRight) {
+TEST(DAQSensorDataPacketTests, decodePacket_BrakeTemp) {
     DAQSensorDataType sensorData;
     PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
-    instructions.set(SensorIndex::BRAKE_TEMP_FRONT_RIGHT);
+    instructions.set(SensorIndex::BRAKE_TEMP);
 
     BinaryBuffer buffer(cmbtl::brake_temp::ENCODED_BIT_SIZE);
-    buffer.writeValue<cmbtl::brake_temp::SV>(525, cmbtl::brake_temp::ENCODED_BIT_SIZE);
+    
+    // Write brake temp values to the buffer
+    buffer.writeValue<cmbtl::brake_temp::AXIS_SV>(600, cmbtl::brake_temp::AXIS_ENCODED_BIT_SIZE);
+    buffer.writeValue<cmbtl::brake_temp::AXIS_SV>(625, cmbtl::brake_temp::AXIS_ENCODED_BIT_SIZE);
+    buffer.writeValue<cmbtl::brake_temp::AXIS_SV>(650, cmbtl::brake_temp::AXIS_ENCODED_BIT_SIZE);
 
     sensorData.decodePacket(instructions, buffer);
 
-    ASSERT_EQ(sensorData.getData<SensorIndex::BRAKE_TEMP_FRONT_RIGHT>(), 525);
+    // Verify the decoded struct
+    cmbtl::brake_temp::BrakeTemp decodedTemp = sensorData.getData<SensorIndex::BRAKE_TEMP>();
+    
+    ASSERT_EQ(decodedTemp.front_left, 600);
+    ASSERT_EQ(decodedTemp.front_right, 625);
+    ASSERT_EQ(decodedTemp.rear, 650);
 }
 
-TEST(DAQSensorDataPacketTests, encodeDecodeCycle_BrakeTempFrontRight) {
+// Test multiple temperature sensors including brake temp with other sensors
+TEST(DAQSensorDataPacketTests, encodeDecodeCycle_WithBrakeTemp) {
     // First instance for encoding
     DAQSensorDataType sensorData1;
     PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
-    instructions.set(SensorIndex::BRAKE_TEMP_FRONT_RIGHT);
-    sensorData1.setData<SensorIndex::BRAKE_TEMP_FRONT_RIGHT>(675);
-
+    
+    // Set multiple sensors to be encoded
+    instructions.set(SensorIndex::MILLI_SEC);
+    instructions.set(SensorIndex::BRAKE_TEMP);
+    instructions.set(SensorIndex::CVT_TEMP);
+    
+    // Set values for each sensor
+    sensorData1.setData<SensorIndex::MILLI_SEC>(4000);
+    
+    cmbtl::brake_temp::BrakeTemp testTemp;
+    testTemp.front_left = 675;
+    testTemp.front_right = 700;
+    testTemp.rear = 725;
+    sensorData1.setData<SensorIndex::BRAKE_TEMP>(testTemp);
+    
+    sensorData1.setData<SensorIndex::CVT_TEMP>(800);
+    
     // Encode to buffer
     BinaryBuffer buffer = sensorData1.encodePacket(instructions);
     
@@ -792,55 +842,25 @@ TEST(DAQSensorDataPacketTests, encodeDecodeCycle_BrakeTempFrontRight) {
     DAQSensorDataType sensorData2;
     sensorData2.decodePacket(instructions, buffer);
     
-    // Verify data was preserved through encode/decode cycle
-    ASSERT_EQ(sensorData2.getData<SensorIndex::BRAKE_TEMP_FRONT_RIGHT>(), 675);
-    ASSERT_EQ(sensorData1.getData<SensorIndex::BRAKE_TEMP_FRONT_RIGHT>(), sensorData2.getData<SensorIndex::BRAKE_TEMP_FRONT_RIGHT>());
-}
-
-// BRAKE_TEMP_BACK TESTS
-TEST(DAQSensorDataPacketTests, encodePacket_BrakeTempBack) {
-    DAQSensorDataType sensorData;
-    PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
-    instructions.set(SensorIndex::BRAKE_TEMP_BACK);
-    sensorData.setData<SensorIndex::BRAKE_TEMP_BACK>(490);
-
-    BinaryBuffer buffer = sensorData.encodePacket(instructions);
+    // Verify all values were preserved
+    ASSERT_EQ(sensorData2.getData<SensorIndex::MILLI_SEC>(), 4000);
     
-    cmbtl::brake_temp::SV actual = 
-        buffer.readValue<cmbtl::brake_temp::SV>(cmbtl::brake_temp::ENCODED_BIT_SIZE);
-    ASSERT_EQ(actual, 490);
-}
-
-TEST(DAQSensorDataPacketTests, decodePacket_BrakeTempBack) {
-    DAQSensorDataType sensorData;
-    PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
-    instructions.set(SensorIndex::BRAKE_TEMP_BACK);
-
-    BinaryBuffer buffer(cmbtl::brake_temp::ENCODED_BIT_SIZE);
-    buffer.writeValue<cmbtl::brake_temp::SV>(540, cmbtl::brake_temp::ENCODED_BIT_SIZE);
-
-    sensorData.decodePacket(instructions, buffer);
-
-    ASSERT_EQ(sensorData.getData<SensorIndex::BRAKE_TEMP_BACK>(), 540);
-}
-
-TEST(DAQSensorDataPacketTests, encodeDecodeCycle_BrakeTempBack) {
-    // First instance for encoding
-    DAQSensorDataType sensorData1;
-    PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
-    instructions.set(SensorIndex::BRAKE_TEMP_BACK);
-    sensorData1.setData<SensorIndex::BRAKE_TEMP_BACK>(680);
-
-    // Encode to buffer
-    BinaryBuffer buffer = sensorData1.encodePacket(instructions);
+    cmbtl::brake_temp::BrakeTemp decodedTemp = sensorData2.getData<SensorIndex::BRAKE_TEMP>();
+    ASSERT_EQ(decodedTemp.front_left, 675);
+    ASSERT_EQ(decodedTemp.front_right, 700);
+    ASSERT_EQ(decodedTemp.rear, 725);
     
-    // Create second instance and decode the buffer
-    DAQSensorDataType sensorData2;
-    sensorData2.decodePacket(instructions, buffer);
+    ASSERT_EQ(sensorData2.getData<SensorIndex::CVT_TEMP>(), 800);
     
-    // Verify data was preserved through encode/decode cycle
-    ASSERT_EQ(sensorData2.getData<SensorIndex::BRAKE_TEMP_BACK>(), 680);
-    ASSERT_EQ(sensorData1.getData<SensorIndex::BRAKE_TEMP_BACK>(), sensorData2.getData<SensorIndex::BRAKE_TEMP_BACK>());
+    // Verify all data matches between instances
+    ASSERT_EQ(sensorData1.getData<SensorIndex::MILLI_SEC>(), sensorData2.getData<SensorIndex::MILLI_SEC>());
+    
+    cmbtl::brake_temp::BrakeTemp originalTemp = sensorData1.getData<SensorIndex::BRAKE_TEMP>();
+    ASSERT_EQ(originalTemp.front_left, decodedTemp.front_left);
+    ASSERT_EQ(originalTemp.front_right, decodedTemp.front_right);
+    ASSERT_EQ(originalTemp.rear, decodedTemp.rear);
+    
+    ASSERT_EQ(sensorData1.getData<SensorIndex::CVT_TEMP>(), sensorData2.getData<SensorIndex::CVT_TEMP>());
 }
 
 // CVT_TEMP TESTS
@@ -896,15 +916,11 @@ TEST(DAQSensorDataPacketTests, encodeDecodeCycle_MultipleTempSensors) {
     PacketInstructions<DAQSensorDataType::NUM_SENSORS> instructions;
     
     // Set multiple temperature sensors to be encoded
-    instructions.set(SensorIndex::BRAKE_TEMP_FRONT_LEFT);
-    instructions.set(SensorIndex::BRAKE_TEMP_FRONT_RIGHT);
-    instructions.set(SensorIndex::BRAKE_TEMP_BACK);
+    instructions.set(SensorIndex::BRAKE_TEMP);
     instructions.set(SensorIndex::CVT_TEMP);
     
     // Set values for each sensor
-    sensorData1.setData<SensorIndex::BRAKE_TEMP_FRONT_LEFT>(550);
-    sensorData1.setData<SensorIndex::BRAKE_TEMP_FRONT_RIGHT>(575);
-    sensorData1.setData<SensorIndex::BRAKE_TEMP_BACK>(600);
+    sensorData1.setData<SensorIndex::BRAKE_TEMP>({550, 575, 660});
     sensorData1.setData<SensorIndex::CVT_TEMP>(725);
     
     // Encode to buffer
@@ -915,15 +931,15 @@ TEST(DAQSensorDataPacketTests, encodeDecodeCycle_MultipleTempSensors) {
     sensorData2.decodePacket(instructions, buffer);
     
     // Verify all values were preserved
-    ASSERT_EQ(sensorData2.getData<SensorIndex::BRAKE_TEMP_FRONT_LEFT>(), 550);
-    ASSERT_EQ(sensorData2.getData<SensorIndex::BRAKE_TEMP_FRONT_RIGHT>(), 575);
-    ASSERT_EQ(sensorData2.getData<SensorIndex::BRAKE_TEMP_BACK>(), 600);
+    ASSERT_EQ(sensorData2.getData<SensorIndex::BRAKE_TEMP>().front_left, 550);
+    ASSERT_EQ(sensorData2.getData<SensorIndex::BRAKE_TEMP>().front_right, 575);
+    ASSERT_EQ(sensorData2.getData<SensorIndex::BRAKE_TEMP>().rear, 660);
     ASSERT_EQ(sensorData2.getData<SensorIndex::CVT_TEMP>(), 725);
     
     // Verify all data matches between instances
-    ASSERT_EQ(sensorData1.getData<SensorIndex::BRAKE_TEMP_FRONT_LEFT>(), sensorData2.getData<SensorIndex::BRAKE_TEMP_FRONT_LEFT>());
-    ASSERT_EQ(sensorData1.getData<SensorIndex::BRAKE_TEMP_FRONT_RIGHT>(), sensorData2.getData<SensorIndex::BRAKE_TEMP_FRONT_RIGHT>());
-    ASSERT_EQ(sensorData1.getData<SensorIndex::BRAKE_TEMP_BACK>(), sensorData2.getData<SensorIndex::BRAKE_TEMP_BACK>());
+    ASSERT_EQ(sensorData1.getData<SensorIndex::BRAKE_TEMP>().front_left, sensorData2.getData<SensorIndex::BRAKE_TEMP>().front_left);
+    ASSERT_EQ(sensorData1.getData<SensorIndex::BRAKE_TEMP>().front_right, sensorData2.getData<SensorIndex::BRAKE_TEMP>().front_right);
+    ASSERT_EQ(sensorData1.getData<SensorIndex::BRAKE_TEMP>().rear, sensorData2.getData<SensorIndex::BRAKE_TEMP>().rear);
     ASSERT_EQ(sensorData1.getData<SensorIndex::CVT_TEMP>(), sensorData2.getData<SensorIndex::CVT_TEMP>());
 }
 
@@ -1017,6 +1033,8 @@ TEST(DAQSensorDataPacketTests, encodeDecodeCycle_SteeringRotation) {
 
 TEST (DAQJSONSerializationTests, serializeToJSON) {
     DAQSensorDataType sensorData;
+
+    sensorData.setData<SensorIndex::SPEED>({2.043f, 5.044f, 2.043345f});
 
     std::cout << std::endl;
     std::cout << sensorData.serializeDataToJSON();
