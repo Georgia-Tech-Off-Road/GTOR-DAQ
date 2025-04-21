@@ -23,7 +23,7 @@ namespace cmbtl {
     inline RV defaultConvert(const SV&);
 
     template<typename RV>
-    void defaultJSONSerialize(RV, std::stringstream&);
+    void defaultJSONSerialize(const RV&, std::stringstream&);
 
     //--------------- Define Data Types for Different Sensors ---------------------------------
     /**
@@ -48,7 +48,7 @@ namespace cmbtl {
     void (*ENCODE)(const SV &data, BinaryBuffer&) = defaultEncode<SV, BIT_SIZE>,
     SV (*DECODE)(const BinaryBuffer&) = defaultDecode<SV, BIT_SIZE>,
     RV (*CONVERT)(const SV&) = defaultConvert<SV, RV>,
-    void (*JSONSERIALIZE)(RV, std::stringstream&) = defaultJSONSerialize<RV>>
+    void (*JSONSERIALIZE)(const RV&, std::stringstream&) = defaultJSONSerialize<RV>>
     struct SensorInfo {
         using STORED_VALUE = SV;
         using REAL_VALUE = RV;
@@ -61,7 +61,7 @@ namespace cmbtl {
         //Convert to a more natural (and probably less space efficient) data type after data is sent over.
         static constexpr RV(*convert)(const SV&) = CONVERT;
 
-        static constexpr void (*serializeToJSON)(RV, std::stringstream&) = JSONSERIALIZE;
+        static constexpr void (*serializeToJSON)(const RV&, std::stringstream&) = JSONSERIALIZE;
     };
 
     //Forward declare default functions for the bool sensor (default functions would probably work but I'm paranoid)
@@ -71,8 +71,13 @@ namespace cmbtl {
 
     inline bool defaultBoolConvert(const bool& val);
 
-    using DefaultBoolSensorInfo = SensorInfo<bool, bool, 1, boolEncode, boolDecode>;
 
+    template<void (*JSONSERIALIZE)(const bool&, std::stringstream&) = defaultJSONSerialize<bool>>
+    using DefaultBoolSensorInfo = SensorInfo<bool, bool, 1, boolEncode, boolDecode, defaultConvert<bool, bool>,  JSONSERIALIZE>;
+
+
+    template<typename SV, typename RV, uint32_t BIT_SIZE, void (*JSONSERIALIZE)(const RV&, std::stringstream&) = defaultJSONSerialize<RV>>
+    using DefaultSensor = SensorInfo<SV, RV, BIT_SIZE, defaultEncode<SV, BIT_SIZE>, defaultDecode<SV, BIT_SIZE>, defaultConvert<SV, RV>, JSONSERIALIZE>;
 
     //----------------------- DEFINE COMMONLY USED FUNCTIONS ------------------------------------
     
@@ -126,7 +131,7 @@ namespace cmbtl {
     }
 
     template<typename RV>
-    void defaultJSONSerialize(RV val, std::stringstream& ss) {
+    void defaultJSONSerialize(const RV& val, std::stringstream& ss) {
         ss << "NO_SERIALIZATION_DEFINED: " << "TRUE"; 
     }
 
@@ -237,7 +242,7 @@ namespace cmbtl {
     void (*ENCODE)(const SV &data, BinaryBuffer&),
     SV (*DECODE)(const BinaryBuffer&),
     RV (*CONVERT)(const SV&),
-    void (*JSONSERIALIZE)(RV, std::stringstream&)>
+    void (*JSONSERIALIZE)(const RV&, std::stringstream&)>
     struct is_sensor_info<cmbtl::SensorInfo<SV, RV,  BIT_SIZE, ENCODE, DECODE, CONVERT, JSONSERIALIZE>> : std::true_type {};
     //-------------------------------------------------------------------------------------------------------------------
 }
