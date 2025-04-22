@@ -1,6 +1,7 @@
 #include "../SensorData.h"
 #include "gtest/gtest.h"
 #include "../DAQInfrastructure/DAQSensors.h"
+#include "../DAQInfrastructure/DAQPackets.h"
 #include "Packets/PacketInstructions.h"
 #include <iostream>
 

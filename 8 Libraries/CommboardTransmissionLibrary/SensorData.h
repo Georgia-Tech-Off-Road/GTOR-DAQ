@@ -42,7 +42,6 @@ namespace cmbtl {
      */
     template<typename... SensorInfos>
     struct SensorData<std::tuple<SensorInfos...>, typename std::enable_if<is_sensor_info_tuple<std::tuple<SensorInfos...>>::value>::type>  {
-
         // Name declaration for ease of use
         using SensorsTuple = std::tuple<SensorInfos...>;
 
@@ -391,7 +390,5 @@ namespace cmbtl {
 
     template <typename... Ts>
     struct is_sensor_data<SensorData<std::tuple<Ts...>>> : std::true_type {};
-
-    
 }
 #endif
