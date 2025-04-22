@@ -14,7 +14,7 @@ namespace cmbtl {
      * Each instruction's unique ID is useful for network requests so that 
      * it can be sent across as space efficiently as possible.
      * 
-     * When using with network communication make sure both ends hold the same map.all_are
+     * When using with network communication make sure both ends hold the same map.
      * When you add a instruction locally make sure that other side(s) do the same as well.
      * 
      * This class uses two hashmaps for O(1) access to either value given the other
