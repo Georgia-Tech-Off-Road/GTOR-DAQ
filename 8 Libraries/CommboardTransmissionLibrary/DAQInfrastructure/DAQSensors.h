@@ -1,3 +1,6 @@
+#ifndef CMBTL_DAQ_SENSORS_H
+#define CMBTL_DAQ_SENSORS_H
+
 #include "../SensorInfo.h"
 #include "../SensorData.h"
 #include <tuple>
@@ -13,9 +16,6 @@
 #include "Sensors/CVT_temp.h"
 #include "Sensors/brake_temp.h"
 #include "Sensors/steering_rotation.h"
-
-#ifndef CMBTL_DAQ_SENSORS_H
-#define CMBTL_DAQ_SENSORS_H
 
 using std::array;
 namespace cmbtl {
