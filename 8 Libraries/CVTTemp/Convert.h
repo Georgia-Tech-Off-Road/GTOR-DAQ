@@ -4,6 +4,9 @@
 
 namespace CVTBeltTemp {
 
+    // Forward declaration
+    inline float convertToMilliVolts(uint16_t);
+
     /**
      * @brief Converts ADC value of CVTTemp sensor to temperature value (°C)
      * 
