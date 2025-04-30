@@ -129,10 +129,7 @@ export default function SensorGraph({ socket }) {
     }
 
     return (
-        <div style={{ width: "800px" }}>
-            <canvas ref={canvasRef}></canvas>
-            <button onClick={testDataPush}>Click Me</button>
-        </div>
+        <canvas ref={canvasRef}></canvas>
     );
 }
 

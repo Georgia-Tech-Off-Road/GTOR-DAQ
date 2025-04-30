@@ -1,10 +1,37 @@
+:root {
+  /* Background Layers */
+  --bg-primary: #0A2342;
+  --bg-secondary: #4F5D75;
+  
+  /* Accent Colors */
+  --accent-copper: #D9B26F;
+  --accent-green: #2DE1A3;
+  
+  /* Text and Interaction */
+  --text-primary: #F4F4F4;
+  --text-secondary: #D9B26F;
+  
+  /* Interaction States */
+  --hover-state: rgba(45, 225, 163, 0.3);
+  --active-state: rgba(217, 178, 111, 0.5);
+}
+
 * {
   margin: 0px;
   padding: 0px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Roboto', 'Arial', sans-serif;
 }
 
 nav {
-  background-color: darkgreen;
+  background-color: var(--bg-secondary);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
 
 nav ul {
@@ -17,6 +44,32 @@ nav ul li {
   margin-right: 20px;
 }
 
+nav ul li a {
+  color: var(--text-primary);
+  text-decoration: none;
+  position: relative;
+  padding-bottom: 5px;
+}
+
+nav ul li a:hover {
+  color: var(--accent-green);
+}
+
+nav ul li a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--accent-copper);
+  transition: width 0.3s ease;
+}
+
+nav ul li a:hover::after {
+  width: 100%;
+}
+
 .App {
   text-align: center;
 }
@@ -24,6 +77,7 @@ nav ul li {
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+  filter: saturate(0.5) brightness(1.2);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -33,20 +87,28 @@ nav ul li {
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: var(--bg-primary);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: var(--text-primary);
+}
+
+.SensorChart {
+  background-color: yellow;
 }
 
 .App-link {
-  color: #61dafb;
+  color: var(--accent-green);
+  transition: color 0.3s ease;
 }
 
+.App-link:hover {
+  color: var(--accent-copper);
+}
 
 @keyframes App-logo-spin {
   from {
@@ -56,4 +118,3 @@ nav ul li {
     transform: rotate(360deg);
   }
 }
-
