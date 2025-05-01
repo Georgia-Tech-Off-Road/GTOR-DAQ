@@ -14,4 +14,4 @@ index,dataType,name,pollingRate,numTeeth
 11,analog,NA,10000,35
 12,analog,transfer case temp,10000,35
 13,analog,steering,10000,35
-13,analog,teensy temp,10000,30
+14,analog,teensy temp,10000,30
