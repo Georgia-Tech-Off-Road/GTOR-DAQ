@@ -18,8 +18,4 @@ namespace cvf {
         }
     };
 }
-<<<<<<< HEAD
-=======
-
->>>>>>> b1196b1a (Fixed cvf namespace problems, modified CVTTemp convert)
 #endif

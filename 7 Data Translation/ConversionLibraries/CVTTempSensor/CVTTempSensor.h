@@ -1,5 +1,6 @@
 #include <cmath>
 #include <string>
+#include "../../../8 Libraries/TCTemp/Convert.h"
 
 namespace cvf {
     inline char* CVTTempSensor(char* line) {
@@ -7,16 +8,11 @@ namespace cvf {
         static char res[RESULT_LENGTH];
         
         //Convert input segment to float
-        float x = std::stof(line);
+        int x = std::stoi(line);
 
-        //Define Coefficients
-        static const float a = -1750;
-        static const float b = 0.1;
-        static const float c = 2213;
-        //Calculate fit result (95% confidence)
-        float fitResult = a * std::pow(std::log(x), b) + c;
+        float tempValue = TCTemp::calculateTemp(x);
 
-        snprintf(res, RESULT_LENGTH, "%f", fitResult);
+        snprintf(res, RESULT_LENGTH, "%f", tempValue);
         return res;
     }
 }

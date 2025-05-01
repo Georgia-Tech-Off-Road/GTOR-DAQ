@@ -39,7 +39,7 @@ namespace CVTBeltTemp {
         const uint16_t MAX_ADC_VALUE = 32767;
 
         // Maximum voltage output from sensor is 5000 mV
-        const float MAX_VOLTAGE = 5000.0f;
+        const float MAX_VOLTAGE = 6144.0f;
 
         // Minimu voltage output from sensor is 0 mV
         const float MIN_VOLTAGE = 0.0f;
