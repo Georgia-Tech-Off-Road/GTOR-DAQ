@@ -14,6 +14,8 @@ int currentAnalogSensor2 = 0;
 
 double maxBrakePressure1 = 0;
 double maxBrakePressure2 = 0;
+double maxBrakePressure3 = 0;
+double maxBrakePressure4 = 0;
 
 //initialize AMT22 sensor
 AMT22 steeringPositionSensor(10, AMT22RES);
@@ -47,11 +49,11 @@ void setup() {
   //configure ADCs
   ads1.begin(0x48, &Wire);
   ads1.setDataRate(RATE_ADS1115_64SPS);
-  ads1.setGain(GAIN_ONE);
+  ads1.setGain(GAIN_TWOTHIRDS);
 
   ads2.begin(0x49, &Wire);
   ads2.setDataRate(RATE_ADS1115_64SPS);
-  ads2.setGain(GAIN_ONE);
+  ads2.setGain(GAIN_TWOTHIRDS);
 
   //zero out all data fields
   initDataStructValues();
@@ -119,21 +121,31 @@ void dataAquisitionAndSavingLoop() {
       changeRecordingState();
       maxBrakePressure1 = 0;
       maxBrakePressure2 = 0;
+      maxBrakePressure3 = 0;
+      maxBrakePressure4 = 0;
     }
-    Serial.printf("Brake Pressure rear: %lf,  MAX: %lf\n", getBrakePressure(dataStruct.analogValues2[2]), maxBrakePressure1);
-    Serial.printf("Brake Pressure front: %lf,  MAX: %lf\n", getBrakePressure(dataStruct.analogValues1[3]), maxBrakePressure2);
-    if (getBrakePressure(dataStruct.analogValues2[2]) > maxBrakePressure1) {
-      maxBrakePressure1 = getBrakePressure(dataStruct.analogValues2[2]);
+    Serial.printf("Brake Pressure 1 A0: %lf,  MAX: %lf\n", getBrakePressure(dataStruct.analogValues1[0]), maxBrakePressure1);
+    Serial.printf("Brake Pressure 1 A1: %lf,  MAX: %lf\n", getBrakePressure(dataStruct.analogValues1[1]), maxBrakePressure2);
+    Serial.printf("Brake Pressure 2 A1: %lf,  MAX: %lf\n", getBrakePressure(dataStruct.analogValues2[1]), maxBrakePressure1);
+    Serial.printf("Brake Pressure 1 A3: %lf,  MAX: %lf\n", getBrakePressure(dataStruct.analogValues1[3]), maxBrakePressure2);
+    if (getBrakePressure(dataStruct.analogValues1[0]) > maxBrakePressure1) {
+      maxBrakePressure1 = getBrakePressure(dataStruct.analogValues1[0]);
     } 
-    if (getBrakePressure(dataStruct.analogValues1[3]) > maxBrakePressure2) {
-      maxBrakePressure2 = getBrakePressure(dataStruct.analogValues1[3]);
+    if (getBrakePressure(dataStruct.analogValues1[1]) > maxBrakePressure2) {
+      maxBrakePressure2 = getBrakePressure(dataStruct.analogValues1[1]);
+    }
+    if (getBrakePressure(dataStruct.analogValues2[1]) > maxBrakePressure3) {
+      maxBrakePressure3 = getBrakePressure(dataStruct.analogValues2[1]);
+    } 
+    if (getBrakePressure(dataStruct.analogValues1[3]) > maxBrakePressure4) {
+      maxBrakePressure4 = getBrakePressure(dataStruct.analogValues1[3]);
     }
     delay(100);
   }
 }
 double getBrakePressure(int analog_value) {
   double db;
-  db = static_cast<double>(50+((((analog_value/32767.0))*4.096-0.5)/4.0)*7950.0);
+  db = static_cast<double>(50+((((analog_value/32767.0))*6.144-0.5)/4.0)*1950.0);
   return db;
 }
 //gets steering data

@@ -16,12 +16,16 @@ int currentAnalogSensor2 = 0;
 AMT22 steeringPositionSensor(10, AMT22RES);
 
 //initialize RPM sensors
-RPMSensor rearDiff(RPM1, RDTEETH);
+RPMSensor engineRPM(RPM1, ENGTEETH);
 RPMSensor frontLeft(RPM2, FLTEETH);
 RPMSensor frontRight(RPM3, FRTEETH);
 
 
 void setup() {
+  //init temp monitor
+  tempmon_init();
+  //start tempmon
+  tempmon_Start();
   //set up time 
   setupTeensyTime();
   //initiliaze serial monitor
@@ -40,18 +44,18 @@ void setup() {
   pinMode(RPM3, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM3), frontRightInterrupt, RISING);
   pinMode(RPM1, INPUT_PULLDOWN);
-  attachInterrupt(digitalPinToInterrupt(RPM1), rearDiffInterrupt, RISING);
+  attachInterrupt(digitalPinToInterrupt(RPM1), engineRPMInterrupt, RISING);
   pinMode(RPM2, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM2), frontLeftInterrupt, RISING);
 
   //configure ADCs
   ads1.begin(0x48, &Wire);
   ads1.setDataRate(RATE_ADS1115_64SPS);
-  ads1.setGain(GAIN_ONE);
+  ads1.setGain(GAIN_TWOTHIRDS);
 
   ads2.begin(0x49, &Wire);
   ads2.setDataRate(RATE_ADS1115_64SPS);
-  ads2.setGain(GAIN_ONE);
+  ads2.setGain(GAIN_TWOTHIRDS);
 
   //zero out all data fields
   initDataStructValues();
@@ -59,8 +63,6 @@ void setup() {
   //initializeI2CCommLink();
   //initialize SPI busses/ports
   initializeSPI();
-  //setup execution threads
-  initializeThreads();
   //turn on diagnostic LEDS
   turnOnLEDS();
   //set recording flag
@@ -68,7 +70,9 @@ void setup() {
   //start ADCs
   ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
   ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
-  updateAMT22Reading();
+  //dataAquisitionAndSavingLoop();
+  //setup execution threads
+  initializeThreads();
 }
 
 //do nothing here
@@ -79,16 +83,17 @@ void dataAquisitionAndSavingLoop() {
   while(1) {
     dataStruct.seconds = now();
     dataStruct.micros = micros();
+    dataStruct.teensyTemp = tempmonGetTemp();
     //size of is apparently computed at compile time
     if (isRecording) {
       outputFile.write(&dataStruct, sizeof(dataStruct));
     }
     //check for RPM updates
-    if (rearDiff.RPMUpdateFlag) {
-      dataStruct.RPMs[0] = rearDiff.RPM;
-      rearDiff.RPMUpdateFlag = false;
+    if (engineRPM.RPMUpdateFlag) {
+      dataStruct.RPMs[0] = engineRPM.RPM;
+      engineRPM.RPMUpdateFlag = false;
     } else {
-      dataStruct.RPMs[0] = rearDiff.checkRPM();
+      dataStruct.RPMs[0] = engineRPM.checkRPM();
     }
     if (frontLeft.RPMUpdateFlag) {
       dataStruct.RPMs[1] = frontLeft.RPM;
@@ -114,7 +119,6 @@ void dataAquisitionAndSavingLoop() {
       dataStruct.steeringPosition = steeringPositionSensor.steeringPosition;
       steeringPositionSensor.steeringPositionUpdateFlag = false;
     }
-    //Serial.printf("Steering Positon: %f\n", dataStruct.steeringPosition);
     if (digitalRead(7) && lastSaveTimeInMillis + 2000 < millis()) {
       changeRecordingState();
     }
@@ -212,8 +216,8 @@ void readAnalogValues2() {
   }
 }
 
-void rearDiffInterrupt() {
-  rearDiff.calculateRPM();
+void engineRPMInterrupt() {
+  engineRPM.calculateRPM();
 }
 
 void frontLeftInterrupt() {

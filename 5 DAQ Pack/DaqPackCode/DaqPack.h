@@ -40,13 +40,14 @@ struct {
   int analogValues1[4];
   int analogValues2[4];
   float steeringPosition;
+  float teensyTemp;
 } dataStruct;
 
 //enums for AUXDAQ ports
 enum AUXDAQ_Ports {
-  RPM1 = 30,
-  RPM2 = 28,
-  RPM3 = 31,
+  RPM1 = 31,
+  RPM2 = 30,
+  RPM3 = 28,
   LDS1 = 22,
   LDS2 = 23,
   SPIO = 24,
@@ -67,6 +68,7 @@ enum AUXDAQ_Ports {
 enum Sensor_Constants {
   AMT22RES = 12,
   RDTEETH = 33,
+  ENGTEETH = 8,
   FRTEETH = 4,
   FLTEETH = 4
 };
