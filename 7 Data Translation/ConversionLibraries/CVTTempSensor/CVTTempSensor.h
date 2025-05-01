@@ -4,7 +4,7 @@
 namespace cvf {
     inline char* CVTTempSensor(char* line) {
         constexpr size_t RESULT_LENGTH = 20;
-        char res[RESULT_LENGTH];
+        static char res[RESULT_LENGTH];
         
         //Convert input segment to float
         float x = std::stof(line);
