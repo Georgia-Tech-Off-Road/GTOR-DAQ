@@ -6,7 +6,11 @@ DAQSensor::DAQSensor() {
         {"brake", cvf::convertBrakePressure},
         {"time", cvf::copy},
         {"RPM", cvf::copy},
+<<<<<<< HEAD
         {"transfer", cvf::CVTTempSensor}
+=======
+        {"CVT", cvf::CVTTempSensor}
+>>>>>>> 0bf6b0aee48dcdb83ee692fabf239223dbf2c3f4
     };
 }
 
