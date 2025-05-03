@@ -1,4 +1,3 @@
-import "./styles/SensorGraph.css"
 import Chart from "chart.js/auto";
 import 'chartjs-adapter-luxon';
 import ChartStreaming from 'chartjs-plugin-streaming';
