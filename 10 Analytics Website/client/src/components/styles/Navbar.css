@@ -1,0 +1,40 @@
+nav {
+    background-color: var(--bg-secondary);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  }
+  
+  nav ul {
+    list-style-type: none;
+    padding: 20px;
+  }
+  
+  nav ul li {
+    display: inline;
+    margin-right: 20px;
+  }
+  
+  nav ul li a {
+    color: var(--text-primary);
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 5px;
+  }
+  
+  nav ul li a:hover {
+    color: var(--accent-green);
+  }
+  
+  nav ul li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--accent-copper);
+    transition: width 0.3s ease;
+  }
+  
+  nav ul li a:hover::after {
+    width: 100%;
+  }
