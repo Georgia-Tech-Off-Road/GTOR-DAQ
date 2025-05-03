@@ -1,6 +1,6 @@
 //Class is currently unused, use as reference
 import logo from '../logo.svg';
-import '../App.css';
+import './styles/App.css';
 import { useState } from "react"
 
 import Navbar from "../components/Navbar"

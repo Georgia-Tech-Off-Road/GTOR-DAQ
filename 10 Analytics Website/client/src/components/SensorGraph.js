@@ -1,3 +1,4 @@
+import "./styles/SensorGraph.css"
 import Chart from "chart.js/auto";
 import 'chartjs-adapter-luxon';
 import ChartStreaming from 'chartjs-plugin-streaming';
@@ -129,7 +130,7 @@ export default function SensorGraph({ socket }) {
     }
 
     return (
-        <canvas ref={canvasRef}></canvas>
+        <canvas className="SensorGraph" ref={canvasRef} style={{width: '100%', height: '100%'}}></canvas>
     );
 }
 

@@ -1,4 +1,4 @@
-import '../App.css';
+import './styles/Navbar.css';
 import { useState, useEffect } from "react";
 
 export default function Navbar({socket}) {
