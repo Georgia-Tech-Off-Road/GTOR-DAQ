@@ -1,3 +1,21 @@
+:root {
+  /* Background Layers */
+  --bg-primary: #0A2342;
+  --bg-secondary: #4F5D75;
+  
+  /* Accent Colors */
+  --accent-copper: #D9B26F;
+  --accent-green: #2DE1A3;
+  
+  /* Text and Interaction */
+  --text-primary: #F4F4F4;
+  --text-secondary: #D9B26F;
+  
+  /* Interaction States */
+  --hover-state: rgba(45, 225, 163, 0.3);
+  --active-state: rgba(217, 178, 111, 0.5);
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

@@ -1,0 +1,18 @@
+@import "../../index.css";
+
+.chart-manager-toolbar {
+    display: flex;
+    justify-content: space-around;
+    padding: 40px;
+    flex-wrap: nowrap;
+    background-color: var(--bg-primary);
+    border: 10px;
+    border-color: purple;
+}
+.chart-manager-toolbar button {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    background-color: var(--accent-copper);
+    border: 2px;
+    padding: 5px;
+}

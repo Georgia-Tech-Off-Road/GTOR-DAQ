@@ -5,7 +5,7 @@ import { useRef, useEffect } from "react";
 
 Chart.register(ChartStreaming);
 
-export default function SensorGraph({ socket }) {
+export default function SensorGraph() {
     const canvasRef = useRef(null);
     const chartRef = useRef(null);
     const chartRenderedRef = useRef(false);
@@ -17,7 +17,13 @@ export default function SensorGraph({ socket }) {
         }
     }, []);
 
-    useEffect(() => {
+    return (
+        <div className="sensor-graph-container" style={{position: 'relative', width: '100%', height: '100%', zIndex: 10}}>
+            <canvas className="SensorGraph" ref={canvasRef} style={{width: '100%', height: '100%'}} maintainResize={false}></canvas>
+        </div>
+    );
+
+    /*useEffect(() => 
         if (socket) {
             requestData(socket);
             socket.addEventListener("message", (msg) => {
@@ -27,7 +33,7 @@ export default function SensorGraph({ socket }) {
                 }
             });
         }
-    }, [socket]);
+    }, [socket]); */
 
     async function generateInitialGraph() {
         const data = {
@@ -74,6 +80,7 @@ export default function SensorGraph({ socket }) {
                         }
                     }
                 },
+                maintainAspectRatio: false,
                 elements: {
                     point: {
                         radius: 0
@@ -106,31 +113,6 @@ export default function SensorGraph({ socket }) {
 
         chartRef.current.update('quiet');
     }
-
-    function testDataPush() {
-        let y1 = 10;
-        let y2 = 8;
-
-        const intervalID = setInterval(() => {
-            y1 += (Math.random() - 0.5) * 0.5;
-            y2 += (Math.random() - 0.5) * 0.5;
-
-            const now = Date.now();
-
-            chartRef.current.data.datasets[0].data.push({ x: now, y: y1 });
-            chartRef.current.data.datasets[1].data.push({ x: now, y: y2 });
-
-            chartRef.current.update('quiet');
-        }, 100);
-
-        setTimeout(() => {
-            clearInterval(intervalID);
-        }, 10000);
-    }
-
-    return (
-        <canvas className="SensorGraph" ref={canvasRef} style={{width: '100%', height: '100%'}}></canvas>
-    );
 }
 
 function requestData(socket) {

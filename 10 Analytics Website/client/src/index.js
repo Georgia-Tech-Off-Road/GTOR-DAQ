@@ -31,7 +31,7 @@ const router = createRouter(socket)
 root.render(
   <React.StrictMode>
       <Navbar socket={socket} />
-    <RouterProvider router={router}/>
+    <RouterProvider router={router} style={{height:'100%'}}/>
   </React.StrictMode>
 );
 
