@@ -8,6 +8,7 @@ import time
 import matplotlib
 import sys
 import csv
+import subprocess
 
 #libraries used for program
 #NOTE: NEVER PUT ANYTHING IN FRONT OF IMPORTS AND ALWAYS KEEP IMPORTANTS IN THIS NOTATION, OTHERWISE THE UPDATER WILL LIKELY BREAK
@@ -97,6 +98,7 @@ def dataProcessingTool():
                     brakeButton.grid(row=1, column=1, padx=20)
                     rpmButton.grid(row=1, column=2, padx=20)
                     customButton.grid(row=1,column=3,padx=20)
+                    engineDynoButton.grid(row=2, column=1, padx=20)
                     configCheckbox.grid(row=2, column=3, padx=20)
                 #otherwise display everything but the download button
                 else: 
@@ -187,7 +189,9 @@ def dataProcessingTool():
         hertzCalculatorThread = threading.Thread(target = hertzCalculator.calculateHertz, args = (filePath, hertzCalculationPage))
         #start the thread
         hertzCalculatorThread.start()
-
+    def runEngineDynoInterface():
+        script_path = os.path.join(os.getcwd(), "Engine Dyno", "EngineDynoInterfaceCode.py")
+        subprocess.Popen([sys.executable, script_path])
     def editConfig():
         #find the config file based on filePath variable
         if useDefaultConfig.get() == 1:
@@ -283,7 +287,7 @@ def dataProcessingTool():
     brakeButton = tk.Button(buttonFrame, text="Brake Pressure", command=lambda: brakepressure())
     rpmButton = tk.Button(buttonFrame, text="RPM", command=lambda: rpm())
     customButton = tk.Button(buttonFrame, text="Custom Visualizer", command=lambda: custom())
-
+    engineDynoButton = tk.Button(buttonFrame, text="Engine Dyno Interface", command=runEngineDynoInterface)
     processButton = tk.Button(buttonFrame, text="Process Data", command=lambda: processData())
     configCheckbox = tk.Checkbutton(buttonFrame, text="Use default config", variable=useDefaultConfig)
     configEditButton = tk.Button(buttonFrame, text="Edit Config", command=lambda: editConfig())
