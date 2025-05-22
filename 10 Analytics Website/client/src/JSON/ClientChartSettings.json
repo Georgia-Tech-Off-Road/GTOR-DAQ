@@ -1,0 +1,23 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Client Chart Settings",
+    "description": "Contains chart settings that clients may modify",
+    "type": "object",
+    "properties": {
+        "displayChart": {
+            "type": "boolean"
+        },
+        "w": {
+            "type": "integer"
+        },
+        "h": {
+            "type": "integer"
+        },
+        "x": {
+            "type": "integer"
+        },
+        "y": {
+            "type": "integer"
+        }
+    }
+}
