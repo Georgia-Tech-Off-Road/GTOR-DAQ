@@ -46,8 +46,8 @@ struct {
 //enums for AUXDAQ ports
 enum AUXDAQ_Ports {
   RPM1 = 31,
-  RPM2 = 30,
-  RPM3 = 28,
+  RPM2 = 13,
+  RPM3 = 3,
   LDS1 = 22,
   LDS2 = 23,
   SPIO = 24,
@@ -85,6 +85,9 @@ bool isRecording = false;
 
 //saves the last time data was saved 
 ulong lastSaveTimeInMillis = 0;
+
+//saves the last time auto save
+ulong autoSaveTimeMillis = 0;
 
 //function to intialize dataStruct values
 inline void initDataStructValues() {
