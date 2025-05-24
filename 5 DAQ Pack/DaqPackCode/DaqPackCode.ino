@@ -12,6 +12,9 @@ volatile bool analogValueFlag2 = false;
 int currentAnalogSensor1 = 0;
 int currentAnalogSensor2 = 0;
 
+//slowdown code
+ulong lastMicros = 0;
+
 //initialize AMT22 sensor
 AMT22 steeringPositionSensor(10, AMT22RES);
 
@@ -70,9 +73,9 @@ void setup() {
   //start ADCs
   ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
   ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
-  //dataAquisitionAndSavingLoop();
+  dataAquisitionAndSavingLoop();
   //setup execution threads
-  initializeThreads();
+  //initializeThreads();
 }
 
 //do nothing here
@@ -121,6 +124,11 @@ void dataAquisitionAndSavingLoop() {
     }
     if (digitalRead(7) && lastSaveTimeInMillis + 2000 < millis()) {
       changeRecordingState();
+    }
+    if (millis() > autoSaveTimeMillis + 300000) {
+      outputFile.flush();
+    }
+    while (lastMicros + 50 > micros()) {
     }
   }
 }
