@@ -1,20 +1,33 @@
 import "./styles/SensorChartManager.css"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {WidthProvider, Responsive} from "react-grid-layout-19"
 import SensorGraph from './SensorGraph'
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 export default function SensorChartManager({socket}) {
-  const [layout, setLayout] = useState(generateLayout())
 
   const [clientChartSettings, setClientChartSettings] = useState(getDefaultClientChartSettings());
 
-  const sensorCharts = clientChartSettings.map((clientSettings) =>
-            <div key={"0"} data-grid={clientSettings.layout}>
-              <SensorGraph clientChartSettings={clientSettings}></SensorGraph>
-            </div>
-          );
+  const [serverChartSettings, setServerChartSettings] = useState(getDefaultServerChartSettings());
+
+  const chartSettings = useMemo(() => {
+    return clientChartSettings.map((clientSettings, i) => ({
+      clientSettings: clientSettings,
+      serverSettings: serverChartSettings[i]
+    }))
+  }, [clientChartSettings, serverChartSettings])
+
+  const sensorCharts = chartSettings.map((settings) => {
+      const clientSettings = settings.clientSettings;
+      const serverSetttings = settings.serverSettings;
+      return (
+        <div key={serverSetttings.id} data-grid={clientSettings.layout}>
+          <SensorGraph clientChartSettings={clientSettings} serverChartSettings={serverSetttings}></SensorGraph>
+        </div>
+      )
+    }
+  );
 
   return (
     <div className="SensorChartManager" style={{height: '100%'}}>
@@ -26,39 +39,11 @@ export default function SensorChartManager({socket}) {
         className="layout"
         cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
         rowHeight={30}
-        layouts={{lg: layout}}
       >
         {sensorCharts}
       </ResponsiveReactGridLayout>
     </div>
   );
-
-  function generateLayout() {
-    return getDefaultLayout();
-  }
-
-  function getDefaultLayout() {
-    return [
-      {
-        i: "1",
-        w: 6,
-        h: 8,
-        x: 0,
-        y: 0,
-        minW: 2,
-        minH: 3,
-      },
-      {
-        i: "2",
-        w: 6,
-        h: 8,
-        x: 6,
-        y: 0,
-        minW: 2,
-        minH: 3,
-      }
-    ];
-  }
 
   function generateClientChartSettings() {
     return [
@@ -78,6 +63,33 @@ export default function SensorChartManager({socket}) {
     return generateClientChartSettings();
   }
 
+  function generateServerChartSettings() {
+    return [
+        {
+        id: "0",
+        datasets: [
+          {
+              label: "Brake Pressure Front",
+              data: [],
+              borderColor: "rgba(255, 99, 132, 1)", // Red
+              fill: false,
+              tension: 0.1
+          },
+          {
+              label: "Brake Pressure Rear",
+              data: [],
+              borderColor: "rgb(179, 27, 141)", // Blue
+              fill: false,
+              tension: 0.1
+          }
+        ]
+      }
+    ]
+  }
+
+  function getDefaultServerChartSettings() {
+    return generateServerChartSettings();
+  }
 }
 
 /*

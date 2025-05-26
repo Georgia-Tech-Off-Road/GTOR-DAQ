@@ -5,7 +5,7 @@ import { useRef, useEffect } from "react";
 
 Chart.register(ChartStreaming);
 
-export default function SensorGraph({ ServerChartSettings, ClientChartSettings }) {
+export default function SensorGraph({clientChartSettings, serverChartSettings}) {
     const canvasRef = useRef(null);
     const chartRef = useRef(null);
     const chartRenderedRef = useRef(false);
@@ -37,22 +37,7 @@ export default function SensorGraph({ ServerChartSettings, ClientChartSettings }
 
     async function generateInitialGraph() {
         const data = {
-            datasets: [
-                {
-                    label: "Brake Pressure Front",
-                    data: [],
-                    borderColor: "rgba(255, 99, 132, 1)", // Red
-                    fill: false,
-                    tension: 0.1
-                },
-                {
-                    label: "Brake Pressure Rear",
-                    data: [],
-                    borderColor: "rgba(54, 162, 235, 1)", // Blue
-                    fill: false,
-                    tension: 0.1
-                }
-            ]
+            datasets: serverChartSettings.datasets
         };
 
         chartRef.current = new Chart(canvasRef.current, {

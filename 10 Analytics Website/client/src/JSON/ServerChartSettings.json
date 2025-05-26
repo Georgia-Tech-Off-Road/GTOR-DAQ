@@ -4,13 +4,13 @@
     "description": "JSON object for server determined chart properties",
     "type": "object",
     "properties": {
+        "id": {
+            "description": "A (unique) ID for the chart",
+            "type": "string"
+        },
         "datasets": {
             "description": "An array of dataset objects (same schema as Chart.js) ",
             "type": "array"
-        },
-        "id": {
-            "description": "A (unique) ID for the chart",
-            "type": "integer"
         }
     }
 }
