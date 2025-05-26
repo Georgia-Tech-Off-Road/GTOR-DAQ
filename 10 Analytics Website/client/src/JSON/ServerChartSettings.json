@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Server Chart Settings",
+    "description": "JSON object for server determined chart properties",
+    "type": "object",
+    "properties": {
+        "datasets": {
+            "description": "An array of dataset objects (same schema as Chart.js) ",
+            "type": "array"
+        }
+    }
+}

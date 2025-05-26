@@ -5,7 +5,7 @@ import { useRef, useEffect } from "react";
 
 Chart.register(ChartStreaming);
 
-export default function SensorGraph() {
+export default function SensorGraph({ ServerChartSettings, ClientChartSettings }) {
     const canvasRef = useRef(null);
     const chartRef = useRef(null);
     const chartRenderedRef = useRef(false);
