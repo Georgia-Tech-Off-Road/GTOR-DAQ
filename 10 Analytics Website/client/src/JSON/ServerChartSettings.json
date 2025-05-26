@@ -7,6 +7,10 @@
         "datasets": {
             "description": "An array of dataset objects (same schema as Chart.js) ",
             "type": "array"
+        },
+        "id": {
+            "description": "A (unique) ID for the chart",
+            "type": "integer"
         }
     }
 }

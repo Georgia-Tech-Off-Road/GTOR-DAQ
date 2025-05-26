@@ -1,0 +1,318 @@
+import "./styles/SensorChartManager.css"
+import React, { useState, useEffect } from 'react';
+import {WidthProvider, Responsive} from "react-grid-layout-19"
+import SensorGraph from './SensorGraph'
+
+const ResponsiveReactGridLayout = WidthProvider(Responsive);
+
+export default function SensorChartManager({socket}) {
+  const [layout, setLayout] = useState(generateLayout())
+
+  const [clientChartSettings, setClientChartSettings] = useState(getDefaultClientChartSettings());
+
+  const sensorCharts = clientChartSettings.map((clientSettings) =>
+            <div key={"0"} data-grid={clientSettings.layout}>
+              <SensorGraph clientChartSettings={clientSettings}></SensorGraph>
+            </div>
+          );
+
+  return (
+    <div className="SensorChartManager" style={{height: '100%'}}>
+      <div className="chart-manager-toolbar">
+        <button>Edit Layout</button>
+        <button>Save Layout</button>
+      </div>
+      <ResponsiveReactGridLayout
+        className="layout"
+        cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+        rowHeight={30}
+        layouts={{lg: layout}}
+      >
+        {sensorCharts}
+      </ResponsiveReactGridLayout>
+    </div>
+  );
+
+  function generateLayout() {
+    return getDefaultLayout();
+  }
+
+  function getDefaultLayout() {
+    return [
+      {
+        i: "1",
+        w: 6,
+        h: 8,
+        x: 0,
+        y: 0,
+        minW: 2,
+        minH: 3,
+      },
+      {
+        i: "2",
+        w: 6,
+        h: 8,
+        x: 6,
+        y: 0,
+        minW: 2,
+        minH: 3,
+      }
+    ];
+  }
+
+  function generateClientChartSettings() {
+    return [
+      {
+        displayChart: true,
+        layout: {
+          w: 6,
+          h: 8,
+          x: 0,
+          y: 0
+        }
+      }
+    ]
+  }
+
+  function getDefaultClientChartSettings() {
+    return generateClientChartSettings();
+  }
+
+}
+
+/*
+// Predefined chart configurations - hardcoded
+const chartConfigs = {
+  brakePressure: {
+    title: 'Brake Pressure',
+    yAxisLabel: 'PSI',
+    datasets: [
+      {
+        label: 'Front Brake Pressure',
+        dataKey: 'brakePresssureFront',
+        color: 'rgba(255, 99, 132, 1)', // Red
+      },
+      {
+        label: 'Rear Brake Pressure',
+        dataKey: 'brakePressureRear',
+        color: 'rgba(54, 162, 235, 1)', // Blue
+      }
+    ]
+  },
+  rpm: {
+    title: 'RPM',
+    yAxisLabel: 'RPM',
+    datasets: [
+      {
+        label: 'Front Left Wheel',
+        dataKey: 'RPMFrontLeft',
+        color: 'rgba(75, 192, 192, 1)', // Teal
+      },
+      {
+        label: 'Front Right Wheel',
+        dataKey: 'RPMFrontRight',
+        color: 'rgba(153, 102, 255, 1)', // Purple
+      },
+      {
+        label: 'Rear Wheels',
+        dataKey: 'RPMRear',
+        color: 'rgba(255, 159, 64, 1)', // Orange
+      }
+    ]
+  },
+  speed: {
+    title: 'Vehicle Speed',
+    yAxisLabel: 'MPH',
+    datasets: [
+      {
+        label: 'Speed',
+        dataKey: 'speed',
+        color: 'rgba(255, 206, 86, 1)', // Yellow
+      }
+    ]
+  },
+  temperature: {
+    title: 'Temperature',
+    yAxisLabel: '°F',
+    datasets: [
+      {
+        label: 'CVT Temp',
+        dataKey: 'CVTTemp',
+        color: 'rgba(255, 99, 132, 1)', // Red
+      },
+      {
+        label: 'Transfer Case Temp',
+        dataKey: 'transferCaseTemp',
+        color: 'rgba(54, 162, 235, 1)', // Blue
+      },
+      {
+        label: 'Brake Temp',
+        dataKey: 'brakeTemp',
+        color: 'rgba(75, 192, 192, 1)', // Teal
+      }
+    ]
+  },
+  steering: {
+    title: 'Steering Angle',
+    yAxisLabel: 'Degrees',
+    datasets: [
+      {
+        label: 'Steering Angle',
+        dataKey: 'steeringAngle',
+        color: 'rgba(153, 102, 255, 1)', // Purple
+      }
+    ]
+  }
+};
+*/
+
+/*
+export default function SensorChartManager({ socket }) {
+  // State for selected charts
+  const [selectedCharts, setSelectedCharts] = useState({
+    brakePressure: true,
+    rpm: false,
+    speed: false,
+    temperature: false,
+    steering: false
+  });
+  
+  // State for the latest sensor data
+  const [sensorData, setSensorData] = useState(null);
+  
+  // State for layout options
+  const [layout, setLayout] = useState({
+    columns: 1,
+    chartWidth: '95%', 
+    chartHeight: '400px'
+  });
+
+  // Listen for WebSocket messages and update sensorData
+  useEffect(() => {
+    if (!socket) return;
+
+    // Function to handle incoming socket messages
+    const handleSocketMessage = (event) => {
+      try {
+        const res = JSON.parse(event.data);
+        if (res.msgType === "data") {
+          setSensorData(res.content);
+        }
+      } catch (error) {
+        console.error("Error processing socket message:", error);
+      }
+    };
+
+    // Set up event listener
+    socket.addEventListener("message", handleSocketMessage);
+
+    // Request data from server
+    if (socket.readyState === WebSocket.OPEN) {
+      socket.send("data");
+    } else {
+      socket.addEventListener(
+        "open",
+        () => {
+          socket.send("data");
+        },
+        { once: true }
+      );
+    }
+
+    // Clean up event listener on unmount
+    return () => {
+      socket.removeEventListener("message", handleSocketMessage);
+    };
+  }, [socket]);
+
+  // Toggle chart selection
+  const toggleChart = (chartId) => {
+    setSelectedCharts(prev => ({
+      ...prev,
+      [chartId]: !prev[chartId]
+    }));
+  };
+
+  // Update layout settings
+  const updateLayout = (columns) => {
+    const width = columns === 1 ? '95%' : `${95/columns}%`;
+    
+    setLayout({
+      columns,
+      chartWidth: width,
+      chartHeight: columns === 1 ? '400px' : '300px'
+    });
+  };
+
+  // Get the active chart configs
+  const activeCharts = Object.keys(selectedCharts)
+    .filter(chartId => selectedCharts[chartId])
+    .map(chartId => ({
+      id: chartId,
+      config: chartConfigs[chartId]
+    }));
+  
+  return (
+    <div className="sensor-chart-manager">
+      <div className="controls">
+        <div className="chart-selector">
+          <h3>Select Charts</h3>
+          <div className="chart-checkboxes">
+            {Object.keys(chartConfigs).map(chartId => (
+              <label key={chartId}>
+                <input
+                  type="checkbox"
+                  checked={selectedCharts[chartId] || false}
+                  onChange={() => toggleChart(chartId)}
+                />
+                {chartConfigs[chartId].title}
+              </label>
+            ))}
+          </div>
+        </div>
+        
+        <div className="layout-controls">
+          <h3>Layout</h3>
+          <div className="layout-buttons">
+            <button onClick={() => updateLayout(1)}>Single Column</button>
+            <button onClick={() => updateLayout(2)}>Two Columns</button>
+          </div>
+        </div>
+      </div>
+      
+      <div 
+        className="charts-container" 
+        style={{ 
+          display: 'flex', 
+          flexWrap: 'wrap', 
+          justifyContent: 'space-around'
+        }}
+      >
+        {activeCharts.length === 0 ? (
+          <div className="no-charts-message">
+            <p>Select charts to display using the checkboxes above</p>
+          </div>
+        ) : (
+          activeCharts.map(({ id, config }) => (
+            <div 
+              key={id} 
+              style={{ 
+                width: layout.chartWidth, 
+                margin: '10px',
+                boxSizing: 'border-box'
+              }}
+            >
+              <SensorChart 
+                chartId={id}
+                sensorConfig={config}
+                sensorData={sensorData}
+                width="100%"
+                height={layout.chartHeight}
+              />
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+} */

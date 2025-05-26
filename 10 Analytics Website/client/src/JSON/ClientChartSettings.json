@@ -8,21 +8,27 @@
             "description": "Controls whether the chart should be displayed or not",
             "type": "boolean"
         },
-        "w": {
-            "description": "How many blocks wide this chart will take up",
-            "type": "integer"
-        },
-        "h": {
-            "description": "How many blocks tall this chart will take up",
-            "type": "integer"
-        },
-        "x": {
-            "description": "X-coordinate (in blocks) of the chart",
-            "type": "integer"
-        },
-        "y": {
-            "description": "Y-coordinate (in blocks) of the chart",
-            "type": "integer"
+        "layout": {
+            "description": "Describes the position in the responsive layout of the chart",
+            "type": "object",
+            "properties": {
+                "w": {
+                "description": "How many blocks wide this chart will take up",
+                "type": "integer"
+                },
+                "h": {
+                    "description": "How many blocks tall this chart will take up",
+                    "type": "integer"
+                },
+                "x": {
+                    "description": "X-coordinate (in blocks) of the chart",
+                    "type": "integer"
+                },
+                "y": {
+                    "description": "Y-coordinate (in blocks) of the chart",
+                    "type": "integer"
+                }
+            }
         }
     }
 }
