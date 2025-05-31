@@ -9,10 +9,11 @@
     border: 10px;
     border-color: purple;
 }
-.chart-manager-toolbar button {
+.chart-manager-toolbar > button {
     font-size: 1.25rem;
     color: var(--text-primary);
     background-color: var(--accent-copper);
     border: 2px;
     padding: 5px;
 }
+

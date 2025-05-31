@@ -34,7 +34,7 @@ export default function SensorChartManager({socket}) {
   return (
     <div className="SensorChartManager" style={{height: '100%'}}>
       <div className="chart-manager-toolbar">
-        <button>Edit Layout</button>
+        <button onClick={toogleArrangementMode}>Arrange Charts</button>
         <button>Save Layout</button>
       </div>
       <ResponsiveReactGridLayout
@@ -93,6 +93,10 @@ export default function SensorChartManager({socket}) {
 
   function getDefaultServerChartSettings() {
     return generateServerChartSettings();
+  }
+
+  function toogleArrangementMode() {
+    setIsArrangementMode(!isArrangementMode);
   }
 }
 
