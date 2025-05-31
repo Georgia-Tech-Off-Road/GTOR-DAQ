@@ -11,6 +11,8 @@ export default function SensorChartManager({socket}) {
 
   const [serverChartSettings, setServerChartSettings] = useState(getDefaultServerChartSettings());
 
+  const [isArrangementMode, setIsArrangementMode] = useState(false);
+
   const chartSettings = useMemo(() => {
     return clientChartSettings.map((clientSettings, i) => ({
       clientSettings: clientSettings,
@@ -23,7 +25,7 @@ export default function SensorChartManager({socket}) {
       const serverSetttings = settings.serverSettings;
       return (
         <div key={serverSetttings.id} data-grid={clientSettings.layout}>
-          <SensorGraph clientChartSettings={clientSettings} serverChartSettings={serverSetttings}></SensorGraph>
+          <SensorGraph clientChartSettings={clientSettings} serverChartSettings={serverSetttings} isArrangementMode={false}></SensorGraph>
         </div>
       )
     }
@@ -39,6 +41,8 @@ export default function SensorChartManager({socket}) {
         className="layout"
         cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
         rowHeight={30}
+        isDraggable={isArrangementMode}
+        isResizeable={isArrangementMode}
       >
         {sensorCharts}
       </ResponsiveReactGridLayout>

@@ -5,7 +5,7 @@ import { useRef, useEffect } from "react";
 
 Chart.register(ChartStreaming);
 
-export default function SensorGraph({clientChartSettings, serverChartSettings}) {
+export default function SensorGraph({clientChartSettings, serverChartSettings, isArrangementMode}) {
     const canvasRef = useRef(null);
     const chartRef = useRef(null);
     const chartRenderedRef = useRef(false);
@@ -45,6 +45,11 @@ export default function SensorGraph({clientChartSettings, serverChartSettings}) 
             data: data,
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
+                interaction:{
+                    intersect: !isArrangementMode,
+                    mode: isArrangementMode ? 'none' : 'index'
+                },
                 scales: {
                     x: {
                         type: "realtime",
