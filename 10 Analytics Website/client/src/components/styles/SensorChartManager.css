@@ -3,7 +3,7 @@
 .chart-manager-toolbar {
     display: flex;
     justify-content: space-around;
-    padding: 40px;
+    padding: 0px;
     flex-wrap: nowrap;
     background-color: var(--bg-primary);
     border: 10px;
@@ -17,3 +17,6 @@
     padding: 5px;
 }
 
+.chart-manager-toolbar > button:hover {
+    background-color: var(--hover-state);
+}

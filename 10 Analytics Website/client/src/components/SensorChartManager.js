@@ -1,17 +1,16 @@
 import "./styles/SensorChartManager.css"
+import "react-grid-layout-19/css/styles.css"
 import React, { useState, useEffect, useMemo } from 'react';
 import {WidthProvider, Responsive} from "react-grid-layout-19"
 import SensorGraph from './SensorGraph'
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-export default function SensorChartManager({socket}) {
+export default function SensorChartManager({socket, isArrangementMode, onLayoutChange}) {
 
   const [clientChartSettings, setClientChartSettings] = useState(getDefaultClientChartSettings());
 
   const [serverChartSettings, setServerChartSettings] = useState(getDefaultServerChartSettings());
-
-  const [isArrangementMode, setIsArrangementMode] = useState(false);
 
   const chartSettings = useMemo(() => {
     return clientChartSettings.map((clientSettings, i) => ({
@@ -24,7 +23,7 @@ export default function SensorChartManager({socket}) {
       const clientSettings = settings.clientSettings;
       const serverSetttings = settings.serverSettings;
       return (
-        <div key={serverSetttings.id} data-grid={clientSettings.layout}>
+        <div key={serverSetttings.id} data-grid={{...clientSettings.layout, i: serverSetttings.id}}>
           <SensorGraph clientChartSettings={clientSettings} serverChartSettings={serverSetttings} isArrangementMode={false}></SensorGraph>
         </div>
       )
@@ -33,16 +32,18 @@ export default function SensorChartManager({socket}) {
 
   return (
     <div className="SensorChartManager" style={{height: '100%'}}>
-      <div className="chart-manager-toolbar">
-        <button onClick={toogleArrangementMode}>Arrange Charts</button>
-        <button>Save Layout</button>
-      </div>
       <ResponsiveReactGridLayout
         className="layout"
         cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
         rowHeight={30}
         isDraggable={isArrangementMode}
-        isResizeable={isArrangementMode}
+        isResizable={isArrangementMode}
+        onLayoutChange={handleLayoutChange}
+        compactType={null}
+        preventCollision={true}
+        useCSSTransforms={true}
+        margin={[10, 10]}
+        containerPadding={[0, 0]}
       >
         {sensorCharts}
       </ResponsiveReactGridLayout>
@@ -57,6 +58,15 @@ export default function SensorChartManager({socket}) {
           w: 6,
           h: 8,
           x: 0,
+          y: 0
+        }
+      },
+      {
+        displayChart: true,
+        layout: {
+          w: 6,
+          h: 8,
+          x: 6,
           y: 0
         }
       }
@@ -87,6 +97,18 @@ export default function SensorChartManager({socket}) {
               tension: 0.1
           }
         ]
+      },
+      {
+        id: "1",
+        datasets: [
+          {
+            label: "Test Graph",
+            data: [],
+            borderColor: "rgba(41, 160, 59, 0)",
+            fill: false,
+            tension: 0.1
+          }
+        ]
       }
     ]
   }
@@ -95,8 +117,29 @@ export default function SensorChartManager({socket}) {
     return generateServerChartSettings();
   }
 
-  function toogleArrangementMode() {
-    setIsArrangementMode(!isArrangementMode);
+  function handleLayoutChange(layout) {
+    // Update the client chart settings with new layout positions
+    const updatedClientSettings = clientChartSettings.map((settings, index) => {
+      const layoutItem = layout.find(item => item.i === serverChartSettings[index].id);
+      if (layoutItem) {
+        return {
+          ...settings,
+          layout: {
+            w: layoutItem.w,
+            h: layoutItem.h,
+            x: layoutItem.x,
+            y: layoutItem.y
+          }
+        };
+      }
+      return settings;
+    });
+    setClientChartSettings(updatedClientSettings);
+    
+    // Call parent's onLayoutChange if provided
+    if (onLayoutChange) {
+      onLayoutChange(layout);
+    }
   }
 }
 
