@@ -18,8 +18,8 @@ export default function SensorGraph({clientChartSettings, serverChartSettings, i
     }, []);
 
     return (
-        <div className="sensor-graph-container" style={{position: 'relative', width: '100%', height: '100%', zIndex: 10}}>
-            <canvas className="SensorGraph" ref={canvasRef} style={{width: '100%', height: '100%'}} maintainResize={false}></canvas>
+        <div className="sensor-graph-container" style={{position: 'relative', width: '100%', height: '100%', zIndex: isArrangementMode ? 'auto' : 10, pointerEvents: isArrangementMode ? 'none' : 'auto'}}>
+            <canvas className="SensorGraph" ref={canvasRef} style={{width: '100%', height: '100%', pointerEvents: isArrangementMode ? 'none' : 'auto'}} maintainResize={false}></canvas>
         </div>
     );
 
