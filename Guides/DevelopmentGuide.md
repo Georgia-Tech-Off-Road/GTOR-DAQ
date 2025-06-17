@@ -14,7 +14,7 @@ We will be using a modified version of [trunk-based development](https://www.atl
 
 # Project Stage 0: Proposal
 
-Before you begin a project, document your ideas! Use this [insert create new project] for working on creating a new utility / library or this [existing project form] otherwise. The form should not become a large hinderance to your productivity, use it to document your plan and help focus.
+Before you begin a project, document your ideas! For brainstorming an entirely new piece of software jot down your thoughts using SoftwareProposal.md form. Before begining a project on our software suite, use ProjectProposal.md. Both can be found in this folder. If you are envisioning a new piece of software and would like to begin work on it (in the form of a project) you will have to fill out both forms. This is to keep clear the longterm goals of the software v.s the more limited shortterm goals of your initial project.  
 
 #### Proposal Guidelines
 1.	As much as you can, limit the scope of your project to one piece of software. This makes it easier for other teams to work on their own projects without worrying about merge conflicts with yours!
