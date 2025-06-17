@@ -2,24 +2,33 @@
 
 # Software Details
 
+## Overview
 
+**Software Name:**
+**Software Type (Utility/Library):**
+
+## Goals
+What are the objectives of this software? What will you do?
 
 # Project Details
 Detail the scope of the initial project that will begin this software.
 
 ## Overview
 
-**Project Name (Remember Git naming conventions (NO SPACES)):**
+**Project Name (Remember Git branch naming rules (NO SPACES)):**
 **Affected Software (list in folder format from Github):**
 
-## Goals
-What are the objectives of this project? What will you do?
+## Objectives
+What are the objectives of this project, how does fit into the longterm goals of the software?
 
 ## Timeline
 Use the following format [Project Milestone] - [Date]
 
 ## Outline of Implementation
-Provide and overview of how you will implement this project. Will this interface with other systems?
+Provide an overview of how you will implement this project. Will this interface with other systems?
+
+## Features
+What sets your project apart from alternatives?
 
 ## Why?
 Detail how this project will aid the team. Why are you doing this?
