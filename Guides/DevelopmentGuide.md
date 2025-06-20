@@ -79,7 +79,7 @@ If you must experiment as a team, figure out a synchronization strategy. One rec
 **Once you have a clean commit history, create a pull request of your project branch to main for review.**
 
 # Project Stage 3: Development
-At this point you should have clear objectives and a timeline for this project and have done most of the research necessary. It should be relatively straightforward from programming from here! If you feel that you need more hands on deck, now is a good time to get more people involved. 
+At this point you should have clear objectives and a timeline for this project and have done most of the research necessary. It should be relatively straightforward programming from here! If you feel that you need more hands on deck, now is a good time to get more people involved. 
 
 #### Git Protocols
 **All commits in this phase should be titled Develop:[Commit Title]. Update your codebase regularly with** `git pull`. You should push to GitHub good commits, that means clear titles and commit messages. When you feel that you have a coherent assortment of commits, create a pull request of your project branch to main. This should be done every 30 min-4 development hours. The goal is to present a clear, coherent contribution that can be reviewed efficiently. 
