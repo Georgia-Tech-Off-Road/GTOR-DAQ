@@ -72,7 +72,7 @@ In this stage, you should work on research and experimentation to validate the v
 #### Git Protocols
 **All commits down in the stage should be titled Experiment: [Commit Title]**. Before you transition to the next phase, your commit history should be orderly. If I were you, this would mean making clean commits from the start, however you are free to do as you wish. Use `git pull` regularly to update your codebase with other teams’ work.
 
-If you are developing solo, keep additions on your machine locally until they are somewhat polished. You do not have to push at any schedule but do push possible so that teammates can view your progress!
+If you are developing solo, keep additions on your machine locally until they are somewhat polished. You do not have to push at any schedule but do push when possible so that teammates can view your progress!
 
 If you must experiment as a team, figure out a synchronization strategy. One recommended approach is to divide responsibilities (to reduce merger conflicts) and regularly push and pull your local repositories. Avoid using `git push –-force` if at all possible. This is why code experimentation is not recommended to be done by a team. To clean up your commit history at the end, create a new branch from your project branch named Cleanup:[Insert Project Branch Name], clean your commit history there, and then merge the cleanup branch back into the project branch.
 
