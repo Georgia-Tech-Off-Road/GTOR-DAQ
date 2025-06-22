@@ -57,8 +57,6 @@ git commit -m "Software Creation"
 #### Project Creation: Existing Software
 Create a new branch from the main branch with the name of the project. All work done from here on will be done in this project branch. 
 
-When in a project branch, only modify code within that project’s scope. This prevents merge conflicts and a muddled commit history. If you need to work on multiple projects at once, you can always switch branches.
-
 e.x
 ```
 git switch main
@@ -66,11 +64,14 @@ git branch "My-Project-Title"
 git switch "My-Project-Title"
 ```
 
+When in a project branch, only modify code within that project’s scope. This prevents merge conflicts and a muddled commit history. If you need to work on multiple projects at once, you can always switch branches.
+
+
 # Project Stage 2: Experimentation
 In this stage, you should work on research and experimentation to validate the viability of your intended projects. Because the experimentation phase moves fast and (somewhat) recklessly, this phase is easier done by one person. The goal is to have 80% of research and experimentation done by the end of this stage. If you anticipate significant changes in the project’s purpose, objectives, or timeline, consult with your teammates. At the end of this phase, present your findings to your teammates. If you decide to continue with the project, update your proposal form. **Leave the original text, but add your updates in red**.
 
 #### Git Protocols
-**All commits down in the stage should be titled Experiment: [Commit Title]**. Before you transition to the next phase, your commit history should be orderly. If I were you, this would mean making clean commits from the start, however you are free to do as you wish. Use `git pull` regularly to update your codebase with other teams’ work.
+**All commits down in the stage should be titled Experiment:[Commit Title]**. Before you transition to the next phase, your commit history should be orderly. If I were you, this would mean making clean commits from the start, however you are free to do as you wish. Use `git pull` regularly to update your codebase with other teams’ work.
 
 If you are developing solo, keep additions on your machine locally until they are somewhat polished. You do not have to push at any schedule but do push when possible so that teammates can view your progress!
 
@@ -101,10 +102,11 @@ For QA on software-dependent code, use the same testing framework as found in ot
 Finally, your project should be ready for release! It’s been battle tested and thoroughly documented (right?).  Hold your horses. Make sure that you’ve at least talked to your teammates about this. Depending on project size and impact, a meeting or presentation might be more appropriate.  Now that your code is ready, create a new branch from the release branch. Add / update your code folder in that branch, replacing whatever was there previously. Name your folder as follows, [Software Name] – [Version]. Version should be in MM.mm.bb format, where MM is the major version number, mm is minor version number, and bb is the bug / hotfix number. Once you have done all of this, create a pull request to release branch. Once that pull request is approved, your code is officially in part of DAQ’s stable release code!
 
 # Alternative: Hotfixes
-Ideally all code pushed to release would be perfect and flawless, free of bugs and UI nuisances. Of course this is not realistic. There will be times when something slipped through, or you would like to make a minor change. In this case, the development overhead of the project framework does not make sense. For this we have hotfixes. Think of them as mini projects. To initiate a hotfix, fill out [insert hotfix form]. This defines the very specific action that you would like to fix. If you would like to work on two unrelated issues (even in the same project), you will need two hotfixes. After this, create a new branch from the branch titled Hotfix: [Hotfix title]. **All commits should be titled Hotfix:[Commit Title]**. Once your changes have been made, create a pull request to main, and then, if approved, add your code to release in the same way as a project. 
+Ideally all code pushed to release would be perfect and flawless, free of bugs and UI nuisances. Of course this is not realistic. There will be times when something slipped through, or you would like to make a minor code change or documentation update. In this case, the development overhead of the project framework does not make sense. For this we have hotfixes. Think of them as mini projects. To initiate a hotfix, fill out Hotfix.md. This defines the very specific action that you would like to fix. If you would like to work on two unrelated issues (even in the same project), you will need two hotfixes. After this, create a new branch from the branch titled Hotfix: [Hotfix title]. **All commits should be titled Hotfix:[Commit Title]**. Once your changes have been made, create a pull request to main, and then, if approved, add your code to release in the same way as a project. 
+
 
 # Additional Responsibilities 
 So far we have discussed how the project development workflow will go. This workflow relies heavily on teammates being involved and reviewing each other’s projects. Here we layout some additional responsibilities you have (in addition to working on your project) so that this workflow is possible.
-1. You must be available to review other teamates pull requests. This system relies on peer review to produce good quality code. This does not mean that you must drop everything you are doing whenever a teammate submits a pull request, but coordinate with your team to get pull requests reviewed.
-1. Talk with you teammates. This includes about your project, but also listen to them about their projects! In the same way that you need to review pull reqests to monitor code, talking to each other about your work helps in refining the overall ideas and broader design.
+1. You must be available to review other teamates pull requests. This system relies on peer review to produce good quality code. This does not mean that you must drop everything you are doing whenever a teammate submits a pull request, but coordinate with your team to get pull requests reviewed in a timely and efficient manner.
+1. Talk with you teammates. This includes about your project, but also listen to them about their projects! In the same way that you need to review pull reqests to monitor code, talking to each other about your work helps to refine the broader design and concept.
 1. Have fun! Seriously, DAQ aspires to be a quality code producing powerhouse, but it is also a college club. You are hereby commanded to have fun and let loose with the team, as well as produce quality code. 
