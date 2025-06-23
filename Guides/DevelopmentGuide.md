@@ -116,3 +116,7 @@ So far we have discussed how the project development workflow will go. This work
 1. You must be available to review other teamates pull requests. This system relies on peer review to produce good quality code. This does not mean that you must drop everything you are doing whenever a teammate submits a pull request, but coordinate with your team to get pull requests reviewed in a timely and efficient manner.
 1. Talk with you teammates. This includes about your project, but also listen to them about their projects! In the same way that you need to review pull reqests to monitor code, talking to each other about your work helps to refine the broader design and concept.
 1. Have fun! Seriously, DAQ aspires to be a quality code producing powerhouse, but it is also a college club. You are hereby commanded to have fun and let loose with the team, as well as produce quality code. 
+
+# Future Goals
+
+- Implement CI/CD system
