@@ -5,16 +5,30 @@
 ## Overview
 This document is a document that details the git protocols and workflow of GTOR DAQ. If you do not have any experience with Git, please consult a senior team member (preferably someone who works more in software development) for a rundown before continuing to read this guide. The most important thing to remember when reading is that the guidance here is not ironclad, and is always, always, subject to **context**; namely the project you are working on and your level of experience. There are always cases where guidelines fail and should be broken, just make sure that you have a good reason to do so. There are very few ironclad **Rules (think of them as commandments)**, which I will highlight in **bold**. If you must commit a sin against our Git deities, make sure you have a damn good reason to do so. 
 
-We will be using a modified version of [trunk-based development](https://www.atlassian.com/continuous-delivery/continuous-integration/trunk-based-development). The essential concept of trunk-based development is to eliminate long-running branches. Developers merge to the main branch (the “trunk”) whenever they have finished a stage of their current project. In our case, this ideally would normally range from 2-3 times a day to once every 3 days. This depends on the development pace and project context (again, always consider context, these are guidelines after all!).
+We will be using a modified version of [trunk-based development](https://www.atlassian.com/continuous-delivery/continuous-integration/trunk-based-development). The essential concept of trunk-based development is to eliminate long-running branches. Developers merge to the main branch (the “trunk”) whenever they have finished a stage of their current project. In our case, this ideally will range from every 1-5 development hrs. Again, this is highly subject to the work you are doing! More or less frequents merges into the trunk might be appropriate. 
+
+To help keep everyone on the same track we be using a project based work system (along with trunk-based development). We do this to coordinate work among each (preventing conflicts and the like) as well as maintaining a clear focus for long and shorterm objectives.
+
+
+ A project is a short(er) term effort to implement clearly defined objectives in a timely manner to work towards the longer term vision of a sa piece of software (either utility of library).  
 
 ## Goals
 - Reduce merge conflict hell from long running branches
 - Create a central repository of stable releases of tools
 - Maintain a clear history of updates to tools and our software suite
 
+#### Definition: Utility
+*A utility is a singular piece of software that is accessible to end users and does not require other utilities to run in its simplest form (of course, library dependencies are fine). For example, our data translator is a utility, as is our website (even though it is more useful when receiving data from our data collection system on the car, another utility).*
+
+#### Definition: Library
+*Code that other utilities depend on to function but are not freestanding utilities on their own. For example, code calculating engine temperature from sensor output should be a library, as more than one utility requires this function (or likely would in the future).*
+
+#### Definition: Software
+*Encompasses both utility (software) and library (software).* 
+
 # Project Stage 0: Proposal
 
-Before you begin a project, document your ideas! For brainstorming an entirely new piece of software jot down your thoughts using SoftwareProposal.md form. Before begining a project on our software suite, use ProjectProposal.md. Both can be found in this folder. If you are envisioning a new piece of software and would like to begin work on it (in the form of a project) you will have to fill out both forms. This is to keep clear the longterm goals of the software v.s the more limited shortterm goals of your initial project.  
+Before you begin a project, document your ideas! For brainstorming an entirely new piece of software jot down your thoughts using SoftwareProposal.md form. Before begining a project on our software suite, use ProjectProposal.md. Both can be found in this folder. If you are envisioning a new piece of software and would like to begin work on it (in the form of a project) you will have to fill out both forms. This is to keep clear the distinction between the longterm goals of the software v.s the more limited short term goals of your initial project.  
 
 #### Proposal Guidelines
 1.	As much as you can, limit the scope of your project to one piece of software. This makes it easier for other teams to work on their own projects without worrying about merge conflicts with yours!
@@ -29,14 +43,6 @@ A project is an endeavor to expand and improve DAQ’s software suite, guided by
 
 There are two different options from here, either you are creating a new utility / library (these both fall under the term software) or updating an existing piece of software.
 
-#### Definition: Utility
-*A utility is a singular piece of software that is accessible to end users and does not require other utilities to run in its simplest form (of course, library dependencies are fine). For example, our data translator is a utility, as is our website (even though it is more useful when receiving data from our data collection system on the car, another utility).*
-
-#### Definition: Library
-*Code that other utilities depend on to function but are not freestanding utilities on their own. For example, code calculating engine temperature from sensor output should be a library, as more than one utility requires this function (or likely would in the future).*
-
-#### Definition: Software
-*Encompasses both utility (software) and library (software).* 
 
 #### Project Creation: New Software
 Create a new branch from the main branch with the name of the project. All work done from here on for this project will be done in this project branch. It is a rule that every software have its own folder. For utilities, this will be a folder in the home directory, numbered with a two-digit code before (e.g. *07 Data Translation/*). Libraries must have their own folder in */00 Libraries*. Create your project folder, add it to the index with git add, and create a commit (with only this change!), titled Software Creation. 
@@ -75,7 +81,7 @@ In this stage, you should work on research and experimentation to validate the v
 
 If you are developing solo, keep additions on your machine locally until they are somewhat polished. You do not have to push at any schedule but do push when possible so that teammates can view your progress!
 
-If you must experiment as a team, figure out a synchronization strategy. One recommended approach is to divide responsibilities (to reduce merger conflicts) and regularly push and pull your local repositories. Avoid using `git push –-force` if at all possible. This is why code experimentation is not recommended to be done by a team. To clean up your commit history at the end, create a new branch from your project branch named Cleanup:[Insert Project Branch Name], clean your commit history there, and then merge the cleanup branch back into the project branch.
+If you must experiment as a team, figure out a synchronization strategy. One recommended approach is to divide responsibilities (to reduce merge conflicts) and regularly push and pull your local repositories. Avoid using `git push –-force` if at all possible. This is why code experimentation is not recommended to be done by a team. To clean up your commit history at the end, create a new branch from your project branch named Cleanup:[Insert Project Branch Name], clean your commit history there, and then merge the cleanup branch back into the project branch.
 
 **Once you have a clean commit history, create a pull request of your project branch to main for review.**
 
@@ -83,12 +89,12 @@ If you must experiment as a team, figure out a synchronization strategy. One rec
 At this point you should have clear objectives and a timeline for this project and have done most of the research necessary. It should be relatively straightforward programming from here! If you feel that you need more hands on deck, now is a good time to get more people involved. 
 
 #### Git Protocols
-**All commits in this phase should be titled Develop:[Commit Title]. Update your codebase regularly with** `git pull`. You should push to GitHub good commits, that means clear titles and commit messages. When you feel that you have a coherent assortment of commits, create a pull request of your project branch to main. This should be done every 30 min-4 development hours. The goal is to present a clear, coherent contribution that can be reviewed efficiently. 
+**All commits in this phase should be titled Develop:[Commit Title]. Update your codebase regularly with** `git pull`. You should push to GitHub good commits, that means clear titles and commit messages. When you feel that you have a coherent assortment of commits, create a pull request of your project branch to main. This should be done every 30 min - 4 development hrs. The goal behind this is to present a clear, coherent contribution that can be reviewed efficiently. 
 
 # Project Stage 4: Refinement
-The goal of this phase is to make sure your code is ironclad, able to resist the strains of competition and mechanical engineers. Here are the 4 main things you need to do in this phase:
+The goal of this phase is to make sure your code is ironclad, able to resist the strains of competition and mechanical engineers. Here are the 4 main things you may need to do in this phase:
 
-1.	Quality Assurance (“QA”) testing, debugging
+1.	**Quality Assurance (“QA”) testing, debugging**
 1.	Refactoring code, in-code documentation (ex. comments)
 1.	Refinement, UI improvements etc.
 1.	Out of code documentation, explainers, quick start guides, etc.
