@@ -1,5 +1,5 @@
 #include "../../boost/endian/arithmetic.hpp"
-#include "../../misc/BinaryBuffer/BinaryBuffer.h"
+#include "BinaryBuffer.h"
 #include "../../SensorInfo.h"
 #include <cstdint>
 #include <string>

@@ -1,6 +1,6 @@
 #include "SensorInfo.h"
 #include "gtest/gtest.h"
-#include "misc/BinaryBuffer/BinaryBuffer.h"
+#include "BinaryBuffer.h"
 #include "boost/endian/arithmetic.hpp"
 #include <cmath>
 #include <iostream>
