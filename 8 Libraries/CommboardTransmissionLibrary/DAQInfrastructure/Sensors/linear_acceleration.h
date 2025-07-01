@@ -1,4 +1,4 @@
-#include "../../misc/BinaryBuffer/BinaryBuffer.h"
+#include "BinaryBuffer.h"
 #include "../../boost/endian/arithmetic.hpp"
 #include "../../SensorInfo.h"
 #include <string>

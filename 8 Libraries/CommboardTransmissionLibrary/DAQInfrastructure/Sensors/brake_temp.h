@@ -1,6 +1,6 @@
 #include "../../SensorInfo.h"
 #include "../../boost/endian/arithmetic.hpp"
-#include "../../misc/BinaryBuffer/BinaryBuffer.h"
+#include "BinaryBuffer.h"
 #include <string>
 #include <sstream>
 
