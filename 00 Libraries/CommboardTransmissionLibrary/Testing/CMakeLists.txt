@@ -11,7 +11,7 @@ FetchContent_MakeAvailable(googletest)
 
 function(add_cmbtl_test test_name source_file)
   add_executable(${test_name} ${source_file})
-  target_link_libraries(${test_name} PUBLIC gtest_main compiler_flags BinaryBuffer)
+  target_link_libraries(${test_name} PUBLIC gtest_main compiler_flags LIBRARIES)
   target_include_directories(${test_name} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
   add_test(NAME ${test_name}Tests COMMAND ${test_name})
 endfunction()

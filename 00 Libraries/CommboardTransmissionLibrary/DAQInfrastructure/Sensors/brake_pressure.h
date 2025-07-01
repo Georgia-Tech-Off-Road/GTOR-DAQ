@@ -1,13 +1,12 @@
 #include "../../SensorInfo.h"
-#include "BinaryBuffer.h"
-#include "../../boost/endian/arithmetic.hpp"
+#include "BinaryBuffer/BinaryBuffer.h"
+#include "boost/endian/arithmetic.hpp"
 #include <string>
 #include <sstream>
 #include <cstdint>
 
 #ifndef CMBLT_BRAKE_PRESSURE_H
 #define CMBTL_BRAKE_PRESSURE_H
-
 namespace cmbtl {
     namespace brake_pressure {
 

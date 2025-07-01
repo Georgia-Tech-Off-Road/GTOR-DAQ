@@ -1,6 +1,6 @@
-#include "BinaryBuffer.h"
+#include "BinaryBuffer/BinaryBuffer.h"
 #include "../../SensorInfo.h"
-#include "../../boost/endian/arithmetic.hpp"
+#include "boost/endian/arithmetic.hpp"
 #include <cstdint>
 #ifndef CMBTL_POSITION_H
 #define CMBTL_POSITION_H

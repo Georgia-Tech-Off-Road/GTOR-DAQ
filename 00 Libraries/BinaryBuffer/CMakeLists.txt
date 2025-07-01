@@ -3,6 +3,11 @@
 add_library(BinaryBuffer INTERFACE)
 target_include_directories(BinaryBuffer INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}")
 
+add_library(LIBRARIES INTERFACE)
+target_include_directories(LIBRARIES INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/../")
+
+include(CTest)
+
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -15,6 +20,6 @@ FetchContent_MakeAvailable(googletest)
 
 # Now simply link against gtest or gtest_main as needed. Eg
 add_executable(BinaryBufferTest BinaryBuffer_unittest.cpp)
-target_link_libraries(BinaryBufferTest gtest_main)
+target_link_libraries(BinaryBufferTest gtest_main LIBRARIES)
 target_include_directories(BinaryBufferTest PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../../")
 add_test(NAME BinaryBufferTest COMMAND BinaryBufferTest)
