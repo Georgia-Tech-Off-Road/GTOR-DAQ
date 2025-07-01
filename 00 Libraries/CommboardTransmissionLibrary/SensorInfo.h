@@ -1,4 +1,4 @@
-#include "BinaryBuffer.h"
+#include "BinaryBuffer/BinaryBuffer.h"
 #include "boost/endian/arithmetic.hpp"
 #include <cmath>
 #include <string>

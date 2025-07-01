@@ -1,4 +1,4 @@
-#include "BinaryBuffer.h"
+#include "BinaryBuffer/BinaryBuffer.h"
 #include "PacketInstructions.h"
 #include <array>
 
