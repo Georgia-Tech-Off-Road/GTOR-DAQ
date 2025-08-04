@@ -29,3 +29,13 @@ Dockerfile
 *.csv
 *.xml
 *.iml
+Claude.md
+
+
+# --- CMake Related Files --- 
+*CMakeCache.txt
+00 Libraries/CommboardTransmissionLibrary/Testing/*
+!00 Libraries/CommboardTransmissionLibrary/Testing/*.cpp
+
+#Ignore generated makefiles
+Makefile

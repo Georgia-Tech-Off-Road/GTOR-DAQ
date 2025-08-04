@@ -3,9 +3,6 @@
 add_library(BinaryBuffer INTERFACE)
 target_include_directories(BinaryBuffer INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_library(LIBRARIES INTERFACE)
-target_include_directories(LIBRARIES INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/../")
-
 include(CTest)
 
 include(FetchContent)
