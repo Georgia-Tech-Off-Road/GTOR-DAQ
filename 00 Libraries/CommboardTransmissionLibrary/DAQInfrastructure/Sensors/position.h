@@ -1,4 +1,4 @@
-#include "BinaryBuffer/BinaryBuffer.h"
+#include "BinaryBuffer.h"
 #include "../../SensorInfo.h"
 #include "boost/endian/arithmetic.hpp"
 #include <cstdint>
