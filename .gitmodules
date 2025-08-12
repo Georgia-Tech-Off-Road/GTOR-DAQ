@@ -1,0 +1,3 @@
+[submodule "00 Libraries/BinaryBuffer"]
+	path = 00 Libraries/BinaryBuffer
+	url = git@github.com:Georgia-Tech-Off-Road/BinaryBuffer.git
