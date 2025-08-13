@@ -12,7 +12,7 @@ target_compile_features(compiler_flags INTERFACE cxx_std_11)
 add_library(CommboardTransmissionLibrary INTERFACE)
 
 # Link to BinaryBuffer library
-target_link_libraries(CommboardTransmissionLibrary INTERFACE BinaryBuffer)
+target_link_libraries(CommboardTransmissionLibrary INTERFACE BinaryBuffer BoostForArduino)
 
 # Set include directories for this library
 target_include_directories(CommboardTransmissionLibrary INTERFACE 

@@ -5,8 +5,5 @@ project(GTOR-DAQ VERSION 1.0)
 # Include CTest for testing framework
 include (CTest)
 
-# Include Boost framework
-find_package(Boost REQUIRED)
-
 # Add directories that use CMake to compile
 add_subdirectory(00\ Libraries)
