@@ -3,4 +3,4 @@
 	url = git@github.com:Georgia-Tech-Off-Road/BinaryBuffer.git
 [submodule "00 Libraries/BoostForArduino"]
 	path = 00 Libraries/BoostForArduino
-	url = https://github.com/kekyo/BoostForArduino.git
+	url = git@github.com:Georgia-Tech-Off-Road/BoostForArduino.git
