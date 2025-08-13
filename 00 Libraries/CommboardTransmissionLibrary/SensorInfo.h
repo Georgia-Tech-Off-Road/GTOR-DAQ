@@ -1,5 +1,5 @@
 #include "BinaryBuffer.h"
-#include "boost/endian/arithmetic.hpp"
+#include "boost_endian_arithmetic.hpp"
 #include <cmath>
 #include <string>
 #include <iostream>

@@ -1,5 +1,5 @@
 #include "SensorInfo.h"
-#include "boost/mp11/algorithm.hpp"
+#include "boost_mp11_algorithm.hpp"
 #include "MP.h"
 #include "Packets/PacketInstructions.h"
 #include <tuple>
