@@ -4,3 +4,6 @@
 [submodule "00 Libraries/BoostForArduino"]
 	path = 00 Libraries/BoostForArduino
 	url = git@github.com:Georgia-Tech-Off-Road/BoostForArduino.git
+[submodule "00 Libraries/CommboardTransmissionLibrary"]
+	path = 00 Libraries/CommboardTransmissionLibrary
+	url = git@github.com:Georgia-Tech-Off-Road/CommboardTransmissionLibrary.git
