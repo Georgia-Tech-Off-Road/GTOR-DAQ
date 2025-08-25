@@ -3,6 +3,7 @@
 ## Overview
 
 **Project Name (Remember Git branch naming rules (NO SPACES)):**
+**Project Acronym(3-4 characters):**
 **Affected Software (list in folder format from Github):**
 
 ## Objectives
