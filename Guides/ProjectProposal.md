@@ -3,8 +3,11 @@
 ## Overview
 
 **Project Name (Remember Git branch naming rules (NO SPACES)):**
+
 **Project Acronym(3-4 characters):**
+
 **Affected Software (list in folder format from Github):**
+
 
 ## Objectives
 What are the objectives of this project, how does fit into the longterm goals of the software?
