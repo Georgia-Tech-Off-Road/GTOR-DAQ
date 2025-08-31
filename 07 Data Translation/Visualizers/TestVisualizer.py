@@ -23,11 +23,10 @@ def testVisualizer(filePath,columnIndices,customWindow,useDefaultConfig):
 
     time = df["millisec"] #if the code errors, change this to ["millisec"]
 
-    # Plotting
     plt.figure()
     for colIndex in columnIndices:
         if colIndex < df.shape[1]:
-            label = df.columns[colIndex]   # <-- use column name directly
+            label = df.columns[colIndex]
         else:
             label = f"Column {colIndex}"
 
