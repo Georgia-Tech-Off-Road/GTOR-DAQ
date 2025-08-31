@@ -95,14 +95,15 @@ def dataProcessingTool():
                     configCheckbox.grid(row=2, column=3, padx=20)
                 #otherwise display everything but the download button
                 else: 
-                    customButton.grid(row=1,column=1,padx=20)
-                    indexButton.grid(row=1,column=0,padx=20)
                     processButton.grid(row=0, column=0, padx=20)
-                    configCheckbox.grid(row=2, column=1, padx=20)
-                    outputButton.grid(row=2, column=0, padx=20)
                     configEditButton.grid(row=0, column=1, padx=20)
-                    splitButton.grid(row=3, column=0, padx=20)
                     hertzCalculatorButton.grid(row=0, column=2, padx=20)
+                    indexButton.grid(row=1,column=0,padx=20)
+                    customButton.grid(row=1,column=1,padx=20)
+                    splitButton.grid(row=1, column=2, padx=20)
+                    outputButton.grid(row=2, column=0, padx=20)
+                    configCheckbox.grid(row=2, column=1, padx=20)
+
     def downloadData():
         #create a new page for the progress bar
         global outputPath, chosePath
@@ -282,7 +283,7 @@ def dataProcessingTool():
     binButton = tk.Button(buttonFrame, text = "Convert .bin to .txt", command=lambda: binConvert())
     splitButton = tk.Button(buttonFrame, text = "Split large txt file into smaller files", command = lambda: splitFile())
 
-    customButton = tk.Button(buttonFrame, text="Data Visualizer", font=("Helvetica", 12, "bold"), command=lambda: custom())
+    customButton = tk.Button(buttonFrame, text="Data Visualizer", font=("Helvetica", 12, "bold"),fg="navy",bg="gold", command=lambda: custom())
     indexButton = tk.Button(buttonFrame, text= "Show File Indeces", command=lambda: indices(filePath))
     processButton = tk.Button(buttonFrame, text="Process Data", command=lambda: processData())
     configCheckbox = tk.Checkbutton(buttonFrame, text="Use default config", variable=useDefaultConfig)
@@ -301,7 +302,7 @@ def runUpdater():
 
 
 def openHowTo():
-    #find the HomeScreen.txt file
+    #find the HomeScreen.txt file]
     howToFilePath = "Guides/HomeScreen.txt"
     #open the howToFile file in notepade (See if this works on mac.....)
     if sys.platform.startswith("win"):  # Windows
