@@ -214,27 +214,26 @@ def dataProcessingTool():
         createGraphButton = tk.Button(customWindow, text="Create Graph",font=("Helvetica", 12, "bold"), command=runVisualizer)
         createGraphButton.pack(pady=10)
 
-    def indices(filePath):
+    def indices(filePath):      #used for showing a legend of data types & their indeces
+        #imports
         import pandas as pd
         import json
         import tkinter as tk
         from tkinter import ttk
 
-        # Read JSON
+        #reads json, converts to dataframe
         with open(filePath, "r") as f:
             dayta = f.read()
             data = json.loads(dayta)
-
-        # Normalize JSON to DataFrame
         df = pd.json_normalize(data)
 
-        # Build variable names using pandas column order
+        #formats variables next to their index
         variables = {}
         for idx, col in enumerate(df.columns):
             varName = f"Index {idx}"
             variables[varName] = col
 
-        # Tkinter window
+        #gui
         indexWindow = tk.Toplevel()
         indexWindow.title(f"Indices for {filePath}")
         indexWindow.geometry("500x400")
@@ -247,7 +246,7 @@ def dataProcessingTool():
         canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
 
-        # Display
+        #writes data type and index onto gui
         for varName, value in variables.items():
             tk.Label(scrollFrame, text=f"{varName}: {value}").pack(anchor="w", padx=10, pady=2)
 
