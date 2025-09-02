@@ -8,6 +8,7 @@ target_include_directories(BoostForArduino INTERFACE BoostForArduino/src)
 # Add all subdirectories that use CMake
 add_subdirectory(BinaryBuffer)
 add_subdirectory(CommboardTransmissionLibrary)
+add_subdirectory(CMBTL_DAQInfrastructure)
 
 
 # Define a library that automatically uses all of current libraries
