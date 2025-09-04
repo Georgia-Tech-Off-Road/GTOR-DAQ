@@ -21,8 +21,9 @@ def testVisualizer(filePath,columnIndices,customWindow,useDefaultConfig):
     data = json.loads(text)
     df = pd.json_normalize(data)
 
-    time = df["millisec"] #if the code errors, change this to ["millisec"]
-
+    startTime = df['microsec'].iloc[0]
+    df['microsec'] = df['microsec'] - startTime
+    time = df['microsec']/(1*10**6)
     plt.figure()
     for colIndex in columnIndices:
         if colIndex < df.shape[1]:
@@ -40,5 +41,3 @@ def testVisualizer(filePath,columnIndices,customWindow,useDefaultConfig):
 
     plt.show()
     customWindow.destroy()
-
-
