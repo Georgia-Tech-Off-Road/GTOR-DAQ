@@ -1,1 +1,0 @@
-#include <boost/preprocessor/facilities/check_empty.hpp>
