@@ -13,4 +13,4 @@
 
 [submodule "00 Libraries/CMBTL_DAQInfrastructure"]
 	path = 00 Libraries/CMBTL_DAQInfrastructure
-	url = https://github.com/Georgia-Tech-Off-Road/CMBTL_DAQInfrastructure
+	url = git@github.com:Georgia-Tech-Off-Road/CMBTL_DAQInfrastructure.git
