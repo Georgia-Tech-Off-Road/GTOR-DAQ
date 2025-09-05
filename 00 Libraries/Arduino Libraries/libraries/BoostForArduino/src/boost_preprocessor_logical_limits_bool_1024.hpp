@@ -1,0 +1,1 @@
+#include <boost/preprocessor/logical/limits/bool_1024.hpp>
