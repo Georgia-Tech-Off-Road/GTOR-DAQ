@@ -6,7 +6,7 @@ add_library(BoostForArduino INTERFACE)
 target_include_directories(BoostForArduino INTERFACE BoostForArduino/src)
 
 # Add all subdirectories that use CMake
-add_subdirectory(BinaryBuffer)
+add_subdirectory(Arduino\ Libraries/libraries/BinaryBuffer)
 add_subdirectory(CommboardTransmissionLibrary)
 add_subdirectory(CMBTL_DAQInfrastructure)
 

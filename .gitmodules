@@ -1,5 +1,5 @@
 [submodule "00 Libraries/BinaryBuffer"]
-	path = 00 Libraries/BinaryBuffer
+	path = 00 Libraries/Arduino Libraries/libraries/BinaryBuffer
 	url = git@github.com:Georgia-Tech-Off-Road/BinaryBuffer.git
 [submodule "00 Libraries/BoostForArduino"]
 	path = 00 Libraries/BoostForArduino
