@@ -5,7 +5,7 @@
 	path = 00 Libraries/Arduino Libraries/libraries/BoostForArduino
 	url = git@github.com:Georgia-Tech-Off-Road/BoostForArduino.git
 [submodule "00 Libraries/CommboardTransmissionLibrary"]
-	path = 00 Libraries/CommboardTransmissionLibrary
+	path = 00 Libraries/Arduino Libraries/libraries/CommboardTransmissionLibrary
 	url = git@github.com:Georgia-Tech-Off-Road/CommboardTransmissionLibrary.git
 [submodule "Projects/2025-2026/DAQBoxRev1-2025"]
 	path = Projects/2025-2026/DAQBoxRev1-2025
