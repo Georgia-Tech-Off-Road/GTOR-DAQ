@@ -1,0 +1,24 @@
+# CMake Files
+# Retrieved from: https://github.com/github/gitignore/blob/main/CMake.gitignore
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+CMakeUserPresets.json
+DartConfiguration.tcl
+
+# Generated Test Files
+*Tests
+*Test
+# Except for any unit test code
+!*Test.cpp
+
+#
+lib/
+build/
