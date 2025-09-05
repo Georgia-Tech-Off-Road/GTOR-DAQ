@@ -12,5 +12,5 @@
 	url = git@github.com:Georgia-Tech-Off-Road/DAQBoxRev1-2025.git
 
 [submodule "00 Libraries/CMBTL_DAQInfrastructure"]
-	path = 00 Libraries/CMBTL_DAQInfrastructure
+	path = 00 Libraries/Arduino Libraries/libraries/CMBTL_DAQInfrastructure
 	url = git@github.com:Georgia-Tech-Off-Road/CMBTL_DAQInfrastructure.git
