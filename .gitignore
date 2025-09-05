@@ -36,6 +36,6 @@ Claude.md
 *CMakeCache.txt
 00 Libraries/CommboardTransmissionLibrary/Testing/*
 !00 Libraries/CommboardTransmissionLibrary/Testing/*.cpp
-
+build/
 #Ignore generated makefiles
 Makefile
