@@ -5,7 +5,6 @@ import os
 import importlib
 import threading
 import time
-import matplotlib
 import sys
 import csv
 import json
@@ -151,6 +150,7 @@ def dataProcessingTool():
         else:
             chosePath = False
         outputSelectLabel.config(text=f"Selected output path: {outputPath}")
+
     """ DEPRECATED
     def binConvert():
         #update the buttons to allow the file to be operated on
@@ -293,7 +293,6 @@ def dataProcessingTool():
     #Create and place the buttons in a single row on the second page
     downloadButton = tk.Button(buttonFrame, text="Download Data File", command=lambda: downloadData())
     splitButton = tk.Button(buttonFrame, text = "Split large txt file into smaller files", command = lambda: splitFile())
-
     customButton = tk.Button(buttonFrame, text="Data Visualizer", font=("Helvetica", 12, "bold"),fg="navy",bg="gold", command=lambda: custom())
     indexButton = tk.Button(buttonFrame, text= "Show File Indeces", command=lambda: indices(filePath))
     processButton = tk.Button(buttonFrame, text="Process Data", command=lambda: processData())
