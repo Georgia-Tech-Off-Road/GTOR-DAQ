@@ -5,7 +5,6 @@ import os
 import importlib
 import threading
 import time
-import matplotlib
 import sys
 import csv
 import json
@@ -18,9 +17,7 @@ import subprocess
 from DataDownloader import DataDownloader
 from Updater import DataTranslatorUpdater
 from Visualizers import TestVisualizer
-from ProcessingPrograms import BinFileTranslator
 from ProcessingPrograms import FileSplitter
-from ProcessingPrograms import hertzCalculator
 
 #imports the processing programs (hertz calculator, data processor, etc etc) 
 os.chdir("./")
@@ -88,7 +85,6 @@ def dataProcessingTool():
                     downloadButton.grid(row=0, column=1, padx=20)
                     outputButton.grid(row=0,column=2,padx=20)
                 elif ".bin" in filePath:
-                    binButton.grid(row=0, column=0,padx=20)
                     outputButton.grid(row=0,column=1,padx=20)
                 elif ".csv" in filePath:
                     customButton.grid(row=1,column=1,padx=20)
@@ -97,7 +93,6 @@ def dataProcessingTool():
                 else: 
                     processButton.grid(row=0, column=0, padx=20)
                     configEditButton.grid(row=0, column=1, padx=20)
-                    hertzCalculatorButton.grid(row=0, column=2, padx=20)
                     indexButton.grid(row=1,column=0,padx=20)
                     customButton.grid(row=1,column=1,padx=20)
                     splitButton.grid(row=1, column=2, padx=20)
@@ -155,6 +150,8 @@ def dataProcessingTool():
         else:
             chosePath = False
         outputSelectLabel.config(text=f"Selected output path: {outputPath}")
+
+    """ DEPRECATED
     def binConvert():
         #update the buttons to allow the file to be operated on
         global chosePath
@@ -162,6 +159,7 @@ def dataProcessingTool():
         binThread = threading.Thread(target = BinFileTranslator.binConverter, args = (filePath,chosePath,outputPath,settingsData))
         #start the thread
         binThread.start()
+    """
     def processData():
         global chosePath
         global outputPath
@@ -175,6 +173,7 @@ def dataProcessingTool():
         dataProcessingThread.start()
         #hide the main data processor page
         dataProcessingToolPage.withdraw()
+    """ DEPRECATED
     def calculateHertz():
         #open a hertz calculator page
         hertzCalculationPage = tk.Toplevel(dataProcessingToolPage)
@@ -184,6 +183,7 @@ def dataProcessingTool():
         hertzCalculatorThread = threading.Thread(target = hertzCalculator.calculateHertz, args = (filePath, hertzCalculationPage))
         #start the thread
         hertzCalculatorThread.start()
+    """
     def editConfig():
         #find the config file based on filePath variable
         if useDefaultConfig.get() == 1:
@@ -256,8 +256,20 @@ def dataProcessingTool():
         fileSplitPage = tk.Toplevel()
         fileSplitPage.title("File Splitter")
         fileSplitPage.geometry("800x300")
-        splitThread = threading.Thread(target = FileSplitter.split, args = (filePath, fileSplitPage))
-        splitThread.start()
+        label = tk.Label(fileSplitPage, text="Enter number of data sets to keep per file or write 'd' for default (10,000,000)")
+        label.pack(pady=5)
+        splitEntry = tk.Entry(fileSplitPage)
+        splitEntry.pack(pady=5)
+        def split():
+            splitNum = splitEntry.get()
+            if str(splitNum) == 'd':
+                splitNum = 10000000
+            else:
+                splitNum = int(splitNum)
+            splitThread = threading.Thread(target = FileSplitter.split, args = (filePath, splitNum, fileSplitPage))
+            splitThread.start()
+        splitterButton = tk.Button(fileSplitPage, text="Split Files",font=("Helvetica", 12, "bold"), command=split)
+        splitterButton.pack(pady=10)
 
     #howToButton
     howToButton = tk.Button(dataProcessingToolPage, text="How To", command=lambda: openHowTo())
@@ -280,15 +292,12 @@ def dataProcessingTool():
 
     #Create and place the buttons in a single row on the second page
     downloadButton = tk.Button(buttonFrame, text="Download Data File", command=lambda: downloadData())
-    binButton = tk.Button(buttonFrame, text = "Convert .bin to .txt", command=lambda: binConvert())
     splitButton = tk.Button(buttonFrame, text = "Split large txt file into smaller files", command = lambda: splitFile())
-
     customButton = tk.Button(buttonFrame, text="Data Visualizer", font=("Helvetica", 12, "bold"),fg="navy",bg="gold", command=lambda: custom())
     indexButton = tk.Button(buttonFrame, text= "Show File Indeces", command=lambda: indices(filePath))
     processButton = tk.Button(buttonFrame, text="Process Data", command=lambda: processData())
     configCheckbox = tk.Checkbutton(buttonFrame, text="Use default config", variable=useDefaultConfig)
     configEditButton = tk.Button(buttonFrame, text="Edit Config", command=lambda: editConfig())
-    hertzCalculatorButton = tk.Button(buttonFrame, text="Calculate Hertz Info", command=lambda: calculateHertz())
     outputButton = tk.Button(buttonFrame, text = "Choose output destination...", command=lambda: outputDestination())
     updateButtons()
 

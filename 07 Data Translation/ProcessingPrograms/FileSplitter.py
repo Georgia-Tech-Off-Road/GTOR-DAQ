@@ -1,34 +1,30 @@
 import warnings
-import pandas as pd
-import matplotlib.pyplot as plt
 import tkinter as tk
 from tkinter import ttk
+import json
 
-def split(filePath, fileSplitPage):
-    #create a label to say Analyzing File
+def split(filePath, splitNum, fileSplitPage):
+    # Create UI indicator
     label1 = tk.Label(fileSplitPage, text="Splitting files...")
     label1.pack()
-    #create a progress bar that just bounces back and forth
-    progressBar = ttk.Progressbar(fileSplitPage, mode = "indeterminate", maximum=100)
+
+    progressBar = ttk.Progressbar(fileSplitPage, mode="indeterminate", maximum=100)
     progressBar.pack(padx=20, pady=20, fill="x")
-    #start the bouncing
     progressBar.start()
 
-    lines_per_file = 10000000 #10,000,000
-    file_count = 1
-    line_count = 0
-    output = None
-
+    fileCount = 1
+    print(f"Splitting file using chunk sizes of {splitNum}")
     with open(filePath, 'r', encoding='utf-8', errors='ignore') as f:
-        header = f.readline()
-        for i, line in enumerate(f, start=1):
-            if (i - 1) % lines_per_file == 0:
-                if output:
-                    output.close()
-                output = open(f"{filePath}_part{file_count}.txt", 'w', encoding='utf-8')
-                output.write(header)
-                file_count += 1
-            output.write(line)
-    if output:
-        output.close()
+        # Read full content and parse as JSON
+        data = json.loads(f.read())
+
+    # Split into chunks of splitNum
+    for i in range(0, len(data), splitNum):
+        chunk = data[i:i + splitNum]
+        outPath = f"{filePath}_part{fileCount}.txt"
+        with open(outPath, 'w', encoding='utf-8') as out:
+            json.dump(chunk, out, ensure_ascii=False, indent=2)
+        fileCount += 1
+
+    progressBar.stop()
     fileSplitPage.destroy()
