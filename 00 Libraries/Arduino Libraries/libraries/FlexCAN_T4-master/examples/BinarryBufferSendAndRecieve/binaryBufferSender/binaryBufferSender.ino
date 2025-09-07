@@ -3,6 +3,14 @@
 FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> can1;
 CAN_message_t msg;
 
+func copyOverCAN(BinaryBuffer data, FlexCAN_T4 Can) {
+	CAN_message_t msg;
+	for (int i = 0; i < (data.getCapacity()/8); i+=8;) {
+		memcpy(&msg.buff,data.getBuffer()+i,8);
+		Can.write(msg);
+	}
+}
+
 void setup(void) {
   can1.begin();
   can1.setBaudRate(250000);
@@ -11,6 +19,9 @@ void setup(void) {
 
 void loop() {
   Serial.println("Type a char to send");
+  while (Serial.available() == 0) {
+    // Do nothing (busy wait)
+  }
   char charToSend = Serial.read();
   msg.buf[0] = charToSend;
   can1.write(msg);
