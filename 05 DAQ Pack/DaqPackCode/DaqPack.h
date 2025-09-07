@@ -6,6 +6,10 @@
 #include <DAQ_AMT22.h>
 #include <DAQ_RPM_Sensor.h>
 
+#include <DAQSensors.h>
+#include <DAQPackets.h>
+
+
 #define BAUD 230400
 
 #define serialMonitor Serial
@@ -22,6 +26,7 @@ time_t getTeensy3Time();
 //declare DaqPackCode.ino functions
 void dataAquisitionAndSavingLoop();
 
+// TODO: Replace with DAQ Sensor Data
 //struct for sensor data
 struct {
   unsigned long long int seconds;
@@ -73,6 +78,7 @@ ulong lastSaveTimeInMillis = 0;
 //saves the last time auto save
 ulong autoSaveTimeMillis = 0;
 
+//TODO: Change to use new data struct
 //function to intialize dataStruct values
 inline void initDataStructValues() {
   dataStruct.seconds = now();
@@ -88,6 +94,7 @@ inline void initDataStructValues() {
 }
 
 
+// TODO: Change file extension
 //method to setup outFile/SD card
 inline void setUpSD() {
   SD.begin(BUILTIN_SDCARD);

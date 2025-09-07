@@ -68,41 +68,52 @@ void loop(){}
 void dataAquisitionAndSavingLoop() {
   while(1) {
     delay(10);
+    // TODO: Replace with new datastruct 
     dataStruct.seconds = now();
     dataStruct.micros = micros();
     dataStruct.teensyTemp = tempmonGetTemp();
     //size of is apparently computed at compile time
     if (isRecording) {
+      // TODO: Check with andrew
       outputFile.write(&dataStruct, sizeof(dataStruct));
+      // TODO: Update to new data struct
       Serial.printf("%f,%f,%f,%f\n",dataStruct.RPMs[0], dataStruct.RPMs[1], dataStruct.RPMs[2],dataStruct.RPMs[3]);
     }
     //check for RPM updates
     if (engineRPM.RPMUpdateFlag) {
       Serial.printf("Engine\n");
+      // TODO: UPDATE
       dataStruct.RPMs[0] = engineRPM.RPM;
       engineRPM.RPMUpdateFlag = false;
     } else {
+      // TODO: UPDATE
       dataStruct.RPMs[0] = engineRPM.checkRPM();
     }
     if (frontLeft.RPMUpdateFlag) {
       Serial.printf("frontLeft\n");
+      // TODO: UPDATE
       dataStruct.RPMs[1] = frontLeft.RPM;
       frontLeft.RPMUpdateFlag = false;
     } else {
+      // TODO: UPDATE
       dataStruct.RPMs[1] = frontLeft.checkRPM();
     }
     if (frontRight.RPMUpdateFlag) {
       Serial.printf("frontRight\n");
+      // TODO: UPDATE
       dataStruct.RPMs[2] = frontRight.RPM;
       frontRight.RPMUpdateFlag = false;
     } else {
+      // TODO: UPDATE
       dataStruct.RPMs[2] = frontRight.checkRPM();
     }
     if (aux1.RPMUpdateFlag) {
       Serial.printf("aux1\n");
+      // TODO: UPDATE
       dataStruct.RPMs[3] = aux1.RPM;
       aux1.RPMUpdateFlag = false;
     } else {
+      // TODO: UPDATE
       dataStruct.RPMs[3] = aux1.checkRPM();
     }
     if (analogValueFlag1) {
@@ -134,6 +145,7 @@ void changeRecordingState() {
   else {
     while(digitalRead(7) == 0) {
     }
+    // TODO: Update file extension
     String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second()+".bin");
     Serial.println(time.c_str());
     //turn on red LED
@@ -153,21 +165,25 @@ void updateAnalogValueFlag1() {
 void readAnalogValues1() {
   switch (currentAnalogSensor1) {
       case 0:
+        // TODO: UPDATE
         dataStruct.analogValues1[0] =  ads1.getLastConversionResults();
         currentAnalogSensor1 = 1;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
         break;
       case 1:
+        // TODO: UPDATE
         dataStruct.analogValues1[1] =  ads1.getLastConversionResults();
         currentAnalogSensor1 = 2;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
       case 2:
+        // TODO: UPDATE
         dataStruct.analogValues1[2] =  ads1.getLastConversionResults();
         currentAnalogSensor1 = 3;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
         break;
       case 3:
+        // TODO: UPDATE
         dataStruct.analogValues1[3] =  ads1.getLastConversionResults();
         currentAnalogSensor1 = 0;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
