@@ -5,10 +5,26 @@ CAN_message_t msg;
 
 func copyOverCAN(BinaryBuffer data, FlexCAN_T4 Can) {
 	CAN_message_t msg;
+  long long int bufferLength = data.getCapacity();
+  memcpy(&msg.buff, bufferLength, 8);
+  Can.write(&msg);
 	for (int i = 0; i < (data.getCapacity()/8); i+=8;) {
 		memcpy(&msg.buff,data.getBuffer()+i,8);
 		Can.write(msg);
 	}
+  if (data.getCapacity() % 8 != 0) {
+    memcpy(&msg.buff,data.getBuffer()+data.getCapacity()/8,data.getCapacity()%8);
+    Can.write(msg);
+  }
+  msg.buf[0] == b11111111;
+  msg.buf[1] == b11111111;
+  msg.buf[2] == b11111111;
+  msg.buf[3] == b11111111;
+  msg.buf[4] == b11111111;
+  msg.buf[5] == b11111111;
+  msg.buf[6] == b11111111;
+  msg.buf[7] == b11111111;
+  Can.write(msg);
 }
 
 void setup(void) {
