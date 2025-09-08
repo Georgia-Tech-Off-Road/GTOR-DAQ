@@ -66,6 +66,10 @@ void loop(){}
 //writes data to SD card
 void dataAquisitionAndSavingLoop() {
   while(1) {
+    //check to see if save should be started/stopped
+     if (!digitalRead(0) && lastSaveTimeInMillis + 2000 < millis()) {
+      changeRecordingState();
+    }
     //perform flush check before data check
     if (millis() > autoSaveTimeMillis + 300000) {
       outputFile.flush();
@@ -80,7 +84,6 @@ void dataAquisitionAndSavingLoop() {
     //size of is apparently computed at compile time
     if (isRecording) {
       outputFile.write(&dataStruct, sizeof(dataStruct));
-      Serial.printf("%f,%f,%f,%f\n",dataStruct.RPMs[0], dataStruct.RPMs[1], dataStruct.RPMs[2],dataStruct.RPMs[3]);
     }
     //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
     if (engineRPM.RPMUpdateFlag) {
@@ -102,7 +105,6 @@ void dataAquisitionAndSavingLoop() {
       dataStruct.RPMs[2] = frontRight.checkRPM();
     }
     if (aux1.RPMUpdateFlag) {
-      Serial.printf("aux1\n");
       dataStruct.RPMs[3] = aux1.RPM;
       aux1.RPMUpdateFlag = false;
     } else {
@@ -112,9 +114,6 @@ void dataAquisitionAndSavingLoop() {
     if (analogValueFlag1) {
       readAnalogValues1();
       analogValueFlag1 = false;
-    }
-    if (!digitalRead(0) && lastSaveTimeInMillis + 2000 < millis()) {
-      changeRecordingState();
     }
     //reset dataUpdated
     dataUpdated = false;
