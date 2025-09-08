@@ -74,32 +74,27 @@ void dataAquisitionAndSavingLoop() {
     //size of is apparently computed at compile time
     if (isRecording) {
       outputFile.write(&dataStruct, sizeof(dataStruct));
-      Serial.printf("%f,%f,%f,%f\n",dataStruct.RPMs[0], dataStruct.RPMs[1], dataStruct.RPMs[2],dataStruct.RPMs[3]);
     }
     //check for RPM updates
     if (engineRPM.RPMUpdateFlag) {
-      Serial.printf("Engine\n");
       dataStruct.RPMs[0] = engineRPM.RPM;
       engineRPM.RPMUpdateFlag = false;
     } else {
       dataStruct.RPMs[0] = engineRPM.checkRPM();
     }
     if (frontLeft.RPMUpdateFlag) {
-      Serial.printf("frontLeft\n");
       dataStruct.RPMs[1] = frontLeft.RPM;
       frontLeft.RPMUpdateFlag = false;
     } else {
       dataStruct.RPMs[1] = frontLeft.checkRPM();
     }
     if (frontRight.RPMUpdateFlag) {
-      Serial.printf("frontRight\n");
       dataStruct.RPMs[2] = frontRight.RPM;
       frontRight.RPMUpdateFlag = false;
     } else {
       dataStruct.RPMs[2] = frontRight.checkRPM();
     }
     if (aux1.RPMUpdateFlag) {
-      Serial.printf("aux1\n");
       dataStruct.RPMs[3] = aux1.RPM;
       aux1.RPMUpdateFlag = false;
     } else {
@@ -125,14 +120,14 @@ void changeRecordingState() {
   //suspend position thread to prevent it from interfering in saving process
   noInterrupts();
   if(isRecording == true) {
-    while(digitalRead(7) == 0) {
+    while(digitalRead(40) == 0) {
     }
     outputFile.close();
     Serial.printf("File saved!\n");
     isRecording = false;
   }
   else {
-    while(digitalRead(7) == 0) {
+    while(digitalRead(40) == 0) {
     }
     String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second()+".bin");
     Serial.println(time.c_str());
