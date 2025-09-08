@@ -9,9 +9,8 @@ volatile bool analogValueFlag1 = false;
 //current analog sensor number being polled
 int currentAnalogSensor1 = 0;
 
-//slowdown code
-ulong lastMicros = 0;
-
+//bool to check for if data was actually updated
+volatile bool dataUpdated = false;
 
 //initialize RPM sensors
 RPMSensor engineRPM(RPM1, ENGTEETH);
@@ -67,7 +66,18 @@ void loop(){}
 //writes data to SD card
 void dataAquisitionAndSavingLoop() {
   while(1) {
-    delay(10);
+    //check to see if save should be started/stopped
+     if (!digitalRead(0) && lastSaveTimeInMillis + 2000 < millis()) {
+      changeRecordingState();
+    }
+    //perform flush check before data check
+    if (millis() > autoSaveTimeMillis + 300000) {
+      outputFile.flush();
+    }
+    if (!dataUpdated) {
+      //write code here to yield time to other subprograms
+      continue;
+    }
     dataStruct.seconds = now();
     dataStruct.micros = micros();
     dataStruct.teensyTemp = tempmonGetTemp();
@@ -75,7 +85,7 @@ void dataAquisitionAndSavingLoop() {
     if (isRecording) {
       outputFile.write(&dataStruct, sizeof(dataStruct));
     }
-    //check for RPM updates
+    //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
     if (engineRPM.RPMUpdateFlag) {
       dataStruct.RPMs[0] = engineRPM.RPM;
       engineRPM.RPMUpdateFlag = false;
@@ -100,18 +110,13 @@ void dataAquisitionAndSavingLoop() {
     } else {
       dataStruct.RPMs[3] = aux1.checkRPM();
     }
+    //this is still called from within this while loop so an interrupt isnt calling a function
     if (analogValueFlag1) {
       readAnalogValues1();
       analogValueFlag1 = false;
     }
-    if (!digitalRead(0) && lastSaveTimeInMillis + 2000 < millis()) {
-      changeRecordingState();
-    }
-    if (millis() > autoSaveTimeMillis + 300000) {
-      outputFile.flush();
-    }
-    while (lastMicros + 50 > micros()) {
-    }
+    //reset dataUpdated
+    dataUpdated = false;
   }
 }
 
@@ -141,6 +146,7 @@ void changeRecordingState() {
 }
 
 void updateAnalogValueFlag1() {
+  dataUpdated = true;
   analogValueFlag1 = true;
 }
 
@@ -172,16 +178,20 @@ void readAnalogValues1() {
 
 void engineRPMInterrupt() {
   engineRPM.calculateRPM();
+  dataUpdated = true;
 }
 
 void frontLeftInterrupt() {
   frontLeft.calculateRPM();
+  dataUpdated = true;
 }
 
 void frontRightInterrupt() {
   frontRight.calculateRPM();
+  dataUpdated = true;
 }
 
 void aux1Interrupt() {
   aux1.calculateRPM();
+  dataUpdated = true;
 }
