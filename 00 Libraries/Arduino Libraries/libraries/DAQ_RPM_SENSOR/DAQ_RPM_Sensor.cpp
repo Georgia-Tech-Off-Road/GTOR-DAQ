@@ -22,7 +22,7 @@ void RPMSensor :: calculateRPM() {
 }
 
 float RPMSensor :: checkRPM() {
-    if (_prevMicros + 50000 < micros()) {
+    if (_prevMicros + 5000000 < micros()) {
         RPM = 0;
     }
     return RPM;
