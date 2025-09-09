@@ -9,9 +9,8 @@ volatile bool analogValueFlag1 = false;
 //current analog sensor number being polled
 int currentAnalogSensor1 = 0;
 
-//slowdown code
-ulong lastMicros = 0;
-
+//bool to check for if data was actually updated
+volatile bool dataUpdated = false;
 
 //initialize RPM sensors
 RPMSensor engineRPM(RPM1, ENGTEETH);
@@ -79,7 +78,7 @@ void dataAquisitionAndSavingLoop() {
       // TODO: Update to new data struct
       Serial.printf("%f,%f,%f,%f\n",dataStruct.RPMs[0], dataStruct.RPMs[1], dataStruct.RPMs[2],dataStruct.RPMs[3]);
     }
-    //check for RPM updates
+    //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
     if (engineRPM.RPMUpdateFlag) {
       Serial.printf("Engine\n");
       // TODO: UPDATE
@@ -116,18 +115,13 @@ void dataAquisitionAndSavingLoop() {
       // TODO: UPDATE
       dataStruct.RPMs[3] = aux1.checkRPM();
     }
+    //this is still called from within this while loop so an interrupt isnt calling a function
     if (analogValueFlag1) {
       readAnalogValues1();
       analogValueFlag1 = false;
     }
-    if (!digitalRead(0) && lastSaveTimeInMillis + 2000 < millis()) {
-      changeRecordingState();
-    }
-    if (millis() > autoSaveTimeMillis + 300000) {
-      outputFile.flush();
-    }
-    while (lastMicros + 50 > micros()) {
-    }
+    //reset dataUpdated
+    dataUpdated = false;
   }
 }
 
@@ -136,14 +130,14 @@ void changeRecordingState() {
   //suspend position thread to prevent it from interfering in saving process
   noInterrupts();
   if(isRecording == true) {
-    while(digitalRead(7) == 0) {
+    while(digitalRead(40) == 0) {
     }
     outputFile.close();
     Serial.printf("File saved!\n");
     isRecording = false;
   }
   else {
-    while(digitalRead(7) == 0) {
+    while(digitalRead(40) == 0) {
     }
     // TODO: Update file extension
     String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second()+".bin");
@@ -158,6 +152,7 @@ void changeRecordingState() {
 }
 
 void updateAnalogValueFlag1() {
+  dataUpdated = true;
   analogValueFlag1 = true;
 }
 
@@ -193,16 +188,20 @@ void readAnalogValues1() {
 
 void engineRPMInterrupt() {
   engineRPM.calculateRPM();
+  dataUpdated = true;
 }
 
 void frontLeftInterrupt() {
   frontLeft.calculateRPM();
+  dataUpdated = true;
 }
 
 void frontRightInterrupt() {
   frontRight.calculateRPM();
+  dataUpdated = true;
 }
 
 void aux1Interrupt() {
   aux1.calculateRPM();
+  dataUpdated = true;
 }
