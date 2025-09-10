@@ -26,16 +26,6 @@ time_t getTeensy3Time();
 //declare DaqPackCode.ino functions
 void dataAquisitionAndSavingLoop();
 
-// TODO: Replace with DAQ Sensor Data
-//struct for sensor data
-struct {
-  unsigned long long int seconds;
-  unsigned long int micros;
-  float RPMs[4];
-  int analogValues1[4];
-  float teensyTemp;
-} dataStruct;
-
 cmbtl::DAQSensorDataType DAQData;
 
 //enums for AUXDAQ ports

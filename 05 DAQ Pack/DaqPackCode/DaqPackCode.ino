@@ -67,53 +67,38 @@ void loop(){}
 void dataAquisitionAndSavingLoop() {
   while(1) {
     delay(10);
-    // TODO: Replace with new datastruct 
-    dataStruct.seconds = now();
-    dataStruct.micros = micros();
-    dataStruct.teensyTemp = tempmonGetTemp();
+    DAQData.setData<cmbtl::SEC>(now()); 
+    DAQData.setData<cmbtl::MICRO_SEC>(micros());
+    DAQData.setData<cmbtl::TEENSY_TEMP>(tempmonGetTemp());
     //size of is apparently computed at compile time
     if (isRecording) {
       // TODO: Check with andrew
-      outputFile.write(&dataStruct, sizeof(dataStruct));
-      // TODO: Update to new data struct
-      Serial.printf("%f,%f,%f,%f\n",dataStruct.RPMs[0], dataStruct.RPMs[1], dataStruct.RPMs[2],dataStruct.RPMs[3]);
+      outputFile.printf("%s", DAQData.serializeDataToJSON());
     }
     //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
     if (engineRPM.RPMUpdateFlag) {
-      Serial.printf("Engine\n");
-      // TODO: UPDATE
-      dataStruct.RPMs[0] = engineRPM.RPM;
+      DAQData.setData<cmbtl::RPM1>(engineRPM.RPM);
       engineRPM.RPMUpdateFlag = false;
     } else {
-      // TODO: UPDATE
-      dataStruct.RPMs[0] = engineRPM.checkRPM();
+      DAQData.setData<cmbtl::RPM1>(engineRPM.checkRPM());
     }
     if (frontLeft.RPMUpdateFlag) {
-      Serial.printf("frontLeft\n");
-      // TODO: UPDATE
-      dataStruct.RPMs[1] = frontLeft.RPM;
+      DAQData.setData<cmbtl::RPM2>(frontLeft.RPM);
       frontLeft.RPMUpdateFlag = false;
     } else {
-      // TODO: UPDATE
-      dataStruct.RPMs[1] = frontLeft.checkRPM();
+      DAQData.setData<cmbtl::RPM2>(frontLeft.checkRPM());
     }
     if (frontRight.RPMUpdateFlag) {
-      Serial.printf("frontRight\n");
-      // TODO: UPDATE
-      dataStruct.RPMs[2] = frontRight.RPM;
+      DAQData.setData<cmbtl::RPM3>(frontRight.RPM);
       frontRight.RPMUpdateFlag = false;
     } else {
-      // TODO: UPDATE
-      dataStruct.RPMs[2] = frontRight.checkRPM();
+      DAQData.setData<cmbtl::RPM3>(frontRight.checkRPM());
     }
     if (aux1.RPMUpdateFlag) {
-      Serial.printf("aux1\n");
-      // TODO: UPDATE
-      dataStruct.RPMs[3] = aux1.RPM;
+      DAQData.setData<cmbtl::RPM4>(aux1.RPM);
       aux1.RPMUpdateFlag = false;
     } else {
-      // TODO: UPDATE
-      dataStruct.RPMs[3] = aux1.checkRPM();
+      DAQData.setData<cmbtl::RPM4>(aux1.checkRPM());
     }
     //this is still called from within this while loop so an interrupt isnt calling a function
     if (analogValueFlag1) {
@@ -131,20 +116,20 @@ void changeRecordingState() {
   noInterrupts();
   if(isRecording == true) {
     while(digitalRead(40) == 0) {
+      delay(5);
     }
     outputFile.close();
-    Serial.printf("File saved!\n");
     isRecording = false;
   }
   else {
+    // TODO: Ask Andrew
     while(digitalRead(40) == 0) {
+      delay(5);
     }
-    // TODO: Update file extension
-    String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second()+".bin");
+    String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second()+".txt");
     Serial.println(time.c_str());
     //turn on red LED
     outputFile = SD.open(time.c_str(),  FILE_WRITE);
-    Serial.printf("New recording started!\n");
     isRecording = true;
   }
   lastSaveTimeInMillis = millis();
@@ -160,26 +145,22 @@ void updateAnalogValueFlag1() {
 void readAnalogValues1() {
   switch (currentAnalogSensor1) {
       case 0:
-        // TODO: UPDATE
-        dataStruct.analogValues1[0] =  ads1.getLastConversionResults();
+        DAQData.setData<cmbtl::Analog1>(ads1.getLastConversionResults());
         currentAnalogSensor1 = 1;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
         break;
       case 1:
-        // TODO: UPDATE
-        dataStruct.analogValues1[1] =  ads1.getLastConversionResults();
+        DAQData.setData<cmbtl::Analog2>(ads1.getLastConversionResults());
         currentAnalogSensor1 = 2;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
       case 2:
-        // TODO: UPDATE
-        dataStruct.analogValues1[2] =  ads1.getLastConversionResults();
+        DAQData.setData<cmbtl::Analog3>(ads1.getLastConversionResults());
         currentAnalogSensor1 = 3;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
         break;
       case 3:
-        // TODO: UPDATE
-        dataStruct.analogValues1[3] =  ads1.getLastConversionResults();
+        DAQData.setData<cmbtl::Analog4>(ads1.getLastConversionResults());
         currentAnalogSensor1 = 0;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
         break;
