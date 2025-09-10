@@ -36,6 +36,8 @@ struct {
   float teensyTemp;
 } dataStruct;
 
+cmbtl::DAQSensorDataType DAQData;
+
 //enums for AUXDAQ ports
 enum AUXDAQ_Ports {
   RPM1 = 20,
@@ -78,28 +80,26 @@ ulong lastSaveTimeInMillis = 0;
 //saves the last time auto save
 ulong autoSaveTimeMillis = 0;
 
-//TODO: Change to use new data struct
 //function to intialize dataStruct values
 inline void initDataStructValues() {
-  dataStruct.seconds = now();
-  dataStruct.micros = micros();
-  dataStruct.RPMs[0] = 0;
-  dataStruct.RPMs[1] = 0;
-  dataStruct.RPMs[2] = 0;
-  dataStruct.RPMs[3] = 0;
-  dataStruct.analogValues1[0] = 0;
-  dataStruct.analogValues1[1] = 0;
-  dataStruct.analogValues1[2] = 0;
-  dataStruct.analogValues1[3] = 0;
+  DAQData.setData<cmbtl::SEC>(now());
+  DAQData.setData<cmbtl::MICRO_SEC>(micros());
+  DAQData.setData<cmbtl::RPM1>(0);
+  DAQData.setData<cmbtl::RPM2>(0);
+  DAQData.setData<cmbtl::RPM3>(0);
+  DAQData.setData<cmbtl::RPM4>(0);
+  DAQData.setData<cmbtl::Analog1>(0);
+  DAQData.setData<cmbtl::Analog2>(0);
+  DAQData.setData<cmbtl::Analog3>(0);
+  DAQData.setData<cmbtl::Analog4>(0);
 }
 
 
-// TODO: Change file extension
 //method to setup outFile/SD card
 inline void setUpSD() {
   SD.begin(BUILTIN_SDCARD);
   delay(500);
-  String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second())+".bin";
+  String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second())+".txt";
   Serial.println(time.c_str());
   outputFile = SD.open(time.c_str(),  FILE_WRITE);
 }
