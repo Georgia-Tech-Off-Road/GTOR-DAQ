@@ -9,6 +9,8 @@
 #include <DAQSensors.h>
 #include <DAQPackets.h>
 
+// Define number of teeth in one place for easy modification
+#define NUM_TESTING_TEETH 22
 
 #define BAUD 230400
 
@@ -52,10 +54,10 @@ enum AUXDAQ_Ports {
 };
 //sensor constants
 enum Sensor_Constants {
-  RDTEETH = 22,
-  ENGTEETH = 22,
-  FRTEETH = 22,
-  FLTEETH = 22
+  RDTEETH = NUM_TESTING_TEETH,
+  ENGTEETH = NUM_TESTING_TEETH,
+  FRTEETH = NUM_TESTING_TEETH,
+  FLTEETH = NUM_TESTING_TEETH
 };
 
 //outputFile
