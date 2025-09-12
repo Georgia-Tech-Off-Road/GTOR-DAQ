@@ -52,10 +52,10 @@ enum AUXDAQ_Ports {
 };
 //sensor constants
 enum Sensor_Constants {
-  RDTEETH = 3,
-  ENGTEETH = 3,
-  FRTEETH = 3,
-  FLTEETH = 3
+  RDTEETH = 22,
+  ENGTEETH = 22,
+  FRTEETH = 22,
+  FLTEETH = 22
 };
 
 //outputFile
