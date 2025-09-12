@@ -65,15 +65,27 @@ void loop(){}
 
 //writes data to SD card
 void dataAquisitionAndSavingLoop() {
-  while(1) {
-    delay(10);
+  while(1) {  
+    //check to see if save should be started/stopped
+     if (!digitalRead(0) && lastSaveTimeInMillis + 2000 < millis()) {
+      changeRecordingState();
+    }
+    //perform flush check before data check
+    if (millis() > autoSaveTimeMillis + 300000) {
+      outputFile.flush();
+    }
+    if (!dataUpdated) {
+      //write code here to yield time to other subprograms
+      continue;
+    }
     DAQData.setData<cmbtl::SEC>(now()); 
     DAQData.setData<cmbtl::MICRO_SEC>(micros());
     DAQData.setData<cmbtl::TEENSY_TEMP>(tempmonGetTemp());
+
     //size of is apparently computed at compile time
     if (isRecording) {
       // TODO: Check with andrew
-      outputFile.printf("%s", DAQData.serializeDataToJSON());
+      outputFile.printf("%s", DAQData.serializeDataToJSON().c_str());
     }
     //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
     if (engineRPM.RPMUpdateFlag) {
@@ -119,6 +131,7 @@ void changeRecordingState() {
       delay(5);
     }
     outputFile.close();
+    Serial.printf("File closed\n");
     isRecording = false;
   }
   else {
