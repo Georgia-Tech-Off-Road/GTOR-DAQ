@@ -1,12 +1,12 @@
 #include "DaqPack.h"
 
-//intialize ADCs
+// Intialize ADCs
 Adafruit_ADS1115 ads1;
 
-//initialize analog value flags
+// Initialize analog value flags
 volatile bool analogValueFlag1 = false;
 
-//current analog sensor number being polled
+// Current analog sensor number being polled
 int currentAnalogSensor1 = 0;
 
 //bool to check for if data was actually updated
