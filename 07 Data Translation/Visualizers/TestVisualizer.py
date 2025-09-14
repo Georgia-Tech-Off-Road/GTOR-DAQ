@@ -7,24 +7,30 @@ import csv
 import json
 
 def testVisualizer(filePath,columnIndices,customWindow,useDefaultConfig):
-    # Create UI indicator
+    #Create UI indicator
     label1 = tk.Label(customWindow, text="Creating your graph...")
     label1.pack()
 
+    #Create progress bar
     progressBar = ttk.Progressbar(customWindow, mode="indeterminate", maximum=100)
     progressBar.pack(padx=20, pady=20, fill="x")
     progressBar.start()
 
-    # Read file data
+    #Read file data
     with open(filePath,"r") as infile:
         text = infile.read()
     data = json.loads(text)
     df = pd.json_normalize(data)
 
+    #Converts abosulte time to relative time
     startTime = df['microsec'].iloc[0]
     df['microsec'] = df['microsec'] - startTime
     time = df['microsec']/(1*10**6)
+
+    #Creates graph
     plt.figure()
+
+    #Creates the legend w/ sensor names
     for colIndex in columnIndices:
         if colIndex < df.shape[1]:
             label = df.columns[colIndex]
@@ -33,6 +39,7 @@ def testVisualizer(filePath,columnIndices,customWindow,useDefaultConfig):
 
         plt.plot(time, df.iloc[:, colIndex], label=label)
 
+    #Displays graph
     plt.title('Data Visualizer')
     plt.ylabel('Sensor Value')
     plt.xlabel('Time (Seconds)')
