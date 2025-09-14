@@ -85,7 +85,7 @@ void dataAquisitionAndSavingLoop() {
     //size of is apparently computed at compile time
     if (isRecording) {
       // TODO: Check with andrew
-      outputFile.printf("%s", DAQData.serializeDataToJSON().c_str());
+      outputFile.printf("%s,", DAQData.serializeDataToJSON().c_str());
     }
     //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
     if (engineRPM.RPMUpdateFlag) {
@@ -130,6 +130,7 @@ void changeRecordingState() {
     while(digitalRead(40) == 0) {
       delay(5);
     }
+    outputfile.printf("]");
     outputFile.close();
     Serial.printf("File closed\n");
     isRecording = false;
@@ -143,6 +144,7 @@ void changeRecordingState() {
     Serial.println(time.c_str());
     //turn on red LED
     outputFile = SD.open(time.c_str(),  FILE_WRITE);
+    outputFile.printf("[\n");
     isRecording = true;
   }
   lastSaveTimeInMillis = millis();
