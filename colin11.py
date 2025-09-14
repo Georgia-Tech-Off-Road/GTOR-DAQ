@@ -3,16 +3,37 @@ import statistics
 import numpy
 
 # find the polling rate receives a json list, a starting index, and an ending index
+def PollingRateList(input_list):
+    output_list = []
+    counter = 0
+    for item in input_list:
+        if counter + 1 == len(input_list) - 1:
+            break 
+        first_sec = json.loads(input_list[counter])["sec"] + json.loads(input_list[counter])["microsec"] / pow(10,6)
+        last_sec = json.loads(input_list[counter+1])["sec"] + json.loads(input_list[counter+1])["microsec"] / pow(10,6)
+        output_list.append(1/(last_sec-first_sec))
+        counter+=1
+    return output_list
+
 def FindPollingRate(input_list, start, end):
-    first_entry = json.loads(entry_list[start])
-    last_entry = json.loads(entry_list[end])
-    first_sec = first_entry["sec"] + first_entry["microsec"] / pow(10,len(str(first_entry["microsec"])))
-    last_sec = last_entry["sec"] + last_entry["microsec"] / pow(10,len(str(last_entry["microsec"])))
-    polling_rate_json = (end-start) / (last_sec - first_sec)
-    return polling_rate_json
+    first_entry = json.loads(input_list[start])
+    last_entry = json.loads(input_list[end])
+    first_sec = first_entry["sec"] + first_entry["microsec"] / pow(10,6)
+    last_sec = last_entry["sec"] + last_entry["microsec"] / pow(10,6)
+    output = (end-start) / (last_sec - first_sec)
+    return output
 
+def ListByPercentile(rpm_list, input_list, start, end):
+    counter = 0
+    output_list = []
+    for item in input_list:
+        if json.loads(input_list[counter])["rpm1"] >= numpy.quantile(rpm_list, start) and json.loads(input_list[counter])["rpm1"] <= numpy.quantile(rpm_list, end):
+          output_list.append(json.loads(input_list[counter])["rpm1"])
+          #output_list.append(input_list[counter])
+        counter+=1
+    return output_list
 
-file = open("2025-9-11 20_29_59.txt")
+file = open("2025-9-14 17_27_0.txt")
 file_content = file.read()
 
 # entry list creation
@@ -32,15 +53,9 @@ for item in entry_list:
 
 Q1 = numpy.quantile(rpm1_list, 0.25)
 Q3 = numpy.quantile(rpm1_list, 0.75)
-# creates list of all rpms greater than or equal to the median of the total list
-rpm1_list_greater = []
-counter = 0
-for item in entry_list:
-    if json.loads(entry_list[counter])["rpm1"] >= Q1 - (Q3 - Q1)*1.5 and json.loads(entry_list[counter])["rpm1"] <= Q3 + (Q3 - Q1)*1.5:
-        rpm1_list_greater.append(json.loads(entry_list[counter])["rpm1"])
-    counter+=1
 
-# creates a list of all entries with an rpm greater than the median
+
+# creates a list of all entries with outliers removed
 entry_list_greater = []
 counter = 0
 for item in entry_list:
@@ -50,18 +65,18 @@ for item in entry_list:
 
 # finds the index of the greatest contiguous string of entries
 temp_index = 0
-max_index = 0
+cont_index = 0
 contiguous_counter = 1
 temp_counter = 1
 counter = 0
 for item in entry_list_greater:
     if temp_counter == 1:
             temp_index = counter 
-    if counter + 1 < len(entry_list_greater) and entry_list_greater[counter] in entry_list and entry_list_greater[counter+1] == entry_list[entry_list.index(entry_list_greater[counter])+1]:
+    if counter + 1 < len(entry_list_greater) and entry_list_greater[counter+1] == entry_list[entry_list.index(entry_list_greater[counter])+1]:
         temp_counter += 1
     else:
         if temp_counter > contiguous_counter:
-            max_index = temp_index
+            cont_index = temp_index
             contiguous_counter = temp_counter
         temp_counter = 1
     counter+=1
@@ -84,7 +99,7 @@ for item in entry_list:
         min_index = rpm1_counter
     rpm1_counter+=1
         
-
-print(rpm1_max)
-print(Q1)
-print(Q3 + (Q3-Q1)*1.5)
+print(PollingRateList(entry_list))
+#print((ListByPercentile(rpm1_list, entry_list, .9, .99)))
+#print(f"Max RPM is: {rpm1_max}")
+#print(f"Polling rate is: {FindPollingRate(entry_list_greater,cont_index,cont_index+contiguous_counter-1)}")
