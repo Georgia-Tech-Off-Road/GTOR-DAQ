@@ -6,6 +6,12 @@
 #include <DAQ_AMT22.h>
 #include <DAQ_RPM_Sensor.h>
 
+#include <DAQSensors.h>
+#include <DAQPackets.h>
+
+// Define number of teeth in one place for easy modification
+#define NUM_TESTING_TEETH 22
+
 #define BAUD 230400
 
 #define serialMonitor Serial
@@ -22,14 +28,7 @@ time_t getTeensy3Time();
 //declare DaqPackCode.ino functions
 void dataAquisitionAndSavingLoop();
 
-//struct for sensor data
-struct {
-  unsigned long long int seconds;
-  unsigned long int micros;
-  float RPMs[4];
-  int analogValues1[4];
-  float teensyTemp;
-} dataStruct;
+cmbtl::DAQSensorDataType DAQData;
 
 //enums for AUXDAQ ports
 enum AUXDAQ_Ports {
@@ -55,10 +54,10 @@ enum AUXDAQ_Ports {
 };
 //sensor constants
 enum Sensor_Constants {
-  RDTEETH = 3,
-  ENGTEETH = 3,
-  FRTEETH = 3,
-  FLTEETH = 3
+  RDTEETH = NUM_TESTING_TEETH,
+  ENGTEETH = NUM_TESTING_TEETH,
+  FRTEETH = NUM_TESTING_TEETH,
+  FLTEETH = NUM_TESTING_TEETH
 };
 
 //outputFile
@@ -75,16 +74,16 @@ ulong autoSaveTimeMillis = 0;
 
 //function to intialize dataStruct values
 inline void initDataStructValues() {
-  dataStruct.seconds = now();
-  dataStruct.micros = micros();
-  dataStruct.RPMs[0] = 0;
-  dataStruct.RPMs[1] = 0;
-  dataStruct.RPMs[2] = 0;
-  dataStruct.RPMs[3] = 0;
-  dataStruct.analogValues1[0] = 0;
-  dataStruct.analogValues1[1] = 0;
-  dataStruct.analogValues1[2] = 0;
-  dataStruct.analogValues1[3] = 0;
+  DAQData.setData<cmbtl::SEC>(now());
+  DAQData.setData<cmbtl::MICRO_SEC>(micros());
+  DAQData.setData<cmbtl::RPM1>(0);
+  DAQData.setData<cmbtl::RPM2>(0);
+  DAQData.setData<cmbtl::RPM3>(0);
+  DAQData.setData<cmbtl::RPM4>(0);
+  DAQData.setData<cmbtl::Analog1>(0);
+  DAQData.setData<cmbtl::Analog2>(0);
+  DAQData.setData<cmbtl::Analog3>(0);
+  DAQData.setData<cmbtl::Analog4>(0);
 }
 
 
@@ -92,7 +91,7 @@ inline void initDataStructValues() {
 inline void setUpSD() {
   SD.begin(BUILTIN_SDCARD);
   delay(500);
-  String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second())+".bin";
+  String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second())+".txt";
   Serial.println(time.c_str());
   outputFile = SD.open(time.c_str(),  FILE_WRITE);
 }
