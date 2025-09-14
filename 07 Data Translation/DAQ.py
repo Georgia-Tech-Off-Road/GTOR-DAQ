@@ -173,6 +173,7 @@ def dataProcessingTool():
         dataProcessingThread.start()
         #hide the main data processor page
         dataProcessingToolPage.withdraw()
+
     """ DEPRECATED
     def calculateHertz():
         #open a hertz calculator page
@@ -184,6 +185,7 @@ def dataProcessingTool():
         #start the thread
         hertzCalculatorThread.start()
     """
+
     def editConfig():
         #find the config file based on filePath variable
         if useDefaultConfig.get() == 1:
