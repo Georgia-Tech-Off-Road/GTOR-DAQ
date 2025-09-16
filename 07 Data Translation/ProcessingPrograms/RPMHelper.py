@@ -3,7 +3,18 @@ import statistics
 import numpy
 
 # find the polling rate receives a json list, a starting index, and an ending index
-def PollingRateList(input_list):
+
+def PollingRateList(filePath,rpmPage):
+    file = open(filePath)
+    file_content = file.read()
+
+    # entry list creation
+    input_list = file_content.split("{")
+    counter = 0
+    for item in input_list:
+        input_list[counter] = "{" + item
+        counter +=1
+    input_list.pop(0)
     output_list = []
     counter = 0
     for item in input_list:
@@ -13,8 +24,10 @@ def PollingRateList(input_list):
         last_sec = json.loads(input_list[counter+1])["sec"] + json.loads(input_list[counter+1])["microsec"] / pow(10,6)
         output_list.append(1/(last_sec-first_sec))
         counter+=1
-    return output_list
+    rpmPage.destroy()
+    print(output_list)
 
+"""
 def FindPollingRate(input_list, start, end):
     first_entry = json.loads(input_list[start])
     last_entry = json.loads(input_list[end])
@@ -32,18 +45,8 @@ def ListByPercentile(rpm_list, input_list, start, end):
           #output_list.append(input_list[counter])
         counter+=1
     return output_list
-
-file = open("2025-9-14 17_27_0.txt")
-file_content = file.read()
-
-# entry list creation
-entry_list = file_content.split("{")
-counter = 0
-for item in entry_list:
-    entry_list[counter] = "{" + item
-    counter +=1
-entry_list.pop(0)
-
+"""
+"""
 # creates list of all rpms
 rpm1_list = []
 counter = 0
@@ -53,7 +56,6 @@ for item in entry_list:
 
 Q1 = numpy.quantile(rpm1_list, 0.25)
 Q3 = numpy.quantile(rpm1_list, 0.75)
-
 
 # creates a list of all entries with outliers removed
 entry_list_greater = []
@@ -98,8 +100,10 @@ for item in entry_list:
         rpm1_min = json.loads(entry_list_greater[rpm1_counter])["rpm1"]
         min_index = rpm1_counter
     rpm1_counter+=1
+"""
         
-print(PollingRateList(entry_list))
+#print(PollingRateList(entry_list))
 #print((ListByPercentile(rpm1_list, entry_list, .9, .99)))
 #print(f"Max RPM is: {rpm1_max}")
 #print(f"Polling rate is: {FindPollingRate(entry_list_greater,cont_index,cont_index+contiguous_counter-1)}")
+

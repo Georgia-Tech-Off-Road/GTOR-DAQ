@@ -18,6 +18,7 @@ from DataDownloader import DataDownloader
 from Updater import DataTranslatorUpdater
 from Visualizers import TestVisualizer
 from ProcessingPrograms import FileSplitter
+from ProcessingPrograms import RPMHelper
 
 #imports the processing programs (hertz calculator, data processor, etc.)
 os.chdir("./")
@@ -98,6 +99,7 @@ def dataProcessingTool():
                     splitButton.grid(row=1, column=2, padx=20)
                     outputButton.grid(row=2, column=0, padx=20)
                     configCheckbox.grid(row=2, column=1, padx=20)
+                    rpmButton.grid(row=2, column=3, padx=20)
 
     def downloadData():
         #create a new page for the progress bar
@@ -273,6 +275,21 @@ def dataProcessingTool():
         splitterButton = tk.Button(fileSplitPage, text="Split Files",font=("Helvetica", 12, "bold"), command=split)
         splitterButton.pack(pady=10)
 
+    def rpmHelper():
+        rpmPage = tk.Toplevel()
+        rpmPage.title("RPM Helper")
+        rpmPage.geometry("800x300")
+        def polling():
+            pollingThread = threading.Thread(target = RPMHelper.PollingRateList, args = (filePath,rpmPage))
+            pollingThread.start()
+        pollingButton = tk.Button(rpmPage, text="Calculate polling rate", command=polling)
+        #avgButton = tk.Button(rpmPage, text="Calculate average polling rate", command=avg)
+        #percentButton = tk.Button(rpmPage, text="Calculate percentile", command=percent)
+        pollingButton.pack(padx=20)
+
+        #avgButton.pack(padx=20)
+        #percentButton.pack(padx=20)
+
     #howToButton
     howToButton = tk.Button(dataProcessingToolPage, text="How To", command=lambda: openHowTo())
     howToButton.pack()
@@ -301,6 +318,7 @@ def dataProcessingTool():
     configCheckbox = tk.Checkbutton(buttonFrame, text="Use default config", variable=useDefaultConfig)
     configEditButton = tk.Button(buttonFrame, text="Edit Config", command=lambda: editConfig())
     outputButton = tk.Button(buttonFrame, text = "Choose output destination...", command=lambda: outputDestination())
+    rpmButton = tk.Button(buttonFrame, text= "RPM Helper", command=lambda: rpmHelper())
     updateButtons()
 
 def runUpdater():
