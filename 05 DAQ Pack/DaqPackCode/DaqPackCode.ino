@@ -89,6 +89,7 @@ void dataAquisitionAndSavingLoop() {
     //size of is apparently computed at compile time
     if (isRecording) {
       // TODO: Check with andrew
+      outputFile.printf("%s,", DAQData.serializeDataToJSON().c_str());
       outputFile.printf("%s", DAQData.serializeDataToJSON().c_str());
       //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
     }
@@ -134,6 +135,7 @@ void changeRecordingState() {
     while(digitalRead(40) == 0) {
       delay(5);
     }
+    outputfile.printf("]");
     outputFile.flush();
     outputFile.close();
     Serial.printf("File closed\n");
@@ -148,6 +150,7 @@ void changeRecordingState() {
     Serial.println(time.c_str());
     //turn on red LED
     outputFile = SD.open(time.c_str(),  FILE_WRITE);
+    outputFile.printf("[\n");
     isRecording = true;
   }
   lastSaveTimeInMillis = millis();
