@@ -55,6 +55,8 @@ void setup() {
   initDataStructValues();
   //set recording flag
   isRecording = true;
+  //init auto save time
+  autoSaveTimeMillis = millis();
   //start ADCs
   ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
   dataAquisitionAndSavingLoop();
@@ -66,6 +68,8 @@ void loop(){}
 //writes data to SD card
 void dataAquisitionAndSavingLoop() {
   while(1) {  
+    //update auto save time
+    autoSaveTimeMillis = millis();
     //check to see if save should be started/stopped
      if (!digitalRead(0) && lastSaveTimeInMillis + 2000 < millis()) {
       changeRecordingState();
@@ -86,6 +90,8 @@ void dataAquisitionAndSavingLoop() {
     if (isRecording) {
       // TODO: Check with andrew
       outputFile.printf("%s,", DAQData.serializeDataToJSON().c_str());
+      outputFile.printf("%s", DAQData.serializeDataToJSON().c_str());
+      //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
     }
     //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
     if (engineRPM.RPMUpdateFlag) {
@@ -125,12 +131,12 @@ void dataAquisitionAndSavingLoop() {
 //changes recording state and saves file
 void changeRecordingState() {
   //suspend position thread to prevent it from interfering in saving process
-  noInterrupts();
   if(isRecording == true) {
     while(digitalRead(40) == 0) {
       delay(5);
     }
     outputfile.printf("]");
+    outputFile.flush();
     outputFile.close();
     Serial.printf("File closed\n");
     isRecording = false;
@@ -140,7 +146,7 @@ void changeRecordingState() {
     while(digitalRead(40) == 0) {
       delay(5);
     }
-    String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second()+".txt");
+    String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second())+".txt";
     Serial.println(time.c_str());
     //turn on red LED
     outputFile = SD.open(time.c_str(),  FILE_WRITE);
@@ -148,7 +154,6 @@ void changeRecordingState() {
     isRecording = true;
   }
   lastSaveTimeInMillis = millis();
-  interrupts();   
 }
 
 void updateAnalogValueFlag1() {

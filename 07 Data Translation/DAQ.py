@@ -19,7 +19,7 @@ from Updater import DataTranslatorUpdater
 from Visualizers import TestVisualizer
 from ProcessingPrograms import FileSplitter
 
-#imports the processing programs (hertz calculator, data processor, etc etc) 
+#imports the processing programs (hertz calculator, data processor, etc.)
 os.chdir("./")
 for fileName in os.listdir("ProcessingPrograms"):
         if fileName.endswith('.py') and not fileName.startswith('__'):
@@ -173,6 +173,7 @@ def dataProcessingTool():
         dataProcessingThread.start()
         #hide the main data processor page
         dataProcessingToolPage.withdraw()
+
     """ DEPRECATED
     def calculateHertz():
         #open a hertz calculator page
@@ -184,6 +185,7 @@ def dataProcessingTool():
         #start the thread
         hertzCalculatorThread.start()
     """
+
     def editConfig():
         #find the config file based on filePath variable
         if useDefaultConfig.get() == 1:
@@ -198,7 +200,7 @@ def dataProcessingTool():
         elif sys.platform.startswith("darwin"):  # Mac
             os.system(f'open {configFilePath}')
 
-    def custom():
+    def custom():                           #custom data visualizer
         customWindow = tk.Toplevel()
         customWindow.title("Visualizer")
         customWindow.geometry("800x300")
@@ -252,7 +254,7 @@ def dataProcessingTool():
             tk.Label(scrollFrame, text=f"{varName}: {value}").pack(anchor="w", padx=10, pady=2)
 
 
-    def splitFile():
+    def splitFile():            #used for splitting large files into several smaller ones
         fileSplitPage = tk.Toplevel()
         fileSplitPage.title("File Splitter")
         fileSplitPage.geometry("800x300")
