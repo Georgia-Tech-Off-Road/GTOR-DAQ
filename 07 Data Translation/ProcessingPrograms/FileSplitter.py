@@ -17,7 +17,6 @@ def split(filePath, splitNum, fileSplitPage):
     with open(filePath, 'r', encoding='utf-8', errors='ignore') as f:
         # Read full content and parse as JSON
         data = json.loads(f.read())
-
     # Split into chunks of splitNum
     for i in range(0, len(data), splitNum):
         chunk = data[i:i + splitNum]

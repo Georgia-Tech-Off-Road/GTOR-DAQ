@@ -89,11 +89,16 @@ inline void initDataStructValues() {
 
 //method to setup outFile/SD card
 inline void setUpSD() {
-  SD.begin(BUILTIN_SDCARD);
+  Serial.printf("SD Card init status: %d\n",SD.begin(BUILTIN_SDCARD));
   delay(500);
   String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second())+".txt";
   Serial.println(time.c_str());
   outputFile = SD.open(time.c_str(),  FILE_WRITE);
+  if(!outputFile) {
+    Serial.printf("FILE FAILED TO INIT\n");
+  } else {
+    Serial.printf("SD FILE CREATED\n");
+  }
 }
 
 //time setup function
