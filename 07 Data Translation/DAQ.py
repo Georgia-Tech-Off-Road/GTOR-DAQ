@@ -282,12 +282,16 @@ def dataProcessingTool():
         def polling():
             pollingThread = threading.Thread(target = RPMHelper.PollingRateList, args = (filePath,rpmPage))
             pollingThread.start()
+        def avg():
+            avgThread = threading.Thread(target = RPMHelper.FindPollingRate, args = (filePath,rpmPage))
+            avgThread.start()
+
         pollingButton = tk.Button(rpmPage, text="Calculate polling rate", command=polling)
-        #avgButton = tk.Button(rpmPage, text="Calculate average polling rate", command=avg)
+        avgButton = tk.Button(rpmPage, text="Calculate average polling rate", command=avg)
         #percentButton = tk.Button(rpmPage, text="Calculate percentile", command=percent)
         pollingButton.pack(padx=20)
 
-        #avgButton.pack(padx=20)
+        avgButton.pack(padx=20)
         #percentButton.pack(padx=20)
 
     #howToButton

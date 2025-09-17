@@ -24,18 +24,29 @@ def PollingRateList(filePath,rpmPage):
         last_sec = json.loads(input_list[counter+1])["sec"] + json.loads(input_list[counter+1])["microsec"] / pow(10,6)
         output_list.append(1/(last_sec-first_sec))
         counter+=1
-    rpmPage.destroy()
     print(output_list)
+    rpmPage.destroy()
 
-"""
-def FindPollingRate(input_list, start, end):
-    first_entry = json.loads(input_list[start])
-    last_entry = json.loads(input_list[end])
+def FindPollingRate(filePath,rpmPage):
+    file = open(filePath)
+    file_content = file.read()
+
+    # entry list creation
+    input_list = file_content.split("{")
+    counter = 0
+    for item in input_list:
+        input_list[counter] = "{" + item
+        counter +=1
+    input_list.pop(0)
+    first_entry = json.loads(input_list[0])
+    last_entry = json.loads(input_list[len(input_list)-1])
     first_sec = first_entry["sec"] + first_entry["microsec"] / pow(10,6)
     last_sec = last_entry["sec"] + last_entry["microsec"] / pow(10,6)
-    output = (end-start) / (last_sec - first_sec)
-    return output
+    output = (len(input_list)-1) / (last_sec - first_sec)
+    print(output)
+    rpmPage.destroy()
 
+"""
 def ListByPercentile(rpm_list, input_list, start, end):
     counter = 0
     output_list = []
