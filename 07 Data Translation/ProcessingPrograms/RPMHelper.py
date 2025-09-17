@@ -1,28 +1,38 @@
 import json
 import statistics
 import numpy
-
 # find the polling rate receives a json list, a starting index, and an ending index
-def PollingRateList(input_list):
+
+def PollingRateList(filePath, rpmPage):
+    with open(filePath) as f:
+        data = json.load(f)  # assuming it's a list of dicts
+
     output_list = []
-    counter = 0
-    for item in input_list:
-        if counter + 1 == len(input_list) - 1:
-            break 
-        first_sec = json.loads(input_list[counter])["sec"] + json.loads(input_list[counter])["microsec"] / pow(10,6)
-        last_sec = json.loads(input_list[counter+1])["sec"] + json.loads(input_list[counter+1])["microsec"] / pow(10,6)
-        output_list.append(1/(last_sec-first_sec))
-        counter+=1
-    return output_list
+    for i in range(len(data) - 1):
+        first_sec = data[i]["sec"] + data[i]["microsec"] / 1e6
+        last_sec = data[i+1]["sec"] + data[i+1]["microsec"] / 1e6
+        output_list.append(round(1 / (last_sec - first_sec),5))
 
-def FindPollingRate(input_list, start, end):
-    first_entry = json.loads(input_list[start])
-    last_entry = json.loads(input_list[end])
-    first_sec = first_entry["sec"] + first_entry["microsec"] / pow(10,6)
-    last_sec = last_entry["sec"] + last_entry["microsec"] / pow(10,6)
-    output = (end-start) / (last_sec - first_sec)
-    return output
+    print(output_list)
+    rpmPage.destroy()
 
+def FindPollingRate(filePath, rpmPage):
+    # Load entire file as JSON
+    with open(filePath) as f:
+        data = json.load(f)  # data is a list of dicts
+
+    # Get first and last entries
+    first_entry = data[0]
+    last_entry = data[-1]
+
+    first_sec = first_entry["sec"] + first_entry["microsec"] / 1e6
+    last_sec = last_entry["sec"] + last_entry["microsec"] / 1e6
+    output = (len(data) - 1) / (last_sec - first_sec)
+
+    print(round(output,5))
+    rpmPage.destroy()
+
+"""
 def ListByPercentile(rpm_list, input_list, start, end):
     counter = 0
     output_list = []
@@ -32,18 +42,8 @@ def ListByPercentile(rpm_list, input_list, start, end):
           #output_list.append(input_list[counter])
         counter+=1
     return output_list
-
-file = open("2025-9-14 17_27_0.txt")
-file_content = file.read()
-
-# entry list creation
-entry_list = file_content.split("{")
-counter = 0
-for item in entry_list:
-    entry_list[counter] = "{" + item
-    counter +=1
-entry_list.pop(0)
-
+"""
+"""
 # creates list of all rpms
 rpm1_list = []
 counter = 0
@@ -53,7 +53,6 @@ for item in entry_list:
 
 Q1 = numpy.quantile(rpm1_list, 0.25)
 Q3 = numpy.quantile(rpm1_list, 0.75)
-
 
 # creates a list of all entries with outliers removed
 entry_list_greater = []
@@ -98,8 +97,10 @@ for item in entry_list:
         rpm1_min = json.loads(entry_list_greater[rpm1_counter])["rpm1"]
         min_index = rpm1_counter
     rpm1_counter+=1
+"""
         
-print(PollingRateList(entry_list))
+#print(PollingRateList(entry_list))
 #print((ListByPercentile(rpm1_list, entry_list, .9, .99)))
 #print(f"Max RPM is: {rpm1_max}")
 #print(f"Polling rate is: {FindPollingRate(entry_list_greater,cont_index,cont_index+contiguous_counter-1)}")
+
