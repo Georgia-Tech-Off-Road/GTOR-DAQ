@@ -1,49 +1,35 @@
 import json
 import statistics
 import numpy
-
 # find the polling rate receives a json list, a starting index, and an ending index
 
-def PollingRateList(filePath,rpmPage):
-    file = open(filePath)
-    file_content = file.read()
+def PollingRateList(filePath, rpmPage):
+    with open(filePath) as f:
+        data = json.load(f)  # assuming it's a list of dicts
 
-    # entry list creation
-    input_list = file_content.split("{")
-    counter = 0
-    for item in input_list:
-        input_list[counter] = "{" + item
-        counter +=1
-    input_list.pop(0)
     output_list = []
-    counter = 0
-    for item in input_list:
-        if counter + 1 == len(input_list) - 1:
-            break 
-        first_sec = json.loads(input_list[counter])["sec"] + json.loads(input_list[counter])["microsec"] / pow(10,6)
-        last_sec = json.loads(input_list[counter+1])["sec"] + json.loads(input_list[counter+1])["microsec"] / pow(10,6)
-        output_list.append(1/(last_sec-first_sec))
-        counter+=1
+    for i in range(len(data) - 1):
+        first_sec = data[i]["sec"] + data[i]["microsec"] / 1e6
+        last_sec = data[i+1]["sec"] + data[i+1]["microsec"] / 1e6
+        output_list.append(round(1 / (last_sec - first_sec),5))
+
     print(output_list)
     rpmPage.destroy()
 
-def FindPollingRate(filePath,rpmPage):
-    file = open(filePath)
-    file_content = file.read()
+def FindPollingRate(filePath, rpmPage):
+    # Load entire file as JSON
+    with open(filePath) as f:
+        data = json.load(f)  # data is a list of dicts
 
-    # entry list creation
-    input_list = file_content.split("{")
-    counter = 0
-    for item in input_list:
-        input_list[counter] = "{" + item
-        counter +=1
-    input_list.pop(0)
-    first_entry = json.loads(input_list[0])
-    last_entry = json.loads(input_list[len(input_list)-1])
-    first_sec = first_entry["sec"] + first_entry["microsec"] / pow(10,6)
-    last_sec = last_entry["sec"] + last_entry["microsec"] / pow(10,6)
-    output = (len(input_list)-1) / (last_sec - first_sec)
-    print(output)
+    # Get first and last entries
+    first_entry = data[0]
+    last_entry = data[-1]
+
+    first_sec = first_entry["sec"] + first_entry["microsec"] / 1e6
+    last_sec = last_entry["sec"] + last_entry["microsec"] / 1e6
+    output = (len(data) - 1) / (last_sec - first_sec)
+
+    print(round(output,5))
     rpmPage.destroy()
 
 """
