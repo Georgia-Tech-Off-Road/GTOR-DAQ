@@ -67,6 +67,7 @@ void loop(){}
 
 //writes data to SD card
 void dataAquisitionAndSavingLoop() {
+  bool firstEntry = true;
   while(1) {  
     //update auto save time
     autoSaveTimeMillis = millis();
@@ -89,8 +90,12 @@ void dataAquisitionAndSavingLoop() {
     //size of is apparently computed at compile time
     if (isRecording) {
       // TODO: Check with andrew
-      outputFile.printf("%s,", DAQData.serializeDataToJSON().c_str());
-      outputFile.printf("%s", DAQData.serializeDataToJSON().c_str());
+      if (firstEntry) {
+        outputFile.printf("%s", DAQData.serializeDataToJSON().c_str());
+        firstEntry=false;
+      } else {
+        outputFile.printf(",%s", DAQData.serializeDataToJSON().c_str());
+      }
       //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
     }
     //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
@@ -135,9 +140,10 @@ void changeRecordingState() {
     while(digitalRead(40) == 0) {
       delay(5);
     }
-    outputfile.printf("]");
+    outputFile.printf("]");
     outputFile.flush();
     outputFile.close();
+
     Serial.printf("File closed\n");
     isRecording = false;
   }
