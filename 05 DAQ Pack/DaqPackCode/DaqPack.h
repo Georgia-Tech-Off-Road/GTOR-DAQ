@@ -94,6 +94,8 @@ inline void setUpSD() {
   String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second())+".txt";
   Serial.println(time.c_str());
   outputFile = SD.open(time.c_str(),  FILE_WRITE);
+  //add bracket at beginning to make it a list
+  outputFile.printf("[\n");
   if(!outputFile) {
     Serial.printf("FILE FAILED TO INIT\n");
   } else {
