@@ -18,7 +18,7 @@ def PollingRateList(filePath, prPage):
     df["pollingrate"] = 1 / df["deltaSec"] #converts seconds to Hertz (Polling Rates!)
     startTime = df['microsec'].iloc[0] #converts absolute time to relative time
     df['microsec'] = df['microsec'] - startTime #so the time starts at 0
-    time = df['microsec']/(1*10**6) #converts seconds to microseconds
+    time = df['microsec']/(1e6) #converts seconds to microseconds
     x = time #assigns the x-axis to microseconds column
     ySensor = df[sensorType] #assigns left y-axis to sensor value
     yPolling = df["pollingrate"] #assigns right y-axis to polling rate

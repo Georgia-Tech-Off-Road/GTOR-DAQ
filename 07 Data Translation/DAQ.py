@@ -168,6 +168,24 @@ def dataProcessingTool():
         createGraphButton = tk.Button(customWindow, text="Create Graph",font=("Helvetica", 12, "bold"), command=runVisualizer)
         createGraphButton.pack(pady=10)
 
+    def prHelper():
+        prPage = tk.Toplevel()
+        prPage.title("Polling Rate Helper")
+        prPage.geometry("300x300")
+        def polling(): #VISUALIZER
+            pollingThread = threading.Thread(target = PRHelper.PollingRateList, args = (filePath,prPage))
+            pollingThread.start()
+        def avg():
+            avgThread = threading.Thread(target = PRHelper.FindPollingRate, args = (filePath,prPage))
+            avgThread.start()
+
+        pollingButton = tk.Button(prPage, text="Graph polling rate and sensor value vs. time", command=polling)
+        avgButton = tk.Button(prPage, text="Calculate average polling rate", command=avg)
+        #percentButton = tk.Button(prPage, text="Calculate percentile", command=percent)
+        pollingButton.grid(pady=50,padx=50)
+        avgButton.grid(pady=20,padx=50)
+        #percentButton.pack(padx=20)
+
     def indices(filePath):      #used for showing a legend of data types & their indeces
         #imports
         import pandas as pd
@@ -224,23 +242,6 @@ def dataProcessingTool():
         splitterButton = tk.Button(fileSplitPage, text="Split Files",font=("Helvetica", 12, "bold"), command=split)
         splitterButton.pack(pady=10)
 
-    def prHelper():
-        prPage = tk.Toplevel()
-        prPage.title("Polling Rate Helper")
-        prPage.geometry("300x300")
-        def polling(): #VISUALIZER
-            pollingThread = threading.Thread(target = PRHelper.PollingRateList, args = (filePath,prPage))
-            pollingThread.start()
-        def avg():
-            avgThread = threading.Thread(target = PRHelper.FindPollingRate, args = (filePath,prPage))
-            avgThread.start()
-
-        pollingButton = tk.Button(prPage, text="Graph polling rate and sensor value vs. time", command=polling)
-        avgButton = tk.Button(prPage, text="Calculate average polling rate", command=avg)
-        #percentButton = tk.Button(prPage, text="Calculate percentile", command=percent)
-        pollingButton.grid(pady=50,padx=50)
-        avgButton.grid(pady=20,padx=50)
-        #percentButton.pack(padx=20)
     def legacy():
         legacyPage = tk.Toplevel()
         legacyPage.title("Legacy Functions")
