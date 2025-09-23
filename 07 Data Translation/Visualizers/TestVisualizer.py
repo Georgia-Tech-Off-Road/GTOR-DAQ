@@ -29,7 +29,7 @@ def testVisualizer(filePath,columnIndices,customWindow,useDefaultConfig):
 
 
 
-    df['analog1'] = 50 + ((((df['analog1'] / 32767.0) * 4.096 - 0.5) / 4.0) * 1950.0)
+    #df['analog1'] = 50 + ((((df['analog1'] / 32767.0) * 4.096 - 0.5) / 4.0) * 1950.0)
 
 
 
