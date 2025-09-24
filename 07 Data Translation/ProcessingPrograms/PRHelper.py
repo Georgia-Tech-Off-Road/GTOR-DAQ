@@ -1,28 +1,60 @@
 import json
 import statistics
 import numpy
-
+import tkinter as tk
+from tkinter import ttk
+import pandas as pd
+import matplotlib.pyplot as plt
 # find the polling rate receives a json list, a starting index, and an ending index
-def PollingRateList(input_list):
-    output_list = []
-    counter = 0
-    for item in input_list:
-        if counter + 1 == len(input_list) - 1:
-            break 
-        first_sec = json.loads(input_list[counter])["sec"] + json.loads(input_list[counter])["microsec"] / pow(10,6)
-        last_sec = json.loads(input_list[counter+1])["sec"] + json.loads(input_list[counter+1])["microsec"] / pow(10,6)
-        output_list.append(1/(last_sec-first_sec))
-        counter+=1
-    return output_list
 
-def FindPollingRate(input_list, start, end):
-    first_entry = json.loads(input_list[start])
-    last_entry = json.loads(input_list[end])
-    first_sec = first_entry["sec"] + first_entry["microsec"] / pow(10,6)
-    last_sec = last_entry["sec"] + last_entry["microsec"] / pow(10,6)
-    output = (end-start) / (last_sec - first_sec)
-    return output
+def PollingRateList(filePath, prPage):
+    sensorType = input("Type the string of the sensor you want to graph (use Show File Indeces button): ")
+    with open(filePath,"r") as infile:
+        text = infile.read()
+        data = json.loads(text)
+        df = pd.json_normalize(data)
 
+    df["deltaSec"] = df["sec"].shift(-1) - df["sec"] #deltaSec is the difference between
+    df["pollingrate"] = 1 / df["deltaSec"] #converts seconds to Hertz (Polling Rates!)
+    startTime = df['microsec'].iloc[0] #converts absolute time to relative time
+    df['microsec'] = df['microsec'] - startTime #so the time starts at 0
+    time = df['microsec']/(1e6) #converts seconds to microseconds
+    x = time #assigns the x-axis to microseconds column
+    ySensor = df[sensorType] #assigns left y-axis to sensor value
+    yPolling = df["pollingrate"] #assigns right y-axis to polling rate
+    fig, ax1 = plt.subplots(figsize=(8,5)) #creates plot based on figure and axes
+    ax1.plot(x, ySensor, color="tab:blue", marker="o", label="Sensor Value") #plots sensor values with time
+    ax1.set_xlabel("Microseconds")
+    ax1.set_ylabel("Sensor Value", color="tab:blue")
+    ax1.tick_params(axis="y", labelcolor="tab:blue")    #formatting...
+    ax2 = ax1.twinx()
+    ax2.plot(x, yPolling, color="tab:red", marker="x", label="Polling Rate") #plots polling rate with microseconds
+    ax2.set_ylabel("Polling Rate (Hz)", color="tab:red")
+    ax2.tick_params(axis="y", labelcolor="tab:red")     #formatting...
+
+    plt.title("Sensor Value, PR vs. Microseconds") #titles graph
+    plt.grid(True) #creates grid
+    plt.show() #displays plot
+
+    prPage.destroy() #kills window dead gone bye bye
+
+def FindPollingRate(filePath, prPage):
+    # Load entire file as JSON
+    with open(filePath) as f:
+        data = json.load(f)  # data is a list of dicts
+
+    # Get first and last entries
+    first_entry = data[0]
+    last_entry = data[-1]
+
+    first_sec = first_entry["sec"] + first_entry["microsec"] / 1e6
+    last_sec = last_entry["sec"] + last_entry["microsec"] / 1e6
+    output = (len(data) - 1) / (last_sec - first_sec)
+
+    print("Average polling rate: "+ str(round(output,5))+"Hz")
+    prPage.destroy()
+
+"""
 def ListByPercentile(rpm_list, input_list, start, end):
     counter = 0
     output_list = []
@@ -32,18 +64,8 @@ def ListByPercentile(rpm_list, input_list, start, end):
           #output_list.append(input_list[counter])
         counter+=1
     return output_list
-
-file = open("2025-9-14 17_27_0.txt")
-file_content = file.read()
-
-# entry list creation
-entry_list = file_content.split("{")
-counter = 0
-for item in entry_list:
-    entry_list[counter] = "{" + item
-    counter +=1
-entry_list.pop(0)
-
+"""
+"""
 # creates list of all rpms
 rpm1_list = []
 counter = 0
@@ -53,7 +75,6 @@ for item in entry_list:
 
 Q1 = numpy.quantile(rpm1_list, 0.25)
 Q3 = numpy.quantile(rpm1_list, 0.75)
-
 
 # creates a list of all entries with outliers removed
 entry_list_greater = []
@@ -98,8 +119,10 @@ for item in entry_list:
         rpm1_min = json.loads(entry_list_greater[rpm1_counter])["rpm1"]
         min_index = rpm1_counter
     rpm1_counter+=1
+"""
         
-print(PollingRateList(entry_list))
+#print(PollingRateList(entry_list))
 #print((ListByPercentile(rpm1_list, entry_list, .9, .99)))
 #print(f"Max RPM is: {rpm1_max}")
 #print(f"Polling rate is: {FindPollingRate(entry_list_greater,cont_index,cont_index+contiguous_counter-1)}")
+
