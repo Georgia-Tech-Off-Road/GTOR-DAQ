@@ -172,14 +172,28 @@ def dataProcessingTool():
         prPage = tk.Toplevel()
         prPage.title("Polling Rate Helper")
         prPage.geometry("300x300")
-        def polling(): #VISUALIZER
-            pollingThread = threading.Thread(target = PRHelper.PollingRateList, args = (filePath,prPage))
-            pollingThread.start()
+        def prCustom():
+            customWindow = tk.Toplevel()
+            customWindow.title("Visualizer")
+            customWindow.geometry("800x300")
+            # Label and Entry for column number
+            label = tk.Label(customWindow, text="Enter 1 index\nNote that index 0 = column #1.\nSensor data starts at 1.")
+            label.pack(pady=5)
+            sensorType = tk.Entry(customWindow)
+            sensorType.pack(pady=5)
+            def polling(): #VISUALIZER
+                sensorNumber = sensorType.get()
+                sensorNumber = int(sensorNumber)
+                pollingThread = threading.Thread(target = PRHelper.PollingRateList, args = (filePath,prPage,sensorNumber))
+                pollingThread.start()
+            createGraphButton = tk.Button(customWindow, text="Create Graph",font=("Helvetica", 12, "bold"), command=polling)
+            createGraphButton.pack(pady=10)
+
         def avg():
             avgThread = threading.Thread(target = PRHelper.FindPollingRate, args = (filePath,prPage))
             avgThread.start()
 
-        pollingButton = tk.Button(prPage, text="Graph polling rate and sensor value vs. time", command=polling)
+        pollingButton = tk.Button(prPage, text="Graph polling rate and sensor value vs. time", command=prCustom)
         avgButton = tk.Button(prPage, text="Calculate average polling rate", command=avg)
         #percentButton = tk.Button(prPage, text="Calculate percentile", command=percent)
         pollingButton.grid(pady=50,padx=50)
