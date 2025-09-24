@@ -1,4 +1,5 @@
 import os
+import importlib.util #for importing
 
 def install(package):
     subprocess.run([sys.executable, "-m", "pip", "install", "--no-input", package], check=True)
@@ -7,8 +8,6 @@ try:
 except ImportError:
     install("requests")
 
-import requests #for accessing API
-import importlib.util #for importing
 
 #List of libraries/modules to be installed
 libraryNameList = []
