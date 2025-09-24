@@ -5,6 +5,7 @@
 #include <TeensyThreads.h>
 #include <DAQ_AMT22.h>
 #include <DAQ_RPM_Sensor.h>
+#include <DAQ_Linear_Analog_Sensor.h>
 
 #include <DAQSensors.h>
 #include <DAQPackets.h>
