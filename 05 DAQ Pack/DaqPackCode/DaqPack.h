@@ -81,8 +81,8 @@ inline void initDataStructValues() {
   DAQData.setData<cmbtl::RPM2>(0);
   DAQData.setData<cmbtl::RPM3>(0);
   DAQData.setData<cmbtl::RPM4>(0);
-  DAQData.setData<cmbtl::Analog1>(0);
-  DAQData.setData<cmbtl::Analog2>(0);
+  DAQData.setData<cmbtl::BrakePressure>(0);
+  DAQData.setData<cmbtl::LDS>(0);
   DAQData.setData<cmbtl::Analog3>(0);
   DAQData.setData<cmbtl::Analog4>(0);
 }

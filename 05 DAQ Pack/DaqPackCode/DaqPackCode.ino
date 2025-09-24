@@ -174,12 +174,12 @@ void updateAnalogValueFlag1() {
 void readAnalogValues1() {
   switch (currentAnalogSensor1) {
       case 0:
-        DAQData.setData<cmbtl::Analog1>(rearBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::BrakePressure>(rearBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 1;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
         break;
       case 1:
-        DAQData.setData<cmbtl::Analog2>(LDSOne.computeSensorReading(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::LDS>(LDSOne.computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 2;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
