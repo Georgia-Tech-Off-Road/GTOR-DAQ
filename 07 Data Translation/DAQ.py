@@ -18,6 +18,7 @@ from DataDownloader import DataDownloader
 from Updater import DataTranslatorUpdater
 from Visualizers import TestVisualizer
 from ProcessingPrograms import FileSplitter
+from ProcessingPrograms import PRHelper
 
 #imports the processing programs (hertz calculator, data processor, etc.)
 os.chdir("./")
@@ -91,13 +92,12 @@ def dataProcessingTool():
                     configCheckbox.grid(row=2, column=3, padx=20)
                 #otherwise display everything but the download button
                 else: 
-                    processButton.grid(row=0, column=0, padx=20)
-                    configEditButton.grid(row=0, column=1, padx=20)
                     indexButton.grid(row=1,column=0,padx=20)
                     customButton.grid(row=1,column=1,padx=20)
                     splitButton.grid(row=1, column=2, padx=20)
                     outputButton.grid(row=2, column=0, padx=20)
-                    configCheckbox.grid(row=2, column=1, padx=20)
+                    prButton.grid(row=2, column=2, padx=20)
+                    legacyButton.grid(row=2,column=1,padx=20)
 
     def downloadData():
         #create a new page for the progress bar
@@ -151,55 +151,6 @@ def dataProcessingTool():
             chosePath = False
         outputSelectLabel.config(text=f"Selected output path: {outputPath}")
 
-    """ DEPRECATED
-    def binConvert():
-        #update the buttons to allow the file to be operated on
-        global chosePath
-        global outputPath
-        binThread = threading.Thread(target = BinFileTranslator.binConverter, args = (filePath,chosePath,outputPath,settingsData))
-        #start the thread
-        binThread.start()
-    """
-    def processData():
-        global chosePath
-        global outputPath
-        #create a page for the progress bar
-        progressBarPage = tk.Toplevel(dataProcessingToolPage)
-        progressBarPage.title("Translation Progress")
-        progressBarPage.geometry("400x200")
-        #create the thread
-        dataProcessingThread = threading.Thread(target = DataTranslator.translateData, args = (filePath, progressBarPage, dataProcessingToolPage, int(useDefaultConfig.get()),outputPath,chosePath,settingsData))
-        #start the thread
-        dataProcessingThread.start()
-        #hide the main data processor page
-        dataProcessingToolPage.withdraw()
-
-    """ DEPRECATED
-    def calculateHertz():
-        #open a hertz calculator page
-        hertzCalculationPage = tk.Toplevel(dataProcessingToolPage)
-        hertzCalculationPage.title("Hertz Calculator")
-        hertzCalculationPage.geometry("400x200")
-        #create the thread for hertz calculator
-        hertzCalculatorThread = threading.Thread(target = hertzCalculator.calculateHertz, args = (filePath, hertzCalculationPage))
-        #start the thread
-        hertzCalculatorThread.start()
-    """
-
-    def editConfig():
-        #find the config file based on filePath variable
-        if useDefaultConfig.get() == 1:
-            configFilePath = "Configs/defaultConfig.txt"
-        else:
-            configFilePathList = filePath.split("/")
-            configFilePathList[-1] = "Configs/" + configFilePathList[-1] + "Config.txt"
-            configFilePath = "/".join(configFilePathList)
-        #open the config file in notepade (See if this works on mac.....)
-        if sys.platform.startswith("win"):  # Windows
-            os.system(f'notepad.exe {configFilePath}')
-        elif sys.platform.startswith("darwin"):  # Mac
-            os.system(f'open {configFilePath}')
-
     def custom():                           #custom data visualizer
         customWindow = tk.Toplevel()
         customWindow.title("Visualizer")
@@ -216,6 +167,24 @@ def dataProcessingTool():
             visualizerThread.start()
         createGraphButton = tk.Button(customWindow, text="Create Graph",font=("Helvetica", 12, "bold"), command=runVisualizer)
         createGraphButton.pack(pady=10)
+
+    def prHelper():
+        prPage = tk.Toplevel()
+        prPage.title("Polling Rate Helper")
+        prPage.geometry("300x300")
+        def polling(): #VISUALIZER
+            pollingThread = threading.Thread(target = PRHelper.PollingRateList, args = (filePath,prPage))
+            pollingThread.start()
+        def avg():
+            avgThread = threading.Thread(target = PRHelper.FindPollingRate, args = (filePath,prPage))
+            avgThread.start()
+
+        pollingButton = tk.Button(prPage, text="Graph polling rate and sensor value vs. time", command=polling)
+        avgButton = tk.Button(prPage, text="Calculate average polling rate", command=avg)
+        #percentButton = tk.Button(prPage, text="Calculate percentile", command=percent)
+        pollingButton.grid(pady=50,padx=50)
+        avgButton.grid(pady=20,padx=50)
+        #percentButton.pack(padx=20)
 
     def indices(filePath):      #used for showing a legend of data types & their indeces
         #imports
@@ -273,6 +242,51 @@ def dataProcessingTool():
         splitterButton = tk.Button(fileSplitPage, text="Split Files",font=("Helvetica", 12, "bold"), command=split)
         splitterButton.pack(pady=10)
 
+    def legacy():
+        legacyPage = tk.Toplevel()
+        legacyPage.title("Legacy Functions")
+        legacyPage.geometry("400x400")
+        def editConfig():
+            if useDefaultConfig.get() == 1:
+                configFilePath = "Configs/defaultConfig.txt"
+            else:
+                configFilePathList = filePath.split("/")
+                configFilePathList[-1] = "Configs/" + configFilePathList[-1] + "Config.txt"
+                configFilePath = "/".join(configFilePathList)
+            #open the config file in notepade (See if this works on mac.....)
+            if sys.platform.startswith("win"):  # Windows
+                os.system(f'notepad.exe {configFilePath}')
+            elif sys.platform.startswith("darwin"):  # Mac
+                os.system(f'open {configFilePath}')
+        def processData():
+            global chosePath
+            global outputPath
+            #create a page for the progress bar
+            progressBarPage = tk.Toplevel(dataProcessingToolPage)
+            progressBarPage.title("Translation Progress")
+            progressBarPage.geometry("400x200")
+            #create the thread
+            dataProcessingThread = threading.Thread(target = DataTranslator.translateData, args = (filePath, progressBarPage, dataProcessingToolPage, int(useDefaultConfig.get()),outputPath,chosePath,settingsData))
+            #start the thread
+            dataProcessingThread.start()
+            #hide the main data processor page
+            dataProcessingToolPage.withdraw()
+        def binConvert():
+            #update the buttons to allow the file to be operated on
+            global chosePath
+            global outputPath
+            binThread = threading.Thread(target = BinFileTranslator.binConverter, args = (filePath,chosePath,outputPath,settingsData))
+            #start the thread
+            binThread.start()
+        configCheckbox = tk.Checkbutton(legacyPage, text="Use default config", variable=useDefaultConfig)
+        configEditButton = tk.Button(legacyPage, text="Edit Config", command=lambda: editConfig())
+        processButton = tk.Button(legacyPage, text="Process Data", command=lambda: processData())
+        binButton = tk.Button(legacyPage, text="Convert .bin to .txt", command=lambda: binConvert())
+        configCheckbox.pack(pady=20)
+        configEditButton.pack(pady=20)
+        processButton.pack(pady=20)
+        binButton.pack(pady=20)
+
     #howToButton
     howToButton = tk.Button(dataProcessingToolPage, text="How To", command=lambda: openHowTo())
     howToButton.pack()
@@ -297,10 +311,9 @@ def dataProcessingTool():
     splitButton = tk.Button(buttonFrame, text = "Split large txt file into smaller files", command = lambda: splitFile())
     customButton = tk.Button(buttonFrame, text="Data Visualizer", font=("Helvetica", 12, "bold"),fg="navy",bg="gold", command=lambda: custom())
     indexButton = tk.Button(buttonFrame, text= "Show File Indeces", command=lambda: indices(filePath))
-    processButton = tk.Button(buttonFrame, text="Process Data", command=lambda: processData())
-    configCheckbox = tk.Checkbutton(buttonFrame, text="Use default config", variable=useDefaultConfig)
-    configEditButton = tk.Button(buttonFrame, text="Edit Config", command=lambda: editConfig())
     outputButton = tk.Button(buttonFrame, text = "Choose output destination...", command=lambda: outputDestination())
+    prButton = tk.Button(buttonFrame, text= "Polling Rate Helper", command=lambda: prHelper())
+    legacyButton = tk.Button(buttonFrame, text="Legacy Functions", command=lambda:legacy())
     updateButtons()
 
 def runUpdater():
