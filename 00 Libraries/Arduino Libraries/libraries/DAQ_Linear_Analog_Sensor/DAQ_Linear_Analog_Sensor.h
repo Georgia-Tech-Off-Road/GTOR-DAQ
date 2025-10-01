@@ -1,8 +1,6 @@
 #ifndef DAQ_Linear_Analog_Sensor_H
 #define DAQ_Linear_Analog_Sensor_H
 
-#include "DAQ_Linear_Analog_Sensor.h"
-
 #include <Arduino.h>
 
 class Linear_Analog_Sensor {
@@ -10,7 +8,7 @@ class Linear_Analog_Sensor {
     public:
         Linear_Analog_Sensor(uint8_t resolution, float referenceVoltage, float maximalValue, float minimalValue, float maximalVoltage, float minimalVoltage);
         float computeVoltage(int reading);
-        float computeSensorReading(int reading);
+        virtual float computeSensorReading(int reading);
     private:
         uint8_t _resolution;
         float _referenceVoltage;

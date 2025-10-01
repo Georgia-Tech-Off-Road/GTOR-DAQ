@@ -19,7 +19,7 @@ RPMSensor frontRight(RPM3, FRTEETH);
 RPMSensor aux1(RPM3, FRTEETH);
 
 Linear_Analog_Sensor rearBrakePressure(15, 4.096, 2000, 50, 4.5, 0.5);
-Linear_Analog_Sensor LDSOne(15, 4.096, 8.1, 0, 3.316, 0.006);
+Linear_Analog_Sensor LDSOne(15, 4.096, 8, 0, 3.398, 0.00425);
 
 
 void setup() {
@@ -182,6 +182,7 @@ void readAnalogValues1() {
         DAQData.setData<cmbtl::LDS>(LDSOne.computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 2;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
+        Serial.printf("%f\n", LDSOne.computeVoltage(ads1.getLastConversionResults()));
         break;
       case 2:
         DAQData.setData<cmbtl::Analog3>(ads1.getLastConversionResults());
