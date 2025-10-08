@@ -1,0 +1,149 @@
+Added Component: Designator=J?(691414720003B)
+Add component (AddParameter): Name = "Color"; Value = "Grey, White"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Material"; Value = "Brass"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Plating"; Value = "Brass"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Current"; Value = "15A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Current Rating"; Value = "15A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Height"; Value = "12.9mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Housing Material"; Value = "Nylon"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Lead Pitch"; Value = "5mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Length"; Value = "14.3mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Operating Temperature"; Value = "105°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Min Operating Temperature"; Value = "-40°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mount"; Value = "Through Hole"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "NexarPartId"; Value = "27030815"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Contacts"; Value = "3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Levels"; Value = "1"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Pins"; Value = "3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Positions Per Level"; Value = "3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Packaging"; Value = "Box"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Pitch"; Value = "5.0038mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Plating"; Value = "Steel"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RoHS"; Value = "Compliant"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Stripping Length"; Value = "-7mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Termination"; Value = "Screwless"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage"; Value = "300V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Width"; Value = "16mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Wire Gauge (Max)"; Value = "28AWG"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Wire Gauge (Min)"; Value = "12AWG"; VariantName = "[No Variations]"
+Added Component: Designator=J?(691414720003B)
+Add component (AddParameter): Name = "Color"; Value = "Grey, White"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Material"; Value = "Brass"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Plating"; Value = "Brass"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Current"; Value = "15A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Current Rating"; Value = "15A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Height"; Value = "12.9mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Housing Material"; Value = "Nylon"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Lead Pitch"; Value = "5mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Length"; Value = "14.3mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Operating Temperature"; Value = "105°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Min Operating Temperature"; Value = "-40°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mount"; Value = "Through Hole"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "NexarPartId"; Value = "27030815"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Contacts"; Value = "3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Levels"; Value = "1"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Pins"; Value = "3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Positions Per Level"; Value = "3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Packaging"; Value = "Box"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Pitch"; Value = "5.0038mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Plating"; Value = "Steel"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RoHS"; Value = "Compliant"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Stripping Length"; Value = "-7mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Termination"; Value = "Screwless"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage"; Value = "300V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Width"; Value = "16mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Wire Gauge (Max)"; Value = "28AWG"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Wire Gauge (Min)"; Value = "12AWG"; VariantName = "[No Variations]"
+Added Component: Designator=J?(691414720003B)
+Add component (AddParameter): Name = "Color"; Value = "Grey, White"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Material"; Value = "Brass"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Plating"; Value = "Brass"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Current"; Value = "15A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Current Rating"; Value = "15A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Height"; Value = "12.9mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Housing Material"; Value = "Nylon"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Lead Pitch"; Value = "5mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Length"; Value = "14.3mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Operating Temperature"; Value = "105°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Min Operating Temperature"; Value = "-40°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mount"; Value = "Through Hole"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "NexarPartId"; Value = "27030815"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Contacts"; Value = "3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Levels"; Value = "1"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Pins"; Value = "3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Positions Per Level"; Value = "3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Packaging"; Value = "Box"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Pitch"; Value = "5.0038mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Plating"; Value = "Steel"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RoHS"; Value = "Compliant"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Stripping Length"; Value = "-7mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Termination"; Value = "Screwless"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage"; Value = "300V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Width"; Value = "16mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Wire Gauge (Max)"; Value = "28AWG"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Wire Gauge (Min)"; Value = "12AWG"; VariantName = "[No Variations]"
+Added Component: Designator=J?(691414720003B)
+Add component (AddParameter): Name = "Color"; Value = "Grey, White"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Material"; Value = "Brass"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Plating"; Value = "Brass"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Current"; Value = "15A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Current Rating"; Value = "15A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Height"; Value = "12.9mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Housing Material"; Value = "Nylon"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Lead Pitch"; Value = "5mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Length"; Value = "14.3mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Operating Temperature"; Value = "105°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Min Operating Temperature"; Value = "-40°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mount"; Value = "Through Hole"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "NexarPartId"; Value = "27030815"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Contacts"; Value = "3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Levels"; Value = "1"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Pins"; Value = "3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Positions Per Level"; Value = "3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Packaging"; Value = "Box"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Pitch"; Value = "5.0038mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Plating"; Value = "Steel"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RoHS"; Value = "Compliant"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Stripping Length"; Value = "-7mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Termination"; Value = "Screwless"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage"; Value = "300V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Width"; Value = "16mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Wire Gauge (Max)"; Value = "28AWG"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Wire Gauge (Min)"; Value = "12AWG"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=NetIC?_55 Pin=J?-1
+Added Pin To Net: NetName=NetIC?_55 Pin=J?-1
+Added Pin To Net: NetName=NetIC?_55 Pin=J?-1
+Added Pin To Net: NetName=NetIC?_55 Pin=J?-1
+Added Pin To Net: NetName=NetIC?_55 Pin=J?-1
+Added Pin To Net: NetName=NetIC?_55 Pin=J?-1
+Added Pin To Net: NetName=NetIC?_55 Pin=J?-1
+Added Pin To Net: NetName=NetIC?_55 Pin=J?-1
+Added Pin To Net: NetName=GND Pin=J?-3
+Added Pin To Net: NetName=GND Pin=J?-3
+Added Pin To Net: NetName=GND Pin=J?-3
+Added Pin To Net: NetName=GND Pin=J?-3
+Added Pin To Net: NetName=GND Pin=J?-3
+Added Pin To Net: NetName=GND Pin=J?-3
+Added Pin To Net: NetName=NetIC?_18 Pin=IC?-18
+Added Pin To Net: NetName=NetIC?_18 Pin=J?-2
+Added Pin To Net: NetName=NetIC?_18 Pin=J?-2
+Added Net: Name=NetIC?_18
+Added Pin To Net: NetName=NetIC?_19 Pin=IC?-19
+Added Pin To Net: NetName=NetIC?_19 Pin=J?-2
+Added Pin To Net: NetName=NetIC?_19 Pin=J?-2
+Added Net: Name=NetIC?_19
+Added Pin To Net: NetName=NetIC?_20 Pin=IC?-20
+Added Pin To Net: NetName=NetIC?_20 Pin=J?-2
+Added Pin To Net: NetName=NetIC?_20 Pin=J?-2
+Added Net: Name=NetIC?_20
+Added Pin To Net: NetName=NetIC?_21 Pin=IC?-21
+Added Pin To Net: NetName=NetIC?_21 Pin=J?-2
+Added Pin To Net: NetName=NetIC?_21 Pin=J?-2
+Added Net: Name=NetIC?_21
+Added Member To Class: ClassName=Schematic Member=Component J? 691414720003B
+Added Member To Class: ClassName=Schematic Member=Component J? 691414720003B
+Added Member To Class: ClassName=Schematic Member=Component J? 691414720003B
+Added Member To Class: ClassName=Schematic Member=Component J? 691414720003B
+Added Member To Class: ClassName=Schematic Member=Component J? 691414720003B
+Added Member To Class: ClassName=Schematic Member=Component J? 691414720003B
+Added Member To Class: ClassName=Schematic Member=Component J? 691414720003B
