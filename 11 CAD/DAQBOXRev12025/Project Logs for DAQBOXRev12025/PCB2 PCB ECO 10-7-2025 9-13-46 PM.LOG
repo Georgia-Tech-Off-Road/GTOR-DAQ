@@ -1,0 +1,24 @@
+Change Component Designator: OldDesignator=J? NewDesignator=14
+Change Component Designator: OldDesignator=J? NewDesignator=15
+Change Component Designator: OldDesignator=J? NewDesignator=16
+Change Component Designator: OldDesignator=J? NewDesignator=17
+Change Component Designator: OldDesignator=J? NewDesignator=18
+Change Component Designator: OldDesignator=J? NewDesignator=19
+Change Component Designator: OldDesignator=J? NewDesignator=20
+Change Component Designator: OldDesignator=J? NewDesignator=21
+Change Net Name : Old Net Name=NetIC?_14 New Net Name=Net14_2
+Change Net Name : Old Net Name=NetIC?_15 New Net Name=Net15_2
+Change Net Name : Old Net Name=NetIC?_16 New Net Name=Net16_2
+Change Net Name : Old Net Name=NetIC?_17 New Net Name=Net17_2
+Change Net Name : Old Net Name=NetIC?_18 New Net Name=Net18_2
+Change Net Name : Old Net Name=NetIC?_19 New Net Name=Net19_2
+Change Net Name : Old Net Name=NetIC?_20 New Net Name=Net20_2
+Change Net Name : Old Net Name=NetIC?_21 New Net Name=Net21_2
+Change Net Name : Old Net Name=NetIC?_55 New Net Name=Net14_1
+Added Member To Class: ClassName=Schematic Member=Component 14 691414720003B
+Added Member To Class: ClassName=Schematic Member=Component 15 691414720003B
+Added Member To Class: ClassName=Schematic Member=Component 16 691414720003B
+Added Member To Class: ClassName=Schematic Member=Component 18 691414720003B
+Added Member To Class: ClassName=Schematic Member=Component 19 691414720003B
+Added Member To Class: ClassName=Schematic Member=Component 20 691414720003B
+Added Member To Class: ClassName=Schematic Member=Component 21 691414720003B

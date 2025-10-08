@@ -1,0 +1,17 @@
+Added Component: Designator=Clock Generator(XTAL_AMPMAFB-50.0000T)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/AMPMAFB-50.0000T/Abracon/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Abracon Corporation"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "AMPMAFB-50.0000T"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "Package"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/AMPMAFB-50.0000T/Abracon/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=Clock Generator-2
+Added Pin To Net: NetName=NetADS1256_16 Pin=ADS1256-16
+Added Pin To Net: NetName=NetADS1256_16 Pin=Clock Generator-1
+Added Pin To Net: NetName=NetADS1256_16 Pin=Clock Generator-4
+Added Pin To Net: NetName=NetADS1256_16 Pin=Teensy 4.1-42
+Added Net: Name=NetADS1256_16
+Added Pin To Net: NetName=NetADS1256_19 Pin=ADS1256-19
+Added Pin To Net: NetName=NetADS1256_19 Pin=Clock Generator-3
+Added Net: Name=NetADS1256_19
+Added Member To Class: ClassName=Schematic Member=Component Clock Generator AMPMAFB-50.0000T
