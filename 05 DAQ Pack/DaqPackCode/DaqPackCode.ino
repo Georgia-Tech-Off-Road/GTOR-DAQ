@@ -18,6 +18,9 @@ RPMSensor frontLeft(RPM2, FLTEETH);
 RPMSensor frontRight(RPM3, FRTEETH);
 RPMSensor aux1(RPM3, FRTEETH);
 
+Linear_Analog_Sensor rearBrakePressure(15, 4.096, 2000, 50, 4.5, 0.5);
+Linear_Analog_Sensor LDSOne(15, 4.096, 8.1, 0, 3.316, 0.006);
+
 
 void setup() {
   //init temp monitor
@@ -96,7 +99,7 @@ void dataAquisitionAndSavingLoop() {
       } else {
         outputFile.printf(",%s", DAQData.serializeDataToJSON().c_str());
       }
-      //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
+      Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
     }
     //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
     if (engineRPM.RPMUpdateFlag) {
@@ -171,12 +174,12 @@ void updateAnalogValueFlag1() {
 void readAnalogValues1() {
   switch (currentAnalogSensor1) {
       case 0:
-        DAQData.setData<cmbtl::Analog1>(ads1.getLastConversionResults());
+        DAQData.setData<cmbtl::Analog1>(rearBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 1;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
         break;
       case 1:
-        DAQData.setData<cmbtl::Analog2>(ads1.getLastConversionResults());
+        DAQData.setData<cmbtl::Analog2>(LDSOne.computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 2;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
