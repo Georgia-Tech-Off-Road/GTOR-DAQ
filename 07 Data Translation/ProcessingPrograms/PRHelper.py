@@ -7,24 +7,23 @@ import pandas as pd
 import matplotlib.pyplot as plt
 # find the polling rate receives a json list, a starting index, and an ending index
 
-def PollingRateList(filePath, prPage):
-    sensorType = input("Type the string of the sensor you want to graph (use Show File Indeces button): ")
+def PollingRateList(filePath, prPage, sensorType):
+    #sensorType = input("Type the string of the sensor you want to graph (use Show File Indeces button): ")
     with open(filePath,"r") as infile:
         text = infile.read()
         data = json.loads(text)
         df = pd.json_normalize(data)
 
-    df["deltaSec"] = df["sec"].shift(-1) - df["sec"] #deltaSec is the difference between
-    df["pollingrate"] = 1 / df["deltaSec"] #converts seconds to Hertz (Polling Rates!)
-    startTime = df['microsec'].iloc[0] #converts absolute time to relative time
-    df['microsec'] = df['microsec'] - startTime #so the time starts at 0
-    time = df['microsec']/(1e6) #converts seconds to microseconds
-    x = time #assigns the x-axis to microseconds column
-    ySensor = df[sensorType] #assigns left y-axis to sensor value
+    df["deltaSec"] = (df['sec'].shift(-1) + df['microsec'].shift(-1)/1e6) - (df['sec'] + df['microsec']/1e6) #deltaSec is the difference between
+    df["pollingrate"] = 1 / df['deltaSec'] #converts seconds to Hertz (Polling Rates!)
+    startTime = (df['sec'].iloc[0] + df['microsec'].iloc[0]/1e6) #converts absolute time to relative time
+    df["time"] = (df['sec'] + df['microsec']/1e6) - startTime #so the time starts at 0
+    x = df['time'] #assigns the x-axis to microseconds column
+    ySensor = df.iloc[:, sensorType]  # gets the actual data from the column index
     yPolling = df["pollingrate"] #assigns right y-axis to polling rate
     fig, ax1 = plt.subplots(figsize=(8,5)) #creates plot based on figure and axes
     ax1.plot(x, ySensor, color="tab:blue", marker="o", label="Sensor Value") #plots sensor values with time
-    ax1.set_xlabel("Microseconds")
+    ax1.set_xlabel("Seconds")
     ax1.set_ylabel("Sensor Value", color="tab:blue")
     ax1.tick_params(axis="y", labelcolor="tab:blue")    #formatting...
     ax2 = ax1.twinx()
@@ -32,9 +31,10 @@ def PollingRateList(filePath, prPage):
     ax2.set_ylabel("Polling Rate (Hz)", color="tab:red")
     ax2.tick_params(axis="y", labelcolor="tab:red")     #formatting...
 
-    plt.title("Sensor Value, PR vs. Microseconds") #titles graph
+    plt.title("Sensor Value, PR vs. Seconds") #titles graph
     plt.grid(True) #creates grid
     plt.show() #displays plot
+
 
     prPage.destroy() #kills window dead gone bye bye
 
