@@ -10,12 +10,16 @@
 #include <DAQSensors.h>
 #include <DAQPackets.h>
 
+using namespace cmbtl::test;
+
 // Define number of teeth in one place for easy modification
 #define NUM_TESTING_TEETH 22
 
 #define BAUD 230400
 
 #define serialMonitor Serial
+
+int mainThread;
 
 //declare all setup functions
 inline void initDataStructValues();
@@ -118,4 +122,10 @@ inline void setupTeensyTime() {
 time_t getTeensy3Time()
 {
   return Teensy3Clock.get();
+}
+
+inline void initializeThreads() {
+  threads.setTimeSlice(10);
+
+  mainThread = threads.addThread(dataAquisitionAndSavingLoop);
 }

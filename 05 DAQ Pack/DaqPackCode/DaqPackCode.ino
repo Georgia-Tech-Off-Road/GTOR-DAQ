@@ -63,6 +63,8 @@ void setup() {
   //start ADCs
   ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
   dataAquisitionAndSavingLoop();
+
+  initializeThreads();
 }
 
 //do nothing here
