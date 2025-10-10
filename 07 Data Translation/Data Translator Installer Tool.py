@@ -1,11 +1,13 @@
 import os
-
-#Imports necessary modules to run this code
-os.system("py -m pip install --no-input requests")
-os.system("py -m pip install --no-input importlib.util")
-
-import requests #for accessing API
 import importlib.util #for importing
+
+def install(package):
+    subprocess.run([sys.executable, "-m", "pip", "install", "--no-input", package], check=True)
+try:
+    import requests
+except ImportError:
+    install("requests")
+
 
 #List of libraries/modules to be installed
 libraryNameList = []
@@ -90,7 +92,10 @@ for library in libraryNameList:
     if importlib.util.find_spec(library):
         print(f"{library} is already installed. Skipping...")
         continue
-    result = os.system(f"py -m pip install --no-input {library}")
+    try:
+        result = os.system(f"py -m pip install --no-input {library}")
+    except:
+        result = os.system(f"python -m pip install --no-input {library}")
     if result == 0:
         print(f"Successfully installed {library}.")
     else:
