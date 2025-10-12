@@ -8,7 +8,6 @@ try:
 except ImportError:
     install("requests")
 
-
 #List of libraries/modules to be installed
 libraryNameList = []
 
@@ -72,7 +71,7 @@ def downloadFolder(gitUrl, folderPath, saveFolder):
 #User inputs, github URL
 gitUrl = "https://github.com/Georgia-Tech-Off-Road/GTOR-DAQ"
 saveFolder = input(r"Enter the local folder path where the file will be saved (e.g., C:\Users\<name>\Documents): ")
-folderPath = input(r"Enter the folder path within the GitHub repository that you want to download (e.g., 7%20Data%20Translation). If you want to download the Data Translation folder, type data: ")
+folderPath = input(r"Enter the folder path within the GitHub repository that you want to download (e.g., 07%20Data%20Translation). If you want to download the Data Translation folder, type data: ")
 
 #Defaults to Data Translation if user inputs 'data'
 if folderPath == "data":
