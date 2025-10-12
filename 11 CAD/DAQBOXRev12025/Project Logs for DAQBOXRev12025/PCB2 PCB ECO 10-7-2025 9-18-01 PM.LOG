@@ -1,0 +1,321 @@
+Removed Pin From Net: NetName=GND Pin=14-3
+Removed Pin From Net: NetName=GND Pin=14-3
+Removed Pin From Net: NetName=GND Pin=15-3
+Removed Pin From Net: NetName=GND Pin=15-3
+Removed Pin From Net: NetName=GND Pin=16-3
+Removed Pin From Net: NetName=GND Pin=16-3
+Removed Pin From Net: NetName=GND Pin=17-3
+Removed Pin From Net: NetName=GND Pin=17-3
+Removed Pin From Net: NetName=GND Pin=18-3
+Removed Pin From Net: NetName=GND Pin=18-3
+Removed Pin From Net: NetName=GND Pin=19-3
+Removed Pin From Net: NetName=GND Pin=19-3
+Removed Pin From Net: NetName=GND Pin=20-3
+Removed Pin From Net: NetName=GND Pin=20-3
+Change Component Footprint: Designator=14 Old Footprint=691414720003B New Footprint=PM_5_00_90_03
+Change Component Footprint: Designator=15 Old Footprint=691414720003B New Footprint=PM_5_00_90_03
+Change Component Footprint: Designator=16 Old Footprint=691414720003B New Footprint=PM_5_00_90_03
+Change Component Footprint: Designator=17 Old Footprint=691414720003B New Footprint=PM_5_00_90_03
+Change Component Footprint: Designator=18 Old Footprint=691414720003B New Footprint=PM_5_00_90_03
+Change Component Footprint: Designator=19 Old Footprint=691414720003B New Footprint=PM_5_00_90_03
+Change Component Footprint: Designator=20 Old Footprint=691414720003B New Footprint=PM_5_00_90_03
+Change Component Footprint: Designator=21 Old Footprint=691414720003B New Footprint=PM_5_00_90_03
+Change Component Comment : Designator=14 Old Comment=691414720003B New Comment=1791620000
+Change Component Comment : Designator=15 Old Comment=691414720003B New Comment=1791620000
+Change Component Comment : Designator=16 Old Comment=691414720003B New Comment=1791620000
+Change Component Comment : Designator=17 Old Comment=691414720003B New Comment=1791620000
+Change Component Comment : Designator=18 Old Comment=691414720003B New Comment=1791620000
+Change Component Comment : Designator=19 Old Comment=691414720003B New Comment=1791620000
+Change Component Comment : Designator=20 Old Comment=691414720003B New Comment=1791620000
+Change Component Comment : Designator=21 Old Comment=691414720003B New Comment=1791620000
+Change Managed Component Library Link : Designator=14 Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 Old ItemGUID=3AD198EF-53FC-4E9A-8129-9DE357A14DD9 New ItemGUID=4278E8D5-67ED-4149-9B27-DFB7935DDF81 Old RevisionGUID=73832DA7-195E-4283-8D2D-559E5B8EFA23 New RevisionGUID=3ED386EB-D705-4BFC-B060-DA0DC22455AB
+Change Managed Component Library Link : Designator=15 Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 Old ItemGUID=3AD198EF-53FC-4E9A-8129-9DE357A14DD9 New ItemGUID=4278E8D5-67ED-4149-9B27-DFB7935DDF81 Old RevisionGUID=73832DA7-195E-4283-8D2D-559E5B8EFA23 New RevisionGUID=3ED386EB-D705-4BFC-B060-DA0DC22455AB
+Change Managed Component Library Link : Designator=16 Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 Old ItemGUID=3AD198EF-53FC-4E9A-8129-9DE357A14DD9 New ItemGUID=4278E8D5-67ED-4149-9B27-DFB7935DDF81 Old RevisionGUID=73832DA7-195E-4283-8D2D-559E5B8EFA23 New RevisionGUID=3ED386EB-D705-4BFC-B060-DA0DC22455AB
+Change Managed Component Library Link : Designator=17 Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 Old ItemGUID=3AD198EF-53FC-4E9A-8129-9DE357A14DD9 New ItemGUID=4278E8D5-67ED-4149-9B27-DFB7935DDF81 Old RevisionGUID=73832DA7-195E-4283-8D2D-559E5B8EFA23 New RevisionGUID=3ED386EB-D705-4BFC-B060-DA0DC22455AB
+Change Managed Component Library Link : Designator=18 Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 Old ItemGUID=3AD198EF-53FC-4E9A-8129-9DE357A14DD9 New ItemGUID=4278E8D5-67ED-4149-9B27-DFB7935DDF81 Old RevisionGUID=73832DA7-195E-4283-8D2D-559E5B8EFA23 New RevisionGUID=3ED386EB-D705-4BFC-B060-DA0DC22455AB
+Change Managed Component Library Link : Designator=19 Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 Old ItemGUID=3AD198EF-53FC-4E9A-8129-9DE357A14DD9 New ItemGUID=4278E8D5-67ED-4149-9B27-DFB7935DDF81 Old RevisionGUID=73832DA7-195E-4283-8D2D-559E5B8EFA23 New RevisionGUID=3ED386EB-D705-4BFC-B060-DA0DC22455AB
+Change Managed Component Library Link : Designator=20 Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 Old ItemGUID=3AD198EF-53FC-4E9A-8129-9DE357A14DD9 New ItemGUID=4278E8D5-67ED-4149-9B27-DFB7935DDF81 Old RevisionGUID=73832DA7-195E-4283-8D2D-559E5B8EFA23 New RevisionGUID=3ED386EB-D705-4BFC-B060-DA0DC22455AB
+Change Managed Component Library Link : Designator=21 Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 Old ItemGUID=3AD198EF-53FC-4E9A-8129-9DE357A14DD9 New ItemGUID=4278E8D5-67ED-4149-9B27-DFB7935DDF81 Old RevisionGUID=73832DA7-195E-4283-8D2D-559E5B8EFA23 New RevisionGUID=3ED386EB-D705-4BFC-B060-DA0DC22455AB
+Change component parameters: Designator = "14" ("14"); Footprint = "691414720003B"; UniqueID = "\AIHRGQMA" ("\AIHRGQMA")
+Change component parameters (AddParameter): Name = "Colour"; Value = "Orange"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1Description"; Value = "Manufacturer URL"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1URL"; Value = "http://www.weidmueller.com/"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2Description"; Value = "URL Link1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2URL"; Value = "http://catalog.weidmueller.com/catalog/Start.do?localeId=en&ObjectID=1791620000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_material"; Value = "Cu-Leg"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_surface"; Value = "tinned"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Insulating_material"; Value = "Wemid (PA)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer"; Value = "Weidmueller"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mounting_onto_the_PCB"; Value = "Solder connection"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "No_of_poles"; Value = "3"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PackageReference"; Value = "PM_5_00_90_03"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Packaging"; Value = "Box"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PartNumber"; Value = "1791620000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_inch"; Value = "0,197 inch"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_mm"; Value = "5 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Qty"; Value = "500 PCS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_current_use_group_B_UL_1059"; Value = "15 A"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_for_surge_voltage_class_pollution_degree_II_2"; Value = "600 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_use_group_B_UL_1059"; Value = "300 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Revision"; Value = "V1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Short_text_for_material"; Value = "PM 5.00/03/90 3.5SN OR BX"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Side_termination_characteristic"; Value = "closed side"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solder_pin_length_mm"; Value = "3,5 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_max_H05_07_V_U"; Value = "2,5 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_min_H05_07_V_U"; Value = "0,13 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "UL_94_flammability_rating"; Value = "V-0"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_max_UL_1059"; Value = "AWG 14"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_min_UL_1059"; Value = "AWG 26"; VariantName = "[No Variations]"
+Change component parameters: Designator = "15" ("15"); Footprint = "691414720003B"; UniqueID = "\WUAZLKNW" ("\WUAZLKNW")
+Change component parameters (AddParameter): Name = "Colour"; Value = "Orange"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1Description"; Value = "Manufacturer URL"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1URL"; Value = "http://www.weidmueller.com/"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2Description"; Value = "URL Link1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2URL"; Value = "http://catalog.weidmueller.com/catalog/Start.do?localeId=en&ObjectID=1791620000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_material"; Value = "Cu-Leg"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_surface"; Value = "tinned"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Insulating_material"; Value = "Wemid (PA)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer"; Value = "Weidmueller"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mounting_onto_the_PCB"; Value = "Solder connection"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "No_of_poles"; Value = "3"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PackageReference"; Value = "PM_5_00_90_03"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Packaging"; Value = "Box"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PartNumber"; Value = "1791620000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_inch"; Value = "0,197 inch"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_mm"; Value = "5 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Qty"; Value = "500 PCS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_current_use_group_B_UL_1059"; Value = "15 A"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_for_surge_voltage_class_pollution_degree_II_2"; Value = "600 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_use_group_B_UL_1059"; Value = "300 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Revision"; Value = "V1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Short_text_for_material"; Value = "PM 5.00/03/90 3.5SN OR BX"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Side_termination_characteristic"; Value = "closed side"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solder_pin_length_mm"; Value = "3,5 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_max_H05_07_V_U"; Value = "2,5 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_min_H05_07_V_U"; Value = "0,13 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "UL_94_flammability_rating"; Value = "V-0"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_max_UL_1059"; Value = "AWG 14"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_min_UL_1059"; Value = "AWG 26"; VariantName = "[No Variations]"
+Change component parameters: Designator = "16" ("16"); Footprint = "691414720003B"; UniqueID = "\QHUSHNLT" ("\QHUSHNLT")
+Change component parameters (AddParameter): Name = "Colour"; Value = "Orange"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1Description"; Value = "Manufacturer URL"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1URL"; Value = "http://www.weidmueller.com/"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2Description"; Value = "URL Link1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2URL"; Value = "http://catalog.weidmueller.com/catalog/Start.do?localeId=en&ObjectID=1791620000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_material"; Value = "Cu-Leg"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_surface"; Value = "tinned"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Insulating_material"; Value = "Wemid (PA)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer"; Value = "Weidmueller"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mounting_onto_the_PCB"; Value = "Solder connection"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "No_of_poles"; Value = "3"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PackageReference"; Value = "PM_5_00_90_03"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Packaging"; Value = "Box"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PartNumber"; Value = "1791620000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_inch"; Value = "0,197 inch"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_mm"; Value = "5 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Qty"; Value = "500 PCS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_current_use_group_B_UL_1059"; Value = "15 A"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_for_surge_voltage_class_pollution_degree_II_2"; Value = "600 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_use_group_B_UL_1059"; Value = "300 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Revision"; Value = "V1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Short_text_for_material"; Value = "PM 5.00/03/90 3.5SN OR BX"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Side_termination_characteristic"; Value = "closed side"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solder_pin_length_mm"; Value = "3,5 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_max_H05_07_V_U"; Value = "2,5 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_min_H05_07_V_U"; Value = "0,13 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "UL_94_flammability_rating"; Value = "V-0"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_max_UL_1059"; Value = "AWG 14"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_min_UL_1059"; Value = "AWG 26"; VariantName = "[No Variations]"
+Change component parameters: Designator = "17" ("17"); Footprint = "691414720003B"; UniqueID = "\CYFLVMNB" ("\CYFLVMNB")
+Change component parameters (AddParameter): Name = "Colour"; Value = "Orange"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1Description"; Value = "Manufacturer URL"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1URL"; Value = "http://www.weidmueller.com/"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2Description"; Value = "URL Link1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2URL"; Value = "http://catalog.weidmueller.com/catalog/Start.do?localeId=en&ObjectID=1791620000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_material"; Value = "Cu-Leg"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_surface"; Value = "tinned"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Insulating_material"; Value = "Wemid (PA)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer"; Value = "Weidmueller"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mounting_onto_the_PCB"; Value = "Solder connection"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "No_of_poles"; Value = "3"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PackageReference"; Value = "PM_5_00_90_03"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Packaging"; Value = "Box"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PartNumber"; Value = "1791620000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_inch"; Value = "0,197 inch"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_mm"; Value = "5 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Qty"; Value = "500 PCS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_current_use_group_B_UL_1059"; Value = "15 A"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_for_surge_voltage_class_pollution_degree_II_2"; Value = "600 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_use_group_B_UL_1059"; Value = "300 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Revision"; Value = "V1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Short_text_for_material"; Value = "PM 5.00/03/90 3.5SN OR BX"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Side_termination_characteristic"; Value = "closed side"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solder_pin_length_mm"; Value = "3,5 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_max_H05_07_V_U"; Value = "2,5 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_min_H05_07_V_U"; Value = "0,13 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "UL_94_flammability_rating"; Value = "V-0"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_max_UL_1059"; Value = "AWG 14"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_min_UL_1059"; Value = "AWG 26"; VariantName = "[No Variations]"
+Change component parameters: Designator = "18" ("18"); Footprint = "691414720003B"; UniqueID = "\CGSKGULK" ("\CGSKGULK")
+Change component parameters (AddParameter): Name = "Colour"; Value = "Orange"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1Description"; Value = "Manufacturer URL"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1URL"; Value = "http://www.weidmueller.com/"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2Description"; Value = "URL Link1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2URL"; Value = "http://catalog.weidmueller.com/catalog/Start.do?localeId=en&ObjectID=1791620000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_material"; Value = "Cu-Leg"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_surface"; Value = "tinned"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Insulating_material"; Value = "Wemid (PA)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer"; Value = "Weidmueller"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mounting_onto_the_PCB"; Value = "Solder connection"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "No_of_poles"; Value = "3"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PackageReference"; Value = "PM_5_00_90_03"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Packaging"; Value = "Box"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PartNumber"; Value = "1791620000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_inch"; Value = "0,197 inch"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_mm"; Value = "5 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Qty"; Value = "500 PCS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_current_use_group_B_UL_1059"; Value = "15 A"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_for_surge_voltage_class_pollution_degree_II_2"; Value = "600 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_use_group_B_UL_1059"; Value = "300 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Revision"; Value = "V1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Short_text_for_material"; Value = "PM 5.00/03/90 3.5SN OR BX"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Side_termination_characteristic"; Value = "closed side"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solder_pin_length_mm"; Value = "3,5 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_max_H05_07_V_U"; Value = "2,5 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_min_H05_07_V_U"; Value = "0,13 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "UL_94_flammability_rating"; Value = "V-0"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_max_UL_1059"; Value = "AWG 14"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_min_UL_1059"; Value = "AWG 26"; VariantName = "[No Variations]"
+Change component parameters: Designator = "19" ("19"); Footprint = "691414720003B"; UniqueID = "\CZVAACVP" ("\CZVAACVP")
+Change component parameters (AddParameter): Name = "Colour"; Value = "Orange"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1Description"; Value = "Manufacturer URL"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1URL"; Value = "http://www.weidmueller.com/"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2Description"; Value = "URL Link1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2URL"; Value = "http://catalog.weidmueller.com/catalog/Start.do?localeId=en&ObjectID=1791620000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_material"; Value = "Cu-Leg"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_surface"; Value = "tinned"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Insulating_material"; Value = "Wemid (PA)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer"; Value = "Weidmueller"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mounting_onto_the_PCB"; Value = "Solder connection"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "No_of_poles"; Value = "3"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PackageReference"; Value = "PM_5_00_90_03"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Packaging"; Value = "Box"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PartNumber"; Value = "1791620000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_inch"; Value = "0,197 inch"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_mm"; Value = "5 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Qty"; Value = "500 PCS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_current_use_group_B_UL_1059"; Value = "15 A"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_for_surge_voltage_class_pollution_degree_II_2"; Value = "600 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_use_group_B_UL_1059"; Value = "300 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Revision"; Value = "V1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Short_text_for_material"; Value = "PM 5.00/03/90 3.5SN OR BX"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Side_termination_characteristic"; Value = "closed side"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solder_pin_length_mm"; Value = "3,5 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_max_H05_07_V_U"; Value = "2,5 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_min_H05_07_V_U"; Value = "0,13 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "UL_94_flammability_rating"; Value = "V-0"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_max_UL_1059"; Value = "AWG 14"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_min_UL_1059"; Value = "AWG 26"; VariantName = "[No Variations]"
+Change component parameters: Designator = "20" ("20"); Footprint = "691414720003B"; UniqueID = "\BRDWNVGM" ("\BRDWNVGM")
+Change component parameters (AddParameter): Name = "Colour"; Value = "Orange"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1Description"; Value = "Manufacturer URL"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1URL"; Value = "http://www.weidmueller.com/"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2Description"; Value = "URL Link1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2URL"; Value = "http://catalog.weidmueller.com/catalog/Start.do?localeId=en&ObjectID=1791620000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_material"; Value = "Cu-Leg"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_surface"; Value = "tinned"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Insulating_material"; Value = "Wemid (PA)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer"; Value = "Weidmueller"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mounting_onto_the_PCB"; Value = "Solder connection"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "No_of_poles"; Value = "3"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PackageReference"; Value = "PM_5_00_90_03"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Packaging"; Value = "Box"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PartNumber"; Value = "1791620000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_inch"; Value = "0,197 inch"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_mm"; Value = "5 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Qty"; Value = "500 PCS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_current_use_group_B_UL_1059"; Value = "15 A"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_for_surge_voltage_class_pollution_degree_II_2"; Value = "600 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_use_group_B_UL_1059"; Value = "300 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Revision"; Value = "V1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Short_text_for_material"; Value = "PM 5.00/03/90 3.5SN OR BX"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Side_termination_characteristic"; Value = "closed side"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solder_pin_length_mm"; Value = "3,5 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_max_H05_07_V_U"; Value = "2,5 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_min_H05_07_V_U"; Value = "0,13 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "UL_94_flammability_rating"; Value = "V-0"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_max_UL_1059"; Value = "AWG 14"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_min_UL_1059"; Value = "AWG 26"; VariantName = "[No Variations]"
+Change component parameters: Designator = "21" ("21"); Footprint = "691414720003B"; UniqueID = "\BZEXKTGZ" ("\BZEXKTGZ")
+Change component parameters (AddParameter): Name = "Colour"; Value = "Orange"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1Description"; Value = "Manufacturer URL"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1URL"; Value = "http://www.weidmueller.com/"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2Description"; Value = "URL Link1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2URL"; Value = "http://catalog.weidmueller.com/catalog/Start.do?localeId=en&ObjectID=1791620000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_material"; Value = "Cu-Leg"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_surface"; Value = "tinned"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Insulating_material"; Value = "Wemid (PA)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer"; Value = "Weidmueller"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mounting_onto_the_PCB"; Value = "Solder connection"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "No_of_poles"; Value = "3"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PackageReference"; Value = "PM_5_00_90_03"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Packaging"; Value = "Box"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PartNumber"; Value = "1791620000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_inch"; Value = "0,197 inch"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_mm"; Value = "5 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Qty"; Value = "500 PCS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_current_use_group_B_UL_1059"; Value = "15 A"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_for_surge_voltage_class_pollution_degree_II_2"; Value = "600 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_use_group_B_UL_1059"; Value = "300 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Revision"; Value = "V1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Short_text_for_material"; Value = "PM 5.00/03/90 3.5SN OR BX"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Side_termination_characteristic"; Value = "closed side"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solder_pin_length_mm"; Value = "3,5 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_max_H05_07_V_U"; Value = "2,5 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_min_H05_07_V_U"; Value = "0,13 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "UL_94_flammability_rating"; Value = "V-0"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_max_UL_1059"; Value = "AWG 14"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_min_UL_1059"; Value = "AWG 26"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=14-A3
+Added Pin To Net: NetName=GND Pin=15-A3
+Added Pin To Net: NetName=GND Pin=16-A3
+Added Pin To Net: NetName=GND Pin=17-A3
+Added Pin To Net: NetName=GND Pin=18-A3
+Added Pin To Net: NetName=GND Pin=19-A3
+Added Pin To Net: NetName=GND Pin=20-A3
+Added Pin To Net: NetName=GND Pin=21-A3
+Added Pin To Net: NetName=Net14_A1 Pin=14-A1
+Added Pin To Net: NetName=Net14_A1 Pin=15-A1
+Added Pin To Net: NetName=Net14_A1 Pin=16-A1
+Added Pin To Net: NetName=Net14_A1 Pin=17-A1
+Added Pin To Net: NetName=Net14_A1 Pin=18-A1
+Added Pin To Net: NetName=Net14_A1 Pin=19-A1
+Added Pin To Net: NetName=Net14_A1 Pin=20-A1
+Added Pin To Net: NetName=Net14_A1 Pin=21-A1
+Added Pin To Net: NetName=Net14_A1 Pin=IC?-55
+Added Net: Name=Net14_A1
+Added Pin To Net: NetName=Net14_A2 Pin=14-A2
+Added Pin To Net: NetName=Net14_A2 Pin=IC?-14
+Added Net: Name=Net14_A2
+Added Pin To Net: NetName=Net15_A2 Pin=15-A2
+Added Pin To Net: NetName=Net15_A2 Pin=IC?-15
+Added Net: Name=Net15_A2
+Added Pin To Net: NetName=Net16_A2 Pin=16-A2
+Added Pin To Net: NetName=Net16_A2 Pin=IC?-16
+Added Net: Name=Net16_A2
+Added Pin To Net: NetName=Net17_A2 Pin=17-A2
+Added Pin To Net: NetName=Net17_A2 Pin=IC?-17
+Added Net: Name=Net17_A2
+Added Pin To Net: NetName=Net18_A2 Pin=18-A2
+Added Pin To Net: NetName=Net18_A2 Pin=IC?-18
+Added Net: Name=Net18_A2
+Added Pin To Net: NetName=Net19_A2 Pin=19-A2
+Added Pin To Net: NetName=Net19_A2 Pin=IC?-19
+Added Net: Name=Net19_A2
+Added Pin To Net: NetName=Net20_A2 Pin=20-A2
+Added Pin To Net: NetName=Net20_A2 Pin=IC?-20
+Added Net: Name=Net20_A2
+Added Pin To Net: NetName=Net21_A2 Pin=21-A2
+Added Pin To Net: NetName=Net21_A2 Pin=IC?-21
+Added Net: Name=Net21_A2
+Added Member To Class: ClassName=Schematic Member=Component 17 1791620000

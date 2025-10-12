@@ -1,0 +1,166 @@
+Removed Pin From Net: NetName=NetADC Clock Generator_1 Pin=CAN-1
+Removed Pin From Net: NetName=NetADC Clock Generator_1 Pin=CAN-1
+Removed Pin From Net: NetName=NetADC Clock Generator_1 Pin=CAN-1
+Removed Pin From Net: NetName=NetADC Clock Generator_1 Pin=CAN-1
+Removed Pin From Net: NetName=GND Pin=CAN-4
+Removed Pin From Net: NetName=GND Pin=CAN-4
+Removed Pin From Net: NetName=GND Pin=CAN-4
+Removed Pin From Net: NetName=GND Pin=CAN-4
+Removed Pin From Net: NetName=Net14_A1 Pin=I2C-1
+Removed Pin From Net: NetName=Net14_A1 Pin=I2C-1
+Removed Pin From Net: NetName=Net14_A1 Pin=I2C-1
+Removed Pin From Net: NetName=Net14_A1 Pin=I2C-1
+Removed Pin From Net: NetName=GND Pin=I2C-4
+Removed Pin From Net: NetName=GND Pin=I2C-4
+Removed Pin From Net: NetName=GND Pin=I2C-4
+Removed Pin From Net: NetName=GND Pin=I2C-4
+Removed Pin From Net: NetName=Net14_A1 Pin=UART-1
+Removed Pin From Net: NetName=Net14_A1 Pin=UART-1
+Removed Pin From Net: NetName=Net14_A1 Pin=UART-1
+Removed Pin From Net: NetName=Net14_A1 Pin=UART-1
+Removed Pin From Net: NetName=NetTeensy 4.1_7 Pin=UART-2
+Removed Pin From Net: NetName=NetTeensy 4.1_7 Pin=UART-2
+Removed Pin From Net: NetName=NetTeensy 4.1_7 Pin=UART-2
+Removed Pin From Net: NetName=NetTeensy 4.1_7 Pin=UART-2
+Removed Pin From Net: NetName=NetTeensy 4.1_8 Pin=UART-3
+Removed Pin From Net: NetName=NetTeensy 4.1_8 Pin=UART-3
+Removed Pin From Net: NetName=NetTeensy 4.1_8 Pin=UART-3
+Removed Pin From Net: NetName=NetTeensy 4.1_8 Pin=UART-3
+Removed Pin From Net: NetName=GND Pin=UART-4
+Removed Pin From Net: NetName=GND Pin=UART-4
+Removed Pin From Net: NetName=GND Pin=UART-4
+Removed Pin From Net: NetName=GND Pin=UART-4
+Change Component Footprint: Designator=CAN Old Footprint=FP-1932601-MFG New Footprint=LUP_10_16_90_04
+Change Component Footprint: Designator=I2C Old Footprint=FP-1932601-MFG New Footprint=LUP_10_16_90_04
+Change Component Footprint: Designator=UART Old Footprint=FP-1932601-MFG New Footprint=LUP_10_16_90_04
+Change Component Comment : Designator=CAN Old Comment=1932601 New Comment=1839290000
+Change Component Comment : Designator=I2C Old Comment=1932601 New Comment=1839290000
+Change Component Comment : Designator=UART Old Comment=1932601 New Comment=1839290000
+Change Managed Component Library Link : Designator=CAN Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 Old ItemGUID=ECF0C877-AFEB-4C47-BC82-EA77B70221A1 New ItemGUID=85213908-A7EB-4FAC-8B58-C2662E21A4BF Old RevisionGUID=9F73CB8C-AA71-4788-B446-5C406AC022DF New RevisionGUID=BD8B2D4E-3A2B-4137-BEF0-EBB21DD6D78B
+Change Managed Component Library Link : Designator=I2C Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 Old ItemGUID=ECF0C877-AFEB-4C47-BC82-EA77B70221A1 New ItemGUID=85213908-A7EB-4FAC-8B58-C2662E21A4BF Old RevisionGUID=9F73CB8C-AA71-4788-B446-5C406AC022DF New RevisionGUID=BD8B2D4E-3A2B-4137-BEF0-EBB21DD6D78B
+Change Managed Component Library Link : Designator=UART Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 Old ItemGUID=ECF0C877-AFEB-4C47-BC82-EA77B70221A1 New ItemGUID=85213908-A7EB-4FAC-8B58-C2662E21A4BF Old RevisionGUID=9F73CB8C-AA71-4788-B446-5C406AC022DF New RevisionGUID=BD8B2D4E-3A2B-4137-BEF0-EBB21DD6D78B
+Change component parameters: Designator = "CAN" ("CAN"); Footprint = "FP-1932601-MFG"; UniqueID = "\ZQIODANY" ("\ZQIODANY")
+Change component parameters (AddParameter): Name = "Colour"; Value = "Pebble grey"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1Description"; Value = "Manufacturer URL"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1URL"; Value = "http://www.weidmueller.com/"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2Description"; Value = "URL Link1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2URL"; Value = "http://catalog.weidmueller.com/catalog/Start.do?localeId=en&ObjectID=1839290000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_material"; Value = "E-Cu"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_surface"; Value = "tinned"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Insulating_material"; Value = "Wemid (PA)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer"; Value = "Weidmueller"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mounting_onto_the_PCB"; Value = "Solder connection"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "No_of_poles"; Value = "4"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PackageReference"; Value = "LUP_10_16_90_04"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Packaging"; Value = "Box"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PartNumber"; Value = "1839290000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_inch"; Value = "0,4 inch"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_mm"; Value = "10,16 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Qty"; Value = "20 PCS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_current_min_no_of_poles_TU_20_deg_C"; Value = "76 A"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_current_use_group_B_UL_1059"; Value = "58 A"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_for_surge_voltage_class_pollution_degree_II_2"; Value = "1000 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_use_group_B_UL_1059"; Value = "300 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Revision"; Value = "V1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Short_text_for_material"; Value = "LUP 10.16/04/90 3.2SN GY BX"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Side_termination_characteristic"; Value = "closed side"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solder_pin_length_mm"; Value = "3,2 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_max_H05_07_V_U"; Value = "16 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_min_H05_07_V_U"; Value = "0,5 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "UL_94_flammability_rating"; Value = "V-0"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_max_UL_1059"; Value = "AWG 6"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_min_UL_1059"; Value = "AWG 26"; VariantName = "[No Variations]"
+Change component parameters: Designator = "I2C" ("I2C"); Footprint = "FP-1932601-MFG"; UniqueID = "\XNUONVAG" ("\XNUONVAG")
+Change component parameters (AddParameter): Name = "Colour"; Value = "Pebble grey"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1Description"; Value = "Manufacturer URL"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1URL"; Value = "http://www.weidmueller.com/"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2Description"; Value = "URL Link1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2URL"; Value = "http://catalog.weidmueller.com/catalog/Start.do?localeId=en&ObjectID=1839290000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_material"; Value = "E-Cu"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_surface"; Value = "tinned"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Insulating_material"; Value = "Wemid (PA)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer"; Value = "Weidmueller"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mounting_onto_the_PCB"; Value = "Solder connection"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "No_of_poles"; Value = "4"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PackageReference"; Value = "LUP_10_16_90_04"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Packaging"; Value = "Box"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PartNumber"; Value = "1839290000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_inch"; Value = "0,4 inch"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_mm"; Value = "10,16 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Qty"; Value = "20 PCS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_current_min_no_of_poles_TU_20_deg_C"; Value = "76 A"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_current_use_group_B_UL_1059"; Value = "58 A"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_for_surge_voltage_class_pollution_degree_II_2"; Value = "1000 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_use_group_B_UL_1059"; Value = "300 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Revision"; Value = "V1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Short_text_for_material"; Value = "LUP 10.16/04/90 3.2SN GY BX"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Side_termination_characteristic"; Value = "closed side"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solder_pin_length_mm"; Value = "3,2 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_max_H05_07_V_U"; Value = "16 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_min_H05_07_V_U"; Value = "0,5 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "UL_94_flammability_rating"; Value = "V-0"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_max_UL_1059"; Value = "AWG 6"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_min_UL_1059"; Value = "AWG 26"; VariantName = "[No Variations]"
+Change component parameters: Designator = "UART" ("UART"); Footprint = "FP-1932601-MFG"; UniqueID = "\UMANVSZG" ("\UMANVSZG")
+Change component parameters (AddParameter): Name = "Colour"; Value = "Pebble grey"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1Description"; Value = "Manufacturer URL"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1URL"; Value = "http://www.weidmueller.com/"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2Description"; Value = "URL Link1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink2URL"; Value = "http://catalog.weidmueller.com/catalog/Start.do?localeId=en&ObjectID=1839290000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_material"; Value = "E-Cu"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Contact_surface"; Value = "tinned"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Insulating_material"; Value = "Wemid (PA)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer"; Value = "Weidmueller"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mounting_onto_the_PCB"; Value = "Solder connection"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "No_of_poles"; Value = "4"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PackageReference"; Value = "LUP_10_16_90_04"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Packaging"; Value = "Box"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "PartNumber"; Value = "1839290000"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_inch"; Value = "0,4 inch"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch_mm"; Value = "10,16 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Qty"; Value = "20 PCS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_current_min_no_of_poles_TU_20_deg_C"; Value = "76 A"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_current_use_group_B_UL_1059"; Value = "58 A"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_for_surge_voltage_class_pollution_degree_II_2"; Value = "1000 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Rated_voltage_use_group_B_UL_1059"; Value = "300 V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Revision"; Value = "V1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Short_text_for_material"; Value = "LUP 10.16/04/90 3.2SN GY BX"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Side_termination_characteristic"; Value = "closed side"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solder_pin_length_mm"; Value = "3,2 mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_max_H05_07_V_U"; Value = "16 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Solid_min_H05_07_V_U"; Value = "0,5 mm²"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "UL_94_flammability_rating"; Value = "V-0"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_max_UL_1059"; Value = "AWG 6"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wire_cross_section_AWG_min_UL_1059"; Value = "AWG 26"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=NetADC Clock Generator_1 Pin=CAN-A1
+Added Pin To Net: NetName=NetADC Clock Generator_1 Pin=CAN-A1
+Added Pin To Net: NetName=GND Pin=CAN-A4
+Added Pin To Net: NetName=GND Pin=CAN-A4
+Added Pin To Net: NetName=Net14_A1 Pin=I2C-A1
+Added Pin To Net: NetName=Net14_A1 Pin=I2C-A1
+Added Pin To Net: NetName=GND Pin=I2C-A4
+Added Pin To Net: NetName=GND Pin=I2C-A4
+Added Pin To Net: NetName=Net14_A1 Pin=UART-A1
+Added Pin To Net: NetName=Net14_A1 Pin=UART-A1
+Added Pin To Net: NetName=NetTeensy 4.1_7 Pin=UART-A2
+Added Pin To Net: NetName=NetTeensy 4.1_7 Pin=UART-A2
+Added Pin To Net: NetName=NetTeensy 4.1_8 Pin=UART-A3
+Added Pin To Net: NetName=NetTeensy 4.1_8 Pin=UART-A3
+Added Pin To Net: NetName=GND Pin=UART-A4
+Added Pin To Net: NetName=GND Pin=UART-A4
+Added Pin To Net: NetName=NetCAN_A2 Pin=CAN-A2
+Added Pin To Net: NetName=NetCAN_A2 Pin=CAN-A2
+Added Pin To Net: NetName=NetCAN_A2 Pin=Teensy 4.1-30
+Added Net: Name=NetCAN_A2
+Added Pin To Net: NetName=NetCAN_A3 Pin=CAN-A3
+Added Pin To Net: NetName=NetCAN_A3 Pin=CAN-A3
+Added Pin To Net: NetName=NetCAN_A3 Pin=Teensy 4.1-31
+Added Net: Name=NetCAN_A3
+Added Pin To Net: NetName=NetI2C_A2 Pin=I2C-A2
+Added Pin To Net: NetName=NetI2C_A2 Pin=I2C-A2
+Added Pin To Net: NetName=NetI2C_A2 Pin=Teensy 4.1-18
+Added Net: Name=NetI2C_A2
+Added Pin To Net: NetName=NetI2C_A3 Pin=I2C-A3
+Added Pin To Net: NetName=NetI2C_A3 Pin=I2C-A3
+Added Pin To Net: NetName=NetI2C_A3 Pin=Teensy 4.1-19
+Added Net: Name=NetI2C_A3
