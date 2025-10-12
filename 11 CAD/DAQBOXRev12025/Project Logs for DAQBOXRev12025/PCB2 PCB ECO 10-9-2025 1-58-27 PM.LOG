@@ -1,0 +1,4 @@
+Removed Pin From Net: NetName=Net14_A1 Pin=SPI-1
+Added Pin To Net: NetName=NetADC Clock Generator_1 Pin=SPI-1
+Added Pin To Net: NetName=Net14_A1 Pin=SPI-3
+Added Member To Class: ClassName=MainSchematic Member=Component Teensy 4.1 TEENSY_4.1
