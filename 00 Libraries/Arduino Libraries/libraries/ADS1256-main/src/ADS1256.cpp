@@ -95,6 +95,7 @@ void ADS1256::InitializeADC()
   delay(200);  
 
   _isAcquisitionRunning = false; //MCU will be waiting to start a continuous acquisition
+  
 }
 
 void ADS1256::waitForLowDRDY()
