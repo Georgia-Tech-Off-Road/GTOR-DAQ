@@ -1,5 +1,6 @@
 #include "DaqPack.h"
 
+
 // Intialize ADCs
 Adafruit_ADS1115 ads1;
 
@@ -19,8 +20,9 @@ RPMSensor frontRight(RPM3, FRTEETH);
 RPMSensor aux1(RPM3, FRTEETH);
 
 Linear_Analog_Sensor rearBrakePressure(15, 4.096, 2000, 50, 4.5, 0.5);
-Linear_Analog_Sensor LDSOne(15, 4.096, 8.1, 0, 3.316, 0.006);
-
+Linear_Analog_Sensor frontBrakePressure(15, 4.096, 2000, 50, 4.5, 0.5);
+Linear_Analog_Sensor backupBrakePressureOne(15, 4.096, 2000, 50, 4.5, 0.5);
+Linear_Analog_Sensor backupBrakePressureTwo(15, 4.096, 2000, 50, 4.5, 0.5);
 
 void setup() {
   //init temp monitor
@@ -99,7 +101,7 @@ void dataAquisitionAndSavingLoop() {
       } else {
         outputFile.printf(",%s", DAQData.serializeDataToJSON().c_str());
       }
-      Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
+      //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
     }
     //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
     if (engineRPM.RPMUpdateFlag) {
@@ -155,7 +157,10 @@ void changeRecordingState() {
     while(digitalRead(40) == 0) {
       delay(5);
     }
-    String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second())+".txt";
+    //generate a random number since RTC isnt working
+    randomSeed(analogRead(A0));
+    int randomNumber = random(999999);
+    String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second())+ "___"+String(randomNumber)+"___"+".txt";
     Serial.println(time.c_str());
     //turn on red LED
     outputFile = SD.open(time.c_str(),  FILE_WRITE);
@@ -174,22 +179,22 @@ void updateAnalogValueFlag1() {
 void readAnalogValues1() {
   switch (currentAnalogSensor1) {
       case 0:
-        DAQData.setData<cmbtl::Analog1>(rearBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::RearBrakePressure>(rearBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 1;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
         break;
       case 1:
-        DAQData.setData<cmbtl::Analog2>(LDSOne.computeSensorReading(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::FrontBrakePressure>(frontBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 2;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
       case 2:
-        DAQData.setData<cmbtl::Analog3>(ads1.getLastConversionResults());
+        DAQData.setData<cmbtl::BackupBrakePressureOne>(backupBrakePressureOne.computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 3;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
         break;
       case 3:
-        DAQData.setData<cmbtl::Analog4>(ads1.getLastConversionResults());
+        DAQData.setData<cmbtl::BackupBrakePressureTwo>(backupBrakePressureTwo.computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 0;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
         break;
