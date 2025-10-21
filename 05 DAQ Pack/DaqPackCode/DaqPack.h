@@ -10,6 +10,22 @@
 #include <DAQSensors.h>
 #include <DAQPackets.h>
 
+//debug macros
+#define SD_CARD_INIT_LED 1
+#define ANALOG_ONE_LED 2
+#define ANALOG_TWO_LED 3
+#define ANALOG_THREE_LED 4
+#define ANALOG_FOUR_LED 5
+
+#define RPM_ONE_LED 6
+#define RPM_TWO_LED 7
+#define RPM_THREE_LED 8
+#define RPM_FOUR_LED 9
+
+#define RECORDING_LED 10
+
+#define POWER_LED 11
+
 // Define number of teeth in one place for easy modification
 #define NUM_TESTING_TEETH 22
 
@@ -17,17 +33,8 @@
 
 #define serialMonitor Serial
 
-//declare all setup functions
-inline void initDataStructValues();
-inline void setUpSD();
-inline void initializeADS1();
-void updateAnalogValueFlag1();
-
 //declare non setup functions
 time_t getTeensy3Time();
-
-//declare DaqPackCode.ino functions
-void dataAquisitionAndSavingLoop();
 
 cmbtl::DAQSensorDataType DAQData;
 
@@ -50,15 +57,13 @@ enum AUXDAQ_Ports {
   AIN1 = 32,
   AIN2 = 33,
   AIN3 = 34,
-  PWRL = 8,
-  RECL = 9
 };
 //sensor constants
 enum Sensor_Constants {
   RDTEETH = NUM_TESTING_TEETH,
   ENGTEETH = NUM_TESTING_TEETH,
-  FRTEETH = NUM_TESTING_TEETH,
-  FLTEETH = NUM_TESTING_TEETH
+  FRTEETH = 4,
+  FLTEETH = 4
 };
 
 //outputFile
@@ -73,6 +78,32 @@ ulong lastSaveTimeInMillis = 0;
 //saves the last time auto save
 ulong autoSaveTimeMillis = 0;
 
+//led pinmode declarations
+inline void initDebugLEDs() {
+  pinMode(SD_CARD_INIT_LED, OUTPUT);
+  digitalWrite(SD_CARD_INIT_LED, 0);
+  pinMode(ANALOG_ONE_LED, OUTPUT);
+  digitalWrite(ANALOG_ONE_LED, 0);
+  pinMode(ANALOG_TWO_LED, OUTPUT);
+  digitalWrite(ANALOG_TWO_LED, 0);
+  pinMode(ANALOG_THREE_LED, OUTPUT);
+  digitalWrite(ANALOG_THREE_LED, 0);
+  pinMode(ANALOG_FOUR_LED, OUTPUT);
+  digitalWrite(ANALOG_FOUR_LED, 0);
+  pinMode(RPM_ONE_LED, OUTPUT);
+  digitalWrite(RPM_ONE_LED, 0);
+  pinMode(RPM_TWO_LED, OUTPUT);
+  digitalWrite(RPM_TWO_LED, 0);
+  pinMode(RPM_THREE_LED, OUTPUT);
+  digitalWrite(RPM_THREE_LED, 0);
+  pinMode(RPM_FOUR_LED, OUTPUT);
+  digitalWrite(RPM_FOUR_LED, 0);
+  pinMode(RECORDING_LED, OUTPUT);
+  digitalWrite(RECORDING_LED, 0);
+  pinMode(POWER_LED, OUTPUT);
+  digitalWrite(POWER_LED, 1);
+}
+
 //function to intialize dataStruct values
 inline void initDataStructValues() {
   DAQData.setData<cmbtl::SEC>(now());
@@ -81,10 +112,10 @@ inline void initDataStructValues() {
   DAQData.setData<cmbtl::RPM2>(0);
   DAQData.setData<cmbtl::RPM3>(0);
   DAQData.setData<cmbtl::RPM4>(0);
-  DAQData.setData<cmbtl::Analog1>(0);
-  DAQData.setData<cmbtl::Analog2>(0);
-  DAQData.setData<cmbtl::Analog3>(0);
-  DAQData.setData<cmbtl::Analog4>(0);
+  DAQData.setData<cmbtl::RearBrakePressure>(0);
+  DAQData.setData<cmbtl::FrontBrakePressure>(0);
+  DAQData.setData<cmbtl::BackupBrakePressureOne>(0);
+  DAQData.setData<cmbtl::BackupBrakePressureTwo>(0);
 }
 
 

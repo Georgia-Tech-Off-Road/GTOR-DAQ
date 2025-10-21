@@ -6,6 +6,7 @@ Dockerfile
 /10 Analytics Website/backend/node_modules
 /10 Analytics Website/swagger-editor
 7 Data Translation/Config
+07 DataTrainslation/*.txt
 **/.vs/
 *.cmake
 *.pyc

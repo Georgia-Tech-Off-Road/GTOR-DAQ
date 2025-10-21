@@ -3,7 +3,7 @@
 #include <TimeLib.h>
 #include <HX711.h>
 
-#define calibration_factor 10000 //This value is obtained using the SparkFun_HX711_Calibration sketch
+#define calibration_factor -6050 //This value is obtained using the SparkFun_HX711_Calibration sketch
 
 #define DOUT  3
 #define CLK  2
@@ -35,6 +35,8 @@ void setup() {
 }
 
 void loop() {
+  Serial.printf("%llu,%llu,%lf\n", now(), micros(),
+    scale.get_units());
   outputFile.printf("%llu,%llu,%lf\n", now(), micros(),
     scale.get_units());
   outputFile.flush();
@@ -44,4 +46,3 @@ time_t getTeensy3Time()
 {
   return Teensy3Clock.get();
 }
-
