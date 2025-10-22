@@ -27,8 +27,6 @@ def testVisualizer(filePath,columnIndices,customWindow,useDefaultConfig):
     df['microsec'] = df['microsec'] - startTime
     time = df['microsec']/(1*10**6)
 
-
-
     #df['analog1'] = 50 + ((((df['analog1'] / 32767.0) * 4.096 - 0.5) / 4.0) * 1950.0)
 
 
@@ -44,7 +42,7 @@ def testVisualizer(filePath,columnIndices,customWindow,useDefaultConfig):
             label = f"Column {colIndex}"
 
         plt.plot(time, df.iloc[:, colIndex], label=label)
-
+    #df.to_excel(str(filePath)+".xlsx", index=False)
     #Displays graph
     plt.title('Data Visualizer')
     plt.ylabel('Sensor Value')
