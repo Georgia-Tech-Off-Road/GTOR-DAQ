@@ -19,6 +19,7 @@ from Updater import DataTranslatorUpdater
 from Visualizers import TestVisualizer
 from ProcessingPrograms import FileSplitter
 from ProcessingPrograms import PRHelper
+from ProcessingPrograms import ExcelConverter
 
 #imports the processing programs (hertz calculator, data processor, etc.)
 os.chdir("./")
@@ -98,6 +99,7 @@ def dataProcessingTool():
                     outputButton.grid(row=2, column=0, padx=20)
                     prButton.grid(row=2, column=2, padx=20)
                     legacyButton.grid(row=2,column=1,padx=20)
+                    excelButton.grid(row=3,column=1,padx=20,pady=10)
 
     def downloadData():
         #create a new page for the progress bar
@@ -255,6 +257,17 @@ def dataProcessingTool():
             splitThread.start()
         splitterButton = tk.Button(fileSplitPage, text="Split Files",font=("Helvetica", 12, "bold"), command=split)
         splitterButton.pack(pady=10)
+    def excel():
+        excelPage = tk.Toplevel()
+        excelPage.title("Excel Converter")
+        excelPage.geometry('600x200')
+        def convertExcel():
+            excelThread = threading.Thread(target = ExcelConverter.convertExcel, args = (filePath, excelPage, outputPath))
+            excelThread.start()
+        convertButton = tk.Button(excelPage, text="Convert json-formatted .txt file to Excel spreadsheet", command=convertExcel)
+        convertButton.pack(pady=10)
+        convertLabel = tk.Label(excelPage, text='Tip: For best results, choose an output destination on the previous window')
+        convertLabel.pack(pady=5)
 
     def legacy():
         legacyPage = tk.Toplevel()
@@ -328,6 +341,7 @@ def dataProcessingTool():
     outputButton = tk.Button(buttonFrame, text = "Choose output destination...", command=lambda: outputDestination())
     prButton = tk.Button(buttonFrame, text= "Polling Rate Helper", command=lambda: prHelper())
     legacyButton = tk.Button(buttonFrame, text="Legacy Functions", command=lambda:legacy())
+    excelButton = tk.Button(buttonFrame, text ="Convert json-formatted .txt files to Excel", command=lambda:excel())
     updateButtons()
 
 def runUpdater():
