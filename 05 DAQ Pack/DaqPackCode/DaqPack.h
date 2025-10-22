@@ -11,20 +11,19 @@
 #include <DAQPackets.h>
 
 //debug macros
-#define SD_CARD_INIT_LED 1
-#define ANALOG_ONE_LED 2
-#define ANALOG_TWO_LED 3
-#define ANALOG_THREE_LED 4
-#define ANALOG_FOUR_LED 5
+#define SD_CARD_INIT_LED 3
+#define ANALOG_ONE_LED 4
+#define ANALOG_TWO_LED 5
+#define ANALOG_THREE_LED 6
+#define ANALOG_FOUR_LED 7
 
-#define RPM_ONE_LED 6
-#define RPM_TWO_LED 7
-#define RPM_THREE_LED 8
-#define RPM_FOUR_LED 9
+#define RPM_ONE_LED 8
+#define RPM_TWO_LED 9
+#define RPM_THREE_LED 10
+#define RPM_FOUR_LED 11
 
-#define RECORDING_LED 10
+#define RECORDING_LED 12
 
-#define POWER_LED 11
 
 // Define number of teeth in one place for easy modification
 #define NUM_TESTING_TEETH 22
