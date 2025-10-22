@@ -14,10 +14,10 @@ int currentAnalogSensor1 = 0;
 volatile bool dataUpdated = false;
 
 //initialize RPM sensors
-RPMSensor engineRPM(RPM1, ENGTEETH);
-RPMSensor frontLeft(RPM2, FLTEETH);
-RPMSensor frontRight(RPM3, FRTEETH);
-RPMSensor aux1(RPM3, FRTEETH);
+RPMSensor engineRPM(RPM1, ENGTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
+RPMSensor frontLeft(RPM2, FLTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
+RPMSensor frontRight(RPM3, FRTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
+RPMSensor aux1(RPM3, FRTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 
 Linear_Analog_Sensor rearBrakePressure(15, 4.096, 2000, 50, 4.5, 0.5);
 Linear_Analog_Sensor frontBrakePressure(15, 4.096, 2000, 50, 4.5, 0.5);
@@ -107,24 +107,28 @@ void dataAquisitionAndSavingLoop() {
     if (engineRPM.RPMUpdateFlag) {
       DAQData.setData<cmbtl::RPM1>(engineRPM.RPM);
       engineRPM.RPMUpdateFlag = false;
+      digitalWrite(RPM_ONE_LED, engineRPM.getRPMValueGood() ? HIGH : LOW);
     } else {
       DAQData.setData<cmbtl::RPM1>(engineRPM.checkRPM());
     }
     if (frontLeft.RPMUpdateFlag) {
       DAQData.setData<cmbtl::RPM2>(frontLeft.RPM);
       frontLeft.RPMUpdateFlag = false;
+      digitalWrite(RPM_TWO_LED, frontLeft.getRPMValueGood() ? HIGH : LOW);
     } else {
       DAQData.setData<cmbtl::RPM2>(frontLeft.checkRPM());
     }
     if (frontRight.RPMUpdateFlag) {
       DAQData.setData<cmbtl::RPM3>(frontRight.RPM);
       frontRight.RPMUpdateFlag = false;
+      digitalWrite(RPM_THREE_LED, frontRight.getRPMValueGood() ? HIGH : LOW);
     } else {
       DAQData.setData<cmbtl::RPM3>(frontRight.checkRPM());
     }
     if (aux1.RPMUpdateFlag) {
       DAQData.setData<cmbtl::RPM4>(aux1.RPM);
       aux1.RPMUpdateFlag = false;
+      digitalWrite(RPM_FOUR_LED, aux1.getRPMValueGood() ? HIGH : LOW);
     } else {
       DAQData.setData<cmbtl::RPM4>(aux1.checkRPM());
     }
