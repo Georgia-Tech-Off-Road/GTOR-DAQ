@@ -1,7 +1,7 @@
 #include "DAQ_RPM_Sensor.h"
 #include "Arduino.h"
 
-RPMSensor :: RPMSensor(uint8_t pin, uint16_t numTeeth, uint8_t _minExpectedRPM, uint8_t _maxExpectedRPM) {
+RPMSensor :: RPMSensor(uint8_t pin, uint16_t numTeeth, uint32_t _minExpectedRPM, uint32_t _maxExpectedRPM) {
     //initialize private variables
     _pin = pin;
     _numTeeth = numTeeth;
