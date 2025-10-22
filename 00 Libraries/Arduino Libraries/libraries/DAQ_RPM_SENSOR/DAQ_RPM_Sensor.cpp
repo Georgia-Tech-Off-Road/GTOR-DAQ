@@ -32,7 +32,7 @@ float RPMSensor :: checkRPM() {
     return RPM;
 }
 
-void RPMSensor :: getRPMValueGood() {
+bool RPMSensor :: getRPMValueGood() {
     return RPMValueGood
 }
 

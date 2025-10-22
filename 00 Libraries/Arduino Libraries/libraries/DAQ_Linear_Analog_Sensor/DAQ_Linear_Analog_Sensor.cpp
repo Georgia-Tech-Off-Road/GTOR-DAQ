@@ -24,7 +24,7 @@ float Linear_Analog_Sensor :: computeSensorReading(int reading) {
     BPSValueGood = value > 0 && value < 2000;
 }
 
-void Linear_Analog_Sensor :: getBPSValueGood() {
+bool Linear_Analog_Sensor :: getBPSValueGood() {
     return BPSValueGood;
 }
 
