@@ -11,6 +11,7 @@ class Linear_Analog_Sensor {
         Linear_Analog_Sensor(uint8_t resolution, float referenceVoltage, float maximalValue, float minimalValue, float maximalVoltage, float minimalVoltage);
         float computeVoltage(int reading);
         float computeSensorReading(int reading);
+        void getBPSValueGood();
     private:
         uint8_t _resolution;
         float _referenceVoltage;
@@ -18,6 +19,7 @@ class Linear_Analog_Sensor {
         float _minimalValue;
         float _maximalVoltage;
         float _minimalVoltage;
+        bool BPSValueGood;
         
 };
 
