@@ -29,6 +29,10 @@
 // Define number of teeth in one place for easy modification
 #define NUM_TESTING_TEETH 22
 
+// Define min and max expected RPM values
+#define MIN_EXPECTED_RPM 0
+#define MAX_EXPECTED_RPM 10000
+
 #define BAUD 230400
 
 #define serialMonitor Serial
@@ -130,8 +134,10 @@ inline void setUpSD() {
   outputFile.printf("[\n");
   if(!outputFile) {
     Serial.printf("FILE FAILED TO INIT\n");
+    digitalWrite(SD_CARD_INIT_LED, LOW);
   } else {
     Serial.printf("SD FILE CREATED\n");
+    digitalWrite(SD_CARD_INIT_LED, HIGH);
   }
 }
 
