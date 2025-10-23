@@ -22,7 +22,8 @@ class RPMSensor {
         uint32_t _prevMicros;
         uint32_t _minExpectedRPM;
         uint32_t _maxExpectedRPM;
-        bool RPMValueGood;
+        bool _RPMValueGood;
+        uint32_t _lastGoodRPMValueTimeStamp;
 
 };
 

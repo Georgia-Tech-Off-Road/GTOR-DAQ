@@ -13,18 +13,24 @@ int currentAnalogSensor1 = 0;
 //bool to check for if data was actually updated
 volatile bool dataUpdated = false;
 
+//general rpm definitions for now
+#define MIN_EXPECTED_VALUE 0
+#define MAX_EXPECTED_VALUE 2000
+
 //initialize RPM sensors
 RPMSensor engineRPM(RPM1, ENGTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 RPMSensor frontLeft(RPM2, FLTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 RPMSensor frontRight(RPM3, FRTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 RPMSensor aux1(RPM3, FRTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 
-Linear_Analog_Sensor rearBrakePressure(15, 4.096, 2000, 50, 4.5, 0.5);
-Linear_Analog_Sensor frontBrakePressure(15, 4.096, 2000, 50, 4.5, 0.5);
-Linear_Analog_Sensor backupBrakePressureOne(15, 4.096, 2000, 50, 4.5, 0.5);
-Linear_Analog_Sensor backupBrakePressureTwo(15, 4.096, 2000, 50, 4.5, 0.5);
+Linear_Analog_Sensor rearBrakePressure(15, 4.096, 2000, 50, 4.5, 0.5, 0, 2000);
+Linear_Analog_Sensor frontBrakePressure(15, 4.096, 2000, 50, 4.5, 0.5, 0, 2000);
+Linear_Analog_Sensor backupBrakePressureOne(15, 4.096, 2000, 50, 4.5, 0.5, 0, 2000);
+Linear_Analog_Sensor backupBrakePressureTwo(15, 4.096, 2000, 50, 4.5, 0.5, 0, 2000);
 
 void setup() {
+  //initialize debug leds
+  initDebugLEDs();
   //init temp monitor
   tempmon_init();
   //start tempmon
@@ -70,10 +76,28 @@ void setup() {
 //do nothing here
 void loop(){}
 
+//update debug LEDs
+void updateDebugLeds() {
+  digitalWrite(RECORDING_LED, isRecording ? HIGH : LOW);
+  digitalWrite(RPM_ONE_LED, engineRPM.getRPMValueGood() ? HIGH : LOW);
+  digitalWrite(RPM_TWO_LED, frontLeft.getRPMValueGood() ? HIGH : LOW);
+  digitalWrite(RPM_THREE_LED, frontRight.getRPMValueGood() ? HIGH : LOW);
+  digitalWrite(RPM_FOUR_LED, aux1.getRPMValueGood() ? HIGH : LOW);
+  digitalWrite(ANALOG_ONE_LED, rearBrakePressure.getValueGood() ? HIGH : LOW);
+  digitalWrite(ANALOG_TWO_LED, frontBrakePressure.getValueGood() ? HIGH : LOW);
+  digitalWrite(ANALOG_THREE_LED, backupBrakePressureOne.getValueGood() ? HIGH : LOW);
+  digitalWrite(ANALOG_FOUR_LED, backupBrakePressureTwo.getValueGood() ? HIGH : LOW);
+  //SD debug is handled by the file creation code
+  //power LED is always on whenever the box is on
+  
+}
+
+
 //writes data to SD card
 void dataAquisitionAndSavingLoop() {
   bool firstEntry = true;
   while(1) {  
+    updateDebugLeds();
     //update auto save time
     autoSaveTimeMillis = millis();
     //check to see if save should be started/stopped
@@ -107,28 +131,24 @@ void dataAquisitionAndSavingLoop() {
     if (engineRPM.RPMUpdateFlag) {
       DAQData.setData<cmbtl::RPM1>(engineRPM.RPM);
       engineRPM.RPMUpdateFlag = false;
-      digitalWrite(RPM_ONE_LED, engineRPM.getRPMValueGood() ? HIGH : LOW);
     } else {
       DAQData.setData<cmbtl::RPM1>(engineRPM.checkRPM());
     }
     if (frontLeft.RPMUpdateFlag) {
       DAQData.setData<cmbtl::RPM2>(frontLeft.RPM);
       frontLeft.RPMUpdateFlag = false;
-      digitalWrite(RPM_TWO_LED, frontLeft.getRPMValueGood() ? HIGH : LOW);
     } else {
       DAQData.setData<cmbtl::RPM2>(frontLeft.checkRPM());
     }
     if (frontRight.RPMUpdateFlag) {
       DAQData.setData<cmbtl::RPM3>(frontRight.RPM);
       frontRight.RPMUpdateFlag = false;
-      digitalWrite(RPM_THREE_LED, frontRight.getRPMValueGood() ? HIGH : LOW);
     } else {
       DAQData.setData<cmbtl::RPM3>(frontRight.checkRPM());
     }
     if (aux1.RPMUpdateFlag) {
       DAQData.setData<cmbtl::RPM4>(aux1.RPM);
       aux1.RPMUpdateFlag = false;
-      digitalWrite(RPM_FOUR_LED, aux1.getRPMValueGood() ? HIGH : LOW);
     } else {
       DAQData.setData<cmbtl::RPM4>(aux1.checkRPM());
     }
@@ -166,8 +186,8 @@ void changeRecordingState() {
     int randomNumber = random(999999);
     String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second())+ "___"+String(randomNumber)+"___"+".txt";
     Serial.println(time.c_str());
-    //turn on red LED
     outputFile = SD.open(time.c_str(),  FILE_WRITE);
+    //check if file creation worked and if so turn on the light
     outputFile.printf("[\n");
     isRecording = true;
   }

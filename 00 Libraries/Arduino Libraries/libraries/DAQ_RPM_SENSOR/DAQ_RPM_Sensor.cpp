@@ -18,7 +18,10 @@ void RPMSensor :: calculateRPM() {
     //set _RPM to product
     RPM = static_cast<float>(60/timePerRev);
     //set valueGood to true if the RPM is within a valid range
-    RPMValueGood = RPM > _minExpectedRPM && RPM < _maxExpectedRPM;
+    if (RPM > _minExpectedRPM && RPM < _maxExpectedRPM) {
+        _RPMValueGood = true;
+        _lastGoodRPMValueTimeStamp = millis();
+    }
     //set boolean flag
     RPMUpdateFlag = true;
     //update _prevMicros
@@ -33,7 +36,10 @@ float RPMSensor :: checkRPM() {
 }
 
 bool RPMSensor :: getRPMValueGood() {
-    return RPMValueGood
+    if ((_lastGoodRPMValueTimeStamp + 30000) - millis() < 0) {
+        _RPMValueGood = false;
+    }
+    return _RPMValueGood;
 }
 
 

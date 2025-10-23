@@ -103,8 +103,6 @@ inline void initDebugLEDs() {
   digitalWrite(RPM_FOUR_LED, 0);
   pinMode(RECORDING_LED, OUTPUT);
   digitalWrite(RECORDING_LED, 0);
-  pinMode(POWER_LED, OUTPUT);
-  digitalWrite(POWER_LED, 1);
 }
 
 //function to intialize dataStruct values
@@ -124,20 +122,21 @@ inline void initDataStructValues() {
 
 //method to setup outFile/SD card
 inline void setUpSD() {
-  Serial.printf("SD Card init status: %d\n",SD.begin(BUILTIN_SDCARD));
+  int SDCARDINIT = SD.begin(BUILTIN_SDCARD);
+  Serial.printf("SD Card init status: %d\n",SDCARDINIT);
+  if(!SDCARDINIT) {
+    Serial.printf("SD FAILED TO INIT\n");
+    digitalWrite(SD_CARD_INIT_LED, LOW);
+  } else {
+    Serial.printf("SD INITIALIZED\n");
+    digitalWrite(SD_CARD_INIT_LED, HIGH);
+  }
   delay(500);
   String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second())+".txt";
   Serial.println(time.c_str());
   outputFile = SD.open(time.c_str(),  FILE_WRITE);
   //add bracket at beginning to make it a list
   outputFile.printf("[\n");
-  if(!outputFile) {
-    Serial.printf("FILE FAILED TO INIT\n");
-    digitalWrite(SD_CARD_INIT_LED, LOW);
-  } else {
-    Serial.printf("SD FILE CREATED\n");
-    digitalWrite(SD_CARD_INIT_LED, HIGH);
-  }
 }
 
 //time setup function
