@@ -21,16 +21,18 @@ volatile bool dataUpdated = false;
 RPMSensor engineRPM(RPM1, ENGTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 RPMSensor frontLeft(RPM2, FLTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 RPMSensor frontRight(RPM3, FRTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
-RPMSensor aux1(RPM3, FRTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
+RPMSensor aux1(RPM3, RDTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 
 Linear_Analog_Sensor rearBrakePressure(15, 4.096, 2000, 50, 4.5, 0.5, 0, 2000);
 Linear_Analog_Sensor frontBrakePressure(15, 4.096, 2000, 50, 4.5, 0.5, 0, 2000);
-Linear_Analog_Sensor backupBrakePressureOne(15, 4.096, 2000, 50, 4.5, 0.5, 0, 2000);
-Linear_Analog_Sensor backupBrakePressureTwo(15, 4.096, 2000, 50, 4.5, 0.5, 0, 2000);
+Linear_Analog_Sensor LDSFrontLeft(15, 4.096, 8.1, 0, 4.5, 0.5, 0, 8.1);
+Linear_Analog_Sensor LDSFrontRight(15, 4.096, 8.1, 0, 4.5, 0.5, 0, 8.1);
 
 void setup() {
   //initialize debug leds
   initDebugLEDs();
+  //test leds
+  flashBang();
   //init temp monitor
   tempmon_init();
   //start tempmon
@@ -85,8 +87,8 @@ void updateDebugLeds() {
   digitalWrite(RPM_FOUR_LED, aux1.getRPMValueGood() ? HIGH : LOW);
   digitalWrite(ANALOG_ONE_LED, rearBrakePressure.getValueGood() ? HIGH : LOW);
   digitalWrite(ANALOG_TWO_LED, frontBrakePressure.getValueGood() ? HIGH : LOW);
-  digitalWrite(ANALOG_THREE_LED, backupBrakePressureOne.getValueGood() ? HIGH : LOW);
-  digitalWrite(ANALOG_FOUR_LED, backupBrakePressureTwo.getValueGood() ? HIGH : LOW);
+  digitalWrite(ANALOG_THREE_LED, LDSFrontLeft.getValueGood() ? HIGH : LOW);
+  digitalWrite(ANALOG_FOUR_LED, LDSFrontRight.getValueGood() ? HIGH : LOW);
   //SD debug is handled by the file creation code
   //power LED is always on whenever the box is on
   
@@ -125,7 +127,7 @@ void dataAquisitionAndSavingLoop() {
       } else {
         outputFile.printf(",%s", DAQData.serializeDataToJSON().c_str());
       }
-      //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
+      Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
     }
     //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
     if (engineRPM.RPMUpdateFlag) {
@@ -213,12 +215,12 @@ void readAnalogValues1() {
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
       case 2:
-        DAQData.setData<cmbtl::BackupBrakePressureOne>(backupBrakePressureOne.computeSensorReading(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::LDSFrontLeft>(LDSFrontLeft.computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 3;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
         break;
       case 3:
-        DAQData.setData<cmbtl::BackupBrakePressureTwo>(backupBrakePressureTwo.computeSensorReading(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::LDSFrontRight>(LDSFrontRight.computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 0;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
         break;

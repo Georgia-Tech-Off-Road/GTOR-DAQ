@@ -19,11 +19,11 @@ class RPMSensor {
     private:
         uint8_t _pin;
         uint16_t _numTeeth;
-        uint32_t _prevMicros;
+        volatile uint32_t _prevMicros;
         uint32_t _minExpectedRPM;
         uint32_t _maxExpectedRPM;
-        bool _RPMValueGood;
-        uint32_t _lastGoodRPMValueTimeStamp;
+        volatile bool _RPMValueGood;
+        volatile uint32_t _lastGoodRPMValueTimeStamp;
 
 };
 
