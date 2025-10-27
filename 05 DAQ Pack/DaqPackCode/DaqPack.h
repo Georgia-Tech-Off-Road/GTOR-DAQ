@@ -44,9 +44,9 @@ cmbtl::DAQSensorDataType DAQData;
 //enums for AUXDAQ ports
 enum AUXDAQ_Ports {
   RPM1 = 20,
-  RPM2 = 16,
+  RPM2 = 37,
   RPM3 = 14,
-  RPM4 = 37,
+  RPM4 = 16,
   LDS1 = 22,
   LDS2 = 23,
   SPIO = 24,
@@ -63,11 +63,36 @@ enum AUXDAQ_Ports {
 };
 //sensor constants
 enum Sensor_Constants {
-  RDTEETH = NUM_TESTING_TEETH,
-  ENGTEETH = NUM_TESTING_TEETH,
+  RDTEETH = 14,
+  ENGTEETH = 1,
   FRTEETH = 4,
   FLTEETH = 4
 };
+
+//function to test all debug LEDs
+inline void flashBang() {
+  digitalWrite(RECORDING_LED, HIGH);
+  digitalWrite(RPM_ONE_LED, HIGH);
+  digitalWrite(RPM_TWO_LED, HIGH);
+  digitalWrite(RPM_THREE_LED, HIGH);
+  digitalWrite(RPM_FOUR_LED, HIGH);
+  digitalWrite(ANALOG_ONE_LED, HIGH);
+  digitalWrite(ANALOG_TWO_LED, HIGH);
+  digitalWrite(ANALOG_THREE_LED, HIGH);
+  digitalWrite(ANALOG_FOUR_LED, HIGH);
+  digitalWrite(SD_CARD_INIT_LED, HIGH);
+  delay(5000);
+  digitalWrite(RECORDING_LED, LOW);
+  digitalWrite(RPM_ONE_LED, LOW);
+  digitalWrite(RPM_TWO_LED, LOW);
+  digitalWrite(RPM_THREE_LED, LOW);
+  digitalWrite(RPM_FOUR_LED, LOW);
+  digitalWrite(ANALOG_ONE_LED, LOW);
+  digitalWrite(ANALOG_TWO_LED, LOW);
+  digitalWrite(ANALOG_THREE_LED, LOW);
+  digitalWrite(ANALOG_FOUR_LED, LOW);
+  digitalWrite(SD_CARD_INIT_LED, LOW);
+}
 
 //outputFile
 File outputFile;
@@ -115,8 +140,8 @@ inline void initDataStructValues() {
   DAQData.setData<cmbtl::RPM4>(0);
   DAQData.setData<cmbtl::RearBrakePressure>(0);
   DAQData.setData<cmbtl::FrontBrakePressure>(0);
-  DAQData.setData<cmbtl::BackupBrakePressureOne>(0);
-  DAQData.setData<cmbtl::BackupBrakePressureTwo>(0);
+  DAQData.setData<cmbtl::LDSFrontLeft>(0);
+  DAQData.setData<cmbtl::LDSFrontRight>(0);
 }
 
 

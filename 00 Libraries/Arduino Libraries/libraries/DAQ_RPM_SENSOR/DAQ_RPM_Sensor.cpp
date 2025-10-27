@@ -1,13 +1,13 @@
 #include "DAQ_RPM_Sensor.h"
 #include "Arduino.h"
 
-RPMSensor :: RPMSensor(uint8_t pin, uint16_t numTeeth, uint32_t _minExpectedRPM, uint32_t _maxExpectedRPM) {
+RPMSensor :: RPMSensor(uint8_t pin, uint16_t numTeeth, uint32_t minExpectedRPM, uint32_t maxExpectedRPM) {
     //initialize private variables
     _pin = pin;
     _numTeeth = numTeeth;
     _prevMicros = micros();
-    _minExpectedRPM = _minExpectedRPM;
-    _maxExpectedRPM = _maxExpectedRPM;
+    _minExpectedRPM = minExpectedRPM;
+    _maxExpectedRPM = maxExpectedRPM;
 }
 
 void RPMSensor :: calculateRPM() {
@@ -18,7 +18,7 @@ void RPMSensor :: calculateRPM() {
     //set _RPM to product
     RPM = static_cast<float>(60/timePerRev);
     //set valueGood to true if the RPM is within a valid range
-    if (RPM > _minExpectedRPM && RPM < _maxExpectedRPM) {
+    if (RPM > static_cast<float>(_minExpectedRPM) && RPM < static_cast<float>(_maxExpectedRPM)) {
         _RPMValueGood = true;
         _lastGoodRPMValueTimeStamp = millis();
     }
@@ -36,7 +36,8 @@ float RPMSensor :: checkRPM() {
 }
 
 bool RPMSensor :: getRPMValueGood() {
-    if ((_lastGoodRPMValueTimeStamp + 30000) - millis() < 0) {
+    //Serial.printf("%d, %d, %d\n", _RPMValueGood, _lastGoodRPMValueTimeStamp, millis());
+    if ((_lastGoodRPMValueTimeStamp + 30000) < millis() ) {
         _RPMValueGood = false;
     }
     return _RPMValueGood;

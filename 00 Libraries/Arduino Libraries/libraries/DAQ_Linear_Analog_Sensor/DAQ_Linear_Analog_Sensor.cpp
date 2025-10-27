@@ -30,7 +30,7 @@ float Linear_Analog_Sensor :: computeSensorReading(int reading) {
 }
 
 bool Linear_Analog_Sensor :: getValueGood() {
-    if ((_lastGoodValueTimeStamp + 30000) - millis() < 0) {
+    if ((_lastGoodValueTimeStamp + 30000) <  millis()) {
         _valueGood = false;
     }
     return _valueGood;
