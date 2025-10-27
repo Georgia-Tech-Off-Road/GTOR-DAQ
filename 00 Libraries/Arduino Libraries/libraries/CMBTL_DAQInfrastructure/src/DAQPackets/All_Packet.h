@@ -14,8 +14,8 @@ namespace cmbtl {
             SensorIndex::RPM4,
             SensorIndex::RearBrakePressure,
             SensorIndex::FrontBrakePressure,
-            SensorIndex::BackupBrakePressureOne,
-            SensorIndex::BackupBrakePressureTwo,
+            SensorIndex::LDSFrontLeft,
+            SensorIndex::LDSFrontRight,
             SensorIndex::TEENSY_TEMP
         });
     }

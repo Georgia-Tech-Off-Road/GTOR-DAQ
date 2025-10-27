@@ -25,8 +25,10 @@ RPMSensor aux1(RPM3, RDTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 
 Linear_Analog_Sensor rearBrakePressure(15, 4.096, 2000, 50, 4.5, 0.5, 0, 2000);
 Linear_Analog_Sensor frontBrakePressure(15, 4.096, 2000, 50, 4.5, 0.5, 0, 2000);
+
 Linear_Analog_Sensor LDSFrontLeft(15, 4.096, 8.1, 0, 4.5, 0.5, 0, 8.1);
 Linear_Analog_Sensor LDSFrontRight(15, 4.096, 8.1, 0, 4.5, 0.5, 0, 8.1);
+
 
 void setup() {
   //initialize debug leds

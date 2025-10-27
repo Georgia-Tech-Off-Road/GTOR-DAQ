@@ -26,8 +26,8 @@ namespace cmbtl {
         RPM4,
         RearBrakePressure,
         FrontBrakePressure,
-        BackupBrakePressureOne,
-        BackupBrakePressureTwo,
+        LDSFrontLeft,
+        LDSFrontRight,
         TEENSY_TEMP
     };
 
@@ -45,13 +45,13 @@ namespace cmbtl {
     // Define Analog Sensors
     std::string RearBrakePressureGetName() { return "RearBrakePressure"; }
     std::string FrontBrakePressureGetName() { return "FrontBreakPressure"; }
-    std::string BackupBrakePressureOneGetName() { return "BackupBrakePressureOne"; }
-    std::string BackupBrakePressureTwoGetName() { return "BackupBrakePressureTwo"; }
+    std::string LDSFrontLeftGetName() { return "LDSFrontLeft"; }
+    std::string LDSFrontRightGetName() { return "LDSFrontRight"; }
 
     using RearBrakePressure_SENSOR_INFO = cmbtl::linear_analog_sensor::Linear_Analog_Sensor<RearBrakePressureGetName>;
     using FrontBrakePressur_SENSOR_INFO = cmbtl::linear_analog_sensor::Linear_Analog_Sensor<FrontBrakePressureGetName>;
-    using BackupBrakePressureOne_SENSOR_INFO = cmbtl::linear_analog_sensor::Linear_Analog_Sensor<BackupBrakePressureOneGetName>;
-    using BackupBrakePressureTwo_SENSOR_INFO = cmbtl::linear_analog_sensor::Linear_Analog_Sensor<BackupBrakePressureTwoGetName>;
+    using LDSFrontLeft_SENSOR_INFO = cmbtl::linear_analog_sensor::Linear_Analog_Sensor<LDSFrontLeftGetName>;
+    using LDSFrontRight_SENSOR_INFO = cmbtl::linear_analog_sensor::Linear_Analog_Sensor<LDSFrontRightGetName>;
     
 
     // The order that the sensor appear in the enum and this tuple MUST MUST BE THE SAME
@@ -64,8 +64,8 @@ namespace cmbtl {
     RPM4_SENSOR_INFO,
     RearBrakePressure_SENSOR_INFO,
     FrontBrakePressur_SENSOR_INFO,
-    BackupBrakePressureOne_SENSOR_INFO,
-    BackupBrakePressureTwo_SENSOR_INFO,
+    LDSFrontLeft_SENSOR_INFO,
+    LDSFrontRight_SENSOR_INFO,
     cmbtl::teensy_temp::TEENSY_TEMP_SENSOR_INFO
     >;
 
