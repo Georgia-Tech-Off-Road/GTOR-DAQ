@@ -1,0 +1,1 @@
+FrontLeftLDS in data is actually FrontRightLDS, FrontRightLDS is FrontLeftLDS. Only Front left LDS sensor was tested (called FrontRightLDS in data).
