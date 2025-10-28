@@ -42,7 +42,6 @@ def testVisualizer(filePath,columnIndices,customWindow,useDefaultConfig):
             label = f"Column {colIndex}"
 
         plt.plot(time, df.iloc[:, colIndex], label=label)
-    #df.to_excel(str(filePath)+".xlsx", index=False)
     #Displays graph
     plt.title('Data Visualizer')
     plt.ylabel('Sensor Value')
