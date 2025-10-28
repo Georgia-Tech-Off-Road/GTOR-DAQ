@@ -1,5 +1,6 @@
 # Guide
-Video: [https://youtu.be/wC5inKeJIrM](https://youtu.be/wC5inKeJIrM)
+Video: [https://youtu.be/wC5inKeJIrM](https://youtu.be/wC5inKeJIrM)  
+
 Bash is a shell scripting language, it is the most common language of commands that we use to interact with a terminal. But why do you need to learn bash? If you are a programmer it is imperative to learn bash. Many commands are only available from the command line, or have more functionality that way (i.e git). Additionally, because bash commands are just text, there is a lot of powerful scripting potential! Below are some common very basic bash commands, for a more thorough introduction consult [this resource](https://github.com/RehanSaeed/Bash-Cheat-Sheet):
 
 ## Common Commands
