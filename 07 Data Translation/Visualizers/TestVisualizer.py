@@ -4,50 +4,73 @@ import matplotlib.pyplot as plt
 import tkinter as tk
 from tkinter import ttk
 import csv
+import numpy as np
 import json
+import plotly.express as px
 
-def testVisualizer(filePath,columnIndices,customWindow,useDefaultConfig):
-    #Create UI indicator
+def testVisualizer(filePath, columnIndices, customWindow, useDefaultConfig, plotlyCheckVar):
+    # Create UI indicator
     label1 = tk.Label(customWindow, text="Creating your graph...")
     label1.pack()
 
-    #Create progress bar
+    # Create progress bar
     progressBar = ttk.Progressbar(customWindow, mode="indeterminate", maximum=100)
     progressBar.pack(padx=20, pady=20, fill="x")
     progressBar.start()
 
-    #Read file data
-    with open(filePath,"r") as infile:
-        text = infile.read()
-    data = json.loads(text)
-    df = pd.json_normalize(data)
+    # Read file
+    if '.xlsx' in filePath:
+        df = pd.read_excel(filePath, engine='openpyxl')
+    else:
+        with open(filePath, "r") as infile:
+            text = infile.read()
+        data = json.loads(text)
+        df = pd.json_normalize(data)
 
-    #Converts abosulte time to relative time
+    # Convert microsec to relative time
     startTime = df['microsec'].iloc[0]
     df['microsec'] = df['microsec'] - startTime
-    time = df['microsec']/(1*10**6)
+    time = df['microsec'] / (1 * 10**6)
 
-    #df['analog1'] = 50 + ((((df['analog1'] / 32767.0) * 4.096 - 0.5) / 4.0) * 1950.0)
+    # Correct brake pressure (TEMPORARY UNITL ANDREW FIXES)
+    for col in df.columns:
+        if 'brake' in col.lower() or 'break' in col.lower():
+            df[col] = (.5 + (df[col] / (2000 - 50)) * (4.5 - .5))
+            #df[col] = 500*(df[col]-0.5)
 
+    # Set outliers to NaN (values beyond 6 std devs)
+    '''
+    for col in df.columns:
+        if np.issubdtype(df[col].dtype, np.number):  # only numeric columns
+            mean = df[col].mean()
+            std = df[col].std()
+            df.loc[(df[col] < mean - 6*std) | (df[col] > mean + 6*std), col] = np.nan
+    '''
 
+    # Plotting
+    if plotlyCheckVar == 1:
+        # Use Plotly
+        plot_df = pd.DataFrame({'Time': time})
+        for colIndex in columnIndices:
+            if colIndex < df.shape[1]:
+                label = df.columns[colIndex]
+                plot_df[label] = df.iloc[:, colIndex]
+        fig = px.line(plot_df, x='Time', y=plot_df.columns[1:], labels={'value':'Sensor Value','Time':'Time (Seconds)'}, title='Data Visualizer')
+        fig.show()
+    else:
+        # Use Matplotlib
+        plt.figure()
+        for colIndex in columnIndices:
+            if colIndex < df.shape[1]:
+                label = df.columns[colIndex]
+            else:
+                label = f"Column {colIndex}"
+            plt.plot(time, df.iloc[:, colIndex], label=label)
+        plt.title('Data Visualizer')
+        plt.ylabel('Sensor Value')
+        plt.xlabel('Time (Seconds)')
+        plt.grid(True)
+        plt.legend()
+        plt.show()
 
-    #Creates graph
-    plt.figure()
-
-    #Creates the legend w/ sensor names
-    for colIndex in columnIndices:
-        if colIndex < df.shape[1]:
-            label = df.columns[colIndex]
-        else:
-            label = f"Column {colIndex}"
-
-        plt.plot(time, df.iloc[:, colIndex], label=label)
-    #Displays graph
-    plt.title('Data Visualizer')
-    plt.ylabel('Sensor Value')
-    plt.xlabel('Time (Seconds)')
-    plt.grid(True)
-    plt.legend()
-
-    plt.show()
     customWindow.destroy()
