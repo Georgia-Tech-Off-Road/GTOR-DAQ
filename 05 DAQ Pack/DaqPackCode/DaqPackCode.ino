@@ -3,12 +3,15 @@
 
 // Intialize ADCs
 Adafruit_ADS1115 ads1;
+Adafruit_ADS1115 ads2;
 
 // Initialize analog value flags
 volatile bool analogValueFlag1 = false;
+volatile bool analogValueFlag2 = false;
 
 // Current analog sensor number being polled
 int currentAnalogSensor1 = 0;
+int currentAnalogSensor2 = 0;
 
 //bool to check for if data was actually updated
 volatile bool dataUpdated = false;
@@ -23,8 +26,8 @@ RPMSensor frontLeft(RPM2, FLTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 RPMSensor frontRight(RPM3, FRTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 RPMSensor aux1(RPM3, RDTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 
-Linear_Analog_Sensor rearBrakePressure(15, 4.096, 2000, 50, 4.5, 0.5, 0, 2000);
-Linear_Analog_Sensor frontBrakePressure(15, 4.096, 2000, 50, 4.5, 0.5, 0, 2000);
+Linear_Analog_Sensor rearBrakePressure(15, 4.096, 2000, 0, 4.5, 0.5, 0, 2000);
+Linear_Analog_Sensor frontBrakePressure(15, 4.096, 2000, 0, 4.5, 0.5, 0, 2000);
 
 Linear_Analog_Sensor LDSFrontLeft(15, 4.096, 8.1, 0, 4.5, 0.5, 0, 8.1);
 Linear_Analog_Sensor LDSFrontRight(15, 4.096, 8.1, 0, 4.5, 0.5, 0, 8.1);
@@ -53,6 +56,10 @@ void setup() {
   pinMode(40, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(40), updateAnalogValueFlag1, FALLING);
 
+  //figure out which pin to use as an interrupt
+  pinMode(40, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(40), updateAnalogValueFlag1, FALLING);
+
   pinMode(RPM3, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM3), frontRightInterrupt, RISING);
   pinMode(RPM1, INPUT_PULLDOWN);
@@ -63,8 +70,12 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(RPM4), aux1Interrupt, RISING);
   //configure ADCs
   ads1.begin(0x48, &Wire);
-  ads1.setDataRate(RATE_ADS1115_64SPS);
+  ads1.setDataRate(RATE_ADS1115_860SPS);
   ads1.setGain(GAIN_TWOTHIRDS);
+  
+  //ads2.begin(0x49, &Wire);
+  //ads2.setDataRate(RATE_ADS1115_860SPS);
+  //ads2.setGain(GAIN_TWOTHIRDS);
 
   //zero out all data fields
   initDataStructValues();
@@ -74,6 +85,7 @@ void setup() {
   autoSaveTimeMillis = millis();
   //start ADCs
   ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
+  //ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
   dataAquisitionAndSavingLoop();
 }
 
@@ -228,7 +240,32 @@ void readAnalogValues1() {
         break;
   }
 }
-
+/**
+void readAnalogValues2() {
+  switch (currentAnalogSensor2) {
+      case 0:
+        DAQData.setData<cmbtl::LDSRearLeft>(rearBrakePressure.computeSensorReading(ads2.getLastConversionResults()));
+        currentAnalogSensor2 = 1;
+        ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
+        break;
+      case 1:
+        DAQData.setData<cmbtl::LDSRearRight>(frontBrakePressure.computeSensorReading(ads2.getLastConversionResults()));
+        currentAnalogSensor2 = 2;
+        ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
+        break;
+      case 2:
+        DAQData.setData<cmbtl::CVTTemp>(LDSFrontLeft.computeSensorReading(ads2.getLastConversionResults()));
+        currentAnalogSensor2 = 3;
+        ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
+        break;
+      case 3:
+        DAQData.setData<cmbtl::RearTransferCaseTemp>(LDSFrontRight.computeSensorReading(ads2.getLastConversionResults()));
+        currentAnalogSensor2 = 0;
+        ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
+        break;
+  }
+}
+**/
 void engineRPMInterrupt() {
   engineRPM.calculateRPM();
   dataUpdated = true;
