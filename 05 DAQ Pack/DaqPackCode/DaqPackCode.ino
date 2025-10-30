@@ -74,7 +74,10 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(RPM4), aux1Interrupt, RISING);
   //configure ADCs
   ads1.begin(0x48, &Wire);
-  ads1.setDataRate(RATE_ADS1115_860SPS);
+  //make sure it sets it right
+  while(ads1.getDataRate != RATE_ADS1115_860SPS) {
+    ads1.setDataRate(RATE_ADS1115_860SPS);
+  }
   ads1.setGain(GAIN_TWOTHIRDS);
   
   //ads2.begin(0x49, &Wire);
