@@ -88,7 +88,8 @@ void setup() {
   //delay(10000);
   //*LDSRearLeft = createCalibratedLDSSensor(2, &ads2, 1);
   //*LDSRearRight = createCalibratedLDSSensor(3, &ads2, 1);
-
+  //final delay to let you read off all the calibrated values
+  delay(20000);
   //zero out all data fields
   initDataStructValues();
   //set recording flag
