@@ -26,18 +26,22 @@ RPMSensor frontLeft(RPM2, FLTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 RPMSensor frontRight(RPM3, FRTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 RPMSensor aux1(RPM3, RDTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 
-Linear_Analog_Sensor rearBrakePressure(15, 4.096, 2000, 0, 4.5, 0.5, 0, 2000);
-Linear_Analog_Sensor frontBrakePressure(15, 4.096, 2000, 0, 4.5, 0.5, 0, 2000);
+//dont need to calibrate the brake pressures at start up I don't think
+Linear_Analog_Sensor rearBrakePressure(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 2000, 0, 4.5, 0.5, 0, 2000);
+Linear_Analog_Sensor frontBrakePressure(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 2000, 0, 4.5, 0.5, 0, 2000);
 
-Linear_Analog_Sensor LDSFrontLeft(15, 4.096, 8.1, 0, 4.5, 0.5, 0, 8.1);
-Linear_Analog_Sensor LDSFrontRight(15, 4.096, 8.1, 0, 4.5, 0.5, 0, 8.1);
+//create pointers so we can reference these globaly
+Linear_Analog_Sensor * LDSFrontLeft;
+Linear_Analog_Sensor * LDSFrontRight;
+Linear_Analog_Sensor * LDSBackLeft;
+Linear_Analog_Sensor * LDSBackRight;
 
 
 void setup() {
   //initialize debug leds
   initDebugLEDs();
   //test leds
-  flashBang();
+  flashBang(5000, 2);
   //init temp monitor
   tempmon_init();
   //start tempmon
@@ -77,6 +81,14 @@ void setup() {
   //ads2.setDataRate(RATE_ADS1115_860SPS);
   //ads2.setGain(GAIN_TWOTHIRDS);
 
+  //calibrate the LDSs
+  LDSFrontLeft = createCalibratedLDSSensor(2, &ads1, 0);
+  LDSFrontRight = createCalibratedLDSSensor(3, &ads1, 0);
+  //delay to give calibrators time to get to the back of the car
+  //delay(10000);
+  //*LDSRearLeft = createCalibratedLDSSensor(2, &ads2, 1);
+  //*LDSRearRight = createCalibratedLDSSensor(3, &ads2, 1);
+
   //zero out all data fields
   initDataStructValues();
   //set recording flag
@@ -101,8 +113,8 @@ void updateDebugLeds() {
   digitalWrite(RPM_FOUR_LED, aux1.getRPMValueGood() ? HIGH : LOW);
   digitalWrite(ANALOG_ONE_LED, rearBrakePressure.getValueGood() ? HIGH : LOW);
   digitalWrite(ANALOG_TWO_LED, frontBrakePressure.getValueGood() ? HIGH : LOW);
-  digitalWrite(ANALOG_THREE_LED, LDSFrontLeft.getValueGood() ? HIGH : LOW);
-  digitalWrite(ANALOG_FOUR_LED, LDSFrontRight.getValueGood() ? HIGH : LOW);
+  digitalWrite(ANALOG_THREE_LED, LDSFrontLeft -> getValueGood() ? HIGH : LOW);
+  digitalWrite(ANALOG_FOUR_LED, LDSFrontRight -> getValueGood() ? HIGH : LOW);
   //SD debug is handled by the file creation code
   //power LED is always on whenever the box is on
   
@@ -219,22 +231,22 @@ void updateAnalogValueFlag1() {
 void readAnalogValues1() {
   switch (currentAnalogSensor1) {
       case 0:
-        DAQData.setData<cmbtl::RearBrakePressure>(rearBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::RearBrakePressure>(rearBrakePressure.computeVoltage(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 1;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
         break;
       case 1:
-        DAQData.setData<cmbtl::FrontBrakePressure>(frontBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::FrontBrakePressure>(frontBrakePressure.computeVoltage(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 2;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
       case 2:
-        DAQData.setData<cmbtl::LDSFrontLeft>(LDSFrontLeft.computeSensorReading(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::LDSFrontLeft>(LDSFrontLeft -> computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 3;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
         break;
       case 3:
-        DAQData.setData<cmbtl::LDSFrontRight>(LDSFrontRight.computeSensorReading(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::LDSFrontRight>(LDSFrontRight -> computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 0;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
         break;
