@@ -131,10 +131,10 @@ Linear_Analog_Sensor* createCalibratedLDSSensor(int ADCPortNumber, Adafruit_ADS1
   //read the data from the adc port
   //(We read five numbers and then average them)
   float hangVoltage = 0.0;
-  for (int i =0; i < 5; i +=1) {
+  for (int i =0; i < 200; i +=1) {
     hangVoltage += ((adc -> readADC_SingleEnded(ADCPortNumber))/(pow(2, ADC_RESOLUTION)-1)) * ADC_REFERENCE_VOLTAGE;
   }
-  hangVoltage = hangVoltage/5;
+  hangVoltage = hangVoltage/200;
   Serial.printf("Hang Voltage Computed! %f\n", hangVoltage);
   //flash all lights to communicate that it finished the current LDS
   flashBang(1000, frontOrBack);
@@ -146,10 +146,10 @@ Linear_Analog_Sensor* createCalibratedLDSSensor(int ADCPortNumber, Adafruit_ADS1
   flashBang(10000, frontOrBack);
 
   float slightlySettledVoltage = 0.0;
-  for (int i =0; i < 5; i +=1) {
+  for (int i =0; i < 200; i +=1) {
     slightlySettledVoltage += ((adc -> readADC_SingleEnded(ADCPortNumber))/(pow(2, ADC_RESOLUTION)-1)) * ADC_REFERENCE_VOLTAGE;
   }
-  slightlySettledVoltage = slightlySettledVoltage/5;
+  slightlySettledVoltage = slightlySettledVoltage/200;
 
   Serial.printf("Second Voltage Computed! %f\n", slightlySettledVoltage);
   //solve for slope 
@@ -164,7 +164,6 @@ Linear_Analog_Sensor* createCalibratedLDSSensor(int ADCPortNumber, Adafruit_ADS1
   float maximumValue = slope * 5 + yIntercept;
   Serial.printf("Computed maximum Value: %f\n", maximumValue);
 
-  delay(10000);
   //define the LDS
   Linear_Analog_Sensor* LDSToReturn = new Linear_Analog_Sensor(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, maximumValue, yIntercept, 5, 0, 0, 7.87402);
   
