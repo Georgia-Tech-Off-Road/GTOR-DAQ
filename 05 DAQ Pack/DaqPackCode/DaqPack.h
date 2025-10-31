@@ -127,7 +127,7 @@ ulong autoSaveTimeMillis = 0;
 Linear_Analog_Sensor* createCalibratedLDSSensor(int ADCPortNumber, Adafruit_ADS1115 * adc, int frontOrBack) {
   Serial.printf("Beginning calibration!\n");
   //flash all lights to show that it wants the car lifted
-  flashBang(10000, frontOrBack);
+  //flashBang(10000, frontOrBack);
   //read the data from the adc port
   //(We read five numbers and then average them)
   float hangVoltage = 0.0;
@@ -137,13 +137,13 @@ Linear_Analog_Sensor* createCalibratedLDSSensor(int ADCPortNumber, Adafruit_ADS1
   hangVoltage = hangVoltage/200;
   Serial.printf("Hang Voltage Computed! %f\n", hangVoltage);
   //flash all lights to communicate that it finished the current LDS
-  flashBang(1000, frontOrBack);
+  //flashBang(1000, frontOrBack);
   //according to the data sheet these sensors are at 0V at 0mm and 5V at 200mm we recalibrate by assuming linearity and then creating a new slope, we may end up with the inability to measure at extreme low or high points but that doesn't really matter for us since its impossible for the lds to do that)
   //200 mm is 7.87402 inches
 
   //now we must find a second point to compare with, all the LDSs have a mark at 1 inch below hang which you push the car down to and hold it at (it should really just rest there)
   //longer flash bang to give more time
-  flashBang(10000, frontOrBack);
+  //flashBang(10000, frontOrBack);
 
   float slightlySettledVoltage = 0.0;
   for (int i =0; i < 200; i +=1) {
@@ -224,7 +224,7 @@ inline void setUpSD() {
     digitalWrite(SD_CARD_INIT_LED, LOW);
   } else {
     Serial.printf("SD INITIALIZED\n");
-    digitalWrite(SD_CARD_INIT_LED, HIGH);
+    //digitalWrite(SD_CARD_INIT_LED, HIGH);
   }
   delay(500);
   String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second())+".txt";
