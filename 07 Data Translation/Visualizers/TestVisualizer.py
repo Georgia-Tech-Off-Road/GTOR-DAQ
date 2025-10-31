@@ -8,7 +8,7 @@ import numpy as np
 import json
 import plotly.express as px
 
-def testVisualizer(filePath, columnIndices, customWindow, useDefaultConfig, plotlyCheckVar):
+def testVisualizer(filePath, columnIndices, customWindow, useDefaultConfig, plotlyCheckVar,scale):
     # Create UI indicator
     label1 = tk.Label(customWindow, text="Creating your graph...")
     label1.pack()
@@ -32,11 +32,16 @@ def testVisualizer(filePath, columnIndices, customWindow, useDefaultConfig, plot
     df['microsec'] = df['microsec'] - startTime
     time = df['microsec'] / (1 * 10**6)
 
-    # Correct brake pressure (TEMPORARY UNITL ANDREW FIXES)
+    # Correct brake pressure
     for col in df.columns:
+        print(scale)
+        print(type(scale))
         if 'brake' in col.lower() or 'break' in col.lower():
-            df[col] = (.5 + (df[col] / (2000 - 50)) * (4.5 - .5))
-            #df[col] = 500*(df[col]-0.5)
+            df[col] = (.5 + (df[col] / (2000 - 50)) * (4.5 - .5)) #(TEMPORARY UNITL ANDREW FIXES)
+            df[col] = 500*(df[col]-0.5) #(TEMPORARY UNITL ANDREW FIXES)
+            if scale != 1:
+                df[col] = df[col]*scale
+                df.rename(columns={col: f"{col} (SCALED BY {scale})"}, inplace=True)
 
     # Set outliers to NaN (values beyond 6 std devs)
     '''
