@@ -21,7 +21,7 @@ If you go to our main [GitHub repository](https://github.com/Georgia-Tech-Off-Ro
 !["GitHub Home Commits"](./Images/github_home_commit_highlighted.png)
 **GitHub Homepage**
 
-!["GitHub Commit History"](./Images/github_home_commit_highlighted.png)
+!["GitHub Commit History"](./Images/github_commit_history.png)
 **GitHub Commit History**
 
 
