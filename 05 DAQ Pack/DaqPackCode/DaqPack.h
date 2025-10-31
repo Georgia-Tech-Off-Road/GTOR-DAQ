@@ -205,13 +205,12 @@ inline void initDataStructValues() {
   DAQData.setData<cmbtl::RPM4>(0);
   DAQData.setData<cmbtl::RearBrakePressure>(0);
   DAQData.setData<cmbtl::FrontBrakePressure>(0);
-  DAQData.setData<cmbtl::LDSFrontLeft>(0);
   DAQData.setData<cmbtl::LDSFrontRight>(0);
-  /**DAQData.setData<cmbtl::LDSRearLeft>(0);
+  DAQData.setData<cmbtl::LDSFrontLeft>(0);
   DAQData.setData<cmbtl::LDSRearRight>(0);
+  DAQData.setData<cmbtl::LDSRearLeft>(0);
   DAQData.setData<cmbtl::CVTTemp>(0);
   DAQData.setData<cmbtl::RearTransferCaseTemp>(0);
-  **/
 }
 
 
