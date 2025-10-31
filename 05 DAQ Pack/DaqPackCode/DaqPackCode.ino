@@ -31,8 +31,10 @@ Linear_Analog_Sensor rearBrakePressure(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 20
 Linear_Analog_Sensor frontBrakePressure(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 2000, 0, 4.5, 0.5, 0, 2000);
 
 //create pointers so we can reference these globaly
-Linear_Analog_Sensor * LDSFrontLeft;
-Linear_Analog_Sensor * LDSFrontRight;
+//Linear_Analog_Sensor * LDSFrontLeft;
+//Linear_Analog_Sensor * LDSFrontRight;
+Linear_Analog_Sensor LDSFrontLeft(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
+Linear_Analog_Sensor LDSFrontRight(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
 Linear_Analog_Sensor * LDSBackLeft;
 Linear_Analog_Sensor * LDSBackRight;
 
@@ -41,7 +43,7 @@ void setup() {
   //initialize debug leds
   initDebugLEDs();
   //test leds
-  flashBang(5000, 2);
+  //flashBang(5000, 2);
   //init temp monitor
   tempmon_init();
   //start tempmon
@@ -75,7 +77,7 @@ void setup() {
   //configure ADCs
   ads1.begin(0x48, &Wire);
   //make sure it sets it right
-  while(ads1.getDataRate != RATE_ADS1115_860SPS) {
+  while(ads1.getDataRate() != RATE_ADS1115_860SPS) {
     ads1.setDataRate(RATE_ADS1115_860SPS);
   }
   ads1.setGain(GAIN_TWOTHIRDS);
@@ -85,14 +87,14 @@ void setup() {
   //ads2.setGain(GAIN_TWOTHIRDS);
 
   //calibrate the LDSs
-  LDSFrontLeft = createCalibratedLDSSensor(2, &ads1, 0);
-  LDSFrontRight = createCalibratedLDSSensor(3, &ads1, 0);
+  //LDSFrontLeft = createCalibratedLDSSensor(2, &ads1, 0);
+  //LDSFrontRight = createCalibratedLDSSensor(3, &ads1, 0);
   //delay to give calibrators time to get to the back of the car
   //delay(10000);
   //*LDSRearLeft = createCalibratedLDSSensor(2, &ads2, 1);
   //*LDSRearRight = createCalibratedLDSSensor(3, &ads2, 1);
   //final delay to let you read off all the calibrated values
-  delay(20000);
+  delay(7000);
   //zero out all data fields
   initDataStructValues();
   //set recording flag
@@ -117,8 +119,8 @@ void updateDebugLeds() {
   digitalWrite(RPM_FOUR_LED, aux1.getRPMValueGood() ? HIGH : LOW);
   digitalWrite(ANALOG_ONE_LED, rearBrakePressure.getValueGood() ? HIGH : LOW);
   digitalWrite(ANALOG_TWO_LED, frontBrakePressure.getValueGood() ? HIGH : LOW);
-  digitalWrite(ANALOG_THREE_LED, LDSFrontLeft -> getValueGood() ? HIGH : LOW);
-  digitalWrite(ANALOG_FOUR_LED, LDSFrontRight -> getValueGood() ? HIGH : LOW);
+  digitalWrite(ANALOG_THREE_LED, LDSFrontLeft.getValueGood() ? HIGH : LOW);
+  digitalWrite(ANALOG_FOUR_LED, LDSFrontRight.getValueGood() ? HIGH : LOW);
   //SD debug is handled by the file creation code
   //power LED is always on whenever the box is on
   
@@ -129,7 +131,7 @@ void updateDebugLeds() {
 void dataAquisitionAndSavingLoop() {
   bool firstEntry = true;
   while(1) {  
-    updateDebugLeds();
+    //updateDebugLeds();
     //update auto save time
     autoSaveTimeMillis = millis();
     //check to see if save should be started/stopped
@@ -140,10 +142,12 @@ void dataAquisitionAndSavingLoop() {
     if (millis() > autoSaveTimeMillis + 300000) {
       outputFile.flush();
     }
+    /**
     if (!dataUpdated) {
       //write code here to yield time to other subprograms
       continue;
     }
+    **/
     DAQData.setData<cmbtl::SEC>(now()); 
     DAQData.setData<cmbtl::MICRO_SEC>(micros());
     DAQData.setData<cmbtl::TEENSY_TEMP>(tempmonGetTemp());
@@ -157,7 +161,7 @@ void dataAquisitionAndSavingLoop() {
       } else {
         outputFile.printf(",%s", DAQData.serializeDataToJSON().c_str());
       }
-      Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
+      //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
     }
     //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
     if (engineRPM.RPMUpdateFlag) {
@@ -235,22 +239,22 @@ void updateAnalogValueFlag1() {
 void readAnalogValues1() {
   switch (currentAnalogSensor1) {
       case 0:
-        DAQData.setData<cmbtl::RearBrakePressure>(rearBrakePressure.computeVoltage(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::RearBrakePressure>(rearBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 1;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
         break;
       case 1:
-        DAQData.setData<cmbtl::FrontBrakePressure>(frontBrakePressure.computeVoltage(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::FrontBrakePressure>(frontBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 2;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
       case 2:
-        DAQData.setData<cmbtl::LDSFrontLeft>(LDSFrontLeft -> computeSensorReading(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::LDSFrontLeft>(LDSFrontLeft.computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 3;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
         break;
       case 3:
-        DAQData.setData<cmbtl::LDSFrontRight>(LDSFrontRight -> computeSensorReading(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::LDSFrontRight>(LDSFrontRight.computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 0;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
         break;
