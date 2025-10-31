@@ -26,8 +26,12 @@ namespace cmbtl {
         RPM4,
         RearBrakePressure,
         FrontBrakePressure,
-        LDSFrontLeft,
         LDSFrontRight,
+        LDSFrontLeft,
+        LDSRearRight,
+        LDSRearLeft,
+        CVTTemp,
+        RearTransferCaseTemp,
         TEENSY_TEMP
     };
 
@@ -44,14 +48,22 @@ namespace cmbtl {
 
     // Define Analog Sensors
     std::string RearBrakePressureGetName() { return "RearBrakePressure"; }
-    std::string FrontBrakePressureGetName() { return "FrontBreakPressure"; }
-    std::string LDSFrontLeftGetName() { return "LDSFrontLeft"; }
+    std::string FrontBrakePressureGetName() { return "FrontBrakePressure"; }
     std::string LDSFrontRightGetName() { return "LDSFrontRight"; }
+    std::string LDSFrontLeftGetName() { return "LDSFrontLeft"; }
+    std::string LDSRearRightGetName() { return "LDSRearRight"; }
+    std::string LDSRearLeftGetName() { return "LDSRearLeft"; }
+    std::string CVTTempGetName() { return "CVTTemp"; }
+    std::string RearTransferCaseTempGetName() { return "RearTransferCaseTemp"; }
 
     using RearBrakePressure_SENSOR_INFO = cmbtl::linear_analog_sensor::Linear_Analog_Sensor<RearBrakePressureGetName>;
     using FrontBrakePressur_SENSOR_INFO = cmbtl::linear_analog_sensor::Linear_Analog_Sensor<FrontBrakePressureGetName>;
-    using LDSFrontLeft_SENSOR_INFO = cmbtl::linear_analog_sensor::Linear_Analog_Sensor<LDSFrontLeftGetName>;
     using LDSFrontRight_SENSOR_INFO = cmbtl::linear_analog_sensor::Linear_Analog_Sensor<LDSFrontRightGetName>;
+    using LDSFrontLeft_SENSOR_INFO = cmbtl::linear_analog_sensor::Linear_Analog_Sensor<LDSFrontLeftGetName>;
+    using LDSRearRight_SENSOR_INFO = cmbtl::linear_analog_sensor::Linear_Analog_Sensor<LDSRearRightGetName>;
+    using LDSRearLeft_SENSOR_INFO = cmbtl::linear_analog_sensor::Linear_Analog_Sensor<LDSRearLeftGetName>;
+    using CVTTemp_SENSOR_INFO = cmbtl::linear_analog_sensor::Linear_Analog_Sensor<CVTTempGetName>;
+    using RearTransferCaseTemp_SENSOR_INFO = cmbtl::linear_analog_sensor::Linear_Analog_Sensor<RearTransferCaseTempGetName>;
     
 
     // The order that the sensor appear in the enum and this tuple MUST MUST BE THE SAME
@@ -64,8 +76,12 @@ namespace cmbtl {
     RPM4_SENSOR_INFO,
     RearBrakePressure_SENSOR_INFO,
     FrontBrakePressur_SENSOR_INFO,
-    LDSFrontLeft_SENSOR_INFO,
     LDSFrontRight_SENSOR_INFO,
+    LDSFrontLeft_SENSOR_INFO,
+    LDSRearRight_SENSOR_INFO,
+    LDSRearLeft_SENSOR_INFO,
+    CVTTemp_SENSOR_INFO,
+    RearTransferCaseTemp_SENSOR_INFO,
     cmbtl::teensy_temp::TEENSY_TEMP_SENSOR_INFO
     >;
 

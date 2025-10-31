@@ -13,9 +13,6 @@ volatile bool analogValueFlag2 = false;
 int currentAnalogSensor1 = 0;
 int currentAnalogSensor2 = 0;
 
-//bool to check for if data was actually updated
-volatile bool dataUpdated = false;
-
 //general rpm definitions for now
 #define MIN_EXPECTED_VALUE 0
 #define MAX_EXPECTED_VALUE 2000
@@ -33,10 +30,16 @@ Linear_Analog_Sensor frontBrakePressure(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 2
 //create pointers so we can reference these globaly
 //Linear_Analog_Sensor * LDSFrontLeft;
 //Linear_Analog_Sensor * LDSFrontRight;
-Linear_Analog_Sensor LDSFrontLeft(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
+
+//create LDSs
 Linear_Analog_Sensor LDSFrontRight(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
-Linear_Analog_Sensor * LDSBackLeft;
-Linear_Analog_Sensor * LDSBackRight;
+Linear_Analog_Sensor LDSFrontLeft(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
+Linear_Analog_Sensor LDSRearLeft(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
+Linear_Analog_Sensor LDSRearRight(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
+
+//create temp sensors
+Linear_Analog_Sensor CVTTemp(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
+Linear_Analog_Sensor RearTransferCaseTemp(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
 
 
 void setup() {
@@ -62,9 +65,8 @@ void setup() {
   pinMode(40, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(40), updateAnalogValueFlag1, FALLING);
 
-  //figure out which pin to use as an interrupt
-  pinMode(40, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(40), updateAnalogValueFlag1, FALLING);
+  pinMode(41, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(41), updateAnalogValueFlag2, FALLING);
 
   pinMode(RPM3, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM3), frontRightInterrupt, RISING);
@@ -76,15 +78,17 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(RPM4), aux1Interrupt, RISING);
   //configure ADCs
   ads1.begin(0x48, &Wire);
+  ads2.begin(0x48, &Wire1);
   //make sure it sets it right
   while(ads1.getDataRate() != RATE_ADS1115_860SPS) {
     ads1.setDataRate(RATE_ADS1115_860SPS);
   }
   ads1.setGain(GAIN_TWOTHIRDS);
-  
-  //ads2.begin(0x49, &Wire);
-  //ads2.setDataRate(RATE_ADS1115_860SPS);
-  //ads2.setGain(GAIN_TWOTHIRDS);
+
+  while(ads2.getDataRate() != RATE_ADS1115_860SPS) {
+    ads2.setDataRate(RATE_ADS1115_860SPS);
+  }
+  ads2.setGain(GAIN_TWOTHIRDS);
 
   //calibrate the LDSs
   //LDSFrontLeft = createCalibratedLDSSensor(2, &ads1, 0);
@@ -103,7 +107,7 @@ void setup() {
   autoSaveTimeMillis = millis();
   //start ADCs
   ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
-  //ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
+  ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
   dataAquisitionAndSavingLoop();
 }
 
@@ -142,12 +146,6 @@ void dataAquisitionAndSavingLoop() {
     if (millis() > autoSaveTimeMillis + 300000) {
       outputFile.flush();
     }
-    /**
-    if (!dataUpdated) {
-      //write code here to yield time to other subprograms
-      continue;
-    }
-    **/
     DAQData.setData<cmbtl::SEC>(now()); 
     DAQData.setData<cmbtl::MICRO_SEC>(micros());
     DAQData.setData<cmbtl::TEENSY_TEMP>(tempmonGetTemp());
@@ -193,16 +191,17 @@ void dataAquisitionAndSavingLoop() {
       readAnalogValues1();
       analogValueFlag1 = false;
     }
-    //reset dataUpdated
-    dataUpdated = false;
+    if (analogValueFlag2) {
+      readAnalogValues2();
+      analogValueFlag2 = false;
+    }
   }
 }
 
 //changes recording state and saves file
 void changeRecordingState() {
-  //suspend position thread to prevent it from interfering in saving process
   if(isRecording == true) {
-    while(digitalRead(40) == 0) {
+    while(digitalRead(0) == 1) {
       delay(5);
     }
     outputFile.printf("]");
@@ -213,8 +212,7 @@ void changeRecordingState() {
     isRecording = false;
   }
   else {
-    // TODO: Ask Andrew
-    while(digitalRead(40) == 0) {
+    while(digitalRead(0) == 1) {
       delay(5);
     }
     //generate a random number since RTC isnt working
@@ -231,8 +229,11 @@ void changeRecordingState() {
 }
 
 void updateAnalogValueFlag1() {
-  dataUpdated = true;
   analogValueFlag1 = true;
+}
+
+void updateAnalogValueFlag2() {
+  analogValueFlag2 = true;
 }
 
 
@@ -249,59 +250,55 @@ void readAnalogValues1() {
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
       case 2:
-        DAQData.setData<cmbtl::LDSFrontLeft>(LDSFrontLeft.computeSensorReading(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::LDSFrontRight>(LDSFrontRight.computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 3;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
         break;
       case 3:
-        DAQData.setData<cmbtl::LDSFrontRight>(LDSFrontRight.computeSensorReading(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::LDSFrontLeft>(LDSFrontLeft.computeSensorReading(ads1.getLastConversionResults()));
         currentAnalogSensor1 = 0;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
         break;
   }
 }
-/**
+
 void readAnalogValues2() {
   switch (currentAnalogSensor2) {
       case 0:
-        DAQData.setData<cmbtl::LDSRearLeft>(rearBrakePressure.computeSensorReading(ads2.getLastConversionResults()));
+        DAQData.setData<cmbtl::LDSRearRight>(LDSRearRight.computeSensorReading(ads2.getLastConversionResults()));
         currentAnalogSensor2 = 1;
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
         break;
       case 1:
-        DAQData.setData<cmbtl::LDSRearRight>(frontBrakePressure.computeSensorReading(ads2.getLastConversionResults()));
+        DAQData.setData<cmbtl::LDSRearLeft>(LDSRearLeft.computeSensorReading(ads2.getLastConversionResults()));
         currentAnalogSensor2 = 2;
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
       case 2:
-        DAQData.setData<cmbtl::CVTTemp>(LDSFrontLeft.computeSensorReading(ads2.getLastConversionResults()));
+        DAQData.setData<cmbtl::CVTTemp>(CVTTemp.computeSensorReading(ads2.getLastConversionResults()));
         currentAnalogSensor2 = 3;
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
         break;
       case 3:
-        DAQData.setData<cmbtl::RearTransferCaseTemp>(LDSFrontRight.computeSensorReading(ads2.getLastConversionResults()));
+        DAQData.setData<cmbtl::RearTransferCaseTemp>(RearTransferCaseTemp.computeSensorReading(ads2.getLastConversionResults()));
         currentAnalogSensor2 = 0;
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
         break;
   }
 }
-**/
+
 void engineRPMInterrupt() {
   engineRPM.calculateRPM();
-  dataUpdated = true;
 }
 
 void frontLeftInterrupt() {
   frontLeft.calculateRPM();
-  dataUpdated = true;
 }
 
 void frontRightInterrupt() {
   frontRight.calculateRPM();
-  dataUpdated = true;
 }
 
 void aux1Interrupt() {
   aux1.calculateRPM();
-  dataUpdated = true;
 }
