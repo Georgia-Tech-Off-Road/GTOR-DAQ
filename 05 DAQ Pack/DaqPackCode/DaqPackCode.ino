@@ -3,12 +3,15 @@
 
 // Intialize ADCs
 Adafruit_ADS1115 ads1;
+Adafruit_ADS1115 ads2;
 
 // Initialize analog value flags
 volatile bool analogValueFlag1 = false;
+volatile bool analogValueFlag2 = false;
 
 // Current analog sensor number being polled
 int currentAnalogSensor1 = 0;
+int currentAnalogSensor2 = 0;
 
 //bool to check for if data was actually updated
 volatile bool dataUpdated = false;
@@ -23,18 +26,24 @@ RPMSensor frontLeft(RPM2, FLTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 RPMSensor frontRight(RPM3, FRTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 RPMSensor aux1(RPM3, RDTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 
-Linear_Analog_Sensor rearBrakePressure(15, 4.096, 2000, 50, 4.5, 0.5, 0, 2000);
-Linear_Analog_Sensor frontBrakePressure(15, 4.096, 2000, 50, 4.5, 0.5, 0, 2000);
+//dont need to calibrate the brake pressures at start up I don't think
+Linear_Analog_Sensor rearBrakePressure(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 2000, 0, 4.5, 0.5, 0, 2000);
+Linear_Analog_Sensor frontBrakePressure(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 2000, 0, 4.5, 0.5, 0, 2000);
 
-Linear_Analog_Sensor LDSFrontLeft(15, 4.096, 8.1, 0, 4.5, 0.5, 0, 8.1);
-Linear_Analog_Sensor LDSFrontRight(15, 4.096, 8.1, 0, 4.5, 0.5, 0, 8.1);
+//create pointers so we can reference these globaly
+//Linear_Analog_Sensor * LDSFrontLeft;
+//Linear_Analog_Sensor * LDSFrontRight;
+Linear_Analog_Sensor LDSFrontLeft(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
+Linear_Analog_Sensor LDSFrontRight(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
+Linear_Analog_Sensor * LDSBackLeft;
+Linear_Analog_Sensor * LDSBackRight;
 
 
 void setup() {
   //initialize debug leds
   initDebugLEDs();
   //test leds
-  flashBang();
+  //flashBang(5000, 2);
   //init temp monitor
   tempmon_init();
   //start tempmon
@@ -53,6 +62,10 @@ void setup() {
   pinMode(40, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(40), updateAnalogValueFlag1, FALLING);
 
+  //figure out which pin to use as an interrupt
+  pinMode(40, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(40), updateAnalogValueFlag1, FALLING);
+
   pinMode(RPM3, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM3), frontRightInterrupt, RISING);
   pinMode(RPM1, INPUT_PULLDOWN);
@@ -63,9 +76,25 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(RPM4), aux1Interrupt, RISING);
   //configure ADCs
   ads1.begin(0x48, &Wire);
-  ads1.setDataRate(RATE_ADS1115_64SPS);
+  //make sure it sets it right
+  while(ads1.getDataRate() != RATE_ADS1115_860SPS) {
+    ads1.setDataRate(RATE_ADS1115_860SPS);
+  }
   ads1.setGain(GAIN_TWOTHIRDS);
+  
+  //ads2.begin(0x49, &Wire);
+  //ads2.setDataRate(RATE_ADS1115_860SPS);
+  //ads2.setGain(GAIN_TWOTHIRDS);
 
+  //calibrate the LDSs
+  //LDSFrontLeft = createCalibratedLDSSensor(2, &ads1, 0);
+  //LDSFrontRight = createCalibratedLDSSensor(3, &ads1, 0);
+  //delay to give calibrators time to get to the back of the car
+  //delay(10000);
+  //*LDSRearLeft = createCalibratedLDSSensor(2, &ads2, 1);
+  //*LDSRearRight = createCalibratedLDSSensor(3, &ads2, 1);
+  //final delay to let you read off all the calibrated values
+  delay(7000);
   //zero out all data fields
   initDataStructValues();
   //set recording flag
@@ -74,6 +103,7 @@ void setup() {
   autoSaveTimeMillis = millis();
   //start ADCs
   ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
+  //ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
   dataAquisitionAndSavingLoop();
 }
 
@@ -101,7 +131,7 @@ void updateDebugLeds() {
 void dataAquisitionAndSavingLoop() {
   bool firstEntry = true;
   while(1) {  
-    updateDebugLeds();
+    //updateDebugLeds();
     //update auto save time
     autoSaveTimeMillis = millis();
     //check to see if save should be started/stopped
@@ -112,10 +142,12 @@ void dataAquisitionAndSavingLoop() {
     if (millis() > autoSaveTimeMillis + 300000) {
       outputFile.flush();
     }
+    /**
     if (!dataUpdated) {
       //write code here to yield time to other subprograms
       continue;
     }
+    **/
     DAQData.setData<cmbtl::SEC>(now()); 
     DAQData.setData<cmbtl::MICRO_SEC>(micros());
     DAQData.setData<cmbtl::TEENSY_TEMP>(tempmonGetTemp());
@@ -129,7 +161,7 @@ void dataAquisitionAndSavingLoop() {
       } else {
         outputFile.printf(",%s", DAQData.serializeDataToJSON().c_str());
       }
-      Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
+      //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
     }
     //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
     if (engineRPM.RPMUpdateFlag) {
@@ -228,7 +260,32 @@ void readAnalogValues1() {
         break;
   }
 }
-
+/**
+void readAnalogValues2() {
+  switch (currentAnalogSensor2) {
+      case 0:
+        DAQData.setData<cmbtl::LDSRearLeft>(rearBrakePressure.computeSensorReading(ads2.getLastConversionResults()));
+        currentAnalogSensor2 = 1;
+        ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
+        break;
+      case 1:
+        DAQData.setData<cmbtl::LDSRearRight>(frontBrakePressure.computeSensorReading(ads2.getLastConversionResults()));
+        currentAnalogSensor2 = 2;
+        ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
+        break;
+      case 2:
+        DAQData.setData<cmbtl::CVTTemp>(LDSFrontLeft.computeSensorReading(ads2.getLastConversionResults()));
+        currentAnalogSensor2 = 3;
+        ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
+        break;
+      case 3:
+        DAQData.setData<cmbtl::RearTransferCaseTemp>(LDSFrontRight.computeSensorReading(ads2.getLastConversionResults()));
+        currentAnalogSensor2 = 0;
+        ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
+        break;
+  }
+}
+**/
 void engineRPMInterrupt() {
   engineRPM.calculateRPM();
   dataUpdated = true;

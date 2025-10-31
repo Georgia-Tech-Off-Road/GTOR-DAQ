@@ -20,7 +20,7 @@ float Linear_Analog_Sensor :: computeVoltage(int reading) {
 
 float Linear_Analog_Sensor :: computeSensorReading(int reading) {
     float voltage = computeVoltage(reading);
-    float value = (voltage - _minimalVoltage)/(_maximalVoltage - _minimalVoltage) * (_maximalValue - _minimalValue);
+    float value = (voltage - _minimalVoltage)/(_maximalVoltage - _minimalVoltage) * (_maximalValue - _minimalValue)  + _minimalValue;
     //checks that the brake pressure sensor is returning a valid value
     if (value > _minimalReading && value < _maximalReading) {
         _valueGood = true;
