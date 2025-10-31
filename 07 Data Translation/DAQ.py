@@ -164,11 +164,22 @@ def dataProcessingTool():
         columnEntry.pack(pady=5)
         plotlyCheckVar = tk.IntVar(value=0)
         plotCheckbox = tk.Checkbutton(customWindow, text="Check to use Plotly (slower, more detailed)", variable=plotlyCheckVar)
-        plotCheckbox.pack(pady=10)
+        plotCheckbox.pack(pady=5)
+        scaleFrame = tk.Frame(customWindow)
+        scaleFrame.pack(pady=25)
+        scaleLabel = tk.Label(customWindow, text="Enter # to scale brake pressure data (to view BP data alongside RPM data), or leave blank")
+        scaleLabel.pack(pady=0)
+        scaleEntry = tk.Entry(customWindow)
+        scaleEntry.pack(pady=3)
         def runVisualizer():
+            scale = scaleEntry.get().strip()
+            if scale == "":
+                scale = 1
+            else:
+                scale = float(scale)
             columnNumber = columnEntry.get()
             columnNumber = list(map(int, columnNumber.split(",")))
-            visualizerThread = threading.Thread(target = TestVisualizer.testVisualizer, args = (filePath, columnNumber,customWindow,int(useDefaultConfig.get()),plotlyCheckVar.get()))
+            visualizerThread = threading.Thread(target = TestVisualizer.testVisualizer, args = (filePath, columnNumber,customWindow,int(useDefaultConfig.get()),plotlyCheckVar.get(),scale))
             visualizerThread.start()
         createGraphButton = tk.Button(customWindow, text="Create Graph",font=("Helvetica", 12, "bold"), command=runVisualizer)
         createGraphButton.pack(pady=10)
