@@ -10,6 +10,24 @@
 #include <DAQSensors.h>
 #include <DAQPackets.h>
 
+//macro for the data fields (chatgpt came up with this idea, its pretty sick ngl)
+#define DATA_FIELDS \
+  X(unsigned long long int, sec) \
+  X(unsigned long int, microsec) \
+  X(float, engineRPM) \
+  X(float, frontLeftRPM) \
+  X(float, frontRightRPM) \
+  X(float, aux1RPM) \
+  X(float, rearBrakePressure) \
+  X(float, frontBrakePressure) \
+  X(float, LDSFrontRight) \
+  X(float, LDSFrontLeft) \
+  X(float, LDSRearRight) \
+  X(float, LDSRearLeft) \
+  X(float, CVTTemp) \
+  X(float, RearTransferCaseTemp) \
+  X(float, teensyTemp)
+
 //length of lds when hanging in inches
 #define HANG_TRAVEL 7.1365
 
@@ -47,6 +65,24 @@
 #define BAUD 230400
 
 #define serialMonitor Serial
+
+//struct to hold the data cause we legit need to go faster
+struct {
+  #define X(type, name) type name;
+  DATA_FIELDS
+  #undef X
+} dataStruct;
+
+//function to print struct stats
+inline void writeStructData(File structDetailFile) {
+  #define X(type, name) structDetailFile.print(#type); structDetailFile.print(","); structDetailFile.print(#name); structDetailFile.print("\n");
+  DATA_FIELDS
+  #undef X;
+  //print a character to signify the structure outputs are finished
+  structDetailFile.print("[-]\n");
+  //print the size of the struct to let python compute any padding thats needed
+  structDetailFile.printf("%d\n", sizeof(dataStruct));
+}
 
 //declare non setup functions
 time_t getTeensy3Time();
@@ -109,6 +145,27 @@ inline void flashBang(int timeInMillis, int frontBackOrAll) {
   digitalWrite(ANALOG_THREE_LED, LOW);
   digitalWrite(ANALOG_FOUR_LED, LOW);
   digitalWrite(SD_CARD_INIT_LED, LOW);
+}
+
+//function to intialize dataStruct values
+inline void initDataStructValues() {
+  DAQData.setData<cmbtl::SEC>(now());
+  DAQData.setData<cmbtl::MICRO_SEC>(micros());
+  DAQData.setData<cmbtl::RPM1>(0);
+  DAQData.setData<cmbtl::RPM2>(0);
+  DAQData.setData<cmbtl::RPM3>(0);
+  DAQData.setData<cmbtl::RPM4>(0);
+  DAQData.setData<cmbtl::RearBrakePressure>(0);
+  DAQData.setData<cmbtl::FrontBrakePressure>(0);
+  DAQData.setData<cmbtl::LDSFrontRight>(0);
+  DAQData.setData<cmbtl::LDSFrontLeft>(0);
+  DAQData.setData<cmbtl::LDSRearRight>(0);
+  DAQData.setData<cmbtl::LDSRearLeft>(0);
+  DAQData.setData<cmbtl::CVTTemp>(0);
+  DAQData.setData<cmbtl::RearTransferCaseTemp>(0);
+  #define X(type, name) dataStruct.name = 0;
+  DATA_FIELDS
+  #undef X
 }
 
 //outputFile
@@ -195,24 +252,6 @@ inline void initDebugLEDs() {
   digitalWrite(RECORDING_LED, 0);
 }
 
-//function to intialize dataStruct values
-inline void initDataStructValues() {
-  DAQData.setData<cmbtl::SEC>(now());
-  DAQData.setData<cmbtl::MICRO_SEC>(micros());
-  DAQData.setData<cmbtl::RPM1>(0);
-  DAQData.setData<cmbtl::RPM2>(0);
-  DAQData.setData<cmbtl::RPM3>(0);
-  DAQData.setData<cmbtl::RPM4>(0);
-  DAQData.setData<cmbtl::RearBrakePressure>(0);
-  DAQData.setData<cmbtl::FrontBrakePressure>(0);
-  DAQData.setData<cmbtl::LDSFrontRight>(0);
-  DAQData.setData<cmbtl::LDSFrontLeft>(0);
-  DAQData.setData<cmbtl::LDSRearRight>(0);
-  DAQData.setData<cmbtl::LDSRearLeft>(0);
-  DAQData.setData<cmbtl::CVTTemp>(0);
-  DAQData.setData<cmbtl::RearTransferCaseTemp>(0);
-}
-
 
 //method to setup outFile/SD card
 inline void setUpSD() {
@@ -226,11 +265,15 @@ inline void setUpSD() {
     //digitalWrite(SD_CARD_INIT_LED, HIGH);
   }
   delay(500);
-  String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second())+".txt";
+  String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
+  SD.mkdir(time.c_str());
   Serial.println(time.c_str());
-  outputFile = SD.open(time.c_str(),  FILE_WRITE);
+  File structConfigFile = SD.open(String("/"+time+"/"+time+"Config.txt").c_str(), FILE_WRITE);
+  writeStructData(structConfigFile);
+  structConfigFile.close();
+  outputFile = SD.open(String("/"+time+"/"+time+".bin").c_str(),  FILE_WRITE);
   //add bracket at beginning to make it a list
-  outputFile.printf("[\n");
+  //outputFile.printf("[\n");
 }
 
 //time setup function
