@@ -35,12 +35,12 @@ def ogBinConverter(input_file_name,chosePath,outputPath,settingsData):
         print(f"An error occurred: {e}")
 
 def binConverter(targetFilePath,chosePath,outputPath):
+    import numpy as np
     import struct
     import os
     import json
 
-    jsonCacheList = [""] * 50000
-
+    print("Time to go make coffee!")
     targetFolderPath = "/".join(targetFilePath.split("/")[:-1])
     os.chdir(targetFolderPath)
     targetFileName = targetFilePath.split("/")[-1]
@@ -48,85 +48,69 @@ def binConverter(targetFilePath,chosePath,outputPath):
 
     configFile = open(configFileName, "r")
     configString = ""
-    jsonEntry = {}
-    jsonEntryListForParsingDataNames = []
     totalStructSize = 0
+    jsonEntryListForParsingDataNames = []
 
+    numpyFieldList = []
+    
+    #type map generously provided by chatgpt
+    type_map = {
+    "unsigned long long": "uint64",
+    "unsigned long long int": "uint64",
+    "unsigned long": "uint32",
+    "unsigned long int": "uint32",
+    "float": "float32",
+    "int": "int32",
+    }
 
     for line in configFile:
         if line.strip() == "[-]":
             break
         lineList = line.strip().split(",")
-        jsonEntry[lineList[1]]=""
-        dataType = lineList[0]
+        dataType = type_map[lineList[0]]
+        name = lineList[1]
+        numpyFieldList.append((name, dataType))
+        totalStructSize += np.dtype(dataType).itemsize
         jsonEntryListForParsingDataNames.append(lineList[1])
-        if dataType == "unsigned long long" or dataType == "unsigned long long int":
-            configString = configString + "Q "
-            totalStructSize += 8
-        elif dataType == "unsigned long" or dataType == "unsigned long int":
-            configString = configString + "L "
-            totalStructSize += 4
-        elif dataType == "float":
-            configString = configString + "f "
-            totalStructSize += 4
-        elif dataType == "int":
-            configString = configString + "i "
-            totalStructSize += 4
 
     arduinoStructSize = int(configFile.readline().strip())
     if arduinoStructSize != totalStructSize:
-        numPadding = (arduinoStructSize - totalStructSize)/4
-        configString = configString + str(count) + "X "
+        numPadding = int((arduinoStructSize - totalStructSize))
+        numpyFieldList.append(("pad", f"V{numPadding}"))
 
-    configString = "".join(configString[:-1])
-
+    fancyNumpyTranslatorThing = np.dtype(numpyFieldList)
+    
     outfile = targetFileName.replace(".bin","") + ".txt"
 
     if chosePath:
         outfile = os.path.normpath(os.path.join(outputPath, outfile))
-    
-    currentActualPacket = ""
-    currentEvaluatedPacket =""
-    binaryFile = open(targetFileName, "rb")
+
+
+    #make a numpy memmap whatever that is
+    data = np.memmap(targetFileName, dtype=fancyNumpyTranslatorThing, mode="r")
+    totalData = len(data)
+    names = list(fancyNumpyTranslatorThing.names)
+    currentActualPacket = tuple(0 for _ in range(len(names)))
     jsonFile = open(outfile, "w")
     jsonFile.write("[\n")
     firstTime = True
-    #start at 1 to make modulus math easier
-    counter = 0
-    try:
-        print("Writing data...........")
-        # Read and process binary data
-        while chunk := binaryFile.read(arduinoStructSize):
-            if len(chunk) != arduinoStructSize:
-                print("Incomplete data chunk encountered. Skipping.")
-                continue
-
-            # Unpack the binary data
-            data = struct.unpack(configString, chunk)
-            dataString = ",".join(map(str, data))
-            dataStringList = dataString.split(",")
-            smallerDataStringList = dataStringList[2:]
-            if "".join(smallerDataStringList) != currentActualPacket:
-                for i in range(0, len(jsonEntryListForParsingDataNames)):
-                    jsonEntry[jsonEntryListForParsingDataNames[i]] = data[i]
-                if not firstTime:
-                    jsonCacheList[counter] = ","
-                jsonCacheList[counter] += json.dumps(jsonEntry)
-                currentActualPacket = "".join(smallerDataStringList)
-                firstTime = False
-                counter += 1
-                if counter == 10000:
-                    jsonFile.write("".join(jsonCacheList))
-                    jsonCacheList = [""] * 10000
-                    counter = 0
-
-        print(f"Data successfully written to {outfile}")
-
-    except FileNotFoundError:
-        print("File not found")
-    except Exception as e:
-        print(f"An error occurred: {e}")
-    jsonFile.write("".join(jsonCacheList))
+    #loop through fifty thousand items at a time
+    for i in range(0, len(data), 5000000):
+        jsonCacheList =[]
+        #grab part to work on
+        chunk = data[i:i+5000000]
+        for datum in chunk:
+            smallDatum = tuple(datum[name] for name in names[2:])
+            if smallDatum != currentActualPacket:
+                jsonEntry = {name: datum[name].item() for name in jsonEntryListForParsingDataNames}
+                jsonCacheList.append(jsonEntry)
+                currentActualPacket = smallDatum
+        if jsonCacheList:
+            if not firstTime:
+                jsonFile.write(",\n")
+            firstTime = False
+            jsonFile.write(",\n".join(json.dumps(entry) for entry in jsonCacheList))
+        print(str(((i+5000000)/totalData)*100) +"% done!")
     jsonFile.write("]")
-    binaryFile.close()
     jsonFile.close()
+    print("Done!")
