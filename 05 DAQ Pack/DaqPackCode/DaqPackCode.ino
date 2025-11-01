@@ -32,10 +32,10 @@ Linear_Analog_Sensor frontBrakePressure(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 2
 //Linear_Analog_Sensor * LDSFrontRight;
 
 //create LDSs
-Linear_Analog_Sensor LDSFrontRight(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 8.1, 0, 5.0, 0.0, 0.0, 200);
-Linear_Analog_Sensor LDSFrontLeft(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 8.1, 0, 5.0, 0.0, 0.0, 200);
-Linear_Analog_Sensor LDSRearLeft(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 8.1, 0, 5.0, 0.0, 0.0, 200);
-Linear_Analog_Sensor LDSRearRight(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 8.1, 0, 5.0, 0.0, 0.0, 200);
+Linear_Analog_Sensor LDSFrontRight(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 7.87402, 0, 5.0, 0.0, 0.0, 200);
+Linear_Analog_Sensor LDSFrontLeft(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 7.87402, 0, 5.0, 0.0, 0.0, 200);
+Linear_Analog_Sensor LDSRearLeft(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 7.87402, 0, 5.0, 0.0, 0.0, 200);
+Linear_Analog_Sensor LDSRearRight(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 7.87402, 0, 5.0, 0.0, 0.0, 200);
 
 //create temp sensors
 Linear_Analog_Sensor CVTTemp(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
