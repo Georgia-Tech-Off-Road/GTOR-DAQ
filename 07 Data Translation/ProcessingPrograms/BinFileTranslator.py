@@ -35,82 +35,56 @@ def ogBinConverter(input_file_name,chosePath,outputPath,settingsData):
         print(f"An error occurred: {e}")
 
 def binConverter(targetFilePath,chosePath,outputPath):
-    import numpy as np
     import struct
     import os
     import json
+    import subprocess
 
-    print("Time to go make coffee!")
+    #save initial directory
+    initialDirectory = os.getcwd()
+
     targetFolderPath = "/".join(targetFilePath.split("/")[:-1])
     os.chdir(targetFolderPath)
     targetFileName = targetFilePath.split("/")[-1]
     configFileName = targetFilePath.split("/")[-1].replace(".bin","Config.txt")
-
+    names =[]
     configFile = open(configFileName, "r")
     configString = ""
-    totalStructSize = 0
-    jsonEntryListForParsingDataNames = []
-
-    numpyFieldList = []
-    
-    #type map generously provided by chatgpt
-    type_map = {
-    "unsigned long long": "uint64",
-    "unsigned long long int": "uint64",
-    "unsigned long": "uint32",
-    "unsigned long int": "uint32",
-    "float": "float32",
-    "int": "int32",
-    }
+    numElements = 0
 
     for line in configFile:
         if line.strip() == "[-]":
             break
         lineList = line.strip().split(",")
-        dataType = type_map[lineList[0]]
-        name = lineList[1]
-        numpyFieldList.append((name, dataType))
-        totalStructSize += np.dtype(dataType).itemsize
-        jsonEntryListForParsingDataNames.append(lineList[1])
+        dataType = lineList[0]
+        names.append(lineList[1])
+        if dataType == "unsigned long long" or dataType == "unsigned long long int":
+            configString = configString + "7"
+        elif dataType == "unsigned long" or dataType == "unsigned long int":
+            configString = configString + "6"
+        elif dataType == "float":
+            configString = configString + "2"
+        elif dataType == "int":
+            configString = configString + "1"
+        numElements += 1
 
     arduinoStructSize = int(configFile.readline().strip())
-    if arduinoStructSize != totalStructSize:
-        numPadding = int((arduinoStructSize - totalStructSize))
-        numpyFieldList.append(("pad", f"V{numPadding}"))
 
-    fancyNumpyTranslatorThing = np.dtype(numpyFieldList)
+    configString=str(arduinoStructSize) + "-" + str(numElements) + "-" + configString
     
     outfile = targetFileName.replace(".bin","") + ".txt"
 
     if chosePath:
         outfile = os.path.normpath(os.path.join(outputPath, outfile))
+    else:
+        outfile = targetFilePath.replace(".bin","") + ".txt"
 
-
-    #make a numpy memmap whatever that is
-    data = np.memmap(targetFileName, dtype=fancyNumpyTranslatorThing, mode="r")
-    totalData = len(data)
-    names = list(fancyNumpyTranslatorThing.names)
-    currentActualPacket = tuple(0 for _ in range(len(names)))
-    jsonFile = open(outfile, "w")
-    jsonFile.write("[\n")
-    firstTime = True
-    #loop through fifty thousand items at a time
-    for i in range(0, len(data), 5000000):
-        jsonCacheList =[]
-        #grab part to work on
-        chunk = data[i:i+5000000]
-        for datum in chunk:
-            smallDatum = tuple(datum[name] for name in names[2:])
-            if smallDatum != currentActualPacket:
-                jsonEntry = {name: datum[name].item() for name in jsonEntryListForParsingDataNames}
-                jsonCacheList.append(jsonEntry)
-                currentActualPacket = smallDatum
-        if jsonCacheList:
-            if not firstTime:
-                jsonFile.write(",\n")
-            firstTime = False
-            jsonFile.write(",\n".join(json.dumps(entry) for entry in jsonCacheList))
-        print(str(((i+5000000)/totalData)*100) +"% done!")
-    jsonFile.write("]")
-    jsonFile.close()
-    print("Done!")
+    numNameChars = 0
+    for name in names:
+        numNameChars += len(name)
+    nameString = "-".join(names)
+    nameString = str(numNameChars) + "-" + nameString
+    processorPath =  initialDirectory + "/ProcessingPrograms/DAQBinFileProcessor.exe"
+    print("Processing File!")
+    subprocess.run([processorPath, targetFilePath, outfile, configString, nameString])
+    print("Finished!")
