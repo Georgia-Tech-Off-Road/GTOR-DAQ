@@ -88,6 +88,8 @@ def dataProcessingTool():
                     outputButton.grid(row=0,column=2,padx=20)
                 elif ".bin" in filePath:
                     outputButton.grid(row=0,column=1,padx=20)
+                    binButton.grid(row=0, column=2, padx=20)
+                    legacyButton.grid(row=0, column=3, padx=20)
                 elif ".csv" in filePath:
                     customButton.grid(row=1,column=1,padx=20)
                     configCheckbox.grid(row=2, column=3, padx=20)
@@ -282,7 +284,14 @@ def dataProcessingTool():
         convertButton.pack(pady=10)
         convertLabel = tk.Label(excelPage, text='Tip: For best results, choose an output destination on the previous window')
         convertLabel.pack(pady=5)
-
+    def binConvert():
+        #update the buttons to allow the file to be operated on
+        global chosePath
+        global outputPath
+        binThread = threading.Thread(target = BinFileTranslator.binConverter, args = (filePath,chosePath,outputPath))
+        #start the thread
+        binThread.start()
+        
     def legacy():
         legacyPage = tk.Toplevel()
         legacyPage.title("Legacy Functions")
@@ -312,21 +321,21 @@ def dataProcessingTool():
             dataProcessingThread.start()
             #hide the main data processor page
             dataProcessingToolPage.withdraw()
-        def binConvert():
-            #update the buttons to allow the file to be operated on
-            global chosePath
-            global outputPath
-            binThread = threading.Thread(target = BinFileTranslator.binConverter, args = (filePath,chosePath,outputPath,settingsData))
-            #start the thread
-            binThread.start()
+        def ogBinConvert():
+                #update the buttons to allow the file to be operated on
+                global chosePath
+                global outputPath
+                ogBinThread = threading.Thread(target = BinFileTranslator.ogBinConverter, args = (filePath,chosePath,outputPath,settingsData))
+                #start the thread
+                ogBinThread.start()
         configCheckbox = tk.Checkbutton(legacyPage, text="Use default config", variable=useDefaultConfig)
         configEditButton = tk.Button(legacyPage, text="Edit Config", command=lambda: editConfig())
         processButton = tk.Button(legacyPage, text="Process Data", command=lambda: processData())
-        binButton = tk.Button(legacyPage, text="Convert .bin to .txt", command=lambda: binConvert())
+        ogBinButton = tk.Button(legacyPage, text="Convert .bin to .txt", command=lambda: ogBinConvert())
         configCheckbox.pack(pady=20)
         configEditButton.pack(pady=20)
         processButton.pack(pady=20)
-        binButton.pack(pady=20)
+        ogBinButton.pack(pady=20)
 
     #howToButton
     howToButton = tk.Button(dataProcessingToolPage, text="How To", command=lambda: openHowTo())
@@ -356,6 +365,7 @@ def dataProcessingTool():
     prButton = tk.Button(buttonFrame, text= "Polling Rate Helper", command=lambda: prHelper())
     legacyButton = tk.Button(buttonFrame, text="Legacy Functions", command=lambda:legacy())
     excelButton = tk.Button(buttonFrame, text ="Convert json-formatted .txt files to Excel", command=lambda:excel())
+    binButton = tk.Button(buttonFrame, text="Convert .bin to .txt", command=lambda: binConvert())
     updateButtons()
 
 def runUpdater():

@@ -19,9 +19,9 @@ int currentAnalogSensor2 = 0;
 
 //initialize RPM sensors
 RPMSensor engineRPM(RPM1, ENGTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
-RPMSensor frontLeft(RPM2, FLTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
-RPMSensor frontRight(RPM3, FRTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
-RPMSensor aux1(RPM3, RDTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
+RPMSensor frontLeftRPM(RPM2, FLTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
+RPMSensor frontRightRPM(RPM3, FRTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
+RPMSensor aux1RPM(RPM3, RDTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE);
 
 //dont need to calibrate the brake pressures at start up I don't think
 Linear_Analog_Sensor rearBrakePressure(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 2000, 0, 4.5, 0.5, 0, 2000);
@@ -32,10 +32,10 @@ Linear_Analog_Sensor frontBrakePressure(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 2
 //Linear_Analog_Sensor * LDSFrontRight;
 
 //create LDSs
-Linear_Analog_Sensor LDSFrontRight(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
-Linear_Analog_Sensor LDSFrontLeft(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
-Linear_Analog_Sensor LDSRearLeft(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
-Linear_Analog_Sensor LDSRearRight(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
+Linear_Analog_Sensor LDSFrontRight(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 8.1, 0, 5.0, 0.0, 0.0, 200);
+Linear_Analog_Sensor LDSFrontLeft(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 8.1, 0, 5.0, 0.0, 0.0, 200);
+Linear_Analog_Sensor LDSRearLeft(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 8.1, 0, 5.0, 0.0, 0.0, 200);
+Linear_Analog_Sensor LDSRearRight(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 8.1, 0, 5.0, 0.0, 0.0, 200);
 
 //create temp sensors
 Linear_Analog_Sensor CVTTemp(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
@@ -43,10 +43,14 @@ Linear_Analog_Sensor RearTransferCaseTemp(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE,
 
 
 void setup() {
+  //crank up i2c clocks
+  Wire.setClock(1000000);
+  Wire1.setClock(1000000);
   //initialize debug leds
   initDebugLEDs();
   //test leds
   //flashBang(5000, 2);
+  initDataStructValues();
   //init temp monitor
   tempmon_init();
   //start tempmon
@@ -69,13 +73,13 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(41), updateAnalogValueFlag2, FALLING);
 
   pinMode(RPM3, INPUT_PULLDOWN);
-  attachInterrupt(digitalPinToInterrupt(RPM3), frontRightInterrupt, RISING);
+  attachInterrupt(digitalPinToInterrupt(RPM3), frontRightRPMInterrupt, RISING);
   pinMode(RPM1, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM1), engineRPMInterrupt, RISING);
   pinMode(RPM2, INPUT_PULLDOWN);
-  attachInterrupt(digitalPinToInterrupt(RPM2), frontLeftInterrupt, RISING);
+  attachInterrupt(digitalPinToInterrupt(RPM2), frontLeftRPMInterrupt, RISING);
   pinMode(RPM4, INPUT_PULLDOWN);
-  attachInterrupt(digitalPinToInterrupt(RPM4), aux1Interrupt, RISING);
+  attachInterrupt(digitalPinToInterrupt(RPM4), aux1RPMInterrupt, RISING);
   //configure ADCs
   ads1.begin(0x48, &Wire);
   ads2.begin(0x48, &Wire1);
@@ -118,9 +122,9 @@ void loop(){}
 void updateDebugLeds() {
   digitalWrite(RECORDING_LED, isRecording ? HIGH : LOW);
   digitalWrite(RPM_ONE_LED, engineRPM.getRPMValueGood() ? HIGH : LOW);
-  digitalWrite(RPM_TWO_LED, frontLeft.getRPMValueGood() ? HIGH : LOW);
-  digitalWrite(RPM_THREE_LED, frontRight.getRPMValueGood() ? HIGH : LOW);
-  digitalWrite(RPM_FOUR_LED, aux1.getRPMValueGood() ? HIGH : LOW);
+  digitalWrite(RPM_TWO_LED, frontLeftRPM.getRPMValueGood() ? HIGH : LOW);
+  digitalWrite(RPM_THREE_LED, frontRightRPM.getRPMValueGood() ? HIGH : LOW);
+  digitalWrite(RPM_FOUR_LED, aux1RPM.getRPMValueGood() ? HIGH : LOW);
   digitalWrite(ANALOG_ONE_LED, rearBrakePressure.getValueGood() ? HIGH : LOW);
   digitalWrite(ANALOG_TWO_LED, frontBrakePressure.getValueGood() ? HIGH : LOW);
   digitalWrite(ANALOG_THREE_LED, LDSFrontLeft.getValueGood() ? HIGH : LOW);
@@ -146,45 +150,59 @@ void dataAquisitionAndSavingLoop() {
     if (millis() > autoSaveTimeMillis + 300000) {
       outputFile.flush();
     }
-    DAQData.setData<cmbtl::SEC>(now()); 
+    DAQData.setData<cmbtl::SEC>(now());
+    dataStruct.sec = now(); 
     DAQData.setData<cmbtl::MICRO_SEC>(micros());
+    dataStruct.microsec = micros();
     DAQData.setData<cmbtl::TEENSY_TEMP>(tempmonGetTemp());
+    dataStruct.teensyTemp = tempmonGetTemp();
 
     //size of is apparently computed at compile time
     if (isRecording) {
+      outputFile.write(&dataStruct, sizeof(dataStruct));
       // TODO: Check with andrew
-      if (firstEntry) {
-        outputFile.printf("%s", DAQData.serializeDataToJSON().c_str());
+      /**if (firstEntry) {
+        outputFile.print(DAQData.serializeDataToJSON().c_str());
         firstEntry=false;
       } else {
-        outputFile.printf(",%s", DAQData.serializeDataToJSON().c_str());
+        outputFile.print(",");
+        outputFile.print(DAQData.serializeDataToJSON().c_str());
       }
+      **/
       //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
     }
     //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
     if (engineRPM.RPMUpdateFlag) {
       DAQData.setData<cmbtl::RPM1>(engineRPM.RPM);
+      dataStruct.engineRPM = engineRPM.RPM;
       engineRPM.RPMUpdateFlag = false;
     } else {
       DAQData.setData<cmbtl::RPM1>(engineRPM.checkRPM());
+      dataStruct.engineRPM = engineRPM.checkRPM();
     }
-    if (frontLeft.RPMUpdateFlag) {
-      DAQData.setData<cmbtl::RPM2>(frontLeft.RPM);
-      frontLeft.RPMUpdateFlag = false;
+    if (frontLeftRPM.RPMUpdateFlag) {
+      DAQData.setData<cmbtl::RPM2>(frontLeftRPM.RPM);
+      dataStruct.frontLeftRPM = frontLeftRPM.RPM;
+      frontLeftRPM.RPMUpdateFlag = false;
     } else {
-      DAQData.setData<cmbtl::RPM2>(frontLeft.checkRPM());
+      DAQData.setData<cmbtl::RPM2>(frontLeftRPM.checkRPM());
+      dataStruct.frontLeftRPM = frontLeftRPM.checkRPM();
     }
-    if (frontRight.RPMUpdateFlag) {
-      DAQData.setData<cmbtl::RPM3>(frontRight.RPM);
-      frontRight.RPMUpdateFlag = false;
+    if (frontRightRPM.RPMUpdateFlag) {
+      DAQData.setData<cmbtl::RPM3>(frontRightRPM.RPM);
+      dataStruct.frontRightRPM = frontRightRPM.RPM;
+      frontRightRPM.RPMUpdateFlag = false;
     } else {
-      DAQData.setData<cmbtl::RPM3>(frontRight.checkRPM());
+      DAQData.setData<cmbtl::RPM3>(frontRightRPM.checkRPM());
+      dataStruct.frontRightRPM = frontRightRPM.checkRPM();
     }
-    if (aux1.RPMUpdateFlag) {
-      DAQData.setData<cmbtl::RPM4>(aux1.RPM);
-      aux1.RPMUpdateFlag = false;
+    if (aux1RPM.RPMUpdateFlag) {
+      DAQData.setData<cmbtl::RPM4>(aux1RPM.RPM);
+      dataStruct.aux1RPM = aux1RPM.RPM;
+      aux1RPM.RPMUpdateFlag = false;
     } else {
-      DAQData.setData<cmbtl::RPM4>(aux1.checkRPM());
+      DAQData.setData<cmbtl::RPM4>(aux1RPM.checkRPM());
+      dataStruct.aux1RPM = aux1RPM.checkRPM();
     }
     //this is still called from within this while loop so an interrupt isnt calling a function
     if (analogValueFlag1) {
@@ -204,7 +222,7 @@ void changeRecordingState() {
     while(digitalRead(0) == 1) {
       delay(5);
     }
-    outputFile.printf("]");
+    //outputFile.printf("]");
     outputFile.flush();
     outputFile.close();
 
@@ -215,14 +233,18 @@ void changeRecordingState() {
     while(digitalRead(0) == 1) {
       delay(5);
     }
-    //generate a random number since RTC isnt working
+    //generate a random number ssince RTC isnt working
     randomSeed(analogRead(A0));
     int randomNumber = random(999999);
-    String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second())+ "___"+String(randomNumber)+"___"+".txt";
+    String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
+    SD.mkdir(time.c_str());
     Serial.println(time.c_str());
-    outputFile = SD.open(time.c_str(),  FILE_WRITE);
+    File structConfigFile = SD.open(String("/"+time+"/"+time+"Config.txt").c_str(), FILE_WRITE);
+    writeStructData(structConfigFile);
+    structConfigFile.close();
+    outputFile = SD.open(String("/"+time+"/"+time+".bin").c_str(),  FILE_WRITE);
     //check if file creation worked and if so turn on the light
-    outputFile.printf("[\n");
+    //outputFile.printf("[\n");
     isRecording = true;
   }
   lastSaveTimeInMillis = millis();
@@ -241,21 +263,25 @@ void readAnalogValues1() {
   switch (currentAnalogSensor1) {
       case 0:
         DAQData.setData<cmbtl::RearBrakePressure>(rearBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
+        dataStruct.rearBrakePressure = rearBrakePressure.computeSensorReading(ads1.getLastConversionResults());
         currentAnalogSensor1 = 1;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
         break;
       case 1:
         DAQData.setData<cmbtl::FrontBrakePressure>(frontBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
+        dataStruct.frontBrakePressure = frontBrakePressure.computeSensorReading(ads1.getLastConversionResults());
         currentAnalogSensor1 = 2;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
       case 2:
         DAQData.setData<cmbtl::LDSFrontRight>(LDSFrontRight.computeSensorReading(ads1.getLastConversionResults()));
+        dataStruct.LDSFrontRight = LDSFrontRight.computeSensorReading(ads1.getLastConversionResults());
         currentAnalogSensor1 = 3;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
         break;
       case 3:
         DAQData.setData<cmbtl::LDSFrontLeft>(LDSFrontLeft.computeSensorReading(ads1.getLastConversionResults()));
+        dataStruct.LDSFrontLeft = LDSFrontLeft.computeSensorReading(ads1.getLastConversionResults());
         currentAnalogSensor1 = 0;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
         break;
@@ -266,21 +292,25 @@ void readAnalogValues2() {
   switch (currentAnalogSensor2) {
       case 0:
         DAQData.setData<cmbtl::LDSRearRight>(LDSRearRight.computeSensorReading(ads2.getLastConversionResults()));
+        dataStruct.LDSRearRight = LDSRearRight.computeSensorReading(ads2.getLastConversionResults());
         currentAnalogSensor2 = 1;
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
         break;
       case 1:
         DAQData.setData<cmbtl::LDSRearLeft>(LDSRearLeft.computeSensorReading(ads2.getLastConversionResults()));
+        dataStruct.LDSRearLeft = LDSRearLeft.computeSensorReading(ads2.getLastConversionResults());
         currentAnalogSensor2 = 2;
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
       case 2:
         DAQData.setData<cmbtl::CVTTemp>(CVTTemp.computeSensorReading(ads2.getLastConversionResults()));
+        dataStruct.CVTTemp = CVTTemp.computeSensorReading(ads2.getLastConversionResults());
         currentAnalogSensor2 = 3;
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
         break;
       case 3:
         DAQData.setData<cmbtl::RearTransferCaseTemp>(RearTransferCaseTemp.computeSensorReading(ads2.getLastConversionResults()));
+        dataStruct.RearTransferCaseTemp = RearTransferCaseTemp.computeSensorReading(ads2.getLastConversionResults());
         currentAnalogSensor2 = 0;
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
         break;
@@ -291,14 +321,14 @@ void engineRPMInterrupt() {
   engineRPM.calculateRPM();
 }
 
-void frontLeftInterrupt() {
-  frontLeft.calculateRPM();
+void frontLeftRPMInterrupt() {
+  frontLeftRPM.calculateRPM();
 }
 
-void frontRightInterrupt() {
-  frontRight.calculateRPM();
+void frontRightRPMInterrupt() {
+  frontRightRPM.calculateRPM();
 }
 
-void aux1Interrupt() {
-  aux1.calculateRPM();
+void aux1RPMInterrupt() {
+  aux1RPM.calculateRPM();
 }
