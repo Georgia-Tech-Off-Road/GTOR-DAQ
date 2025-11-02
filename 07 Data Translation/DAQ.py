@@ -83,13 +83,13 @@ def dataProcessingTool():
         #if a filePath has been chosen
         if ('filePath' in globals()):
                 #if the filepath isn't on the main OS drive only display the download button
-                if "C:/" not in filePath:
-                    downloadButton.grid(row=0, column=1, padx=20)
-                    outputButton.grid(row=0,column=2,padx=20)
-                elif ".bin" in filePath:
+                if ".bin" in filePath:
                     outputButton.grid(row=0,column=1,padx=20)
                     binButton.grid(row=0, column=2, padx=20)
                     legacyButton.grid(row=0, column=3, padx=20)
+                elif "C:/" not in filePath:
+                    downloadButton.grid(row=0, column=1, padx=20)
+                    outputButton.grid(row=0,column=2,padx=20)
                 elif ".csv" in filePath:
                     customButton.grid(row=1,column=1,padx=20)
                     configCheckbox.grid(row=2, column=3, padx=20)
