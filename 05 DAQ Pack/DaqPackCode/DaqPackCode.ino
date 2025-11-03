@@ -32,10 +32,10 @@ Linear_Analog_Sensor frontBrakePressure(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 2
 //Linear_Analog_Sensor * LDSFrontRight;
 
 //create LDSs
-Linear_Analog_Sensor LDSFrontRight(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 7.87402, 0, 5.0, 0.0, 0.0, 200);
-Linear_Analog_Sensor LDSFrontLeft(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 7.87402, 0, 5.0, 0.0, 0.0, 200);
-Linear_Analog_Sensor LDSRearLeft(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 7.87402, 0, 5.0, 0.0, 0.0, 200);
-Linear_Analog_Sensor LDSRearRight(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 7.87402, 0, 5.0, 0.0, 0.0, 200);
+Linear_Analog_Sensor LDSFrontRight(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 7.87402, 0, 5.0, 0.0, 0.0, 10);
+Linear_Analog_Sensor LDSFrontLeft(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 7.87402, 0, 5.0, 0.0, 0.0, 10);
+Linear_Analog_Sensor LDSRearLeft(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 7.87402, 0, 5.0, 0.0, 0.0, 10);
+Linear_Analog_Sensor LDSRearRight(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 7.87402, 0, 5.0, 0.0, 0.0, 10);
 
 //create temp sensors
 Linear_Analog_Sensor CVTTemp(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
@@ -159,16 +159,17 @@ void dataAquisitionAndSavingLoop() {
 
     //size of is apparently computed at compile time
     if (isRecording) {
-      outputFile.write(&dataStruct, sizeof(dataStruct));
-      // TODO: Check with andrew
-      /**if (firstEntry) {
-        outputFile.print(DAQData.serializeDataToJSON().c_str());
-        firstEntry=false;
+      if (binary) {
+        outputFile.write(&dataStruct, sizeof(dataStruct));
       } else {
-        outputFile.print(",");
-        outputFile.print(DAQData.serializeDataToJSON().c_str());
+        if (firstEntry) {
+          outputFile.print(DAQData.serializeDataToJSON().c_str());
+          firstEntry=false;
+        } else {
+          outputFile.print(",");
+          outputFile.print(DAQData.serializeDataToJSON().c_str());
+        }
       }
-      **/
       //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
     }
     //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
@@ -242,7 +243,11 @@ void changeRecordingState() {
     File structConfigFile = SD.open(String("/"+time+"/"+time+"Config.txt").c_str(), FILE_WRITE);
     writeStructData(structConfigFile);
     structConfigFile.close();
-    outputFile = SD.open(String("/"+time+"/"+time+".bin").c_str(),  FILE_WRITE);
+    if (binary) {
+      outputFile = SD.open(String("/"+time+"/"+time+".bin").c_str(),  FILE_WRITE);
+    } else {
+      outputFile = SD.open(String("/"+time+"/"+time+".txt").c_str(),  FILE_WRITE);
+    }
     //check if file creation worked and if so turn on the light
     //outputFile.printf("[\n");
     isRecording = true;
@@ -274,14 +279,14 @@ void readAnalogValues1() {
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
       case 2:
-        DAQData.setData<cmbtl::LDSFrontRight>(LDSFrontRight.computeSensorReading(ads1.getLastConversionResults()));
-        dataStruct.LDSFrontRight = LDSFrontRight.computeSensorReading(ads1.getLastConversionResults());
+        //DAQData.setData<cmbtl::LDSFrontRight>(LDSFrontRight.computeSensorReading(ads1.getLastConversionResults()));
+        //dataStruct.LDSFrontRight = LDSFrontRight.computeSensorReading(ads1.getLastConversionResults());
         currentAnalogSensor1 = 3;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
         break;
       case 3:
-        DAQData.setData<cmbtl::LDSFrontLeft>(LDSFrontLeft.computeSensorReading(ads1.getLastConversionResults()));
-        dataStruct.LDSFrontLeft = LDSFrontLeft.computeSensorReading(ads1.getLastConversionResults());
+        //DAQData.setData<cmbtl::LDSFrontLeft>(LDSFrontLeft.computeSensorReading(ads1.getLastConversionResults()));
+        //dataStruct.LDSFrontLeft = LDSFrontLeft.computeSensorReading(ads1.getLastConversionResults());
         currentAnalogSensor1 = 0;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
         break;
@@ -303,14 +308,15 @@ void readAnalogValues2() {
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
       case 2:
-        DAQData.setData<cmbtl::CVTTemp>(CVTTemp.computeSensorReading(ads2.getLastConversionResults()));
-        dataStruct.CVTTemp = CVTTemp.computeSensorReading(ads2.getLastConversionResults());
+        DAQData.setData<cmbtl::LDSFrontRight>(LDSFrontRight.computeSensorReading(ads2.getLastConversionResults()));
+        dataStruct.LDSFrontRight = LDSFrontRight.computeSensorReading(ads2.getLastConversionResults());
+        //Serial.printf("%f\n", LDSFrontRight.computeSensorReading(ads2.getLastConversionResults()));
         currentAnalogSensor2 = 3;
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
         break;
       case 3:
-        DAQData.setData<cmbtl::RearTransferCaseTemp>(RearTransferCaseTemp.computeSensorReading(ads2.getLastConversionResults()));
-        dataStruct.RearTransferCaseTemp = RearTransferCaseTemp.computeSensorReading(ads2.getLastConversionResults());
+        DAQData.setData<cmbtl::LDSFrontLeft>(LDSFrontLeft.computeSensorReading(ads2.getLastConversionResults()));
+        dataStruct.LDSFrontLeft = LDSFrontLeft.computeSensorReading(ads2.getLastConversionResults());
         currentAnalogSensor2 = 0;
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
         break;
