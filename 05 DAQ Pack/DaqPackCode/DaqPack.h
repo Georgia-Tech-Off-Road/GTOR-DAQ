@@ -10,6 +10,9 @@
 #include <DAQSensors.h>
 #include <DAQPackets.h>
 
+//set to false if you want json output (slower but you don't have to run the processor)
+#define binary true
+
 //macro for the data fields (chatgpt came up with this idea, its pretty sick ngl)
 #define DATA_FIELDS \
   X(unsigned long long int, sec) \
@@ -26,7 +29,7 @@
   X(float, LDSRearLeft) \
   X(float, CVTTemp) \
   X(float, RearTransferCaseTemp) \
-  X(float, teensyTemp)
+  X(float, teensyTemp) 
 
 //length of lds when hanging in inches
 #define HANG_TRAVEL 7.1365
@@ -113,8 +116,8 @@ enum AUXDAQ_Ports {
 enum Sensor_Constants {
   RDTEETH = 14,
   ENGTEETH = 1,
-  FRTEETH = 4,
-  FLTEETH = 4
+  FRTEETH = 12,
+  FLTEETH = 12
 };
 
 //function to test all debug LEDs
@@ -271,7 +274,11 @@ inline void setUpSD() {
   File structConfigFile = SD.open(String("/"+time+"/"+time+"Config.txt").c_str(), FILE_WRITE);
   writeStructData(structConfigFile);
   structConfigFile.close();
-  outputFile = SD.open(String("/"+time+"/"+time+".bin").c_str(),  FILE_WRITE);
+  if (binary) {
+    outputFile = SD.open(String("/"+time+"/"+time+".bin").c_str(),  FILE_WRITE);
+  } else {
+    outputFile = SD.open(String("/"+time+"/"+time+".txt").c_str(),  FILE_WRITE);
+  }
   //add bracket at beginning to make it a list
   //outputFile.printf("[\n");
 }
