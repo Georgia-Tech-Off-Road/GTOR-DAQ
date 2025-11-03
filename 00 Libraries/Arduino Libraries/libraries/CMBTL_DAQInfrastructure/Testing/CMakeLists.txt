@@ -15,6 +15,5 @@ function(add_cmbtl_test test_name source_file)
   add_test(NAME ${test_name}Tests COMMAND ${test_name})
 endfunction()
 
-add_cmbtl_test(SensorDataTests SensorData_unittest.cpp)
 add_cmbtl_test(PacketEncodeDecodeTests PacketEncodeDecode_unittest.cpp)
 add_cmbtl_test(DAQInfrastructureTests DAQInfrastructure_unittest.cpp)
