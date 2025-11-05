@@ -1,5 +1,7 @@
 #include "DaqPack.h"
 
+//create an interval timer (provides more accurate timing than microseconds)
+IntervalTimer intervalMicros;
 
 // Intialize ADCs
 Adafruit_ADS1115 ads1;
@@ -50,6 +52,10 @@ void setup() {
   initDebugLEDs();
   //test leds
   //flashBang(5000, 2);
+  //initialize micros interval timer (updates every 5 microseconds, means our effective maximum polling rate would be 500kHz)
+  intervalMicros.begin(&intervalTimerFunction, 5);
+  //set the interupt priority to be higher than the default priority of 128 for the attachInterrupts ones (we don't want our time drifting)
+  intervalMicros.priority(112);
   initDataStructValues();
   //init temp monitor
   tempmon_init();
@@ -152,8 +158,8 @@ void dataAquisitionAndSavingLoop() {
     }
     DAQData.setData<cmbtl::SEC>(now());
     dataStruct.sec = now(); 
-    DAQData.setData<cmbtl::MICRO_SEC>(micros());
-    dataStruct.microsec = micros();
+    DAQData.setData<cmbtl::MICRO_SEC>(microsecondsElapsed);
+    dataStruct.microsec = microsecondsElapsed;
     DAQData.setData<cmbtl::TEENSY_TEMP>(tempmonGetTemp());
     dataStruct.teensyTemp = tempmonGetTemp();
 
@@ -174,32 +180,32 @@ void dataAquisitionAndSavingLoop() {
     }
     //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
     if (engineRPM.RPMUpdateFlag) {
-      DAQData.setData<cmbtl::RPM1>(engineRPM.RPM);
-      dataStruct.engineRPM = engineRPM.RPM;
+      DAQData.setData<cmbtl::RPM1>(engineRPM.calculateRPM());
+      dataStruct.engineRPM = engineRPM.calculateRPM();
       engineRPM.RPMUpdateFlag = false;
     } else {
-      DAQData.setData<cmbtl::RPM1>(engineRPM.checkRPM());
-      dataStruct.engineRPM = engineRPM.checkRPM();
+      DAQData.setData<cmbtl::RPM1>(engineRPM.calculateRPM());
+      dataStruct.engineRPM = engineRPM.calculateRPM();
     }
     if (frontLeftRPM.RPMUpdateFlag) {
-      DAQData.setData<cmbtl::RPM2>(frontLeftRPM.RPM);
-      dataStruct.frontLeftRPM = frontLeftRPM.RPM;
+      DAQData.setData<cmbtl::RPM2>(frontLeftRPM.calculateRPM());
+      dataStruct.frontLeftRPM = frontLeftRPM.calculateRPM();
       frontLeftRPM.RPMUpdateFlag = false;
     } else {
       DAQData.setData<cmbtl::RPM2>(frontLeftRPM.checkRPM());
       dataStruct.frontLeftRPM = frontLeftRPM.checkRPM();
     }
     if (frontRightRPM.RPMUpdateFlag) {
-      DAQData.setData<cmbtl::RPM3>(frontRightRPM.RPM);
-      dataStruct.frontRightRPM = frontRightRPM.RPM;
+      DAQData.setData<cmbtl::RPM3>(frontRightRPM.calculateRPM());
+      dataStruct.frontRightRPM = frontRightRPM.calculateRPM();
       frontRightRPM.RPMUpdateFlag = false;
     } else {
       DAQData.setData<cmbtl::RPM3>(frontRightRPM.checkRPM());
       dataStruct.frontRightRPM = frontRightRPM.checkRPM();
     }
     if (aux1RPM.RPMUpdateFlag) {
-      DAQData.setData<cmbtl::RPM4>(aux1RPM.RPM);
-      dataStruct.aux1RPM = aux1RPM.RPM;
+      DAQData.setData<cmbtl::RPM4>(aux1RPM.calculateRPM());
+      dataStruct.aux1RPM = aux1RPM.calculateRPM();
       aux1RPM.RPMUpdateFlag = false;
     } else {
       DAQData.setData<cmbtl::RPM4>(aux1RPM.checkRPM());
@@ -234,9 +240,6 @@ void changeRecordingState() {
     while(digitalRead(0) == 1) {
       delay(5);
     }
-    //generate a random number ssince RTC isnt working
-    randomSeed(analogRead(A0));
-    int randomNumber = random(999999);
     String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
     SD.mkdir(time.c_str());
     Serial.println(time.c_str());
@@ -324,17 +327,17 @@ void readAnalogValues2() {
 }
 
 void engineRPMInterrupt() {
-  engineRPM.calculateRPM();
+  engineRPM.handleInterrupt();
 }
 
 void frontLeftRPMInterrupt() {
-  frontLeftRPM.calculateRPM();
+  frontLeftRPM.handleInterrupt();
 }
 
 void frontRightRPMInterrupt() {
-  frontRightRPM.calculateRPM();
+  frontRightRPM.handleInterrupt();
 }
 
 void aux1RPMInterrupt() {
-  aux1RPM.calculateRPM();
+  aux1RPM.handleInterrupt();
 }
