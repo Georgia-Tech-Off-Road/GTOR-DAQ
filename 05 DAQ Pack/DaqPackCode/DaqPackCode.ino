@@ -11,6 +11,9 @@ Adafruit_ADS1115 ads2;
 volatile bool analogValueFlag1 = false;
 volatile bool analogValueFlag2 = false;
 
+//initialize save flag 
+volatile bool saveFlag = false;
+
 // Current analog sensor number being polled
 int currentAnalogSensor1 = 0;
 int currentAnalogSensor2 = 0;
@@ -70,6 +73,9 @@ void setup() {
 
   //configure save pin
   pinMode(0, INPUT_PULLUP);
+
+  //set up save interrupt
+  attachInterrupt(digitalPinToInterrupt(0), saveInterrupt, CHANGE);
 
   //set up ADC interrupts
   pinMode(40, INPUT_PULLUP);
@@ -149,7 +155,7 @@ void dataAquisitionAndSavingLoop() {
     //update auto save time
     autoSaveTimeMillis = millis();
     //check to see if save should be started/stopped
-     if (!digitalRead(0) && lastSaveTimeInMillis + 2000 < millis()) {
+     if (saveFlag) {
       changeRecordingState();
     }
     //perform flush check before data check
@@ -235,6 +241,8 @@ void changeRecordingState() {
 
     Serial.printf("File closed\n");
     isRecording = false;
+    //signal to user that the file saved with a flashbang
+    flashBang(5000, 2);
   }
   else {
     while(digitalRead(0) == 1) {
@@ -255,7 +263,6 @@ void changeRecordingState() {
     //outputFile.printf("[\n");
     isRecording = true;
   }
-  lastSaveTimeInMillis = millis();
 }
 
 void updateAnalogValueFlag1() {
@@ -340,4 +347,18 @@ void frontRightRPMInterrupt() {
 
 void aux1RPMInterrupt() {
   aux1RPM.handleInterrupt();
+}
+
+void saveInterrupt(){
+  //debounce button, the first interrupt will fire, the rest won't (microsecondElapsed is set to a higher priority so it will interrupt this to keep updating the counter)
+  if ((microsecondsElapsed / 1000) + 2000 < microsecondsElapsed / 1000) {
+    //read the digital pin to figure out if it went high or low
+    if (digitalRead(0) && saveFlag == false) {
+      saveFlag = true;
+    } else if (!digitalRead(0) && saveFlag == true){
+      saveFlag = false;
+    }
+    //used as a debouncer, the interrupts will finish in order since they have the same priority
+    lastSaveTimeInMillis = microsecondsElapsed / 1000;
+  }
 }
