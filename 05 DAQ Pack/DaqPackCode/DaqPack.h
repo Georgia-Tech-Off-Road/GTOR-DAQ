@@ -1,3 +1,4 @@
+#include "Globals.h"
 #include <SD.h>
 #include <SPI.h>
 #include <TimeLib.h>
@@ -80,11 +81,18 @@ struct {
 inline void writeStructData(File structDetailFile) {
   #define X(type, name) structDetailFile.print(#type); structDetailFile.print(","); structDetailFile.print(#name); structDetailFile.print("\n");
   DATA_FIELDS
-  #undef X;
+  #undef X
   //print a character to signify the structure outputs are finished
   structDetailFile.print("[-]\n");
   //print the size of the struct to let python compute any padding thats needed
   structDetailFile.printf("%d\n", sizeof(dataStruct));
+}
+
+//actually init the global variable for this 
+volatile unsigned long long microsecondsElapsed = 0;
+//delcare function for intervalTimer
+void intervalTimerFunction() {
+  microsecondsElapsed += 5;
 }
 
 //declare non setup functions
@@ -153,7 +161,7 @@ inline void flashBang(int timeInMillis, int frontBackOrAll) {
 //function to intialize dataStruct values
 inline void initDataStructValues() {
   DAQData.setData<cmbtl::SEC>(now());
-  DAQData.setData<cmbtl::MICRO_SEC>(micros());
+  DAQData.setData<cmbtl::MICRO_SEC>(microsecondsElapsed);
   DAQData.setData<cmbtl::RPM1>(0);
   DAQData.setData<cmbtl::RPM2>(0);
   DAQData.setData<cmbtl::RPM3>(0);
