@@ -155,35 +155,71 @@ def dataProcessingTool():
             chosePath = False
         outputSelectLabel.config(text=f"Selected output path: {outputPath}")
 
-    def custom():                           #custom data visualizer
+    def custom():                           # custom data visualizer
         customWindow = tk.Toplevel()
         customWindow.title("Visualizer")
-        customWindow.geometry("800x300")
+        customWindow.geometry("800x500")
+
         # Label and Entry for column number
         label = tk.Label(customWindow, text="Enter 1+ indeces separated by commas (i.e. 2,3,4 or just 2)\nNote that index 0 = column #1.\nSensor data starts at 1.")
         label.pack(pady=5)
         columnEntry = tk.Entry(customWindow)
         columnEntry.pack(pady=5)
+
+        # Plotly checkbox
         plotlyCheckVar = tk.IntVar(value=0)
         plotCheckbox = tk.Checkbutton(customWindow, text="Check to use Plotly (slower, more detailed)", variable=plotlyCheckVar)
         plotCheckbox.pack(pady=5)
+
+        # Scale frame and entry
         scaleFrame = tk.Frame(customWindow)
         scaleFrame.pack(pady=25)
         scaleLabel = tk.Label(customWindow, text="Enter # to scale brake pressure data (to view BP data alongside RPM data), or leave blank")
         scaleLabel.pack(pady=0)
         scaleEntry = tk.Entry(customWindow)
         scaleEntry.pack(pady=3)
+
+        visFrame = tk.Frame(customWindow)
+        visFrame.pack(pady=10)
+        visLabel = tk.Label(customWindow, text="Select button if you want to display smoothed data or if you want smoothed data AND normal data")
+        visLabel.pack(pady=0)
+        visModeVar = tk.StringVar(value="normal")  # default to normalVis
+        normalRadio = tk.Radiobutton(customWindow, text="Normal Data", variable=visModeVar, value="normal")  # raw data only
+        smoothRadio = tk.Radiobutton(customWindow, text="Smoothed Data", variable=visModeVar, value="smooth")  # smoothed only
+        overlayRadio = tk.Radiobutton(customWindow, text="Overlay Smoothed & Raw", variable=visModeVar, value="overlay")  # both
+
+        normalRadio.pack(pady=2)
+        smoothRadio.pack(pady=2)
+        overlayRadio.pack(pady=2)
+
         def runVisualizer():
             scale = scaleEntry.get().strip()
             if scale == "":
                 scale = 1
             else:
                 scale = float(scale)
+
             columnNumber = columnEntry.get()
             columnNumber = list(map(int, columnNumber.split(",")))
-            visualizerThread = threading.Thread(target = TestVisualizer.testVisualizer, args = (filePath, columnNumber,customWindow,int(useDefaultConfig.get()),plotlyCheckVar.get(),scale))
+
+            # Savitzky-Golay parameters
+            smoothingWindow = 41  # odd number
+            polyorder = 2
+
+            # Determine visualization mode booleans
+            normalVis = visModeVar.get() == "normal"
+            smoothVis = visModeVar.get() == "smooth"
+            overlayVis = visModeVar.get() == "overlay"
+
+            visualizerThread = threading.Thread(
+                target=TestVisualizer.testVisualizer,
+                args=(filePath, columnNumber, customWindow, int(useDefaultConfig.get()),
+                      plotlyCheckVar.get(), scale, smoothingWindow, polyorder,
+                      normalVis, smoothVis, overlayVis)
+            )
             visualizerThread.start()
-        createGraphButton = tk.Button(customWindow, text="Create Graph",font=("Helvetica", 12, "bold"), command=runVisualizer)
+
+        createGraphButton = tk.Button(customWindow, text="Create Graph", font=("Helvetica", 12, "bold"), command=runVisualizer)
         createGraphButton.pack(pady=10)
 
     def prHelper():
@@ -229,7 +265,7 @@ def dataProcessingTool():
         with open(filePath, "r") as f:
             dayta = f.read()
             data = json.loads(dayta)
-        df = pd.json_normalize(data)
+        df = pd.json_normalize(data[0])
 
         #formats variables next to their index
         variables = {}
