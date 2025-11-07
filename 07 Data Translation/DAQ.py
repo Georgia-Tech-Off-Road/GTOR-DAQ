@@ -20,6 +20,7 @@ from Visualizers import TestVisualizer
 from ProcessingPrograms import FileSplitter
 from ProcessingPrograms import PRHelper
 from ProcessingPrograms import ExcelConverter
+from ProcessingPrograms import analysis
 
 #imports the processing programs (hertz calculator, data processor, etc.)
 os.chdir("./")
@@ -102,6 +103,7 @@ def dataProcessingTool():
                     prButton.grid(row=2, column=2, padx=20)
                     legacyButton.grid(row=2,column=1,padx=20)
                     excelButton.grid(row=3,column=1,padx=20,pady=10)
+                    analysisButton.grid(row=4,column=1,padx=20)
 
     def downloadData():
         #create a new page for the progress bar
@@ -155,12 +157,12 @@ def dataProcessingTool():
             chosePath = False
         outputSelectLabel.config(text=f"Selected output path: {outputPath}")
 
-    def custom():                           # custom data visualizer
+    def custom():  # custom data visualizer
         customWindow = tk.Toplevel()
         customWindow.title("Visualizer")
         customWindow.geometry("800x500")
 
-        # Label and Entry for column number
+        # Label and Entry for column numbers
         label = tk.Label(customWindow, text="Enter 1+ indeces separated by commas (i.e. 2,3,4 or just 2)\nNote that index 0 = column #1.\nSensor data starts at 1.")
         label.pack(pady=5)
         columnEntry = tk.Entry(customWindow)
@@ -172,41 +174,50 @@ def dataProcessingTool():
         plotCheckbox.pack(pady=5)
 
         # Scale frame and entry
-        scaleFrame = tk.Frame(customWindow)
-        scaleFrame.pack(pady=25)
         scaleLabel = tk.Label(customWindow, text="Enter # to scale brake pressure data (to view BP data alongside RPM data), or leave blank")
         scaleLabel.pack(pady=0)
         scaleEntry = tk.Entry(customWindow)
         scaleEntry.pack(pady=3)
 
-        visFrame = tk.Frame(customWindow)
-        visFrame.pack(pady=10)
-        visLabel = tk.Label(customWindow, text="Select button if you want to display smoothed data or if you want smoothed data AND normal data")
+        # Visualization mode
+        visLabel = tk.Label(customWindow, text="Select visualization mode")
         visLabel.pack(pady=0)
-        visModeVar = tk.StringVar(value="normal")  # default to normalVis
-        normalRadio = tk.Radiobutton(customWindow, text="Normal Data", variable=visModeVar, value="normal")  # raw data only
-        smoothRadio = tk.Radiobutton(customWindow, text="Smoothed Data", variable=visModeVar, value="smooth")  # smoothed only
-        overlayRadio = tk.Radiobutton(customWindow, text="Overlay Smoothed & Raw", variable=visModeVar, value="overlay")  # both
-
+        visModeVar = tk.StringVar(value="normal")
+        normalRadio = tk.Radiobutton(customWindow, text="Normal Data", variable=visModeVar, value="normal")
+        smoothRadio = tk.Radiobutton(customWindow, text="Smoothed Data", variable=visModeVar, value="smooth")
+        overlayRadio = tk.Radiobutton(customWindow, text="Overlay Smoothed & Raw", variable=visModeVar, value="overlay")
         normalRadio.pack(pady=2)
         smoothRadio.pack(pady=2)
         overlayRadio.pack(pady=2)
 
+        # Global variable for WFT file path
+        wftFilePath = None
+
+        # Button to import WFT file
+        def importWFTFile():
+            nonlocal wftFilePath
+            wftFilePath = filedialog.askopenfilename(title="Select WFT File")
+            if wftFilePath:
+                wftLabel.config(text=f"Imported WFT File: {os.path.basename(wftFilePath)}")
+            else:
+                wftLabel.config(text="No WFT File selected")
+
+        importWFTButton = tk.Button(customWindow, text="Import WFT File", font=("Helvetica", 12, "bold"), command=importWFTFile)
+        importWFTButton.pack(pady=5)
+
+        wftLabel = tk.Label(customWindow, text="No WFT File selected")
+        wftLabel.pack(pady=2)
+
+        # Run visualizer
         def runVisualizer():
             scale = scaleEntry.get().strip()
-            if scale == "":
-                scale = 1
-            else:
-                scale = float(scale)
+            scale = float(scale) if scale else 1
 
-            columnNumber = columnEntry.get()
-            columnNumber = list(map(int, columnNumber.split(",")))
+            columnNumber = list(map(int, columnEntry.get().split(",")))
 
-            # Savitzky-Golay parameters
             smoothingWindow = 41  # odd number
             polyorder = 2
 
-            # Determine visualization mode booleans
             normalVis = visModeVar.get() == "normal"
             smoothVis = visModeVar.get() == "smooth"
             overlayVis = visModeVar.get() == "overlay"
@@ -215,12 +226,13 @@ def dataProcessingTool():
                 target=TestVisualizer.testVisualizer,
                 args=(filePath, columnNumber, customWindow, int(useDefaultConfig.get()),
                       plotlyCheckVar.get(), scale, smoothingWindow, polyorder,
-                      normalVis, smoothVis, overlayVis)
+                      normalVis, smoothVis, overlayVis, wftFilePath)  # pass WFT file
             )
             visualizerThread.start()
 
         createGraphButton = tk.Button(customWindow, text="Create Graph", font=("Helvetica", 12, "bold"), command=runVisualizer)
         createGraphButton.pack(pady=10)
+
 
     def prHelper():
         prPage = tk.Toplevel()
@@ -253,7 +265,21 @@ def dataProcessingTool():
         pollingButton.grid(pady=50,padx=50)
         avgButton.grid(pady=20,padx=50)
         #percentButton.pack(padx=20)
-
+    def analyze():
+        anaPage = tk.Toplevel()
+        anaPage.title("Analysis Tool")
+        anaPage.geometry("400x300")
+        def analysiss():
+            colNum = colEntry.get()
+            colNum = list(map(int, colNum.split(",")))
+            anaThread = threading.Thread(target = analysis.analyzeData, args = (filePath, colNum, anaPage))
+            anaThread.start()
+        label = tk.Label(anaPage, text="Enter 1+ indeces separated by commas (i.e. 2,3,4 or just 2)\nNote that index 0 = column #1.")
+        label.pack(pady=5)
+        colEntry = tk.Entry(anaPage)
+        colEntry.pack(pady=5)
+        analysisButton = tk.Button(anaPage, text="Analyze (WIP)",command=analysiss)
+        analysisButton.pack(pady=20)
     def indices(filePath):      #used for showing a legend of data types & their indeces
         #imports
         import pandas as pd
@@ -402,6 +428,7 @@ def dataProcessingTool():
     legacyButton = tk.Button(buttonFrame, text="Legacy Functions", command=lambda:legacy())
     excelButton = tk.Button(buttonFrame, text ="Convert json-formatted .txt files to Excel", command=lambda:excel())
     binButton = tk.Button(buttonFrame, text="Convert .bin to .txt", command=lambda: binConvert())
+    analysisButton = tk.Button(buttonFrame, text="analysis (WIP)", command=lambda:analyze())
     updateButtons()
 
 def runUpdater():

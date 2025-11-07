@@ -7,13 +7,12 @@ import csv
 import numpy as np
 import json
 import plotly.express as px
-
 from scipy.signal import savgol_filter
 
 def testVisualizer(filePath, columnIndices, customWindow, useDefaultConfig,
                    plotlyCheckVar, scale,
                    smoothingWindow=11, polyorder=2,
-                   normalVis=False, smoothVis=False, overlayVis=False):
+                   normalVis=False, smoothVis=False, overlayVis=False, wftFilePath=None):
 
     # Create UI indicator
     label1 = tk.Label(customWindow, text="Creating your graph...")
@@ -24,7 +23,7 @@ def testVisualizer(filePath, columnIndices, customWindow, useDefaultConfig,
     progressBar.pack(padx=20, pady=20, fill="x")
     progressBar.start()
 
-    # Read file
+    # Read main file
     if '.xlsx' in filePath:
         df = pd.read_excel(filePath, engine='openpyxl')
     else:
@@ -37,33 +36,32 @@ def testVisualizer(filePath, columnIndices, customWindow, useDefaultConfig,
     startTime = df['microsec'].iloc[0]
     df['microsec'] = df['microsec'] - startTime
     time = df['microsec'] / 1e6
+    time = time.round(2)  # rounding to hundreds place for merge
 
     # Correct brake pressure
     for col in df.columns:
         if 'brake' in col.lower() or 'break' in col.lower():
-            df[col] = (.5 + (df[col] / (2000 - 50)) * (4.5 - .5))  # (TEMPORARY UNTIL ANDREW FIXES)
-            df[col] = 500*(df[col]-0.5)  # (TEMPORARY UNTIL ANDREW FIXES)
+            df[col] = (.5 + (df[col] / (2000 - 50)) * (4.5 - .5))
+            df[col] = 500*(df[col]-0.5)
             if scale != 1:
                 df[col] = df[col]*scale
                 df.rename(columns={col: f"{col} (SCALED BY {scale})"}, inplace=True)
 
-    # Set outliers to NaN (values beyond 6 std devs)
-    '''
-    for col in df.columns:
-        if np.issubdtype(df[col].dtype, np.number):  # only numeric columns
-            mean = df[col].mean()
-            std = df[col].std()
-            df.loc[(df[col] < mean - 6*std) | (df[col] > mean + 6*std), col] = np.nan
-    '''
+    # Build initial plot df
+    plotDf = pd.DataFrame({'Time': time})
 
-    # Build plot DF & apply Savitzky-Golay smoothing
-    plot_df = pd.DataFrame({'Time': time})
+    # Merge wftFilePath if provided
+    if wftFilePath is not None:
+        df2 = pd.read_csv(wftFilePath, sep='\t')
+        df2['Time'] = df2['Time'].round(2)
+        plotDf = pd.merge(plotDf, df2, on='Time', how='left')
+
+    # Apply Savitzky-Golay smoothing to selected columns
     for colIndex in columnIndices:
         if colIndex < df.shape[1]:
             label = df.columns[colIndex]
             series = df[label].copy().fillna(method='ffill').fillna(method='bfill')
 
-            # Savitzky-Golay requires window <= series length
             win = min(smoothingWindow, len(series))
             if win % 2 == 0:
                 win -= 1
@@ -75,20 +73,19 @@ def testVisualizer(filePath, columnIndices, customWindow, useDefaultConfig,
                 index=series.index
             )
 
-            # Decide what to store based on visualization mode
             if normalVis:
-                plot_df[label] = series  # Only original data
+                plotDf[label] = series
             elif smoothVis:
-                plot_df[label] = smoothed  # Only smoothed data
+                plotDf[label] = smoothed
             elif overlayVis:
-                plot_df[label + " (Original)"] = series  # Original
-                plot_df[label + " (Smoothed)"] = smoothed  # Smoothed
+                plotDf[label + " (Original)"] = series
+                plotDf[label + " (Smoothed)"] = smoothed
         else:
-            plot_df[f"Column_{colIndex}"] = np.nan
+            plotDf[f"Column{colIndex}"] = np.nan
 
     # Plotting
     if plotlyCheckVar == 1:
-        fig = px.line(plot_df, x='Time', y=plot_df.columns[1:],
+        fig = px.line(plotDf, x='Time', y=plotDf.columns[1:],
                       labels={'value':'Sensor Value','Time':'Time (Seconds)'},
                       title='Data Visualizer')
         fig.show()
@@ -97,18 +94,23 @@ def testVisualizer(filePath, columnIndices, customWindow, useDefaultConfig,
         for colIndex in columnIndices:
             if colIndex < df.shape[1]:
                 if overlayVis:
-                    # Plot overlay: original semi-transparent, smoothed bold
-                    orig_label = df.columns[colIndex] + " (Original)"
-                    smooth_label = df.columns[colIndex] + " (Smoothed)"
-                    plt.plot(plot_df['Time'], plot_df[orig_label], label=orig_label, alpha=0.5)
-                    plt.plot(plot_df['Time'], plot_df[smooth_label], label=smooth_label, linewidth=2)
+                    origLabel = df.columns[colIndex] + " (Original)"
+                    smoothLabel = df.columns[colIndex] + " (Smoothed)"
+                    plt.plot(plotDf['Time'], plotDf[origLabel], label=origLabel, alpha=0.5)
+                    plt.plot(plotDf['Time'], plotDf[smoothLabel], label=smoothLabel, linewidth=2)
                 else:
-                    # Plot only normal or smoothed
                     label = df.columns[colIndex]
-                    plt.plot(plot_df['Time'], plot_df[label], label=label)
+                    plt.plot(plotDf['Time'], plotDf[label], label=label)
             else:
-                label = f"Column {colIndex}"
-                plt.plot(plot_df['Time'], plot_df[label], label=label)
+                label = f"Column{colIndex}"
+                plt.plot(plotDf['Time'], plotDf[label], label=label)
+
+        # Plot all df2 columns if wftFilePath was used
+        if wftFilePath is not None:
+            for col in df2.columns:
+                if col != 'Time':
+                    plt.plot(plotDf['Time'], plotDf[col], label=col)
+
         plt.title('Data Visualizer')
         plt.ylabel('Sensor Value')
         plt.xlabel('Time (Seconds)')
