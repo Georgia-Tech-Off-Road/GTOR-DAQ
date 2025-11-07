@@ -214,7 +214,7 @@ def dataProcessingTool():
 
             visualizerThread = threading.Thread(
                 target=TestVisualizer.testVisualizer,
-                args=(filePath, columnNumber, customWindow, int(useDefaultConfig.get()),
+                args=(analysis.dfRAM, columnNumber, customWindow, int(useDefaultConfig.get()),
                       plotlyCheckVar.get(), scale, smoothingWindow, polyorder,
                       normalVis, smoothVis, overlayVis)
             )
@@ -258,17 +258,30 @@ def dataProcessingTool():
         anaPage = tk.Toplevel()
         anaPage.title("Analysis Tool")
         anaPage.geometry("400x300")
-        def analysiss():
-            colNum = colEntry.get()
-            colNum = list(map(int, colNum.split(",")))
-            anaThread = threading.Thread(target = analysis.analyzeData, args = (filePath, colNum, anaPage))
+        def ram():
+            df = analysis.ram(filePath,anaPage)
+        def convolute():
+            if analysis.dfRAM is None:
+                print("Load into RAM first.")
+                return
+            colNum = int(colEntry.get())
+            kernelSizeVal = int(kernelEntry.get())
+            print(analysis.dfRAM)
+            anaThread = threading.Thread(target = analysis.kernel, args = (analysis.dfRAM, colNum, kernelSizeVal, anaPage))
             anaThread.start()
-        label = tk.Label(anaPage, text="Enter 1+ indeces separated by commas (i.e. 2,3,4 or just 2)\nNote that index 0 = column #1.")
+        ramButton = tk.Button(anaPage, text="Load into RAM",command=ram)
+        ramButton.pack(pady=20)
+        label = tk.Label(anaPage, text="Enter 1 column index\nNote that index 0 = column #1, sensor data usually starts at 2.")
         label.pack(pady=5)
         colEntry = tk.Entry(anaPage)
         colEntry.pack(pady=5)
-        analysisButton = tk.Button(anaPage, text="Analyze (WIP)",command=analysiss)
-        analysisButton.pack(pady=20)
+        kerLab = tk.Label(anaPage, text="Enter kernel size")
+        kerLab.pack(pady=5)
+        kernelEntry = tk.Entry(anaPage)
+        kernelEntry.pack(pady=5)
+        kernelButton = tk.Button(anaPage, text="Run Convolution", command=convolute)
+        kernelButton.pack(pady=5)
+
     def indices(filePath):      #used for showing a legend of data types & their indeces
         #imports
         import pandas as pd
