@@ -10,7 +10,7 @@ import plotly.express as px
 
 from scipy.signal import savgol_filter
 
-def testVisualizer(filePath, columnIndices, customWindow, useDefaultConfig,
+def testVisualizer(df, columnIndices, customWindow, useDefaultConfig,
                    plotlyCheckVar, scale,
                    smoothingWindow=11, polyorder=2,
                    normalVis=False, smoothVis=False, overlayVis=False):
@@ -25,13 +25,13 @@ def testVisualizer(filePath, columnIndices, customWindow, useDefaultConfig,
     progressBar.start()
 
     # Read file
-    if '.xlsx' in filePath:
-        df = pd.read_excel(filePath, engine='openpyxl')
-    else:
-        with open(filePath, "r") as infile:
-            text = infile.read()
-        data = json.loads(text)
-        df = pd.json_normalize(data)
+    # if '.xlsx' in filePath:
+    #     df = pd.read_excel(filePath, engine='openpyxl')
+    # else:
+    #     with open(filePath, "r") as infile:
+    #         text = infile.read()
+    #     data = json.loads(text)
+    #     df = pd.json_normalize(data)
 
     # Convert microsec to relative time
     startTime = df['microsec'].iloc[0]
