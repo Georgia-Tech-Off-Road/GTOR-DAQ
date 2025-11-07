@@ -20,6 +20,7 @@ from Visualizers import TestVisualizer
 from ProcessingPrograms import FileSplitter
 from ProcessingPrograms import PRHelper
 from ProcessingPrograms import ExcelConverter
+from ProcessingPrograms import analysis
 
 #imports the processing programs (hertz calculator, data processor, etc.)
 os.chdir("./")
@@ -102,6 +103,7 @@ def dataProcessingTool():
                     prButton.grid(row=2, column=2, padx=20)
                     legacyButton.grid(row=2,column=1,padx=20)
                     excelButton.grid(row=3,column=1,padx=20,pady=10)
+                    analysisButton.grid(row=4,column=1,padx=20)
 
     def downloadData():
         #create a new page for the progress bar
@@ -191,7 +193,6 @@ def dataProcessingTool():
         normalRadio.pack(pady=2)
         smoothRadio.pack(pady=2)
         overlayRadio.pack(pady=2)
-
         def runVisualizer():
             scale = scaleEntry.get().strip()
             if scale == "":
@@ -253,7 +254,21 @@ def dataProcessingTool():
         pollingButton.grid(pady=50,padx=50)
         avgButton.grid(pady=20,padx=50)
         #percentButton.pack(padx=20)
-
+    def analyze():
+        anaPage = tk.Toplevel()
+        anaPage.title("Analysis Tool")
+        anaPage.geometry("400x300")
+        def analysiss():
+            colNum = colEntry.get()
+            colNum = list(map(int, colNum.split(",")))
+            anaThread = threading.Thread(target = analysis.analyzeData, args = (filePath, colNum, anaPage))
+            anaThread.start()
+        label = tk.Label(anaPage, text="Enter 1+ indeces separated by commas (i.e. 2,3,4 or just 2)\nNote that index 0 = column #1.")
+        label.pack(pady=5)
+        colEntry = tk.Entry(anaPage)
+        colEntry.pack(pady=5)
+        analysisButton = tk.Button(anaPage, text="Analyze (WIP)",command=analysiss)
+        analysisButton.pack(pady=20)
     def indices(filePath):      #used for showing a legend of data types & their indeces
         #imports
         import pandas as pd
@@ -402,6 +417,7 @@ def dataProcessingTool():
     legacyButton = tk.Button(buttonFrame, text="Legacy Functions", command=lambda:legacy())
     excelButton = tk.Button(buttonFrame, text ="Convert json-formatted .txt files to Excel", command=lambda:excel())
     binButton = tk.Button(buttonFrame, text="Convert .bin to .txt", command=lambda: binConvert())
+    analysisButton = tk.Button(buttonFrame, text="analysis (WIP)", command=lambda:analyze())
     updateButtons()
 
 def runUpdater():
