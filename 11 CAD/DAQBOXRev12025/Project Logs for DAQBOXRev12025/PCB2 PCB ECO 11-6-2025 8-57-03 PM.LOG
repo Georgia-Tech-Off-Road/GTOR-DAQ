@@ -1,0 +1,87 @@
+Add component: Footprint Not Found OSC_XLH735007.680000I3
+Added Component: Designator=C?(CAPC2013X145X48ML20T23)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Vitramon"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "VJ0805Y682KXAMT"; VariantName = "[No Variations]"
+Added Component: Designator=C?(CAPC2013X145X48ML20T23)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Vitramon"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "VJ0805Y682KXAMT"; VariantName = "[No Variations]"
+Added Component: Designator=C?(CAPC2013X145X48ML20T23)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Vitramon"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "VJ0805Y682KXAMT"; VariantName = "[No Variations]"
+Added Component: Designator=C?(CAPC2013X145X48ML20T23)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Vitramon"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "VJ0805Y682KXAMT"; VariantName = "[No Variations]"
+Added Component: Designator=C?(CAPC2013X145X48ML20T23)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Vitramon"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "VJ0805Y682KXAMT"; VariantName = "[No Variations]"
+Added Component: Designator=C?(CAPC2013X145X48ML20T23)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Vitramon"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "VJ0805Y682KXAMT"; VariantName = "[No Variations]"
+Added Component: Designator=C?(CAPC2013X145X48ML20T23)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Vitramon"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "VJ0805Y682KXAMT"; VariantName = "[No Variations]"
+Added Component: Designator=C?(CAPC2013X145X48ML20T23)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Vitramon"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "VJ0805Y682KXAMT"; VariantName = "[No Variations]"
+Added Component: Designator=Fancy Cap to Help Clock gen?(FP-DE2_D15_T5_F7_5_d0_6-0-MFG)
+Added Component: Designator=R?(RESC3116X65X40LL10T20)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Yageo"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "RC1206FR-10750RL"; VariantName = "[No Variations]"
+Added Component: Designator=R?(RESC3116X65X40LL10T20)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Yageo"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "RC1206FR-10750RL"; VariantName = "[No Variations]"
+Added Component: Designator=R?(RESC3116X65X40LL10T20)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Yageo"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "RC1206FR-10750RL"; VariantName = "[No Variations]"
+Added Component: Designator=R?(RESC3116X65X40LL10T20)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Yageo"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "RC1206FR-10750RL"; VariantName = "[No Variations]"
+Added Component: Designator=R?(RESC3116X65X40LL10T20)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Yageo"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "RC1206FR-10750RL"; VariantName = "[No Variations]"
+Added Component: Designator=R?(RESC3116X65X40LL10T20)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Yageo"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "RC1206FR-10750RL"; VariantName = "[No Variations]"
+Added Component: Designator=R?(RESC3116X65X40LL10T20)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Yageo"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "RC1206FR-10750RL"; VariantName = "[No Variations]"
+Added Component: Designator=R?(RESC3116X65X40LL10T20)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Yageo"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "RC1206FR-10750RL"; VariantName = "[No Variations]"
+Add Pin To Net: Unknown Pin: Pin ADC Clock Generator?-1
+Add Pin To Net: Unknown Pin: Pin ADC Clock Generator?-3
+Add Pin To Net: Unknown Pin: Pin ADC Clock Generator?-4
+Add Pin To Net: Unknown Pin: Pin ADC Clock Generator?-6
+Added Pin To Net: NetName=NetADC0_A3 Pin=C?-1
+Added Pin To Net: NetName=NetADC0_A3 Pin=C?-1
+Added Pin To Net: NetName=NetADC0_A3 Pin=C?-1
+Added Pin To Net: NetName=NetADC0_A3 Pin=C?-1
+Added Pin To Net: NetName=NetADC0_A3 Pin=C?-1
+Added Pin To Net: NetName=NetADC0_A3 Pin=C?-1
+Added Pin To Net: NetName=NetADC0_A3 Pin=C?-1
+Added Pin To Net: NetName=NetADC0_A3 Pin=C?-1
+Added Pin To Net: NetName=GND Pin=Fancy Cap to Help Clock gen?-1
+Added Pin To Net: NetName=NetADS1256_16 Pin=Fancy Cap to Help Clock gen?-2
+Added Pin To Net: NetName=NetADC0_A2 Pin=R?-1
+Added Pin To Net: NetName=NetADC1_A2 Pin=R?-1
+Added Pin To Net: NetName=NetADC2_A2 Pin=R?-1
+Added Pin To Net: NetName=NetADC3_A2 Pin=R?-1
+Added Pin To Net: NetName=NetADC4_A2 Pin=R?-1
+Added Pin To Net: NetName=NetADC5_A2 Pin=R?-1
+Added Pin To Net: NetName=NetADC6_A2 Pin=R?-1
+Added Pin To Net: NetName=NetADC7_A2 Pin=R?-1
+Change Net Name : Old Net Name=NetADS1256_16 New Net Name=NetADC Clock Generator?_1
+Change Net Name : Old Net Name=NetADS1256_19 New Net Name=NetADC Clock Generator?_4
+Added Pin To Net: NetName=NetC?_2 Pin=C?-2
+Added Pin To Net: NetName=NetC?_2 Pin=R?-2
+Added Net: Name=NetC?_2
+Add Net: Net with name "NetC?_2" already exists
+Add Net: Net with name "NetC?_2" already exists
+Add Net: Net with name "NetC?_2" already exists
+Add Net: Net with name "NetC?_2" already exists
+Add Net: Net with name "NetC?_2" already exists
+Add Net: Net with name "NetC?_2" already exists
+Add Net: Net with name "NetC?_2" already exists
+Added Class: Name=Sheet1
+Add Class Member: Failed to add class member : Component ADC Clock Generator? XLH735007.680000I
+Added Member To Class: ClassName=MainSchematic Member=Component Fancy Cap to Help Clock gen? DE2E3SA103MJ3BX02F

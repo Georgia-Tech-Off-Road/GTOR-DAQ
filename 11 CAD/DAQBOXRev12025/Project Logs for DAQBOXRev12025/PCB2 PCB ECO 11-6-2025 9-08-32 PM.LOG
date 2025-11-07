@@ -1,0 +1,7 @@
+Removed Pin From Net: NetName=GND Pin=Fancy Cap to Help Clock gen?-1
+Removed Pin From Net: NetName=NetADC Clock Generator?_1 Pin=Fancy Cap to Help Clock gen?-2
+Removed Member From Class: ClassName=MainSchematic Member=Fancy Cap to Help Clock gen?
+Change Component Comment : Designator=Y? Old Comment=ECS-100AX-500 New Comment=MCO-1510A
+Change Net Name : Old Net Name=NetADC Clock Generator?_1 New Net Name=NetADS1256_16
+Change Net Name : Old Net Name=NetADC Clock Generator?_4 New Net Name=NetADS1256_19
+Added Member To Class: ClassName=Sheet1 Member=Component R3? RC1206FR-10750RL

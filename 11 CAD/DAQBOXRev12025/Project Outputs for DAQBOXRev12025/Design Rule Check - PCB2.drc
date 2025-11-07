@@ -1,7 +1,7 @@
 Protel Design System Design Rule Check
 PCB File : C:\Users\kylej\OneDrive\Documents\GTOR\GTOR-DAQ\11 CAD\DAQBOXRev12025\PCB2.PcbDoc
-Date     : 11/4/2025
-Time     : 7:57:53 PM
+Date     : 11/6/2025
+Time     : 9:53:41 PM
 
 Processing Rule : Clearance Constraint (Gap=10mil) (All),(All)
    Violation between Clearance Constraint: (7.874mil < 10mil) Between Pad ADS1256-1(4906.142mil,3851.338mil) on Top Layer And Pad ADS1256-2(4906.142mil,3825.748mil) on Top Layer 
@@ -66,7 +66,15 @@ Processing Rule : Hole To Hole Clearance (Gap=10mil) (All),(All)
 Rule Violations :0
 
 Processing Rule : Minimum Solder Mask Sliver (Gap=10mil) (All),(All)
-Rule Violations :0
+   Violation between Minimum Solder Mask Sliver Constraint: (5.779mil < 10mil) Between Pad C0?-1(6500mil,4605mil) on Top Layer And Pad C0?-2(6572.834mil,4605mil) on Top Layer [Top Solder] Mask Sliver [5.779mil]
+   Violation between Minimum Solder Mask Sliver Constraint: (5.781mil < 10mil) Between Pad C1?-1(6633.582mil,3550mil) on Top Layer And Pad C1?-2(6706.418mil,3550mil) on Top Layer [Top Solder] Mask Sliver [5.781mil]
+   Violation between Minimum Solder Mask Sliver Constraint: (5.781mil < 10mil) Between Pad C2?-1(6053.582mil,2625mil) on Top Layer And Pad C2?-2(6126.418mil,2625mil) on Top Layer [Top Solder] Mask Sliver [5.781mil]
+   Violation between Minimum Solder Mask Sliver Constraint: (5.779mil < 10mil) Between Pad C3?-1(6648.802mil,2599.696mil) on Top Layer And Pad C3?-2(6721.636mil,2599.696mil) on Top Layer [Top Solder] Mask Sliver [5.779mil]
+   Violation between Minimum Solder Mask Sliver Constraint: (5.779mil < 10mil) Between Pad C4?-1(5890mil,4625mil) on Top Layer And Pad C4?-2(5962.834mil,4625mil) on Top Layer [Top Solder] Mask Sliver [5.779mil]
+   Violation between Minimum Solder Mask Sliver Constraint: (5.779mil < 10mil) Between Pad C5?-1(5990mil,3545mil) on Top Layer And Pad C5?-2(6062.834mil,3545mil) on Top Layer [Top Solder] Mask Sliver [5.779mil]
+   Violation between Minimum Solder Mask Sliver Constraint: (5.779mil < 10mil) Between Pad C6?-1(5290mil,2900mil) on Top Layer And Pad C6?-2(5362.834mil,2900mil) on Top Layer [Top Solder] Mask Sliver [5.779mil]
+   Violation between Minimum Solder Mask Sliver Constraint: (5.779mil < 10mil) Between Pad C7?-1(5347.166mil,1850mil) on Top Layer And Pad C7?-2(5420mil,1850mil) on Top Layer [Top Solder] Mask Sliver [5.779mil]
+Rule Violations :8
 
 Processing Rule : Silk To Solder Mask (Clearance=10mil) (IsPad),(All)
 Rule Violations :0
@@ -81,6 +89,6 @@ Processing Rule : Height Constraint (Min=0mil) (Max=1000mil) (Prefered=500mil) (
 Rule Violations :0
 
 
-Violations Detected : 35
+Violations Detected : 43
 Waived Violations : 0
 Time Elapsed        : 00:00:00

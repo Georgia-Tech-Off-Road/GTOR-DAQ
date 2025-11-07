@@ -1,0 +1,3 @@
+Change Component Designator: OldDesignator=Y? NewDesignator=ADC Clock Generator
+Change Net Name : Old Net Name=NetADS1256_16 New Net Name=NetADC Clock Generator_14
+Change Net Name : Old Net Name=NetADS1256_19 New Net Name=NetADC Clock Generator_8
