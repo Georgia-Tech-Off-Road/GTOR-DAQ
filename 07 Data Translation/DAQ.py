@@ -13,6 +13,20 @@ import subprocess
 #libraries used for program
 #NOTE: NEVER PUT ANYTHING IN FRONT OF IMPORTS AND ALWAYS KEEP IMPORTANTS IN THIS NOTATION, OTHERWISE THE UPDATER WILL LIKELY BREAK
 
+#chatgpt fueled cuda imports
+from ProcessingPrograms.cudaSetup import check_cuda_available, check_compiled
+#create a global bool for if cuda
+cuda = False
+#check if cuda is available
+if check_cuda_available():
+    cuda = True
+    cudaFileList = ["cudaConvolver.cu"]
+    cudaBaseDir = "fancyCudaStuff/"
+    moduleBaseName = "ProcessingPrograms.fancyCudaStuff."
+    for cudaFile in cudaFileList:
+        if not check_compiled(moduleBaseName + "".join(cudaFile[:-2]), cudaBaseDir + cudaFile):
+            cuda = False
+            print("cuda Failed :(")
 #file imports
 from DataDownloader import DataDownloader
 from Updater import DataTranslatorUpdater
@@ -22,8 +36,10 @@ from ProcessingPrograms import PRHelper
 from ProcessingPrograms import ExcelConverter
 from ProcessingPrograms import analysis
 
+
 #imports the processing programs (hertz calculator, data processor, etc.)
-os.chdir("./")
+#changes directory to that of DAQ.py
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 for fileName in os.listdir("ProcessingPrograms"):
         if fileName.endswith('.py') and not fileName.startswith('__'):
             moduleName = fileName[:-3]  # Remove .py extension
@@ -39,13 +55,23 @@ with open("Settings/Settings.csv") as settingsf:
     reader = csv.reader(settingsf)
     settingsData = list(reader)
 
+
+
 # Function to go to Data Processing Tool
 def dataProcessingTool():
-    root.withdraw()
     # Create a new window for the data processing tool
     dataProcessingToolPage = tk.Toplevel(root)
     dataProcessingToolPage.title("Data Downloader Tool")
     dataProcessingToolPage.geometry("800x400")
+    #nice little alert message box
+    def show_alert(message):
+        alert = tk.Toplevel(dataProcessingToolPage)
+        alert.title("Alert")
+        alert.geometry("250x100")
+            
+        tk.Label(alert, text=message, wraplength=200).pack(pady=10)
+        tk.Button(alert, text="Dismiss", command=alert.destroy).pack(pady=5)
+        root.withdraw()
     global useDefaultConfig
     if settingsData[1][3] == "False":
         useDefaultConfig = tk.IntVar(value=0)
@@ -83,12 +109,13 @@ def dataProcessingTool():
                             widget.grid_forget()
         #if a filePath has been chosen
         if ('filePath' in globals()):
+                print(filePath)
                 #if the filepath isn't on the main OS drive only display the download button
                 if ".bin" in filePath:
                     outputButton.grid(row=0,column=1,padx=20)
                     binButton.grid(row=0, column=2, padx=20)
                     legacyButton.grid(row=0, column=3, padx=20)
-                elif "C:/" not in filePath:
+                elif "C:/" not in filePath and sys.platform.startswith("win"):
                     downloadButton.grid(row=0, column=1, padx=20)
                     outputButton.grid(row=0,column=2,padx=20)
                 elif ".csv" in filePath:
@@ -260,27 +287,18 @@ def dataProcessingTool():
         anaPage.geometry("400x300")
         def ram():
             df = analysis.ram(filePath,anaPage)
+            show_alert("File loaded into RAM!")
         def convolute():
             if analysis.dfRAM is None:
-                print("Load into RAM first.")
+                show_alert("Load into Ram first!")
                 return
-            colNum = int(colEntry.get())
-            kernelSizeVal = int(kernelEntry.get())
-            print(analysis.dfRAM)
-            anaThread = threading.Thread(target = analysis.kernel, args = (analysis.dfRAM, colNum, kernelSizeVal, anaPage))
+            anaThread = threading.Thread(target = analysis.kernel, args = (analysis.dfRAM, anaPage, cuda))
             anaThread.start()
         ramButton = tk.Button(anaPage, text="Load into RAM",command=ram)
         ramButton.pack(pady=20)
-        label = tk.Label(anaPage, text="Enter 1 column index\nNote that index 0 = column #1, sensor data usually starts at 2.")
-        label.pack(pady=5)
-        colEntry = tk.Entry(anaPage)
-        colEntry.pack(pady=5)
-        kerLab = tk.Label(anaPage, text="Enter kernel size")
-        kerLab.pack(pady=5)
-        kernelEntry = tk.Entry(anaPage)
-        kernelEntry.pack(pady=5)
-        kernelButton = tk.Button(anaPage, text="Run Convolution", command=convolute)
+        kernelButton = tk.Button(anaPage, text="Convolution", command=convolute)
         kernelButton.pack(pady=5)
+        
 
     def indices(filePath):      #used for showing a legend of data types & their indeces
         #imports
