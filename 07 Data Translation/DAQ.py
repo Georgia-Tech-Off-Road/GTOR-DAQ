@@ -24,7 +24,8 @@ if check_cuda_available():
     cudaBaseDir = "fancyCudaStuff/"
     moduleBaseName = "ProcessingPrograms.fancyCudaStuff."
     for cudaFile in cudaFileList:
-        if not check_compiled(moduleBaseName + "".join(cudaFile[:-2]), cudaBaseDir + cudaFile):
+        moduleName = moduleBaseName + "".join(cudaFile[:-3])
+        if not check_compiled(moduleName, cudaBaseDir + cudaFile):
             cuda = False
             print("cuda Failed :(")
 #file imports
@@ -49,7 +50,7 @@ for fileName in os.listdir("ProcessingPrograms"):
 # Creates the main window
 root = tk.Tk()
 root.title("Main Page")
-root.geometry("600x200")
+root.geometry("1000x800")
 
 with open("Settings/Settings.csv") as settingsf:
     reader = csv.reader(settingsf)
@@ -62,12 +63,12 @@ def dataProcessingTool():
     # Create a new window for the data processing tool
     dataProcessingToolPage = tk.Toplevel(root)
     dataProcessingToolPage.title("Data Downloader Tool")
-    dataProcessingToolPage.geometry("800x400")
+    dataProcessingToolPage.geometry("100x800")
     #nice little alert message box
     def show_alert(message):
         alert = tk.Toplevel(dataProcessingToolPage)
         alert.title("Alert")
-        alert.geometry("250x100")
+        alert.geometry("350x400")
             
         tk.Label(alert, text=message, wraplength=200).pack(pady=10)
         tk.Button(alert, text="Dismiss", command=alert.destroy).pack(pady=5)
@@ -137,7 +138,7 @@ def dataProcessingTool():
         global outputPath, chosePath
         progressBarPage = tk.Toplevel(dataProcessingToolPage)
         progressBarPage.title("Download Progress")
-        progressBarPage.geometry("400x200")
+        progressBarPage.geometry("500x700")
         destinationFilePath = str(os.getcwd()+ "\\"+ os.path.basename(filePath))
         #open the file to create it to prevent any problems with later code being unable to find the target
         file = open(os.path.basename(destinationFilePath), "a")
@@ -187,7 +188,7 @@ def dataProcessingTool():
     def custom():                           # custom data visualizer
         customWindow = tk.Toplevel()
         customWindow.title("Visualizer")
-        customWindow.geometry("800x500")
+        customWindow.geometry("1000x800")
 
         # Label and Entry for column number
         label = tk.Label(customWindow, text="Enter 1+ indeces separated by commas (i.e. 2,3,4 or just 2)\nNote that index 0 = column #1.\nSensor data starts at 1.")
@@ -253,11 +254,11 @@ def dataProcessingTool():
     def prHelper():
         prPage = tk.Toplevel()
         prPage.title("Polling Rate Helper")
-        prPage.geometry("300x300")
+        prPage.geometry("900x600")
         def prCustom():
             customWindow = tk.Toplevel()
             customWindow.title("Visualizer")
-            customWindow.geometry("800x300")
+            customWindow.geometry("900x600")
             # Label and Entry for column number
             label = tk.Label(customWindow, text="Enter 1 index\nNote that index 0 = column #1.\nSensor data starts at 1.")
             label.pack(pady=5)
@@ -284,7 +285,7 @@ def dataProcessingTool():
     def analyze():
         anaPage = tk.Toplevel()
         anaPage.title("Analysis Tool")
-        anaPage.geometry("400x300")
+        anaPage.geometry("700x600")
         def ram():
             df = analysis.ram(filePath,anaPage)
             show_alert("File loaded into RAM!")
@@ -322,7 +323,7 @@ def dataProcessingTool():
         #gui
         indexWindow = tk.Toplevel()
         indexWindow.title(f"Indices for {filePath}")
-        indexWindow.geometry("500x400")
+        indexWindow.geometry("700x600")
         canvas = tk.Canvas(indexWindow)
         scrollbar = ttk.Scrollbar(indexWindow, orient="vertical", command=canvas.yview)
         scrollFrame = ttk.Frame(canvas)
@@ -340,7 +341,7 @@ def dataProcessingTool():
     def splitFile():            #used for splitting large files into several smaller ones
         fileSplitPage = tk.Toplevel()
         fileSplitPage.title("File Splitter")
-        fileSplitPage.geometry("800x300")
+        fileSplitPage.geometry("1000x800")
         label = tk.Label(fileSplitPage, text="Enter number of data sets to keep per file or write 'd' for default (10,000,000)")
         label.pack(pady=5)
         splitEntry = tk.Entry(fileSplitPage)
@@ -358,7 +359,7 @@ def dataProcessingTool():
     def excel():
         excelPage = tk.Toplevel()
         excelPage.title("Excel Converter")
-        excelPage.geometry('600x200')
+        excelPage.geometry('800x400')
         def convertExcel():
             excelThread = threading.Thread(target = ExcelConverter.convertExcel, args = (filePath, excelPage, outputPath))
             excelThread.start()
@@ -377,7 +378,7 @@ def dataProcessingTool():
     def legacy():
         legacyPage = tk.Toplevel()
         legacyPage.title("Legacy Functions")
-        legacyPage.geometry("400x400")
+        legacyPage.geometry("800x600")
         def editConfig():
             if useDefaultConfig.get() == 1:
                 configFilePath = "Configs/defaultConfig.txt"
@@ -396,7 +397,7 @@ def dataProcessingTool():
             #create a page for the progress bar
             progressBarPage = tk.Toplevel(dataProcessingToolPage)
             progressBarPage.title("Translation Progress")
-            progressBarPage.geometry("400x200")
+            progressBarPage.geometry("800x600")
             #create the thread
             dataProcessingThread = threading.Thread(target = DataTranslator.translateData, args = (filePath, progressBarPage, dataProcessingToolPage, int(useDefaultConfig.get()),outputPath,chosePath,settingsData))
             #start the thread

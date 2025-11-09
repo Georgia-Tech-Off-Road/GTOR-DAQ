@@ -85,7 +85,7 @@ def check_compiled(module_name, source_file):
         raise RuntimeError(f"CUDA compiler not found at {nvcc_path}")
 
     output_dir = fancy_cuda_dir
-    output_file = module_name.split(".")[-2] + ext_suffix  # cudaConvolver.cpython-310-x86_64-linux-gnu.so
+    output_file = module_name.split(".")[-1] + ext_suffix  # cudaConvolver.cpython-310-x86_64-linux-gnu.so
     output_path = os.path.join(output_dir, output_file)
 
     # nvcc_path is something like /usr/local/cuda/bin/nvcc
