@@ -295,11 +295,18 @@ def dataProcessingTool():
                 return
             anaThread = threading.Thread(target = analysis.kernel, args = (analysis.dfRAM, anaPage, cuda))
             anaThread.start()
+        def save():
+            if analysis.dfRAM is None:
+                show_alert("Load into Ram first!")
+                return
+            saveThread = threading.Thread(target = analysis.save, args = (analysis.dfRAM, anaPage))
+            saveThread.start()
         ramButton = tk.Button(anaPage, text="Load into RAM",command=ram)
         ramButton.pack(pady=20)
         kernelButton = tk.Button(anaPage, text="Convolution", command=convolute)
         kernelButton.pack(pady=5)
-        
+        saveButton = tk.Button(anaPage, text="Save to File", command = save)
+        saveButton.pack(pady=5)
 
     def indices(filePath):      #used for showing a legend of data types & their indeces
         #imports

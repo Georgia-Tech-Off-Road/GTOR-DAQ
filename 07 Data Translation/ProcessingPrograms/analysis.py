@@ -113,6 +113,11 @@ def kernel(df, anaPage, cuda):
         return
     startConvolutionButton = tk.Button(convolutionPage, text="StartConvolution!",command=performConvolution)
     startConvolutionButton.pack(pady=5)
+
+def save(df, anaPage):
+    df.to_json('output.json', orient='records')
+    anaPage.destroy()
+
     
     
     
