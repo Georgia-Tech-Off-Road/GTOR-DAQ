@@ -52,6 +52,12 @@ root = tk.Tk()
 root.title("Main Page")
 root.geometry("1000x800")
 
+#define function to run when someone xs out to make sure everything closes
+def onXOut():
+    sys.exit(0)
+
+#link it to root
+root.protocol("WM_DELETE_WINDOW", onXOut)
 with open("Settings/Settings.csv") as settingsf:
     reader = csv.reader(settingsf)
     settingsData = list(reader)
@@ -60,10 +66,18 @@ with open("Settings/Settings.csv") as settingsf:
 
 # Function to go to Data Processing Tool
 def dataProcessingTool():
+    #hide the main page
+    root.withdraw()
     # Create a new window for the data processing tool
     dataProcessingToolPage = tk.Toplevel(root)
     dataProcessingToolPage.title("Data Downloader Tool")
-    dataProcessingToolPage.geometry("100x800")
+    dataProcessingToolPage.geometry("1000x800")
+    #define a function to handle window being closed
+    def onClose():
+        root.deiconify()
+        dataProcessingToolPage.destroy()
+    #bind the onClose function
+    dataProcessingToolPage.protocol("WM_DELETE_WINDOW", onClose)
     #nice little alert message box
     def show_alert(message):
         alert = tk.Toplevel(dataProcessingToolPage)

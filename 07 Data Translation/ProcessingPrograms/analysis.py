@@ -16,6 +16,8 @@ import sys
 import ctypes
 import os
 from .fancyCudaStuff import cudaConvolver
+from tkinter import filedialog
+
 
 dfRAM = None
 df_lock = threading.Lock()
@@ -115,8 +117,33 @@ def kernel(df, anaPage, cuda):
     startConvolutionButton.pack(pady=5)
 
 def save(df, anaPage):
-    df.to_json('output.json', orient='records')
-    anaPage.destroy()
+    savePage = tk.Toplevel()
+    savePage.title("Save File")
+    savePage.geometry("500x600")
+
+    #define variables
+    filePath = os.getcwd()
+    fileName = "output"
+
+    fileSelectLabel = tk.Label(savePage, text = f"Selected filePath: {filePath}")
+    fileSelectLabel.pack(pady = 20)
+    def saveFile():
+        df.to_json(filePath + fileName + ".txt", orient='records')
+        savePage.destroy()
+        anaPage.destroy()
+    def chooseFilePath():
+        filePath = filedialog.askdirectory()
+        # Display the file path in the label
+        fileSelectLabel.config(text=f"Selected filePath: {filePath}")
+    fileSelectButton = tk.Button(savePage, text="Choose File Path", command=chooseFilePath)
+    fileSelectButton.pack(pady = 5)
+    label = tk.Label(savePage, text="Enter File Name.")
+    label.pack(pady=5)
+    colEntry = tk.Entry(savePage)
+    colEntry.pack(pady=5)
+    saveButton = tk.Button(savePage, text="Save File", command = saveFile)
+    saveButton.pack()
+    
 
     
     
