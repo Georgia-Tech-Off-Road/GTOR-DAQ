@@ -1,6 +1,8 @@
 #include <cuda_runtime.h>
 #include <tuple>
 #include <cstdio>
+#include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
 
 #define CHECK_CUDA(call) do { \
     cudaError_t err = call; \
@@ -112,8 +114,7 @@ namespace RPMSpikeFilterFunctions {
     }
 }
 
-extern "C" void spikeFiltererHandler(float * data, size_t length, float* kernel, int kernelLength, float percentDiff, int timesToRun) {
-    printf("Running spike handler!\n");
+void spikeFiltererHandler(float * data, size_t length, float* kernel, int kernelLength, float percentDiff, int timesToRun) {
     //copy kernel into the constant data
     CHECK_CUDA(cudaMemcpyToSymbol(convolutionKernel, kernel, kernelLength * sizeof(float)));
 
@@ -141,7 +142,6 @@ extern "C" void spikeFiltererHandler(float * data, size_t length, float* kernel,
     std::tie(blockSize, sharedMemAmount) = sharedMemoryCalculatorTupleReturn;
     for (int i = 0; i < timesToRun; i += 1) {
         //may cause a problem if a GPU can't launch this many threads
-        printf("Launching kernel!\n");
         spikeFilterer<<<(length + blockSize - 1)/blockSize, blockSize, sharedMemAmount>>>(d_data, d_intermediary, length, kernelLength, percentDiff);
         // Check for errors
         cudaError_t err = cudaGetLastError();
@@ -149,9 +149,20 @@ extern "C" void spikeFiltererHandler(float * data, size_t length, float* kernel,
 
         err = cudaDeviceSynchronize();
         if (err != cudaSuccess) printf("Execution error: %s\n", cudaGetErrorString(err));
-        printf("Kernel finished!\n");
     }
     CHECK_CUDA(cudaFree(d_intermediary));
     CHECK_CUDA(cudaMemcpy(data, d_data, length * sizeof(float), cudaMemcpyDeviceToHost));
     CHECK_CUDA(cudaFree(d_data));
+}
+
+//translates numpy stuff
+void pythonTranslator(pybind11::array_t<float> pythonData, pybind11::array_t<float> kernel, float percentDiff, int timesToRun) {
+    auto dataBuff = pythonData.request();
+    auto kernelBuff = kernel.request();
+    spikeFiltererHandler(static_cast<float*>(dataBuff.ptr), dataBuff.size, static_cast<float*>(kernelBuff.ptr), kernelBuff.size, percentDiff, timesToRun);
+}
+
+//special pybind11 macro for this to define the thing
+PYBIND11_MODULE(RPMSpikeFilter, m) {
+    m.def("run", &pythonTranslator);
 }

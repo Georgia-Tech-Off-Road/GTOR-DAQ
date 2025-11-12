@@ -55,12 +55,17 @@ def find_nvcc():
     return nvcc_path
 
 def check_compiled(module_name, source_file):
+    print(module_name)
     cuda_setup_dir = os.path.dirname(os.path.abspath(__file__))
     # Path to the fancyCudaStuff folder
     fancy_cuda_dir = os.path.join(cuda_setup_dir, "fancyCudaStuff")
 
+    #get out cuda file name
+    cudaFileName = module_name.split(".")[-1] + ".cu"
+    print(cudaFileName)
+
     # Path to the .cu source file
-    source_file = os.path.join(fancy_cuda_dir, "cudaConvolver.cu")
+    source_file = os.path.join(fancy_cuda_dir, cudaFileName)
     print(f"\n--- Checking for compiled CUDA module: {module_name} ---")
 
     # First, see if module import already works

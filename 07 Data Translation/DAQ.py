@@ -20,10 +20,11 @@ cuda = False
 #check if cuda is available
 if check_cuda_available():
     cuda = True
-    cudaFileList = ["cudaConvolver.cu"]
+    cudaFileList = ["cudaConvolver.cu", "RPMSpikeFilter.cu"]
     cudaBaseDir = "fancyCudaStuff/"
     moduleBaseName = "ProcessingPrograms.fancyCudaStuff."
     for cudaFile in cudaFileList:
+        print(cudaFile)
         moduleName = moduleBaseName + "".join(cudaFile[:-3])
         if not check_compiled(moduleName, cudaBaseDir + cudaFile):
             cuda = False
@@ -309,6 +310,12 @@ def dataProcessingTool():
                 return
             anaThread = threading.Thread(target = analysis.kernel, args = (analysis.dfRAM, anaPage, cuda))
             anaThread.start()
+        def rpmSpikeFilter():
+            if analysis.dfRAM is None:
+                show_alert("Load into Ram first!")
+                return
+            spikeThread = threading.Thread(target = analysis.rpmSpikeFilter, args = (analysis.dfRAM, anaPage, cuda))
+            spikeThread.start()
         def save():
             if analysis.dfRAM is None:
                 show_alert("Load into Ram first!")
@@ -319,6 +326,8 @@ def dataProcessingTool():
         ramButton.pack(pady=20)
         kernelButton = tk.Button(anaPage, text="Convolution", command=convolute)
         kernelButton.pack(pady=5)
+        rpmSpikeFilterButton = tk.Button(anaPage, text="RPM Spike Filter", command = rpmSpikeFilter)
+        rpmSpikeFilterButton.pack(pady=5)
         saveButton = tk.Button(anaPage, text="Save to File", command = save)
         saveButton.pack(pady=5)
 
