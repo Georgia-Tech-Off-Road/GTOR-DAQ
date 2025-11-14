@@ -14,21 +14,26 @@ import subprocess
 #NOTE: NEVER PUT ANYTHING IN FRONT OF IMPORTS AND ALWAYS KEEP IMPORTANTS IN THIS NOTATION, OTHERWISE THE UPDATER WILL LIKELY BREAK
 
 #chatgpt fueled cuda imports
-from ProcessingPrograms.cudaSetup import check_cuda_available, check_compiled
-#create a global bool for if cuda
 cuda = False
-#check if cuda is available
-if check_cuda_available():
-    cuda = True
-    cudaFileList = ["cudaConvolver.cu", "RPMSpikeFilter.cu"]
-    cudaBaseDir = "fancyCudaStuff/"
-    moduleBaseName = "ProcessingPrograms.fancyCudaStuff."
-    for cudaFile in cudaFileList:
-        print(cudaFile)
-        moduleName = moduleBaseName + "".join(cudaFile[:-3])
-        if not check_compiled(moduleName, cudaBaseDir + cudaFile):
-            cuda = False
-            print("cuda Failed :(")
+try:
+    from ProcessingPrograms.cudaSetup import check_cuda_available, check_compiled
+    #create a global bool for if cuda
+
+    #check if cuda is available
+    if check_cuda_available():
+        cuda = True
+        cudaFileList = ["cudaConvolver.cu", "RPMSpikeFilter.cu"]
+        cudaBaseDir = "fancyCudaStuff/"
+        moduleBaseName = "ProcessingPrograms.fancyCudaStuff."
+        for cudaFile in cudaFileList:
+            print(cudaFile)
+            moduleName = moduleBaseName + "".join(cudaFile[:-3])
+            if not check_compiled(moduleName, cudaBaseDir + cudaFile):
+                cuda = False
+                print("cuda Failed :(")
+except:
+    pass
+
 #file imports
 from DataDownloader import DataDownloader
 from Updater import DataTranslatorUpdater
