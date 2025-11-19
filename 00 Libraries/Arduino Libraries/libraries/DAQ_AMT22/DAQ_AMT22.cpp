@@ -37,13 +37,13 @@ void AMT22 :: transmitOpCode(int opCode) volatile
     //lower cs line
     digitalWrite(_cs, LOW);
     //have threads yield for 30 microseconds (have to do this because AMT22 needs a 3 microscecond minimum wait between each packet and cs line going high and low plus lot of buffer)
-    delayMicroseconds(3);
+    Threads::delayMicroseconds(3);
     //get first half of data
     currentPosition = SPI.transfer(0x00);
     //shift first packet into upper 8 bits
     currentPosition <<= 8;
     //have threads yield for 30 microseconds (have to do this because AMT22 needs a 3 microscecond minimum wait between each packet and cs line going high and low plus lot of buffer)
-    delayMicroseconds(3);
+    Threads::delayMicroseconds(3);
     //get second half of data
     currentPosition |= SPI.transfer(opCode);
     //have threads yield for 30 microseconds (have to do this because AMT22 needs a 3 microscecond minimum wait between each packet and cs line going high and low plus lot of buffer)

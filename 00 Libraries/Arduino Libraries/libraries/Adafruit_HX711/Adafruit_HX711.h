@@ -2,6 +2,8 @@
 #define Adafruit_HX711_h
 
 #include "Arduino.h"
+#include <TeensyThreads.h>
+
 
 enum hx711_chanGain_t {
   CHAN_A_GAIN_128 = 25,
