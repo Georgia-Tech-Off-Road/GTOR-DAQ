@@ -81,7 +81,7 @@ char*  printStruct(char* structData, char* structDataConfig, char* structNameCon
                     } else {
                         outputChar += sprintf(outputChar, "%g", zeDouble);
                     }
-                    structData += 8;
+                    structData += 8;:memcmp(comparisonPointer, comparis
                     break;
                 }
             case 4:

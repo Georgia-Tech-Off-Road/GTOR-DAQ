@@ -24,6 +24,23 @@ __global__ void cudaConvolver(float* data, size_t length, int kernelLength) {
     if(threadId >= length) {
         doNothing = true;
     }
+    //professor conversation notes
+    //load into local registers
+    //perform warp shuffle
+    //push to shared memory outside boundaries
+
+    //kernel size 7
+    //halo halo halo warp(not in shared mem) halo halo halo 
+
+    //__shfl_up(0xFFFFFFFF, localValue, stride);
+
+    //warp size of 4
+    //kernel size 3
+    //OD ID ID ID ID OD
+
+    //shuffle to sum in warp
+    //atomic warp to sum warps in block
+    //atomic add for blocks in grid
 
     if(!doNothing) {
         //load shared memory
