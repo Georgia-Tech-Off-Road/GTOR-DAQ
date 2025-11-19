@@ -221,6 +221,10 @@ def dataProcessingTool():
         plotCheckbox = tk.Checkbutton(customWindow, text="Check to use Plotly (slower, more detailed)", variable=plotlyCheckVar)
         plotCheckbox.pack(pady=5)
 
+        makeHeatMap = tk.IntVar(value=0)
+        heatCheckbox = tk.Checkbutton(customWindow, text="Check to make heat map instead of line graph", variable=makeHeatMap)
+        heatCheckbox.pack(pady=5)
+
         # Scale frame and entry
         scaleFrame = tk.Frame(customWindow)
         scaleFrame.pack(pady=25)
@@ -262,8 +266,8 @@ def dataProcessingTool():
 
             visualizerThread = threading.Thread(
                 target=TestVisualizer.testVisualizer,
-                args=(analysis.dfRAM, columnNumber, customWindow, int(useDefaultConfig.get()),
-                      plotlyCheckVar.get(), scale, smoothingWindow, polyorder,
+                args=(analysis.dfRAM, filePath, columnNumber, customWindow, int(useDefaultConfig.get()),
+                      plotlyCheckVar.get(), scale, makeHeatMap.get(), smoothingWindow, polyorder,
                       normalVis, smoothVis, overlayVis)
             )
             visualizerThread.start()

@@ -10,15 +10,19 @@ import plotly.express as px
 
 from scipy.signal import savgol_filter
 
-def testVisualizer(df, columnIndices, customWindow, useDefaultConfig,
-                   plotlyCheckVar, scale,
+def testVisualizer(df, filePath, columnIndices, customWindow, useDefaultConfig,
+                   plotlyCheckVar, scale, makeHeatMap,
                    smoothingWindow=11, polyorder=2,
                    normalVis=False, smoothVis=False, overlayVis=False):
+    if not df:
+        with open(filePath, "r") as infile:
+            text = infile.read()
+        data = json.loads(text)
+        df = pd.json_normalize(data)
 
     # Create UI indicator
     label1 = tk.Label(customWindow, text="Creating your graph...")
     label1.pack()
-
     # Create progress bar
     progressBar = ttk.Progressbar(customWindow, mode="indeterminate", maximum=100)
     progressBar.pack(padx=20, pady=20, fill="x")
@@ -87,33 +91,47 @@ def testVisualizer(df, columnIndices, customWindow, useDefaultConfig,
             plot_df[f"Column_{colIndex}"] = np.nan
 
     # Plotting
-    if plotlyCheckVar == 1:
-        fig = px.line(plot_df, x='Time', y=plot_df.columns[1:],
-                      labels={'value':'Sensor Value','Time':'Time (Seconds)'},
-                      title='Data Visualizer')
-        fig.show()
-    else:
-        plt.figure()
-        for colIndex in columnIndices:
-            if colIndex < df.shape[1]:
-                if overlayVis:
-                    # Plot overlay: original semi-transparent, smoothed bold
-                    orig_label = df.columns[colIndex] + " (Original)"
-                    smooth_label = df.columns[colIndex] + " (Smoothed)"
-                    plt.plot(plot_df['Time'], plot_df[orig_label], label=orig_label, alpha=0.5)
-                    plt.plot(plot_df['Time'], plot_df[smooth_label], label=smooth_label, linewidth=2)
-                else:
-                    # Plot only normal or smoothed
-                    label = df.columns[colIndex]
-                    plt.plot(plot_df['Time'], plot_df[label], label=label)
-            else:
-                label = f"Column {colIndex}"
-                plt.plot(plot_df['Time'], plot_df[label], label=label)
-        plt.title('Data Visualizer')
-        plt.ylabel('Sensor Value')
-        plt.xlabel('Time (Seconds)')
-        plt.grid(True)
-        plt.legend()
-        plt.show()
+    if makeHeatMap == 1:
+        rpmIndices = [i for i in columnIndices if i < df.shape[1]]
+        if not rpmIndices:
+            progressBar.stop()
+            raise RuntimeError("No valid RPM column indices provided for heatmap.")
+
+        rpmCols = [df.columns[i] for i in rpmIndices]
+        rdf = pd.DataFrame({c: pd.to_numeric(df[c], errors='coerce') for c in rpmCols})
+        rdf = rdf.ffill().bfill()
+
+        # Define RPM bins
+        all_rpm = np.concatenate([rdf[c].values for c in rpmCols])
+        rbins = 50  # number of bins
+        counts, bin_edges = np.histogram(all_rpm, bins=rbins)
+
+        # Build heatmap matrix: one row per column, counts per bin
+        H = np.zeros((len(rpmCols), rbins))
+        for i, c in enumerate(rpmCols):
+            H[i], _ = np.histogram(rdf[c].values, bins=bin_edges)
+
+        if plotlyCheckVar == 1:
+            fig = px.imshow(
+                H,
+                labels=dict(x='RPM Bin', y='Column', color='Count'),
+                x=[f"{int(bin_edges[j])}-{int(bin_edges[j+1])}" for j in range(len(bin_edges)-1)],
+                y=rpmCols,
+                color_continuous_scale='Viridis',
+                title='RPM Histogram Heatmap'
+            )
+            progressBar.stop()
+            fig.show()
+        else:
+            plt.figure(figsize=(10, len(rpmCols)*0.5 + 2))
+            plt.imshow(H, aspect='auto', origin='lower', cmap='viridis')
+            plt.colorbar(label='Count')
+            plt.yticks(ticks=np.arange(len(rpmCols)), labels=rpmCols)
+            plt.xlabel('RPM Bin')
+            plt.ylabel('Column')
+            plt.title('RPM Histogram Heatmap')
+            progressBar.stop()
+            plt.show()
+
 
     customWindow.destroy()
