@@ -1,0 +1,58 @@
+Change Component Designator: OldDesignator=C? NewDesignator=C0?
+Change Component Designator: OldDesignator=C? NewDesignator=C1?
+Change Component Designator: OldDesignator=C? NewDesignator=C2?
+Change Component Designator: OldDesignator=C? NewDesignator=C3?
+Change Component Designator: OldDesignator=C? NewDesignator=C4?
+Change Component Designator: OldDesignator=C? NewDesignator=C5?
+Change Component Designator: OldDesignator=C? NewDesignator=C6?
+Change Component Designator: OldDesignator=C? NewDesignator=C7?
+Change Component Designator: OldDesignator=R? NewDesignator=R0?
+Change Component Designator: OldDesignator=R? NewDesignator=R1?
+Change Component Designator: OldDesignator=R? NewDesignator=R2?
+Change Component Designator: OldDesignator=R? NewDesignator=R3?
+Change Component Designator: OldDesignator=R? NewDesignator=R4?
+Change Component Designator: OldDesignator=R? NewDesignator=R5?
+Change Component Designator: OldDesignator=R? NewDesignator=R6?
+Change Component Designator: OldDesignator=R? NewDesignator=R7?
+Add component: Footprint Not Found OSC_XLH735007.680000I3
+Add Pin To Net: Unknown Pin: Pin ADC Clock Generator?-1
+Add Pin To Net: Unknown Pin: Pin ADC Clock Generator?-3
+Add Pin To Net: Unknown Pin: Pin ADC Clock Generator?-4
+Add Pin To Net: Unknown Pin: Pin ADC Clock Generator?-6
+Change Net Name : Old Net Name=NetC?_2 New Net Name=NetC3?_2
+Added Pin To Net: NetName=NetC0?_2 Pin=C0?-2
+Added Pin To Net: NetName=NetC0?_2 Pin=R0?-2
+Added Net: Name=NetC0?_2
+Added Pin To Net: NetName=NetC1?_2 Pin=C1?-2
+Added Pin To Net: NetName=NetC1?_2 Pin=R1?-2
+Added Net: Name=NetC1?_2
+Added Pin To Net: NetName=NetC2?_2 Pin=C2?-2
+Added Pin To Net: NetName=NetC2?_2 Pin=R2?-2
+Added Net: Name=NetC2?_2
+Added Pin To Net: NetName=NetC4?_2 Pin=C4?-2
+Added Pin To Net: NetName=NetC4?_2 Pin=R4?-2
+Added Net: Name=NetC4?_2
+Added Pin To Net: NetName=NetC5?_2 Pin=C5?-2
+Added Pin To Net: NetName=NetC5?_2 Pin=R5?-2
+Added Net: Name=NetC5?_2
+Added Pin To Net: NetName=NetC6?_2 Pin=C6?-2
+Added Pin To Net: NetName=NetC6?_2 Pin=R6?-2
+Added Net: Name=NetC6?_2
+Added Pin To Net: NetName=NetC7?_2 Pin=C7?-2
+Added Pin To Net: NetName=NetC7?_2 Pin=R7?-2
+Added Net: Name=NetC7?_2
+Add Class Member: Failed to add class member : Component ADC Clock Generator? XLH735007.680000I
+Added Member To Class: ClassName=Sheet1 Member=Component C0? VJ0805Y682KXAMT
+Added Member To Class: ClassName=Sheet1 Member=Component C1? VJ0805Y682KXAMT
+Added Member To Class: ClassName=Sheet1 Member=Component C2? VJ0805Y682KXAMT
+Added Member To Class: ClassName=Sheet1 Member=Component C3? VJ0805Y682KXAMT
+Added Member To Class: ClassName=Sheet1 Member=Component C4? VJ0805Y682KXAMT
+Added Member To Class: ClassName=Sheet1 Member=Component C5? VJ0805Y682KXAMT
+Added Member To Class: ClassName=Sheet1 Member=Component C7? VJ0805Y682KXAMT
+Added Member To Class: ClassName=Sheet1 Member=Component R0? RC1206FR-10750RL
+Added Member To Class: ClassName=Sheet1 Member=Component R1? RC1206FR-10750RL
+Added Member To Class: ClassName=Sheet1 Member=Component R2? RC1206FR-10750RL
+Added Member To Class: ClassName=Sheet1 Member=Component R4? RC1206FR-10750RL
+Added Member To Class: ClassName=Sheet1 Member=Component R5? RC1206FR-10750RL
+Added Member To Class: ClassName=Sheet1 Member=Component R6? RC1206FR-10750RL
+Added Member To Class: ClassName=Sheet1 Member=Component R7? RC1206FR-10750RL

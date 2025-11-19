@@ -1,0 +1,10 @@
+Removed Pin From Net: NetName=NetADC Clock Generator_1 Pin=ADC Clock Generator-1
+Removed Pin From Net: NetName=GND Pin=ADC Clock Generator-3
+Removed Pin From Net: NetName=NetADC Clock Generator_4 Pin=ADC Clock Generator-4
+Removed Pin From Net: NetName=NetADC Clock Generator_1 Pin=ADC Clock Generator-6
+Removed Pin From Net: NetName=GND Pin=Fancy Cap to Help Clock gen-1
+Removed Pin From Net: NetName=NetADC Clock Generator_1 Pin=Fancy Cap to Help Clock gen-2
+Removed Member From Class: ClassName=MainSchematic Member=ADC Clock Generator
+Removed Member From Class: ClassName=MainSchematic Member=Fancy Cap to Help Clock gen
+Change Net Name : Old Net Name=NetADC Clock Generator_1 New Net Name=NetADS1256_16
+Change Net Name : Old Net Name=NetADC Clock Generator_4 New Net Name=NetADS1256_19
