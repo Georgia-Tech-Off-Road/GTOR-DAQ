@@ -19,9 +19,9 @@ ulong lastMicros = 0;
 AMT22 steeringPositionSensor(10, AMT22RES);
 
 //initialize RPM sensors
-RPMSensor engineRPM(RPM1, ENGTEETH);
+/**RPMSensor engineRPM(RPM1, ENGTEETH);
 RPMSensor frontLeft(RPM2, FLTEETH);
-RPMSensor frontRight(RPM3, FRTEETH);
+RPMSensor frontRight(RPM3, FRTEETH);**/
 
 
 void setup() {
@@ -92,7 +92,7 @@ void dataAquisitionAndSavingLoop() {
       outputFile.write(&dataStruct, sizeof(dataStruct));
     }
     //check for RPM updates
-    if (engineRPM.RPMUpdateFlag) {
+    /**if (engineRPM.RPMUpdateFlag) {
       dataStruct.RPMs[0] = engineRPM.RPM;
       engineRPM.RPMUpdateFlag = false;
     } else {
@@ -110,6 +110,7 @@ void dataAquisitionAndSavingLoop() {
     } else {
       dataStruct.RPMs[2] = frontRight.checkRPM();
     }
+    **/
     if (analogValueFlag1) {
       readAnalogValues1();
       analogValueFlag1 = false;
@@ -225,13 +226,13 @@ void readAnalogValues2() {
 }
 
 void engineRPMInterrupt() {
-  engineRPM.calculateRPM();
+  //engineRPM.calculateRPM();
 }
 
 void frontLeftInterrupt() {
-  frontLeft.calculateRPM();
+  //frontLeft.calculateRPM();
 }
 
 void frontRightInterrupt() {
-  frontRight.calculateRPM();
+  //frontRight.calculateRPM();
 }
