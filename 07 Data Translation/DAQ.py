@@ -56,7 +56,7 @@ for fileName in os.listdir("ProcessingPrograms"):
 # Creates the main window
 root = tk.Tk()
 root.title("Main Page")
-root.geometry("1000x800")
+root.geometry("800x800")
 
 #define function to run when someone xs out to make sure everything closes
 def onXOut():
@@ -348,16 +348,36 @@ def dataProcessingTool():
         from tkinter import ttk
 
         #reads json, converts to dataframe
-        with open(filePath, "r") as f:
-            dayta = f.read()
-            data = json.loads(dayta)
-        df = pd.json_normalize(data[0])
-
-        #formats variables next to their index
-        variables = {}
-        for idx, col in enumerate(df.columns):
-            varName = f"Index {idx}"
-            variables[varName] = col
+        decoder = json.JSONDecoder()
+        with open(filePath, "r", encoding="utf-8") as f:
+            # skip whitespace until '['
+            while True:
+                ch = f.read(1)
+                if not ch:
+                    raise ValueError("File ended before '['")
+                if ch.isspace():
+                    continue
+                if ch == '[':
+                    break
+                else:
+                    raise ValueError("File does not start with JSON array")
+            # read chunks until first object is fully decoded
+            buf = ""
+            chunk_size = 65536  # 64 KB at a time
+            while True:
+                chunk = f.read(chunk_size)
+                if not chunk and not buf:
+                    raise ValueError("No JSON object found")
+                buf += chunk
+                try:
+                    first_obj, end_idx = decoder.raw_decode(buf)
+                    break
+                except json.JSONDecodeError:
+                    if not chunk:
+                        raise
+                    continue
+        df = pd.json_normalize(first_obj)
+        variables = {f"Index {idx}": col for idx, col in enumerate(df.columns)}
 
         #gui
         indexWindow = tk.Toplevel()
@@ -486,9 +506,9 @@ def dataProcessingTool():
     outputButton = tk.Button(buttonFrame, text = "Choose output destination...", command=lambda: outputDestination())
     prButton = tk.Button(buttonFrame, text= "Polling Rate Helper", command=lambda: prHelper())
     legacyButton = tk.Button(buttonFrame, text="Legacy Functions", command=lambda:legacy())
-    excelButton = tk.Button(buttonFrame, text ="Convert json-formatted .txt files to Excel", command=lambda:excel())
+    excelButton = tk.Button(buttonFrame, text ="Convert json-formatted .txt files to Excel (Limited file size)", command=lambda:excel())
     binButton = tk.Button(buttonFrame, text="Convert .bin to .txt", command=lambda: binConvert())
-    analysisButton = tk.Button(buttonFrame, text="analysis (WIP)", command=lambda:analyze())
+    analysisButton = tk.Button(buttonFrame, text="File Analysis Functions (WIP)", command=lambda:analyze())
     updateButtons()
 
 def runUpdater():
