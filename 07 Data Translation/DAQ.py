@@ -56,7 +56,7 @@ for fileName in os.listdir("ProcessingPrograms"):
 # Creates the main window
 root = tk.Tk()
 root.title("Main Page")
-root.geometry("1000x800")
+root.geometry("800x800")
 
 #define function to run when someone xs out to make sure everything closes
 def onXOut():
@@ -486,9 +486,9 @@ def dataProcessingTool():
     outputButton = tk.Button(buttonFrame, text = "Choose output destination...", command=lambda: outputDestination())
     prButton = tk.Button(buttonFrame, text= "Polling Rate Helper", command=lambda: prHelper())
     legacyButton = tk.Button(buttonFrame, text="Legacy Functions", command=lambda:legacy())
-    excelButton = tk.Button(buttonFrame, text ="Convert json-formatted .txt files to Excel", command=lambda:excel())
+    excelButton = tk.Button(buttonFrame, text ="Convert json-formatted .txt files to Excel (Limited file size)", command=lambda:excel())
     binButton = tk.Button(buttonFrame, text="Convert .bin to .txt", command=lambda: binConvert())
-    analysisButton = tk.Button(buttonFrame, text="analysis (WIP)", command=lambda:analyze())
+    analysisButton = tk.Button(buttonFrame, text="File Analysis Functions (WIP)", command=lambda:analyze())
     updateButtons()
 
 def runUpdater():
