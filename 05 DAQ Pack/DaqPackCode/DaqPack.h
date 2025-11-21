@@ -102,9 +102,9 @@ cmbtl::DAQSensorDataType DAQData;
 
 //enums for AUXDAQ ports
 enum AUXDAQ_Ports {
-  RPM1 = 20,
+  RPM1 = 14,
   RPM2 = 37,
-  RPM3 = 14,
+  RPM3 = 20,
   RPM4 = 16,
   LDS1 = 22,
   LDS2 = 23,
