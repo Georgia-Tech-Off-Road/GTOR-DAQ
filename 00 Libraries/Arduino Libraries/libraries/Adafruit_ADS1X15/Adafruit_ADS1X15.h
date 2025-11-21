@@ -18,7 +18,7 @@
 
 #include <Adafruit_I2CDevice.h>
 #include <Arduino.h>
-#include <i2c_driver_wire.h>
+#include <Wire.h>
 
 /*=========================================================================
     I2C ADDRESS/BITS
@@ -66,7 +66,7 @@ constexpr uint16_t MUX_BY_CHANNEL[] = {
     ADS1X15_REG_CONFIG_MUX_SINGLE_1, ///< Single-ended AIN1
     ADS1X15_REG_CONFIG_MUX_SINGLE_2, ///< Single-ended AIN2
     ADS1X15_REG_CONFIG_MUX_SINGLE_3  ///< Single-ended AIN3
-};                                   ///< MUX config by channel
+}; ///< MUX config by channel
 
 #define ADS1X15_REG_CONFIG_PGA_MASK (0x0E00)   ///< PGA Mask
 #define ADS1X15_REG_CONFIG_PGA_6_144V (0x0000) ///< +/-6.144V range = Gain 2/3
@@ -162,6 +162,7 @@ public:
   int16_t readADC_Differential_2_3();
   void startComparator_SingleEnded(uint8_t channel, int16_t threshold);
   int16_t getLastConversionResults();
+  float getFsRange();
   float computeVolts(int16_t counts);
   void setGain(adsGain_t gain);
   adsGain_t getGain();

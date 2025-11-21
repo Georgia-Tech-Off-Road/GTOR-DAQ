@@ -2,8 +2,6 @@
 //A very detailed documentation can be found at: https://curiousscientist.tech/ads1256-custom-library
 
 #include <ADS1256.h>
-#include <cmath>
-#include <SD.h>
 
 //#define ADS1256_SPI_ALREADY_STARTED  //prevent internal _spi->begin() to allow custom SPI initialization
 
@@ -76,20 +74,18 @@ SPIClass hspi(HSPI);
 
 
 //Below a few examples of pin descriptions for different microcontrollers I used:
-//ADS1256 A(2, 0, 8, 10, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).    //Arduino Nano/Uno - OK
-//ADS1256 A(7, 0, 10, 9, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).      //ATmega32U4 -OK
-//ADS1256 A(16, 17, 0, 15, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).   //ESP32 WROOM 32 - OK (HSPI+VSPI)
-ADS1256 A(7, 0, 8, 10, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).    //Teensy 4.0 - OK
-//ADS1256 A(7, 0, 6, 5, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).    //RP2040 Waveshare Mini - OK
+//ADS1256 A(2, ADS1256::PIN_UNUSED, 8, 10, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).    //Arduino Nano/Uno - OK
+//ADS1256 A(7, ADS1256::PIN_UNUSED, 10, 9, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).      //ATmega32U4 -OK
+//ADS1256 A(16, 17, ADS1256::PIN_UNUSED, 15, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).   //ESP32 WROOM 32 - OK (HSPI+VSPI)
+//ADS1256 A(7, ADS1256::PIN_UNUSED, 8, 10, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).    //Teensy 4.0 - OK
+//ADS1256 A(7, ADS1256::PIN_UNUSED, 6, 5, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).    //RP2040 Waveshare Mini - OK
 //ADS1256 A(18, 20, 21, 19, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float), SPI bus.  //RP2040 Zero - OK
-//ADS1256 A(15, 0, 14, 17, 2.500, &USE_SPI);  //DRDY, RESET, SYNC(PDWN), CS, VREF(float), SPI bus.  //RP2040 Pico W - OK
-//ADS1256 A(PA2, 0, 0, PA4, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float). //STM32 "blue pill" - SPI1 - OK
-//ADS1256 A(PB10, PB11, 0, PB12, 2.500, &USE_SPI);  // DRDY, RESET, SYNC, CS, VREF, SPI //STM32 "blue pill" - SPI2 - OK
+ADS1256 A(15, ADS1256::PIN_UNUSED, 14, 17, 2.500, &USE_SPI);  //DRDY, RESET, SYNC(PDWN), CS, VREF(float), SPI bus.  //RP2040 Pico W - OK
+//ADS1256 A(PA2, ADS1256::PIN_UNUSED, ADS1256::PIN_UNUSED, PA4, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float). //STM32 "blue pill" - SPI1 - OK
+//ADS1256 A(PB10, PB11, ADS1256::PIN_UNUSED, PB12, 2.500, &USE_SPI);  // DRDY, RESET, SYNC, CS, VREF, SPI //STM32 "blue pill" - SPI2 - OK
 
 long rawConversion = 0;  //24-bit raw value
 float voltageValue = 0;  //human-readable floating point value
-unsigned long startTime; //start time for tracking polling rate
-File outputFile; //the output file written to the SD card
 
 int singleEndedChannels[8] = { SING_0, SING_1, SING_2, SING_3, SING_4, SING_5, SING_6, SING_7 };  //Array to store the single-ended channels
 int differentialChannels[4] = { DIFF_0_1, DIFF_2_3, DIFF_4_5, DIFF_6_7 };                         //Array to store the differential channels
@@ -138,23 +134,9 @@ int registerToRead = 0;        //Register number to be read
 int registerToWrite = 0;       //Register number to be written
 int registerValueToWrite = 0;  //Value to be written in the selected register
 
-inline void setUpSD() {
-  Serial.printf("SD Card init status: %d\n",SD.begin(BUILTIN_SDCARD));
-  delay(500);
-  String time =  "outputFile.txt";
-  Serial.println(time.c_str());
-  outputFile = SD.open(time.c_str(),  FILE_WRITE);
-  outputFile.printf("\n");
-  if(!outputFile) {
-    Serial.printf("FILE FAILED TO INIT\n");
-  } else {
-    Serial.printf("SD FILE CREATED\n");
-  }
-}
-
 void setup() {
   Serial.begin(115200);  //The value does not matter if you use an MCU with native USB
-  setUpSD();
+
   while (!Serial) {
     ;  //Wait until the serial becomes available
   }
@@ -178,36 +160,17 @@ void setup() {
 
   //Below is a demonstration to change the values through the built-on functions of the library
   //Set a PGA value
-  while (A.getPGA() != PGA_1) {
-    Serial.println("printPGA");
-    A.setPGA(PGA_1);
-    delay(100);
-  } 
+  A.setPGA(PGA_1);  //0b00000000 - DEC: 0
   //--------------------------------------------
-  if (A.readRegister(PGA_1) != 0) {
-    A.setMUX(DIFF_6_7);
-    printf("uhoh");
-  }
+
   //Set input channels
-  //0b01100111 - DEC: 103
-  while (A.readRegister(MUX_REG) != DIFF_6_7) {
-    Serial.println("printMUX");
-    A.setMUX(DIFF_6_7);
-    delay(100);
-  } 
+  A.setMUX(DIFF_6_7);  //0b01100111 - DEC: 103
   //--------------------------------------------
+
   //Set DRATE
-  //0b00010011 - DEC: 19
-  while (A.readRegister(DRATE_REG) != DRATE_30000SPS) {
-    Serial.println("printDRATE");
-    A.setDRATE(DRATE_30000SPS);
-    delay(100);
-  } 
+  A.setDRATE(DRATE_5SPS);  //0b00010011 - DEC: 19
   //--------------------------------------------
-  if (A.readRegister(MUX_REG) != 146) {
-    A.setMUX(DIFF_6_7);
-    printf("uhoh");
-  }
+
   //Read back the above 3 values to check if the writing was succesful
   Serial.print("PGA: ");
   Serial.println(A.getPGA());
@@ -215,12 +178,12 @@ void setup() {
   //--
   Serial.print("MUX: ");
   Serial.println(A.readRegister(MUX_REG));
+  delay(100);
   //--
   Serial.print("DRATE: ");
   Serial.println(A.readRegister(DRATE_REG));
   delay(100);
 
-  
   //Freeze the display for 3 sec
   delay(3000);
 }
@@ -234,7 +197,7 @@ void loop() {
       Read multiple channels continuously
       Stop the conversion
       ...etc.
-      All the above things are done through the serial port, the user only has to send certain commands
+      All the above things are done through the serial port, the use only has to send certain commands
   */
 
 
@@ -244,13 +207,7 @@ void loop() {
     switch (commandCharacter)  //based on the command character, we decide what to do
     {
       case 's':  //SDATAC - Stop Reading Data Continously
-        
-        Serial.println("s-received");
-        outputFile.close();
-        Serial.println("File closed");
-        
         A.stopConversion();
-        
         break;
       //--------------------------------------------------------------------------------------------------------
       case 'L':  //Perform a self calibration
@@ -260,53 +217,29 @@ void loop() {
       case 'G':                       //Read a single input continuously
         while (Serial.read() != 's')  //The conversion is stopped by a character received from the serial port
         {
-          startTime = micros();
-
-          outputFile.println(A.convertToVoltage(A.readSingleContinuous()), 6);
           Serial.println(A.convertToVoltage(A.readSingleContinuous()), 6);
           //The conversion is printed in Volts with 6 decimal digits
           //Note: Certain serial terminals cannot keep up with high speed datastream!
-
-          outputFile.print("\t");
-          outputFile.printf("polling rate: %d", 1000000/(micros() - startTime));
-          outputFile.println();  //Printing a linebreak - this will put the next 8 conversions in a new line
-          Serial.print("\t");
-          Serial.printf("polling rate: %d", 1000000/(micros() - startTime));
-          Serial.println();  //Printing a linebreak - this will put the next 8 conversions in a new line
-          
         }
-        
         A.stopConversion();
         break;
       //--------------------------------------------------------------------------------------------------------
       case 'C':                       //Cycle single ended inputs (A0+GND, A1+GND ... A7+GND)
         while (Serial.read() != 's')  //The conversion is stopped by a character received from the serial port
         {
-          
-          startTime = micros();
-          
           float channels[8];  //Buffer that holds 8 conversions (8 single-ended channels)
           for (int j = 0; j < 8; j++) {
             channels[j] = A.convertToVoltage(A.cycleSingle());  //store the converted single-ended results in the buffer
           }
           for (int i = 0; i < 8; i++) {
-            Serial.print(channels[i], 4);
-            outputFile.print(channels[i], 4);  //print the converted single-ended results with 4 digits
+            Serial.print(channels[i], 4);  //print the converted single-ended results with 4 digits
 
             if (i < 7)  //Only printing tab between the first 7 conversions
             {
-              Serial.print("\t");
-              outputFile.print("\t");  //tab separator to separate the 8 conversions shown in the same line
+              Serial.print("\t");  //tab separator to separate the 8 conversions shown in the same line
             }
           }
-          outputFile.print("\t");
-          outputFile.printf("polling rate: %d", 1000000/(micros() - startTime));
-          outputFile.println();  //Printing a linebreak - this will put the next 8 conversions in a new line
-          Serial.print("\t");
-          Serial.printf("polling rate: %d", 1000000/(micros() - startTime));
           Serial.println();  //Printing a linebreak - this will put the next 8 conversions in a new line
-          
-
         }
         A.stopConversion();
         break;

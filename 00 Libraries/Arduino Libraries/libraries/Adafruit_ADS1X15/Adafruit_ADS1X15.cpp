@@ -276,6 +276,40 @@ int16_t Adafruit_ADS1X15::getLastConversionResults() {
 
 /**************************************************************************/
 /*!
+    @brief  Return the current fs range for the configured gain
+
+    @return the fsRange for the configured gain, or zero.
+            Zero should not be possible thereby indicating error
+*/
+/**************************************************************************/
+float Adafruit_ADS1X15::getFsRange() {
+  // see data sheet Table 3
+  switch (m_gain) {
+  case GAIN_TWOTHIRDS:
+    return 6.144f;
+    break;
+  case GAIN_ONE:
+    return 4.096f;
+    break;
+  case GAIN_TWO:
+    return 2.048f;
+    break;
+  case GAIN_FOUR:
+    return 1.024f;
+    break;
+  case GAIN_EIGHT:
+    return 0.512f;
+    break;
+  case GAIN_SIXTEEN:
+    return 0.256f;
+    break;
+  default:
+    return 0.0f;
+  }
+}
+
+/**************************************************************************/
+/*!
     @brief  Compute volts for the given raw counts.
 
     @param counts the ADC reading in raw counts
@@ -284,31 +318,7 @@ int16_t Adafruit_ADS1X15::getLastConversionResults() {
 */
 /**************************************************************************/
 float Adafruit_ADS1X15::computeVolts(int16_t counts) {
-  // see data sheet Table 3
-  float fsRange;
-  switch (m_gain) {
-  case GAIN_TWOTHIRDS:
-    fsRange = 6.144f;
-    break;
-  case GAIN_ONE:
-    fsRange = 4.096f;
-    break;
-  case GAIN_TWO:
-    fsRange = 2.048f;
-    break;
-  case GAIN_FOUR:
-    fsRange = 1.024f;
-    break;
-  case GAIN_EIGHT:
-    fsRange = 0.512f;
-    break;
-  case GAIN_SIXTEEN:
-    fsRange = 0.256f;
-    break;
-  default:
-    fsRange = 0.0f;
-  }
-  return counts * (fsRange / (32768 >> m_bitShift));
+  return counts * (getFsRange() / (32768 >> m_bitShift));
 }
 
 /**************************************************************************/
