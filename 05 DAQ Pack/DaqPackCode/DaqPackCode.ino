@@ -280,27 +280,25 @@ void readAnalogValues1() {
   switch (currentAnalogSensor1) {
       case 0:
         DAQData.setData<cmbtl::RearBrakePressure>(rearBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
-        //dataStruct.rearBrakePressure = rearBrakePressure.computeSensorReading(ads1.getLastConversionResults());
+        dataStruct.rearBrakePressure = rearBrakePressure.computeSensorReading(ads1.getLastConversionResults());
         currentAnalogSensor1 = 1;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
         break;
       case 1:
         DAQData.setData<cmbtl::FrontBrakePressure>(frontBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
-        // dataStruct.rearBrakePressure = rearBrakePressure.computeSensorReading(ads1.getLastConversionResults());
+        dataStruct.frontBrakePressure = frontBrakePressure.computeSensorReading(ads1.getLastConversionResults());
         currentAnalogSensor1 = 2;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
       case 2:
         DAQData.setData<cmbtl::LDSFrontRight>(LDSFrontRight.computeSensorReading(ads1.getLastConversionResults()));
-        //dataStruct.LDSFrontRight = LDSFrontRight.computeSensorReading(ads1.getLastConversionResults());
-        //DAQData.setData<cmbtl::FrontBrakePressure>(frontBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
-        dataStruct.frontBrakePressure = frontBrakePressure.computeSensorReading(ads1.getLastConversionResults());
+        dataStruct.LDSFrontRight = LDSFrontRight.computeSensorReading(ads1.getLastConversionResults());
         currentAnalogSensor1 = 3;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
         break;
       case 3:
         DAQData.setData<cmbtl::LDSFrontLeft>(LDSFrontLeft.computeSensorReading(ads1.getLastConversionResults()));
-        //dataStruct.LDSFrontLeft = LDSFrontLeft.computeSensorReading(ads1.getLastConversionResults());
+        dataStruct.LDSFrontLeft = LDSFrontLeft.computeSensorReading(ads1.getLastConversionResults());
         currentAnalogSensor1 = 0;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
         break;
@@ -317,23 +315,20 @@ void readAnalogValues2() {
         break;
       case 1:
         DAQData.setData<cmbtl::LDSRearLeft>(LDSRearLeft.computeSensorReading(ads2.getLastConversionResults()));
-        //dataStruct.LDSRearLeft = LDSRearLeft.computeSensorReading(ads2.getLastConversionResults());
-        //DAQData.setData<cmbtl::FrontBrakePressure>(frontBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
+        dataStruct.LDSRearLeft = LDSRearLeft.computeSensorReading(ads2.getLastConversionResults());
         dataStruct.frontBrakePressure = frontBrakePressure.computeSensorReading(ads1.getLastConversionResults());
         currentAnalogSensor2 = 2;
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
       case 2:
         DAQData.setData<cmbtl::CVTTemp>(CVTTemp.computeSensorReading(ads2.getLastConversionResults()));
-        dataStruct.LDSFrontRight = LDSFrontRight.computeSensorReading(ads2.getLastConversionResults());
-        //Serial.printf("%f\n", LDSFrontRight.computeSensorReading(ads2.getLastConversionResults()));
+        dataStruct.CVTTemp = CVTTemp.computeSensorReading(ads2.getLastConversionResults());
         currentAnalogSensor2 = 3;
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
         break;
       case 3:
         DAQData.setData<cmbtl::RearTransferCaseTemp>(RearTransferCaseTemp.computeSensorReading(ads2.getLastConversionResults()));
-        // DAQData.setData<cmbtl::FrontBrakePressure>(frontBrakePressure.computeVoltage(ads2.getLastConversionResults()));
-        dataStruct.LDSFrontLeft = LDSFrontLeft.computeSensorReading(ads2.getLastConversionResults());
+        dataStruct.RearTransferCaseTemp = RearTransferCaseTemp.computeSensorReading(ads2.getLastConversionResults());
         currentAnalogSensor2 = 0;
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
         break;
