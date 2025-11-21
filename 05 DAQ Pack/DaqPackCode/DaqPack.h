@@ -186,7 +186,7 @@ File outputFile;
 bool isRecording = false;
 
 //saves the last time data was saved 
-ulong lastSaveTimeInMillis = 0;
+volatile long long unsigned lastSaveTimeInMillis = 0;
 
 //saves the last time auto save
 ulong autoSaveTimeMillis = 0;

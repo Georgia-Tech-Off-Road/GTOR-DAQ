@@ -3,6 +3,7 @@
 //create an interval timer (provides more accurate timing than microseconds)
 IntervalTimer intervalMicros;
 
+
 // Intialize ADCs
 Adafruit_ADS1115 ads1;
 Adafruit_ADS1115 ads2;
@@ -278,27 +279,27 @@ void updateAnalogValueFlag2() {
 void readAnalogValues1() {
   switch (currentAnalogSensor1) {
       case 0:
-        //DAQData.setData<cmbtl::RearBrakePressure>(rearBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::RearBrakePressure>(rearBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
         //dataStruct.rearBrakePressure = rearBrakePressure.computeSensorReading(ads1.getLastConversionResults());
         currentAnalogSensor1 = 1;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
         break;
       case 1:
-        DAQData.setData<cmbtl::RearBrakePressure>(rearBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
-        dataStruct.rearBrakePressure = rearBrakePressure.computeSensorReading(ads1.getLastConversionResults());
+        DAQData.setData<cmbtl::FrontBrakePressure>(frontBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
+        // dataStruct.rearBrakePressure = rearBrakePressure.computeSensorReading(ads1.getLastConversionResults());
         currentAnalogSensor1 = 2;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
       case 2:
-        //DAQData.setData<cmbtl::LDSFrontRight>(LDSFrontRight.computeSensorReading(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::LDSFrontRight>(LDSFrontRight.computeSensorReading(ads1.getLastConversionResults()));
         //dataStruct.LDSFrontRight = LDSFrontRight.computeSensorReading(ads1.getLastConversionResults());
-        DAQData.setData<cmbtl::FrontBrakePressure>(frontBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
+        //DAQData.setData<cmbtl::FrontBrakePressure>(frontBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
         dataStruct.frontBrakePressure = frontBrakePressure.computeSensorReading(ads1.getLastConversionResults());
         currentAnalogSensor1 = 3;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
         break;
       case 3:
-        //DAQData.setData<cmbtl::LDSFrontLeft>(LDSFrontLeft.computeSensorReading(ads1.getLastConversionResults()));
+        DAQData.setData<cmbtl::LDSFrontLeft>(LDSFrontLeft.computeSensorReading(ads1.getLastConversionResults()));
         //dataStruct.LDSFrontLeft = LDSFrontLeft.computeSensorReading(ads1.getLastConversionResults());
         currentAnalogSensor1 = 0;
         ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
@@ -315,22 +316,23 @@ void readAnalogValues2() {
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
         break;
       case 1:
-        //DAQData.setData<cmbtl::LDSRearLeft>(LDSRearLeft.computeSensorReading(ads2.getLastConversionResults()));
+        DAQData.setData<cmbtl::LDSRearLeft>(LDSRearLeft.computeSensorReading(ads2.getLastConversionResults()));
         //dataStruct.LDSRearLeft = LDSRearLeft.computeSensorReading(ads2.getLastConversionResults());
-        DAQData.setData<cmbtl::FrontBrakePressure>(frontBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
+        //DAQData.setData<cmbtl::FrontBrakePressure>(frontBrakePressure.computeSensorReading(ads1.getLastConversionResults()));
         dataStruct.frontBrakePressure = frontBrakePressure.computeSensorReading(ads1.getLastConversionResults());
         currentAnalogSensor2 = 2;
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
         break;
       case 2:
-        DAQData.setData<cmbtl::LDSFrontRight>(LDSFrontRight.computeSensorReading(ads2.getLastConversionResults()));
+        DAQData.setData<cmbtl::CVTTemp>(CVTTemp.computeSensorReading(ads2.getLastConversionResults()));
         dataStruct.LDSFrontRight = LDSFrontRight.computeSensorReading(ads2.getLastConversionResults());
         //Serial.printf("%f\n", LDSFrontRight.computeSensorReading(ads2.getLastConversionResults()));
         currentAnalogSensor2 = 3;
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
         break;
       case 3:
-        DAQData.setData<cmbtl::LDSFrontLeft>(LDSFrontLeft.computeSensorReading(ads2.getLastConversionResults()));
+        DAQData.setData<cmbtl::RearTransferCaseTemp>(RearTransferCaseTemp.computeSensorReading(ads2.getLastConversionResults()));
+        // DAQData.setData<cmbtl::FrontBrakePressure>(frontBrakePressure.computeVoltage(ads2.getLastConversionResults()));
         dataStruct.LDSFrontLeft = LDSFrontLeft.computeSensorReading(ads2.getLastConversionResults());
         currentAnalogSensor2 = 0;
         ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
@@ -356,11 +358,11 @@ void aux1RPMInterrupt() {
 
 void saveInterrupt(){
   //debounce button, the first interrupt will fire, the rest won't (microsecondElapsed is set to a higher priority so it will interrupt this to keep updating the counter)
-  if ((microsecondsElapsed / 1000) + 2000 < microsecondsElapsed / 1000) {
+  if ((microsecondsElapsed / 1000) > lastSaveTimeInMillis + 2000) {
     //read the digital pin to figure out if it went high or low
-    if (digitalRead(0) && saveFlag == false) {
+    if (!digitalRead(0) && saveFlag == false) {
       saveFlag = true;
-    } else if (!digitalRead(0) && saveFlag == true){
+    } else if (digitalRead(0) && saveFlag == true){
       saveFlag = false;
     }
     //used as a debouncer, the interrupts will finish in order since they have the same priority
