@@ -38,6 +38,7 @@ except:
 from DataDownloader import DataDownloader
 from Updater import DataTranslatorUpdater
 from Visualizers import TestVisualizer
+from Visualizers import indexviewer
 from ProcessingPrograms import FileSplitter
 from ProcessingPrograms import PRHelper
 from ProcessingPrograms import ExcelConverter
@@ -221,10 +222,6 @@ def dataProcessingTool():
         plotCheckbox = tk.Checkbutton(customWindow, text="Check to use Plotly (slower, more detailed)", variable=plotlyCheckVar)
         plotCheckbox.pack(pady=5)
 
-        makeHeatMap = tk.IntVar(value=0)
-        heatCheckbox = tk.Checkbutton(customWindow, text="Check to make heat map instead of line graph", variable=makeHeatMap)
-        heatCheckbox.pack(pady=5)
-
         # Scale frame and entry
         scaleFrame = tk.Frame(customWindow)
         scaleFrame.pack(pady=25)
@@ -267,13 +264,18 @@ def dataProcessingTool():
             visualizerThread = threading.Thread(
                 target=TestVisualizer.testVisualizer,
                 args=(analysis.dfRAM, filePath, columnNumber, customWindow, int(useDefaultConfig.get()),
-                      plotlyCheckVar.get(), scale, makeHeatMap.get(), smoothingWindow, polyorder,
+                      plotlyCheckVar.get(), scale, smoothingWindow, polyorder,
                       normalVis, smoothVis, overlayVis)
             )
             visualizerThread.start()
+        def showIndices():
+            indexThread = threading.Thread(target=indexviewer.indices, args = (filePath,customWindow))
+            indexThread.start()
 
         createGraphButton = tk.Button(customWindow, text="Create Graph", font=("Helvetica", 12, "bold"), command=runVisualizer)
         createGraphButton.pack(pady=10)
+        indexViewButton = tk.Button(customWindow, text= "Show File Indices", command=showIndices)
+        indexViewButton.pack(pady=10)
 
     def prHelper():
         prPage = tk.Toplevel()
@@ -340,61 +342,69 @@ def dataProcessingTool():
         saveButton = tk.Button(anaPage, text="Save to File", command = save)
         saveButton.pack(pady=5)
 
-    def indices(filePath):      #used for showing a legend of data types & their indeces
-        #imports
-        import pandas as pd
+    def indices(filePath):
         import json
+        import pandas as pd
         import tkinter as tk
         from tkinter import ttk
+        import os
 
-        #reads json, converts to dataframe
-        decoder = json.JSONDecoder()
-        with open(filePath, "r", encoding="utf-8") as f:
-            # skip whitespace until '['
-            while True:
-                ch = f.read(1)
-                if not ch:
-                    raise ValueError("File ended before '['")
-                if ch.isspace():
-                    continue
-                if ch == '[':
+        first_obj_str = []
+        brace_level = 0
+        inside = False
+
+        with open(filePath, "r") as f:
+            for line in f:
+                for char in line:
+                    if not inside:
+                        if char == "{":
+                            inside = True
+                            brace_level = 1
+                            first_obj_str.append(char)
+                    else:
+                        first_obj_str.append(char)
+                        if char == "{":
+                            brace_level += 1
+                        elif char == "}":
+                            brace_level -= 1
+                            if brace_level == 0:
+                                inside = False
+                                break
+                if not inside and brace_level == 0 and first_obj_str:
                     break
-                else:
-                    raise ValueError("File does not start with JSON array")
-            # read chunks until first object is fully decoded
-            buf = ""
-            chunk_size = 65536  # 64 KB at a time
-            while True:
-                chunk = f.read(chunk_size)
-                if not chunk and not buf:
-                    raise ValueError("No JSON object found")
-                buf += chunk
-                try:
-                    first_obj, end_idx = decoder.raw_decode(buf)
-                    break
-                except json.JSONDecodeError:
-                    if not chunk:
-                        raise
-                    continue
+
+        if not first_obj_str:
+            raise ValueError("No JSON object found in file")
+
+        # Convert the captured characters into a dict
+        first_obj = json.loads("".join(first_obj_str))
+
+        # ---- Your Original Method Here ----
         df = pd.json_normalize(first_obj)
-        variables = {f"Index {idx}": col for idx, col in enumerate(df.columns)}
 
-        #gui
+        variables = {}
+        for idx, col in enumerate(df.columns):
+            varName = f"Index {idx}"
+            variables[varName] = col
+
+        # GUI (unchanged)
         indexWindow = tk.Toplevel()
-        indexWindow.title(f"Indices for {filePath}")
+        indexWindow.title(f"Indices for {os.path.basename(filePath)}")
         indexWindow.geometry("700x600")
+
         canvas = tk.Canvas(indexWindow)
         scrollbar = ttk.Scrollbar(indexWindow, orient="vertical", command=canvas.yview)
         scrollFrame = ttk.Frame(canvas)
         scrollFrame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-        canvas.create_window((0,0), window=scrollFrame, anchor="nw")
+
+        canvas.create_window((0, 0), window=scrollFrame, anchor="nw")
         canvas.configure(yscrollcommand=scrollbar.set)
         canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
 
-        #writes data type and index onto gui
         for varName, value in variables.items():
             tk.Label(scrollFrame, text=f"{varName}: {value}").pack(anchor="w", padx=10, pady=2)
+
 
 
     def splitFile():            #used for splitting large files into several smaller ones
