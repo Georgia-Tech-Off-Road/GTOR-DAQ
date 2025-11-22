@@ -1,8 +1,0 @@
-Notes
-RPM 4 (engine RPM) is useless. Rear RPM is very noisy. Rear brake pressure values seem plausible, front brake pressure useless.
-
-Sensor Mappings:
-RPM 1 -> RearRPM
-RRM 2 -> FrontLeftRPM
-RPM 3 -> FrontRightRPM
-RPM 4 -> Engine (Useless)
