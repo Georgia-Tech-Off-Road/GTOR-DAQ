@@ -1,2 +1,0 @@
-Notes:
-Static and dynamic turn test.
