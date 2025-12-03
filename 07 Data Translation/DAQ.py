@@ -10,12 +10,10 @@ import csv
 import json
 import subprocess
 
-
 #libraries used for program
 #NOTE: NEVER PUT ANYTHING IN FRONT OF IMPORTS AND ALWAYS KEEP IMPORTANTS IN THIS NOTATION, OTHERWISE THE UPDATER WILL LIKELY BREAK
 
 #chatgpt fueled cuda imports
-
 
 cuda = False
 
