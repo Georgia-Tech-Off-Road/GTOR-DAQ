@@ -286,9 +286,8 @@ inline void setUpSD() {
     outputFile = SD.open(String("/"+time+"/"+time+".bin").c_str(),  FILE_WRITE);
   } else {
     outputFile = SD.open(String("/"+time+"/"+time+".txt").c_str(),  FILE_WRITE);
+    outputFile.printf("[\n");
   }
-  //add bracket at beginning to make it a list
-  //outputFile.printf("[\n");
 }
 
 //time setup function
