@@ -159,6 +159,7 @@ void dataAquisitionAndSavingLoop() {
     //check to see if save should be started/stopped
      if (saveFlag) {
       changeRecordingState();
+      saveFlag = false;
     }
     //perform flush check before data check
     if (millis() > autoSaveTimeMillis + 300000) {
@@ -234,8 +235,8 @@ void dataAquisitionAndSavingLoop() {
 //changes recording state and saves file
 void changeRecordingState() {
   if(isRecording == true) {
-    while(digitalRead(0) == 1) {
-      delay(5);
+    while(!digitalRead(0)) {
+      flashBang(10, 0);
     }
     //outputFile.printf("]");
     outputFile.flush();
@@ -244,11 +245,11 @@ void changeRecordingState() {
     Serial.printf("File closed\n");
     isRecording = false;
     //signal to user that the file saved with a flashbang
-    flashBang(5000, 2);
+    flashBang(1000, 2);
   }
   else {
-    while(digitalRead(0) == 1) {
-      delay(5);
+    while(!digitalRead(0)) {
+      flashBang(10, 1);
     }
     String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
     SD.mkdir(time.c_str());
@@ -260,9 +261,8 @@ void changeRecordingState() {
       outputFile = SD.open(String("/"+time+"/"+time+".bin").c_str(),  FILE_WRITE);
     } else {
       outputFile = SD.open(String("/"+time+"/"+time+".txt").c_str(),  FILE_WRITE);
-    }
-    //check if file creation worked and if so turn on the light
-    //outputFile.printf("[\n");
+      outputFile.printf("[\n");
+    }    
     isRecording = true;
   }
 }
