@@ -11,7 +11,7 @@ import plotly.express as px
 from scipy.signal import savgol_filter
 
 def testVisualizer(df, filePath, columnIndices, customWindow, useDefaultConfig,
-                   plotlyCheckVar, scale, makeHeatMap,
+                   plotlyCheckVar, scale,
                    smoothingWindow=11, polyorder=2,
                    normalVis=False, smoothVis=False, overlayVis=False):
 
@@ -20,7 +20,7 @@ def testVisualizer(df, filePath, columnIndices, customWindow, useDefaultConfig,
             text = infile.read()
         data = json.loads(text)
         df = pd.json_normalize(data)
-
+        print(df)
     # Create UI indicator
     label1 = tk.Label(customWindow, text="Creating your graph...")
     label1.pack()
