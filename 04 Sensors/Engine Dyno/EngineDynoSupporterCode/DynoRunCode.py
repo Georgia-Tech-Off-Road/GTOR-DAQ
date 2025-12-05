@@ -14,6 +14,7 @@ def createCSVFile(timeToKill):
     while True:
         if Globals.engineDyno.in_waiting > 0:
             assemblyString += Globals.engineDyno.read().decode('utf-8')
+            #print(assemblyString)
             if "\n" in assemblyString:
                 file.write(assemblyString.split("\n")[0] + "\n")
                 assemblyString = assemblyString.split("\n")[1]
@@ -106,3 +107,4 @@ def startDynoRun(parentPage):
     #unhide the main data processor page
     parentPage.deiconify()
     Globals.engineDyno.write(b'~')
+    calibrationInProgress = True
