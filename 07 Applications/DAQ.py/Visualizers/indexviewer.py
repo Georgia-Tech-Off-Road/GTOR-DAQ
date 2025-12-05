@@ -10,6 +10,9 @@ def indices(filePath, customWindow):
     import tkinter as tk
     import os
 
+    #INSTALLER IMPORTS FINISHED
+
+
     # ---------- Parse JSON (can run in background thread) ----------
     first_obj_str = []
     brace_level = 0

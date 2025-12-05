@@ -4,6 +4,8 @@ import time
 import tkinter as tk
 from tkinter import ttk
 
+#INSTALLER IMPORTS FINISHED
+
 
 #handles data download and includes basic progress bar
 def downloadData(src, dst, outputPath, chosePath):

@@ -21,14 +21,16 @@ libraryNameList = []
 
 #Appends libraries/modules to list
 def imports(savePath):
-    if ".py" not in savePath:
+    if ".py" not in savePath.split("/")[-1] or "__init__" in savePath.split("/")[-1]:
         return
+    print(savePath + "IMPORTS")
     file = open(savePath, encoding="ISO-8859-1") #only encoding that seems to work
     for line in file:
         line = line.strip()
-        print(line)
+        #print(line)
         if not line:
             continue
+        print(line)
         if "#INSTALLER IMPORTS FINISHED" in line:
             break
         if line.startswith("import "):

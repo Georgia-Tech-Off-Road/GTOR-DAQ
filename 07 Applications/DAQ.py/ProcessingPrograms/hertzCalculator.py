@@ -1,11 +1,13 @@
 import statistics
 import os
 import shutil
-from DataDownloader import DataDownloader
 import tkinter as tk
 from tkinter import ttk
 
 #INSTALLER IMPORTS FINISHED
+
+from DataDownloader import DataDownloader
+
 
 
 

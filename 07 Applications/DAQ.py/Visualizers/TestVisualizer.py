@@ -10,6 +10,9 @@ import plotly.express as px
 
 from scipy.signal import savgol_filter
 
+#INSTALLER IMPORTS FINISHED
+
+
 def testVisualizer(df, filePath, columnIndices, customWindow, useDefaultConfig,
                    plotlyCheckVar, scale,
                    smoothingWindow=11, polyorder=2,

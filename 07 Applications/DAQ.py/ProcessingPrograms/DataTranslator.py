@@ -1,5 +1,4 @@
 import os
-from DataDownloader import DataDownloader
 import math
 import importlib
 import tkinter as tk
@@ -8,6 +7,12 @@ from tkinter import messagebox
 import subprocess
 import shutil
 import threading
+
+#INSTALLER IMPORTS FINISHED
+
+from DataDownloader import DataDownloader
+
+
 
 #imports all data libraries from ConversionLibrary folder
 os.chdir("./")

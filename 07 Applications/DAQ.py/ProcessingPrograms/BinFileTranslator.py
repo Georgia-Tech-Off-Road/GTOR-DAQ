@@ -1,6 +1,13 @@
+import struct
+import os
+import json
+import subprocess
+
+#INSTALLER IMPORTS FINISHED
+
+
 def ogBinConverter(input_file_name,chosePath,outputPath,settingsData):
-    import struct
-    import os
+
 
     # Define the format for the binary data (including padding to match Arduino's structure size)
     data_format = "Q L 4f 4i 1f"  # Add 4 bytes of padding (4x)
@@ -35,10 +42,6 @@ def ogBinConverter(input_file_name,chosePath,outputPath,settingsData):
         print(f"An error occurred: {e}")
 
 def binConverter(targetFilePath,chosePath,outputPath):
-    import struct
-    import os
-    import json
-    import subprocess
 
     #save initial directory
     initialDirectory = os.getcwd()
