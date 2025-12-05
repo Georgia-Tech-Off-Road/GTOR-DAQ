@@ -1,9 +1,0 @@
-Hello and welcome to DAQ's official data handling program!
-
-To Use:
-Either select one of the tools listed below (there's only the data processing tool for now, but more will be added in the future), or select update (it's recommended to this once every one - two weeks).
-
-Update Function Clarifications:
-Update will ensure all python libraries are installed/updated and redownload all the program files from the git-hub repo. Clicking the button should close the GUI and bring up a succession of command prompts which will close once the program has finished running. Once that command prompt has closed itself feel free to go ahead and reopen DAQ.py.
-
-Please message the current DAQ lead about any bugs you may find so we can iron them out in future updates!
