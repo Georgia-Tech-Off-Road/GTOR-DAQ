@@ -22,6 +22,8 @@ def imports(savePath):
         line = line.strip()
         if not line:
             continue
+        if line == "#INSTALLER IMPORTS FINISHED":
+            break
         if line.startswith("import "):
             lineList = line.split()
             if lineList[1] not in libraryNameList:
@@ -96,9 +98,10 @@ def installApplication(folderName):
     print("Done!")
 
 #function to let user choose installation path
-def chooseInstallationPath():
+def chooseInstallationPath(label):
     global installPath
     installPath = filedialog.askdirectory()
+    label.config(text = installPath)
 
 #define github URL
 gitUrl = "https://github.com/Georgia-Tech-Off-Road/GTOR-DAQ"
@@ -122,11 +125,11 @@ installPathLabel = tk.Label(frame, text = installPath)
 installPathLabel.pack()
 
 #create a button to let the user change the install path
-chooseOutputDirectoryButton = tk.Button(frame, text = "Choose Installation Path", command = chooseInstallationPath)
+chooseOutputDirectoryButton = tk.Button(frame, text = "Choose Installation Path", command = lambda : chooseInstallationPath(installPathLabel))
 chooseOutputDirectoryButton.pack()
 
 #get all applications available
-availableApplications = getFilesInFolder(gitUrl, "07 Data Translation")
+availableApplications = getFilesInFolder(gitUrl, "07 Applications")
 
 #create a seperate frame for the labels and buttons below
 appFrame = tk.Frame(root)
@@ -135,6 +138,9 @@ appFrame.pack()
 #create labels and buttons for each program
 placeCounter = 0
 for application in availableApplications:
+    #dont display anything thats just a file
+    if (application["type"] == 'file'):
+        continue
     applicationName = tk.Label(appFrame, text = str(application["name"])).grid(row = placeCounter // 6, column = placeCounter % 6, sticky = "w", padx = 5, pady=2)
     applicationButton = tk.Button(appFrame, text="Install")
     placeCounter += 1

@@ -5,6 +5,9 @@ import tkinter as tk
 from tkinter import ttk
 import pandas as pd
 import matplotlib.pyplot as plt
+
+#INSTALLER IMPORTS FINISHED
+
 # find the polling rate receives a json list, a starting index, and an ending index
 
 def PollingRateList(filePath, prPage, sensorType):

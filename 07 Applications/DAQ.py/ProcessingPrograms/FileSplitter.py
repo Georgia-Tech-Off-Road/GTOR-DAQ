@@ -3,6 +3,9 @@ import tkinter as tk
 from tkinter import ttk
 import json
 
+#INSTALLER IMPORTS FINISHED
+
+
 def split(filePath, splitNum, fileSplitPage):
     # Create UI indicator
     label1 = tk.Label(fileSplitPage, text="Splitting files...")

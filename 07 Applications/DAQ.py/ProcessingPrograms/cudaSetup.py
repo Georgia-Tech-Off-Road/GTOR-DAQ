@@ -7,6 +7,9 @@ try:
     import platform
     import shutil
 
+    #INSTALLER IMPORTS FINISHED
+
+
     cuda_paths = ["/usr/local/cuda/bin"]  # or "/usr/local/cuda-12.2/bin" if needed
     os.environ["PATH"] = os.pathsep.join(cuda_paths + [os.environ.get("PATH", "")])
 
