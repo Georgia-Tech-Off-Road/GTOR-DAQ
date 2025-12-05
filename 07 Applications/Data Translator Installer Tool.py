@@ -26,13 +26,12 @@ def imports(savePath):
     print(savePath + "IMPORTS")
     file = open(savePath, encoding="ISO-8859-1") #only encoding that seems to work
     for line in file:
-        line = line.strip()
-        #print(line)
-        if not line:
-            continue
         print(line)
         if "#INSTALLER IMPORTS FINISHED" in line:
             break
+        line = line.strip()
+        if not line:
+            continue
         if line.startswith("import "):
             lineList = line.split()
             if lineList[1] not in libraryNameList:
