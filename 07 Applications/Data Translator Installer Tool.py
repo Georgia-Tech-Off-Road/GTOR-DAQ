@@ -27,6 +27,7 @@ def imports(savePath):
     file = open(savePath, encoding="ISO-8859-1") #only encoding that seems to work
     for line in file:
         print(line)
+        #or "NOTE: NEVER PUT ANYTHING IN FRONT OF IMPORTS AND ALWAYS KEEP" in line
         if "#INSTALLER IMPORTS FINISHED" in line:
             break
         line = line.strip()
