@@ -3,7 +3,10 @@ import time
 from datetime import datetime
 from tkinter import ttk
 import threading
+#INSTALLER IMPORTS FINISHED
+
 from EngineDynoSupporterCode import Globals
+
 
 calibrationInProgress = True
 

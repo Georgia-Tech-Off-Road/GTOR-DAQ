@@ -3,6 +3,9 @@ import tkinter as tk
 import threading
 import serial.tools.list_ports
 
+#INSTALLER IMPORTS FINISHED
+
+
 from EngineDynoSupporterCode import DynoRunCode
 from EngineDynoSupporterCode import Globals
 

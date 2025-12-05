@@ -10,19 +10,26 @@ from tkinter import filedialog
 installPath = os.getcwd()
 
 def install(package):
-    subprocess.run([sys.executable, "-m", "pip", "install", "--no-input", package], check=True)
+    try:
+        subprocess.run([sys.executable, "-m", "pip", "install", "--no-input", package], check=True)
+    except:
+        if (package != "pycuda.driver "):
+            print(str(package) + " failed to install!")
 
 #List of libraries/modules to be installed
 libraryNameList = []
 
 #Appends libraries/modules to list
 def imports(savePath):
+    if ".py" not in savePath:
+        return
     file = open(savePath, encoding="ISO-8859-1") #only encoding that seems to work
     for line in file:
         line = line.strip()
+        print(line)
         if not line:
             continue
-        if line == "#INSTALLER IMPORTS FINISHED":
+        if "#INSTALLER IMPORTS FINISHED" in line:
             break
         if line.startswith("import "):
             lineList = line.split()
@@ -67,7 +74,7 @@ def downloadFolder(gitUrl, folderPath, saveFolder):
         for item in items:
             itemPath = item['path'] #folder path
             itemType = item['type'] #checks whether item is a FILE or FOLDER (directory
-            localSavePath = os.path.join(saveFolder, itemPath) #creates save path
+            localSavePath = os.path.join(saveFolder, itemPath.replace("07 Applications/", "")) #creates save path
             if itemType == 'file': #if item is a FILE
                 os.makedirs(os.path.dirname(localSavePath), exist_ok=True)
                 downloadFile(gitUrl, itemPath, localSavePath)

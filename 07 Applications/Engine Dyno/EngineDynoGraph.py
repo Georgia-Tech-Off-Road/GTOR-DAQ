@@ -1,6 +1,9 @@
 import plotly.express as px
 import pandas as pd
 
+#INSTALLER IMPORTS FINISHED
+
+
 def dynoGraph(filePath):
     data = pd.read_csv(filePath, skiprows=10, header=None, engine='python')
     time = data.iloc[:, 1] / (10 ** 6)
