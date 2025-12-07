@@ -45,7 +45,9 @@ from ProcessingPrograms import FileSplitter
 from ProcessingPrograms import PRHelper
 from ProcessingPrograms import ExcelConverter
 from ProcessingPrograms import analysis
-
+from EngineDyno import EngineDynoGraph
+from EngineDyno.EngineDynoSupporterCode import DynoRunCode
+from EngineDyno.EngineDynoSupporterCode import Globals
 
 #imports the processing programs (hertz calculator, data processor, etc.)
 #changes directory to that of DAQ.py
@@ -143,8 +145,9 @@ def dataProcessingTool():
                     downloadButton.grid(row=0, column=1, padx=20)
                     outputButton.grid(row=0,column=2,padx=20)
                 elif ".csv" in filePath:
-                    customButton.grid(row=1,column=1,padx=20)
-                    configCheckbox.grid(row=2, column=3, padx=20)
+                    #customButton.grid(row=1,column=1,padx=20)
+                    #configCheckbox.grid(row=2, column=3, padx=20)
+                    engineDynoButton.grid(row=4,column=2,padx=20)
                 #otherwise display everything but the download button
                 else: 
                     indexButton.grid(row=1,column=0,padx=20)
@@ -153,8 +156,8 @@ def dataProcessingTool():
                     outputButton.grid(row=2, column=0, padx=20)
                     prButton.grid(row=2, column=2, padx=20)
                     legacyButton.grid(row=2,column=1,padx=20)
-                    excelButton.grid(row=3,column=1,padx=20,pady=10)
-                    analysisButton.grid(row=4,column=1,padx=20)
+                    excelButton.grid(row=4,column=1,padx=20,pady=10)
+                    analysisButton.grid(row=3,column=1,padx=20)
 
     def downloadData():
         #create a new page for the progress bar
@@ -207,6 +210,54 @@ def dataProcessingTool():
         else:
             chosePath = False
         outputSelectLabel.config(text=f"Selected output path: {outputPath}")
+    def dyno():
+        dynoWindow=tk.Toplevel()
+        dynoWindow.title("Engine Dyno Functions")
+        dynoWindow.geometry('600x300')
+        try:
+            Globals.engineDyno = serial.Serial(port='COM13', baudrate=19200)
+            Globals.engineDynoSerialBool = True
+        except:
+            Globals.engineDynoSerialBool = False
+
+
+        #create serial link with engine dyno
+        def openSerialConnection(serialConnection, connectionButton, connectioBool):
+            if Globals.engineDynoSerialBool:
+                return
+            try:
+                Globals.engineDyno = serial.Serial(port='COM13', baudrate=19200)
+                connectionButton['bg'] = "green"
+                Globals.engineDynoSerialBool = True
+            except:
+                connectionButton['bg'] = "red"
+                Globals.engineDynoSerialBool = False
+
+        def startEngineDyno(dynoWindow):
+            engineDynoThread = threading.Thread(target = DynoRunCode.startDynoRun, args =(dynoWindow,))
+            engineDynoThread.start()
+
+        # Create Engine Dyno Label
+        engineDynoSerialButton = tk.Button(dynoWindow, text="Engine Dyno Serial Connection", command = lambda : openSerialConnection(Globals.engineDyno, engineDynoSerialButton, Globals.engineDynoSerialBool), bg="red" if not Globals.engineDynoSerialBool else "green")
+        engineDynoSerialButton.pack(pady=10)
+
+        #create start Dyno Run Button
+        startDynoRunButton = tk.Button(dynoWindow, text="Start Dyno Run", command = lambda : startEngineDyno(dynoWindow))
+        startDynoRunButton.pack(pady=10)
+
+        def graphDyno():
+            graphDynoThread = threading.Thread(target = EngineDynoGraph.dynoGraph, args =(filePath,dynoWindow,plotlyCheckVar1,int(colNumEntry.get())))
+            graphDynoThread.start()
+        colNumEntry = tk.Entry(dynoWindow)
+        plotlyCheckVar1 = tk.IntVar(value=0)
+        plotCheckbox1 = tk.Checkbutton(dynoWindow, text="Check to use Plotly to graph (slower, more detailed)", variable=plotlyCheckVar1)
+        dynoGraphButton = tk.Button(dynoWindow, text="Graph Engine Dyno Data", command =graphDyno)
+
+        dynoGraphButton.pack(pady=10)
+        plotCheckbox1.pack(pady=5)
+        colLabel = tk.Label(dynoWindow, text="Enter column number to graph (microsec = 0, data = 1,2,3)")
+        colLabel.pack(pady=0)
+        colNumEntry.pack(pady=5)
 
     def custom():                           # custom data visualizer
         customWindow = tk.Toplevel()
@@ -521,6 +572,7 @@ def dataProcessingTool():
     excelButton = tk.Button(buttonFrame, text ="Convert json-formatted .txt files to Excel (Limited file size)", command=lambda:excel())
     binButton = tk.Button(buttonFrame, text="Convert .bin to .txt", command=lambda: binConvert())
     analysisButton = tk.Button(buttonFrame, text="File Analysis Functions (WIP)", command=lambda:analyze())
+    engineDynoButton = tk.Button(buttonFrame, text="Engine Dyno", command=lambda:dyno())
     updateButtons()
 
 def runUpdater():
