@@ -247,14 +247,14 @@ def dataProcessingTool():
             overlayVis = visModeVar.get() == "overlay"
 
             visualizerThread = threading.Thread(
-                target=TestVisualizer.testVisualizer,
-                args=(analysis.dfRAM, filePath, columnNumber, customWindow, int(useDefaultConfig.get()),
+                target=Visualizers.TestVisualizer.testVisualizer,
+                args=(ProcessingPrograms.analysis.dfRAM, filePath, columnNumber, customWindow, int(useDefaultConfig.get()),
                       plotlyCheckVar.get(), scale, smoothingWindow, polyorder,
                       normalVis, smoothVis, overlayVis)
             )
             visualizerThread.start()
         def showIndices():
-            indexThread = threading.Thread(target=indexviewer.indices, args = (filePath,customWindow))
+            indexThread = threading.Thread(target=Visualizers.indexviewer.indices, args = (filePath,customWindow))
             indexThread.start()
 
         createGraphButton = tk.Button(customWindow, text="Create Graph", font=("Helvetica", 12, "bold"), command=runVisualizer)
@@ -278,13 +278,13 @@ def dataProcessingTool():
             def polling(): #VISUALIZER
                 sensorNumber = sensorType.get()
                 sensorNumber = int(sensorNumber)
-                pollingThread = threading.Thread(target = PRHelper.PollingRateList, args = (filePath,prPage,sensorNumber))
+                pollingThread = threading.Thread(target = ProcessingPrograms.PRHelper.PollingRateList, args = (filePath,prPage,sensorNumber))
                 pollingThread.start()
             createGraphButton = tk.Button(customWindow, text="Create Graph",font=("Helvetica", 12, "bold"), command=polling)
             createGraphButton.pack(pady=10)
 
         def avg():
-            avgThread = threading.Thread(target = PRHelper.FindPollingRate, args = (filePath,prPage))
+            avgThread = threading.Thread(target = ProcessingPrograms.PRHelper.FindPollingRate, args = (filePath,prPage))
             avgThread.start()
 
         pollingButton = tk.Button(prPage, text="Graph polling rate and sensor value vs. time", command=prCustom)
@@ -298,25 +298,25 @@ def dataProcessingTool():
         anaPage.title("Analysis Tool")
         anaPage.geometry("700x600")
         def ram():
-            df = analysis.ram(filePath,anaPage)
+            df = ProcessingPrograms.analysis.ram(filePath,anaPage)
             show_alert("File loaded into RAM!")
         def convolute():
-            if analysis.dfRAM is None:
+            if ProcessingPrograms.analysis.dfRAM is None:
                 show_alert("Load into Ram first!")
                 return
-            anaThread = threading.Thread(target = analysis.kernel, args = (analysis.dfRAM, anaPage, cuda))
+            anaThread = threading.Thread(target = ProcessingPrograms.analysis.kernel, args = (ProcessingPrograms.analysis.dfRAM, anaPage, cuda))
             anaThread.start()
         def rpmSpikeFilter():
             if analysis.dfRAM is None:
                 show_alert("Load into Ram first!")
                 return
-            spikeThread = threading.Thread(target = analysis.rpmSpikeFilter, args = (analysis.dfRAM, anaPage, cuda))
+            spikeThread = threading.Thread(target = ProcessingPrograms.analysis.rpmSpikeFilter, args = (analysis.dfRAM, anaPage, cuda))
             spikeThread.start()
         def save():
-            if analysis.dfRAM is None:
+            if ProcessingPrograms.analysis.dfRAM is None:
                 show_alert("Load into Ram first!")
                 return
-            saveThread = threading.Thread(target = analysis.save, args = (analysis.dfRAM, anaPage))
+            saveThread = threading.Thread(target = ProcessingPrograms.analysis.save, args = (ProcessingPrograms.analysis.dfRAM, anaPage))
             saveThread.start()
         ramButton = tk.Button(anaPage, text="Load into RAM",command=ram)
         ramButton.pack(pady=20)
@@ -406,7 +406,7 @@ def dataProcessingTool():
                 splitNum = 10000000
             else:
                 splitNum = int(splitNum)
-            splitThread = threading.Thread(target = FileSplitter.split, args = (filePath, splitNum, fileSplitPage))
+            splitThread = threading.Thread(target = ProcessingPrograms.FileSplitter.split, args = (filePath, splitNum, fileSplitPage))
             splitThread.start()
         splitterButton = tk.Button(fileSplitPage, text="Split Files",font=("Helvetica", 12, "bold"), command=split)
         splitterButton.pack(pady=10)
@@ -415,7 +415,7 @@ def dataProcessingTool():
         excelPage.title("Excel Converter")
         excelPage.geometry('800x400')
         def convertExcel():
-            excelThread = threading.Thread(target = ExcelConverter.convertExcel, args = (filePath, excelPage, outputPath))
+            excelThread = threading.Thread(target = ProcessingPrograms.ExcelConverter.convertExcel, args = (filePath, excelPage, outputPath))
             excelThread.start()
         convertButton = tk.Button(excelPage, text="Convert json-formatted .txt file to Excel spreadsheet", command=convertExcel)
         convertButton.pack(pady=10)
@@ -425,7 +425,7 @@ def dataProcessingTool():
         #update the buttons to allow the file to be operated on
         global chosePath
         global outputPath
-        binThread = threading.Thread(target = BinFileTranslator.binConverter, args = (filePath,chosePath,outputPath))
+        binThread = threading.Thread(target = ProcessingPrograms.BinFileTranslator.binConverter, args = (filePath,chosePath,outputPath))
         #start the thread
         binThread.start()
         
@@ -453,7 +453,7 @@ def dataProcessingTool():
             progressBarPage.title("Translation Progress")
             progressBarPage.geometry("800x600")
             #create the thread
-            dataProcessingThread = threading.Thread(target = DataTranslator.translateData, args = (filePath, progressBarPage, dataProcessingToolPage, int(useDefaultConfig.get()),outputPath,chosePath,settingsData))
+            dataProcessingThread = threading.Thread(target = ProcessingPrograms.DataTranslator.translateData, args = (filePath, progressBarPage, dataProcessingToolPage, int(useDefaultConfig.get()),outputPath,chosePath,settingsData))
             #start the thread
             dataProcessingThread.start()
             #hide the main data processor page
@@ -462,7 +462,7 @@ def dataProcessingTool():
                 #update the buttons to allow the file to be operated on
                 global chosePath
                 global outputPath
-                ogBinThread = threading.Thread(target = BinFileTranslator.ogBinConverter, args = (filePath,chosePath,outputPath,settingsData))
+                ogBinThread = threading.Thread(target = ProcessingPrograms.BinFileTranslator.ogBinConverter, args = (filePath,chosePath,outputPath,settingsData))
                 #start the thread
                 ogBinThread.start()
         configCheckbox = tk.Checkbutton(legacyPage, text="Use default config", variable=useDefaultConfig)
@@ -508,7 +508,7 @@ def dataProcessingTool():
 
 def runUpdater():
     #create update thread
-    updateThread = threading.Thread(target = DataTranslatorUpdater.runUpdater, args = ())
+    updateThread = threading.Thread(target = Updater.DataTranslatorUpdater.runUpdater, args = ())
     #destroy the root page
     root.destroy()
     #start the thread

@@ -10,17 +10,7 @@ import threading
 
 #INSTALLER IMPORTS FINISHED
 
-from DataDownloader import DataDownloader
-
-
-
-#imports all data libraries from ConversionLibrary folder
-os.chdir("./")
-for fileName in os.listdir("ConversionLibraries"):
-        if fileName.endswith('.py') and not fileName.startswith('__'):
-            moduleName = fileName[:-3]  # Remove .py extension
-            module = importlib.import_module(f'ConversionLibraries.{moduleName}')
-            globals()[moduleName] = module
+#removed multiple imports here that hopefully were dealt with by other updates on 12/7/2025
 
 class Sensor:
     def __init__(self, index, dataType, name, pollingRate, numTeeth):
