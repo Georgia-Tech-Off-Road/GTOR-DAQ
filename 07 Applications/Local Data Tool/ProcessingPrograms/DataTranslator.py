@@ -97,3 +97,4 @@ def processData(config_file, input_file, output_file, progressBar, dataTranslati
     if stderr:
          return stderr
     return None
+
