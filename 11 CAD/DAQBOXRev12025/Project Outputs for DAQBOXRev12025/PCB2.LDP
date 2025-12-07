@@ -1,2 +1,3 @@
 Layer Pairs Export File for PCB: C:\GTOR-DAQ\11 CAD\DAQBOXRev12025\PCB2.PcbDoc
-LayersSetName=Top_Bot_Thru_Holes|DrillFile=pcb2.txt|DrillLayers=gtl,gbl
+LayersSetName=Top_Bot_Plated_Thru_Holes|DrillFile=pcb2-plated.txt|DrillLayers=gtl,gbl
+LayersSetName=Top_Bot_NonPlated_Thru_Holes|DrillFile=pcb2-nonplated.txt|DrillLayers=gtl,gbl

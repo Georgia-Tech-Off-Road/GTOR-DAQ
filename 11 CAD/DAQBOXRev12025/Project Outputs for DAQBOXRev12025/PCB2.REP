@@ -2,10 +2,8 @@
 FileName = PCB2.GBR
 AutoAperture = True
 *************************************************************
-Generating : Bottom Paste
-      File : PCB2.GBP
-
-    Adding Layer      : Bottom Paste
+Generating : Bottom Layer
+      File : PCB2.GBL
 
     Adding Layer      : Bottom Layer
 
@@ -13,6 +11,26 @@ Generating : Bottom Paste
 
 
 Used DCodes :
+    D14
+    D29
+    D30
+    D32
+    D34
+    D37
+    D38
+    D40
+    D43
+    D44
+    D45
+    D46
+    D47
+    D48
+    D49
+    D50
+    D51
+    D52
+    D53
+    D54
 *************************************************************
 
 *************************************************************
@@ -33,6 +51,21 @@ Used DCodes :
     D18
     D19
     D20
+*************************************************************
+
+*************************************************************
+Generating : Top Overlay
+      File : PCB2.GTO
+
+    Adding Layer      : Top Overlay
+
+
+Used DCodes :
+    D10
+    D11
+    D12
+    D13
+    D14
 *************************************************************
 
 *************************************************************
@@ -63,6 +96,65 @@ Used DCodes :
     D40
     D41
     D42
+*************************************************************
+
+*************************************************************
+Generating : Top Layer
+      File : PCB2.GTL
+
+    Adding Layer      : Top Layer
+
+    Adding Layer      : Multi-Layer
+
+
+Used DCodes :
+    D14
+    D15
+    D16
+    D17
+    D18
+    D19
+    D20
+    D29
+    D30
+    D32
+    D34
+    D37
+    D38
+    D40
+    D43
+    D44
+    D45
+    D46
+    D47
+    D48
+    D49
+    D50
+    D51
+*************************************************************
+
+*************************************************************
+Generating : Bottom Paste
+      File : PCB2.GBP
+
+    Adding Layer      : Bottom Paste
+
+    Adding Layer      : Bottom Layer
+
+    Adding Layer      : Multi-Layer
+
+
+Used DCodes :
+*************************************************************
+
+*************************************************************
+Generating : Bottom Overlay
+      File : PCB2.GBO
+
+    Adding Layer      : Bottom Overlay
+
+
+Used DCodes :
 *************************************************************
 
 *************************************************************
@@ -99,98 +191,6 @@ Used DCodes :
     D40
     D41
     D42
-*************************************************************
-
-*************************************************************
-Generating : Bottom Overlay
-      File : PCB2.GBO
-
-    Adding Layer      : Bottom Overlay
-
-
-Used DCodes :
-*************************************************************
-
-*************************************************************
-Generating : Top Overlay
-      File : PCB2.GTO
-
-    Adding Layer      : Top Overlay
-
-
-Used DCodes :
-    D10
-    D11
-    D12
-    D13
-    D14
-*************************************************************
-
-*************************************************************
-Generating : Bottom Layer
-      File : PCB2.GBL
-
-    Adding Layer      : Bottom Layer
-
-    Adding Layer      : Multi-Layer
-
-
-Used DCodes :
-    D14
-    D29
-    D30
-    D32
-    D34
-    D37
-    D38
-    D40
-    D43
-    D44
-    D45
-    D46
-    D47
-    D48
-    D49
-    D50
-    D51
-    D52
-    D53
-    D54
-*************************************************************
-
-*************************************************************
-Generating : Top Layer
-      File : PCB2.GTL
-
-    Adding Layer      : Top Layer
-
-    Adding Layer      : Multi-Layer
-
-
-Used DCodes :
-    D14
-    D15
-    D16
-    D17
-    D18
-    D19
-    D20
-    D29
-    D30
-    D32
-    D34
-    D37
-    D38
-    D40
-    D43
-    D44
-    D45
-    D46
-    D47
-    D48
-    D49
-    D50
-    D51
 *************************************************************
 
 *************************************************************
