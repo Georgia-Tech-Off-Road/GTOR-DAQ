@@ -1,1 +1,0 @@
-./Build/Linux/dataprocess -i "../LocalTestFiles/2025-1-25 13_44_40.txt" -o test.csv -c "../Configs/defaultConfig.txt" -v
