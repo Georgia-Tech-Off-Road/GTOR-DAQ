@@ -38,10 +38,6 @@ from DataDownloader import DataDownloader
 from Updater import DataTranslatorUpdater
 from Visualizers import TestVisualizer
 from Visualizers import indexviewer
-from ProcessingPrograms import FileSplitter
-from ProcessingPrograms import PRHelper
-from ProcessingPrograms import ExcelConverter
-from ProcessingPrograms import analysis
 
 
 #imports the processing programs (hertz calculator, data processor, etc.)
@@ -51,11 +47,15 @@ if getattr(sys, 'frozen', False):  # running in PyInstaller
     BASE_PATH = sys._MEIPASS
 else:
     BASE_PATH = os.path.dirname(os.path.abspath(__file__))
-os.chdir(os.path.dirname(BASE_PATH))
-for fileName in os.listdir("ProcessingPrograms"):
+
+PROCESSING_DIR = os.path.join(BASE_PATH, "ProcessingPrograms")
+
+sys.path.insert(0, PROCESSING_DIR)
+
+for fileName in os.listdir(PROCESSING_DIR):
         if fileName.endswith('.py') and not fileName.startswith('__'):
             moduleName = fileName[:-3]  # Remove .py extension
-            module = importlib.import_module(f'ProcessingPrograms.{moduleName}')
+            module = importlib.import_module(moduleName)
             globals()[moduleName] = module
 
 # Creates the main window
