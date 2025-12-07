@@ -45,8 +45,13 @@ from ProcessingPrograms import analysis
 
 
 #imports the processing programs (hertz calculator, data processor, etc.)
-#changes directory to that of DAQ.py
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+#changes directory to that of DAQ.py (handles if pythons frozen too
+BASE_PATH = None
+if getattr(sys, 'frozen', False):  # running in PyInstaller
+    BASE_PATH = sys._MEIPASS
+else:
+    BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+os.chdir(os.path.dirname(BASE_PATH))
 for fileName in os.listdir("ProcessingPrograms"):
         if fileName.endswith('.py') and not fileName.startswith('__'):
             moduleName = fileName[:-3]  # Remove .py extension
