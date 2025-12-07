@@ -39,6 +39,11 @@ from Updater import DataTranslatorUpdater
 from Visualizers import TestVisualizer
 from Visualizers import indexviewer
 
+#imports for every folder to make sure we got everything
+import DataDownloader
+import ProcessingPrograms
+import Updater
+import Visualizers
 
 #imports the processing programs (hertz calculator, data processor, etc.)
 #changes directory to that of DAQ.py (handles if pythons frozen too
