@@ -134,7 +134,7 @@ def downloadFolder(gitUrl, folderPath, saveFolder):
                 downloadFolder(gitUrl, itemPath, saveFolder)
 
 def installApplication(folderName, name):
-    global installPath
+    global installPath, addDataList, libraryNameList
     #Calls downloadFolder function to download files to saveFolder
     downloadFolder(gitUrl, folderName, installPath)
 
@@ -152,6 +152,8 @@ def installApplication(folderName, name):
     mainScript = os.getcwd() + "/" + mainProgramName
     
     exe_path = build_executable(mainScript)
+    addDataList = []
+    libraryNameList = []
 
 
 #function to let user choose installation path

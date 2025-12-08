@@ -3,11 +3,13 @@ import tkinter as tk
 import threading
 import serial.tools.list_ports
 
+#ADD DATA STUFF
+
+
+import EngineDynoSupporterCode
+
 #INSTALLER IMPORTS FINISHED
 
-
-from EngineDynoSupporterCode import DynoRunCode
-from EngineDynoSupporterCode import Globals
 
 #define main page
 root = tk.Tk()
@@ -22,12 +24,12 @@ portsFrame.pack()
 def connectToSerialPort(port, connectionButton):
     #try to open serial ports
     try:
-        Globals.engineDyno = serial.Serial(port=port, baudrate=19200)
+        EngineDynoSupporterCode.Globals.engineDyno = serial.Serial(port=port, baudrate=19200)
         connectionButton['bg'] = "green"
-        Globals.engineDynoSerialBool = True
+        EngineDynoSupporterCode.Globals.engineDynoSerialBool = True
     except:
         connectionButton['bg'] = "red"
-        Globals.engineDynoSerialBool = False
+        EngineDynoSupporterCode.Globals.engineDynoSerialBool = False
 
 #function to show com ports
 def refreshComPorts(frame):
@@ -47,7 +49,7 @@ def refreshComPorts(frame):
         placeCounter+=1
 
 def startEngineDyno(root):
-    engineDynoThread = threading.Thread(target = DynoRunCode.startDynoRun, args =(root,))
+    engineDynoThread = threading.Thread(target = EngineDynoSupporterCode.DynoRunCode.startDynoRun, args =(root,))
     engineDynoThread.start()
 
 
@@ -57,11 +59,6 @@ frame.pack(pady=20)
 
 #pack the portsFrame
 portsFrame.pack()
-
-# Create Engine Dyno Label
-engineDynoSerialButton =tk.Button()
-engineDynoSerialButton = tk.Button(frame, text="Engine Dyno Serial Connection", command = lambda : openSerialConnection(Globals.engineDyno, engineDynoSerialButton, Globals.engineDynoSerialBool), bg="red" if not Globals.engineDynoSerialBool else "green")
-engineDynoSerialButton.pack()
 
 #create start Dyno Run Button
 startDynoRunButton = tk.Button(frame, text="Start Dyno Run", command = lambda : startEngineDyno(root))

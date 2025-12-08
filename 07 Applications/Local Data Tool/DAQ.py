@@ -10,7 +10,17 @@ import csv
 import json
 import subprocess
 
+#ADD DATA STUFF
+import DataDownloader
+import ProcessingPrograms
+import Updater
+import Visualizers
+
 #INSTALLER IMPORTS FINISHED
+
+
+
+
 
 cuda = False
 
@@ -33,11 +43,7 @@ try:
 except:
     pass
 
-#imports for every folder to make sure we got everything
-import DataDownloader
-import ProcessingPrograms
-import Updater
-import Visualizers
+
 
 # Creates the main window
 root = tk.Tk()

@@ -5,8 +5,7 @@ from tkinter import ttk
 import threading
 #INSTALLER IMPORTS FINISHED
 
-from EngineDynoSupporterCode import Globals
-
+from . import Globals
 
 calibrationInProgress = True
 
