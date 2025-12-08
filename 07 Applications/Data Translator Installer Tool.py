@@ -23,6 +23,8 @@ appBeingInstalled = None
 def build_executable(script_path):
     #make sure local machine has all the libraries downloaded
     for library in libraryNameList:
+        if library == "serial":
+            install("pyserial")
         install(library)
     print("Building executable with PyInstaller...")
 
