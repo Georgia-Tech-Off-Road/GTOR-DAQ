@@ -17,7 +17,7 @@ libraryNameList = []
 appBeingInstalled = None
 
 #requires your python to be on path and accessible as python
-def build_executable(script_path):
+def build_executable(script_path, additionalParams):
     #make sure local machine has all the libraries downloaded
     for library in libraryNameList:
         install(library)
@@ -32,12 +32,10 @@ def build_executable(script_path):
         "-m", "PyInstaller",
         "--onefile",
         "--name", exe_name,
-        "--add-data", "ProcessingPrograms;ProcessingPrograms",
-        "--add-data", "Visualizers;Visualizers",
-        "--add-data", "Updater;Updater",
-        "--add-data", "DataDownloader;DataDownloader",
+        additionalParams,
         script_path
     ]
+    
     #add additional imports our code detects
     for library in libraryNameList:
         cmd.extend(["--hidden-import", library])
@@ -134,11 +132,15 @@ def installApplication(folderName, name):
     os.chdir(name)
 
     nameFile = open("nameOfMainProgram.txt")
+    paramFile = open("additionalBuildingParameters.txt")
+    additionalParams = paramFile.readline().strip()
     mainProgramName = nameFile.readline().strip()
+    nameFile.close()
+    paramFile.close()
 
     mainScript = os.getcwd() + "/" + mainProgramName
     
-    exe_path = build_executable(mainScript)
+    exe_path = build_executable(mainScript, additionalParams)
 
 
 #function to let user choose installation path
