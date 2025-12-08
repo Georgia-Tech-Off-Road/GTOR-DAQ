@@ -13,11 +13,14 @@ installPath = os.getcwd()
 #List of libraries/modules to be installed
 libraryNameList = []
 
+#list for add data
+addDataList =[]
+
 #application being installed
 appBeingInstalled = None
 
 #requires your python to be on path and accessible as python
-def build_executable(script_path, additionalParams):
+def build_executable(script_path):
     #make sure local machine has all the libraries downloaded
     for library in libraryNameList:
         install(library)
@@ -32,9 +35,10 @@ def build_executable(script_path, additionalParams):
         "-m", "PyInstaller",
         "--onefile",
         "--name", exe_name,
-        additionalParams,
         script_path
     ]
+    for addData in addDataList:
+        cmd.extend(["--add-data", f"{addData};{addData}"])
     
     #add additional imports our code detects
     for library in libraryNameList:
@@ -62,21 +66,31 @@ def imports(savePath):
         return
     print(savePath + "IMPORTS")
     file = open(savePath, encoding="ISO-8859-1") #only encoding that seems to work
+    addDataTime = False
     for line in file:
         print(line)
         if "#INSTALLER IMPORTS FINISHED" in line:
             break
+        if '#ADD DATA STUFF' in line:
+            addDataTime = True
+            continue
         line = line.strip()
         if not line:
             continue
-        if line.startswith("import "):
-            lineList = line.split()
-            if lineList[1] not in libraryNameList:
-                libraryNameList.append(lineList[1])
-        elif line.startswith("from"):
-            lineList = line.split()
-            if lineList[1] not in libraryNameList:
-                libraryNameList.append(lineList[1])
+        if not addDataTime:
+            if line.startswith("import "):
+                lineList = line.split()
+                if lineList[1] not in libraryNameList:
+                    libraryNameList.append(lineList[1])
+            elif line.startswith("from"):
+                lineList = line.split()
+                if lineList[1] not in libraryNameList:
+                    libraryNameList.append(lineList[1])
+        else:
+           if line.startswith("import "):
+                lineList = line.split()
+                if lineList[1] not in addDataList:
+                    addDataList.append(lineList[1]) 
     
     return libraryNameList
 
@@ -132,15 +146,12 @@ def installApplication(folderName, name):
     os.chdir(name)
 
     nameFile = open("nameOfMainProgram.txt")
-    paramFile = open("additionalBuildingParameters.txt")
-    additionalParams = paramFile.readline().strip()
     mainProgramName = nameFile.readline().strip()
     nameFile.close()
-    paramFile.close()
 
     mainScript = os.getcwd() + "/" + mainProgramName
     
-    exe_path = build_executable(mainScript, additionalParams)
+    exe_path = build_executable(mainScript)
 
 
 #function to let user choose installation path
