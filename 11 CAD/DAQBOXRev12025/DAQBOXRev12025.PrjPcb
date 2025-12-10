@@ -168,63 +168,105 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
+[Document8]
+DocumentPath=Project Outputs for DAQBOXRev12025\CAMtastic3.Cam
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=0
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=
+
+[Document9]
+DocumentPath=Project Outputs for DAQBOXRev12025\CAMtastic4.Cam
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=0
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=
+
 [GeneratedDocument1]
 DocumentPath=Project Outputs for DAQBOXRev12025\Design Rule Check - PCB2.html
 DItemRevisionGUID=
 
 [GeneratedDocument2]
-DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.DRR
+DocumentPath=Project Outputs for DAQBOXRev12025\PCB2-NonPlated.TXT
 DItemRevisionGUID=
 
 [GeneratedDocument3]
-DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.EXTREP
+DocumentPath=Project Outputs for DAQBOXRev12025\PCB2-Plated.TXT
 DItemRevisionGUID=
 
 [GeneratedDocument4]
-DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.GBL
+DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.DRR
 DItemRevisionGUID=
 
 [GeneratedDocument5]
-DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.GBO
+DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.EXTREP
 DItemRevisionGUID=
 
 [GeneratedDocument6]
-DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.GBP
+DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.GBL
 DItemRevisionGUID=
 
 [GeneratedDocument7]
-DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.GBS
+DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.GBO
 DItemRevisionGUID=
 
 [GeneratedDocument8]
-DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.GM
+DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.GBP
 DItemRevisionGUID=
 
 [GeneratedDocument9]
-DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.GTL
+DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.GBS
 DItemRevisionGUID=
 
 [GeneratedDocument10]
-DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.GTO
+DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.GM
 DItemRevisionGUID=
 
 [GeneratedDocument11]
-DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.GTP
+DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.GTL
 DItemRevisionGUID=
 
 [GeneratedDocument12]
-DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.GTS
+DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.GTO
 DItemRevisionGUID=
 
 [GeneratedDocument13]
-DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.LDP
+DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.GTP
 DItemRevisionGUID=
 
 [GeneratedDocument14]
-DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.REP
+DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.GTS
 DItemRevisionGUID=
 
 [GeneratedDocument15]
+DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.LDP
+DItemRevisionGUID=
+
+[GeneratedDocument16]
+DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.REP
+DItemRevisionGUID=
+
+[GeneratedDocument17]
 DocumentPath=Project Outputs for DAQBOXRev12025\PCB2.TXT
 DItemRevisionGUID=
 
@@ -484,7 +526,7 @@ OutputDefault1=0
 Configuration1_Name1=ForceUpdateSettings
 Configuration1_Item1=False
 Configuration1_Name2=OutputConfigurationParameter1
-Configuration1_Item2=BoardEdgeRoutToolDia=2000000|GenerateBoardEdgeRout=False|GenerateDrilledSlotsG85=False|GenerateEIADrillFile=False|GenerateSeparatePlatedNonPlatedFiles=False|GenerateSeparateViaTypeFiles=False|GenerateToolsByDrillSymbols=False|NumberOfDecimals=4|NumberOfUnits=4|OptimizeChangeLocationCommands=True|OriginPosition=Absolute|Record=DrillView|Units=Metric|ZeroesMode=SuppressTrailingZeroes|DocumentPath=C:\GTOR-DAQ\11 CAD\DAQBOXRev12025\PCB2.PcbDoc
+Configuration1_Item2=BoardEdgeRoutToolDia=2000000|GenerateBoardEdgeRout=False|GenerateDrilledSlotsG85=False|GenerateEIADrillFile=False|GenerateSeparatePlatedNonPlatedFiles=True|GenerateSeparateViaTypeFiles=False|GenerateToolsByDrillSymbols=False|NumberOfDecimals=4|NumberOfUnits=4|OptimizeChangeLocationCommands=True|OriginPosition=Absolute|Record=DrillView|Units=Metric|ZeroesMode=KeepLeadingAndTrailingZeroes|DocumentPath=C:\GTOR-DAQ\11 CAD\DAQBOXRev12025\PCB2.PcbDoc
 OutputType2=Mask
 OutputName2=Solder/Paste Mask Prints
 OutputDocumentPath2=

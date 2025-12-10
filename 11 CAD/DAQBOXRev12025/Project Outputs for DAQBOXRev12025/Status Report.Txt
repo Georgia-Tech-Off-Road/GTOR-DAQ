@@ -1,20 +1,13 @@
-Output: Gerber Files
-Type  : Gerber
-From  : Variant [[No Variations]] of Project [DAQBOXRev12025.PrjPcb]
-   Generated File[PCB2.GTO]
-   Generated File[PCB2.GTP]
-   Generated File[PCB2.GTS]
-   Generated File[PCB2.GTL]
-   Generated File[PCB2.GBL]
-   Generated File[PCB2.GBS]
-   Generated File[PCB2.GBP]
-   Generated File[PCB2.GBO]
-   Generated File[PCB2.GM]
-   Generated File[PCB2.EXTREP]
-   Generated File[PCB2.REP]
+Output: NC Drill Files
+Type  : NC Drill
+From  : Project [DAQBOXRev12025.PrjPcb]
+   Generated File[PCB2-Plated.TXT]
+   Generated File[PCB2-NonPlated.TXT]
+   Generated File[PCB2.LDP]
+   Generated File[PCB2.DRR]
 
 
-Files Generated   : 11
+Files Generated   : 4
 Documents Printed : 0
 
-Finished Output Generation At 5:29:05 PM On 12/7/2025
+Finished Output Generation At 8:03:43 PM On 12/9/2025

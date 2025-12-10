@@ -1,0 +1,4 @@
+Removed Pin From Net: NetName=NetADC2_A2 Pin=C2?-2
+Removed Pin From Net: NetName=NetADC2_A2 Pin=R2?-1
+Added Pin To Net: NetName=NetADS1256_8 Pin=C2?-2
+Added Pin To Net: NetName=NetADS1256_8 Pin=R2?-1
