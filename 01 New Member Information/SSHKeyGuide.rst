@@ -40,7 +40,7 @@ Now let’s actually get to generating these keys for GitHub! For this
 guide, I will roughly follow `this
 article <https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent>`__
 from GitHub. First, open the terminal of your choice. If you are on
-Windows I recommend using Powershell, on Mac use the “terminal”
+Windows I recommend using Git Bash, on Mac use the “terminal”
 application, if you are on Linux or (god forbid) another operating
 system, you should know what to do. In your terminal prepare the
 following command: ``ssh-keygen -t ed25519 -C "your_email@example.com"``
@@ -68,12 +68,12 @@ annoying. The solution is to have these commands run automatically when
 the terminal launches.
 
 Virtually every terminal and/or operating system provides some file
-where the user can commands to execute before every terminal session. On
+where the user can specify commands to execute before every terminal session. On
 Windows (specifically Git Bash) and most Linux distros, this should be
-~/.bashrc (~ is a stand in for your system defined user home directory),
+~/.bashrc (~ is a stand-in for your system defined home directory),
 on MacOS this file is typically ~/.zshrc.
 
-In this file add, the following script which I have shamelessly taken
+In this file add the following script which I have shamelessly taken
 from `a GitHub
 article <https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases>`__:
 
@@ -101,14 +101,16 @@ article <https://docs.github.com/en/authentication/connecting-to-github-with-ssh
 
    unset env
 
-If you did not use the default ssh key, you will need too change
-``ssh-add`` to ``ssh-add (path to your private key)``. What does this do
+If you did not use the default ssh key, you will need to change
+``ssh-add`` to ``ssh-add <path to your private key>``. What does this do
 differently from ``eval`` and ``ssh-add``? I’m not completely sure. I
 have used this for years and it works perfectly, so I’m hesistant to try
 something else. I believe this effectively does the same thing, with
 slightly more error checking. Once you have saved your .bashrc / .zshrc
 file, close your terminal session and run ``ssh-add -l`` to make sure
-your key has been properly added. We have generated a public and a
+your key has been properly added.  
+
+We have generated a public and a
 private key, started an SSH agent to manage our keys, and then added the
 key to the agent. All that is left is to upload the public key to
 GitHub!
