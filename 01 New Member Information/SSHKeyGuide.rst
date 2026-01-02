@@ -43,7 +43,7 @@ from GitHub. First, open the terminal of your choice. If you are on
 Windows I recommend using Git Bash, on Mac use the “terminal”
 application, if you are on Linux or (god forbid) another operating
 system, you should know what to do. In your terminal prepare the
-following command: ``ssh-keygen -t ed25519 -C "your_email@example.com"``
+following command: ``ssh-keygen -t ed25519 -C "your_email@example.com"``  
 
 Please change “your_email@example.com” to the email address associated
 with your GitHub account! Hit enter to run the command. The command will
@@ -53,9 +53,10 @@ will create a public key file (ending in .pub) and a private key (no
 file extension) at the default location.
 
 Run the following command to start the SSH agent to manage SSH
-connections: ``eval "$(ssh-agent -s)"``
+connections: ``eval "$(ssh-agent -s)"``  
 
-Finally, add the key to the agent with: ``ssh-add ~/.ssh/id_ed25519`` If
+
+Finally, add the key to the agent with: ``ssh-add ~/.ssh/id_ed25519``. If
 you specified a different name for the key other than the default when
 running ``ssh-keygen``, please replace ``~/.ssh/id_ed25519`` with the
 path to your file. Verify that the your key has been added sucessfully
@@ -102,7 +103,7 @@ article <https://docs.github.com/en/authentication/connecting-to-github-with-ssh
    unset env
 
 If you did not use the default ssh key, you will need to change
-``ssh-add`` to ``ssh-add <path to your private key>``. What does this do
+``ssh-add`` to ``ssh-add <path_to_your_private_key>``. What does this do
 differently from ``eval`` and ``ssh-add``? I’m not completely sure. I
 have used this for years and it works perfectly, so I’m hesistant to try
 something else. I believe this effectively does the same thing, with
@@ -110,15 +111,14 @@ slightly more error checking. Once you have saved your .bashrc / .zshrc
 file, close your terminal session and run ``ssh-add -l`` to make sure
 your key has been properly added.  
 
-We have generated a public and a
-private key, started an SSH agent to manage our keys, and then added the
+We have generated a public and a private key, started an SSH agent to manage our keys, and then added the
 key to the agent. All that is left is to upload the public key to
 GitHub!
 
 Adding an SSH Key to GitHub
 ===========================
 
-To add an SSH key to GitHub, login to your GitHub account. Got to
+To add an SSH key to GitHub, login to your GitHub account. Go to
 settings>SSH and GPG Keys>New Key: |image0|
 
 Give your key a title descptive to the computer you are using and copy
