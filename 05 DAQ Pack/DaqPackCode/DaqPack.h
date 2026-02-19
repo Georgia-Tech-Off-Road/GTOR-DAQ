@@ -32,6 +32,32 @@
   X(float, RearTransferCaseTemp) \
   X(float, teensyTemp) 
 
+
+enum SensorID : uint8_t {
+    ENGINE_RPM      = 0,
+    FRONT_LEFT_RPM  = 1,
+    FRONT_RIGHT_RPM = 2,
+    AUX_RPM         = 3,
+    REAR_BRAKE_PRES = 4,
+    FRONT_BRAKE_PRES= 5,
+    LDS_FRONT_RIGHT = 6,
+    LDS_FRONT_LEFT  = 7,
+    LDS_REAR_RIGHT  = 8,
+    LDS_REAR_LEFT   = 9,
+    CVT_TEMP        = 10,
+    REAR_TC_TEMP    = 11,
+    TEENSY_TEMP     = 12
+};
+
+struct __attribute__((packed)) DataPacket {
+    uint8_t sensorID;
+    uint32_t timestamp100Micros;
+    float value;
+};
+
+// Write a packet to the output file
+void writePacket(SensorID id, float value);
+
 //length of lds when hanging in inches
 #define HANG_TRAVEL 7.1365
 

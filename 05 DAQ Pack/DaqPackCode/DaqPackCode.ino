@@ -3,7 +3,6 @@
 //create an interval timer (provides more accurate timing than microseconds)
 IntervalTimer intervalMicros;
 
-
 // Intialize ADCs
 Adafruit_ADS1115 ads1;
 Adafruit_ADS1115 ads2;
@@ -363,4 +362,14 @@ void saveInterrupt(){
     //used as a debouncer, the interrupts will finish in order since they have the same priority
     lastSaveTimeInMillis = microsecondsElapsed / 1000;
   }
+}
+
+void writePacket(SensorID id, float value) {
+  if (!isRecording) return;
+  DataPacket packet;
+  packet.sensorID = id;
+  // Get in units of sec 10^-4
+  packet.timestamp100Micros = (uint32_t) (microsecondsElapsed / 100);
+  packet.value = value;
+  outputFile.write(&packet, sizeof(packet));
 }
