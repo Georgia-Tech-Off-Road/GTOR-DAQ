@@ -9,29 +9,6 @@
 #include <DAQ_Linear_Analog_Sensor.h>
 
 #include <DAQSensors.h>
-#include <DAQPackets.h>
-
-//set to false if you want json output (slower but you don't have to run the processor)
-#define binary true
-
-//macro for the data fields (chatgpt came up with this idea, its pretty sick ngl)
-#define DATA_FIELDS \
-  X(unsigned long long int, sec) \
-  X(unsigned long int, microsec) \
-  X(float, engineRPM) \
-  X(float, frontLeftRPM) \
-  X(float, frontRightRPM) \
-  X(float, aux1RPM) \
-  X(float, rearBrakePressure) \
-  X(float, frontBrakePressure) \
-  X(float, LDSFrontRight) \
-  X(float, LDSFrontLeft) \
-  X(float, LDSRearRight) \
-  X(float, LDSRearLeft) \
-  X(float, CVTTemp) \
-  X(float, RearTransferCaseTemp) \
-  X(float, teensyTemp) 
-
 
 enum SensorID : uint8_t {
     ENGINE_RPM      = 0,
@@ -55,6 +32,22 @@ struct __attribute__((packed)) DataPacket {
     float value;
 };
 
+struct SensorLogger {
+    SensorID id;
+    uint32_t intervalMicros;
+    uint64_t lastLogTimeMicros;
+    
+    bool shouldLog(uint64_t currentTimeMicros) {
+        return currentTimeMicros >= lastLogTimeMicros + intervalMicros;
+    }
+    
+    void updateLastLogTime(uint64_t currentTimeMicros) {
+        lastLogTimeMicros = currentTimeMicros;
+    }
+};
+
+// Log once a second
+SensorLogger teensyTempLogger = {TEENSY_TEMP, 1000000UL, 0};
 // Write a packet to the output file
 void writePacket(SensorID id, float value);
 
@@ -96,24 +89,6 @@ void writePacket(SensorID id, float value);
 
 #define serialMonitor Serial
 
-//struct to hold the data cause we legit need to go faster
-struct {
-  #define X(type, name) type name;
-  DATA_FIELDS
-  #undef X
-} dataStruct;
-
-//function to print struct stats
-inline void writeStructData(File structDetailFile) {
-  #define X(type, name) structDetailFile.print(#type); structDetailFile.print(","); structDetailFile.print(#name); structDetailFile.print("\n");
-  DATA_FIELDS
-  #undef X
-  //print a character to signify the structure outputs are finished
-  structDetailFile.print("[-]\n");
-  //print the size of the struct to let python compute any padding thats needed
-  structDetailFile.printf("%d\n", sizeof(dataStruct));
-}
-
 //actually init the global variable for this 
 volatile unsigned long long microsecondsElapsed = 0;
 //delcare function for intervalTimer
@@ -123,8 +98,6 @@ void intervalTimerFunction() {
 
 //declare non setup functions
 time_t getTeensy3Time();
-
-cmbtl::DAQSensorDataType DAQData;
 
 //enums for AUXDAQ ports
 enum AUXDAQ_Ports {
@@ -182,27 +155,6 @@ inline void flashBang(int timeInMillis, int frontBackOrAll) {
   digitalWrite(ANALOG_THREE_LED, LOW);
   digitalWrite(ANALOG_FOUR_LED, LOW);
   digitalWrite(SD_CARD_INIT_LED, LOW);
-}
-
-//function to intialize dataStruct values
-inline void initDataStructValues() {
-  DAQData.setData<cmbtl::SEC>(now());
-  DAQData.setData<cmbtl::MICRO_SEC>(microsecondsElapsed);
-  DAQData.setData<cmbtl::RPM1>(0);
-  DAQData.setData<cmbtl::RPM2>(0);
-  DAQData.setData<cmbtl::RPM3>(0);
-  DAQData.setData<cmbtl::RPM4>(0);
-  DAQData.setData<cmbtl::RearBrakePressure>(0);
-  DAQData.setData<cmbtl::FrontBrakePressure>(0);
-  DAQData.setData<cmbtl::LDSFrontRight>(0);
-  DAQData.setData<cmbtl::LDSFrontLeft>(0);
-  DAQData.setData<cmbtl::LDSRearRight>(0);
-  DAQData.setData<cmbtl::LDSRearLeft>(0);
-  DAQData.setData<cmbtl::CVTTemp>(0);
-  DAQData.setData<cmbtl::RearTransferCaseTemp>(0);
-  #define X(type, name) dataStruct.name = 0;
-  DATA_FIELDS
-  #undef X
 }
 
 //outputFile
@@ -305,15 +257,7 @@ inline void setUpSD() {
   String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
   SD.mkdir(time.c_str());
   Serial.println(time.c_str());
-  File structConfigFile = SD.open(String("/"+time+"/"+time+"Config.txt").c_str(), FILE_WRITE);
-  writeStructData(structConfigFile);
-  structConfigFile.close();
-  if (binary) {
-    outputFile = SD.open(String("/"+time+"/"+time+".bin").c_str(),  FILE_WRITE);
-  } else {
-    outputFile = SD.open(String("/"+time+"/"+time+".txt").c_str(),  FILE_WRITE);
-    outputFile.printf("[\n");
-  }
+  outputFile = SD.open(String("/"+time+"/"+time+".bin").c_str(),  FILE_WRITE);
 }
 
 //time setup function
@@ -325,6 +269,8 @@ inline void setupTeensyTime() {
     Serial.println("RTC has set the system time");
   }
 }
+
+uint32_t safeTimestamp();
 
 //method needed to get time
 time_t getTeensy3Time()
