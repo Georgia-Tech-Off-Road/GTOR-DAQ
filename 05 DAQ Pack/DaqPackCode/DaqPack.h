@@ -33,7 +33,6 @@ struct __attribute__((packed)) DataPacket {
 };
 
 struct SensorLogger {
-    SensorID id;
     uint32_t intervalMicros;
     uint64_t lastLogTimeMicros;
     
@@ -47,7 +46,10 @@ struct SensorLogger {
 };
 
 // Log once a second
-SensorLogger teensyTempLogger = {TEENSY_TEMP, 1000000UL, 0};
+SensorLogger teensyTempLogger = {1000000UL, 0};
+
+// Log once a second
+SensorLogger debugLogger = {1000000UL, 0};
 // Write a packet to the output file
 void writePacket(SensorID id, float value);
 
@@ -156,6 +158,9 @@ inline void flashBang(int timeInMillis, int frontBackOrAll) {
   digitalWrite(ANALOG_FOUR_LED, LOW);
   digitalWrite(SD_CARD_INIT_LED, LOW);
 }
+
+//DAQ sensor data struct (used for local logging and potential wireless packet formats)
+cmbtl::DAQSensorDataType DAQData;
 
 //outputFile
 File outputFile;
