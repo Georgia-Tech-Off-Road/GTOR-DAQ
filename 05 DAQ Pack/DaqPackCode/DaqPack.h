@@ -28,6 +28,7 @@ enum SensorID : uint8_t {
 
 struct __attribute__((packed)) DataPacket {
     uint8_t sensorID;
+    // Record in units of 100 micros
     uint32_t timestamp100Micros;
     float value;
 };
@@ -43,7 +44,7 @@ struct SensorLogger {
     void updateLastLogTime(uint64_t currentTimeMicros) {
         lastLogTimeMicros = currentTimeMicros;
     }
-};
+}
 
 // Log once a second
 SensorLogger teensyTempLogger = {1000000UL, 0};
