@@ -36,6 +36,7 @@ def translate_and_write(in_path: str, out_path: str):
 			if len(chunk) < PACKET_SIZE:
 				print(f"Warning incomplete chunk at end of file, skipping.")
 				break
+			# Unpack values from struct
 			sensor_id, timestamp, value = struct.unpack(PACKET_FORMAT, chunk)
 			record = {"microsec": timestamp * 100, sensors[sensor_id]: value}
 			if not first:
@@ -46,14 +47,16 @@ def translate_and_write(in_path: str, out_path: str):
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(
-		prog="BinFileTranslator"
+		prog="BinFileTranslator",
 		description="Translates an input binary file to JSON"
 	)
-	parser.addArgument("in_path")
-	parser.addArgument("out_path")
+	parser.add_argument("in_path")
+	parser.add_argument("out_path")
 
 	args = parser.parse_args()
 	in_path = args.in_path
 	out_path = args.out_path
 
 	print(f"Converting {in_path} to JSON, saving to {out_path}.")
+	translate_and_write(in_path, out_path)
+	print(f"Succesfully saved to {out_path}.")
