@@ -152,7 +152,8 @@ void dataAquisitionAndSavingLoop() {
     //updateDebugLeds();
     //update auto save time
     //check to see if save should be started/stopped
-     if (saveFlag) {
+     if (saveFlag /* || saveTimer.shouldLog(microsecondsElapsed) */) {
+      saveTimer.updateLastLogTime(microsecondsElapsed);
       changeRecordingState();
       saveFlag = false;
     }

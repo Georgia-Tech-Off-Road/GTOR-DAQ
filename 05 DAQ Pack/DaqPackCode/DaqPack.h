@@ -44,13 +44,17 @@ struct SensorLogger {
     void updateLastLogTime(uint64_t currentTimeMicros) {
         lastLogTimeMicros = currentTimeMicros;
     }
-}
+};
 
 // Log once a second
-SensorLogger teensyTempLogger = {1000000UL, 0};
+struct SensorLogger teensyTempLogger = {1000000UL, 0};
 
 // Log once a second
-SensorLogger debugLogger = {1000000UL, 0};
+struct SensorLogger debugLogger = {1000000UL / 50, 0};
+
+// Save once a minute
+struct SensorLogger saveTimer = {1000000UL * 60, 0};
+
 // Write a packet to the output file
 void writePacket(SensorID id, float value);
 
@@ -104,7 +108,7 @@ time_t getTeensy3Time();
 
 //enums for AUXDAQ ports
 enum AUXDAQ_Ports {
-  RPM1 = 14,
+  RPM1 = 15,
   RPM2 = 37,
   RPM3 = 20,
   RPM4 = 16,
@@ -125,7 +129,7 @@ enum AUXDAQ_Ports {
 //sensor constants
 enum Sensor_Constants {
   RDTEETH = 14,
-  ENGTEETH = 1,
+  ENGTEETH = 8,
   FRTEETH = 12,
   FLTEETH = 12
 };
