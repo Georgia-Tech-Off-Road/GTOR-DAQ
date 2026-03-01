@@ -171,7 +171,7 @@ void setup() {
   //--------------------------------------------
 
   //Set DRATE
-  A.setDRATE(DRATE_5SPS);  //0b00010011 - DEC: 19
+  A.setDRATE(DRATE_1000SPS);  //0b00010011 - DEC: 19
   //--------------------------------------------
 
   //Read back the above 3 values to check if the writing was succesful
@@ -251,7 +251,7 @@ void loop() {
         while (Serial.read() != 's') // The conversion is stopped by a character received from the serial port
         {
           // Skip 5
-          std::array<uint8_t, 5> port_order = {SING_1, SING_2, SING_3, SING_4, SING_6};
+          std::array<uint8_t, 5> port_order = {SING_1, SING_3, SING_4, SING_6, SING_6};
           
 
           long result = A.readSinglePort(port_order[cycle_index]);
