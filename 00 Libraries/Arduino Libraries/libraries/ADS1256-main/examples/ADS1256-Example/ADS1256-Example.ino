@@ -92,7 +92,7 @@ int differentialChannels[4] = { DIFF_0_1, DIFF_2_3, DIFF_4_5, DIFF_6_7 };       
 int inputChannel = 0;                                                                             //Number used to pick the channel from the above two arrays
 char inputMode = ' ';                                                                             //can be 's' and 'd': single-ended and differential
 
-int pgaValues[7] = { PGA_1, PGA_2, PGA_4, PGA_8, PGA_16, PGA_32, PGA_64 };  //Array to store the PGA settings
+int pgaValues[7] = { PGA_1, PGA_2, PGA_4, PGA_8, PGA_16, PGA_32,   };  //Array to store the PGA settings
 int pgaSelection = 0;                                                       //Number used to pick the PGA value from the above array
 
 int drateValues[16] = {
@@ -192,6 +192,7 @@ void setup() {
 }
 
 void loop() {
+    uint cycle_index = 0;
   /* Here I implemented some typical functions that can be useful for using the ADS1256
       Changing the registers by the built-in functions or by directly writing the registers
       Reading the registers to check the value of it
@@ -243,6 +244,28 @@ void loop() {
             }
           }
           Serial.println();  //Printing a linebreak - this will put the next 8 conversions in a new line
+        }
+        A.stopConversion();
+        break;
+      case 'Y':
+        while (Serial.read() != 's') // The conversion is stopped by a character received from the serial port
+        {
+          // Skip 5
+          std::array<uint8_t, 5> port_order = {SING_1, SING_2, SING_3, SING_4, SING_6};
+          
+
+          long result = A.readSinglePort(port_order[cycle_index]);
+          float converted_result = A.convertToVoltage(result);
+
+          Serial.print(converted_result, 4);
+          Serial.print("\t");
+
+          // Wrap
+          cycle_index++;
+          if (cycle_index >= port_order.size())
+            cycle_index = 0;
+          if (cycle_index == 0)
+            Serial.print("\n");
         }
         A.stopConversion();
         break;

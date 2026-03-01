@@ -141,7 +141,7 @@ static constexpr int8_t PIN_UNUSED = -1;
 	
 	//Cycling through the single-ended inputs
 	long cycleSingle(); //Ax + COM
-	
+	long readSinglePort(uint8_t port); // Reads a value at port_number
 	//Cycling through the differential inputs
 	long cycleDifferential(); //Ax + Ay
 		
