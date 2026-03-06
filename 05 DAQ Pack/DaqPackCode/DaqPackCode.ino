@@ -159,7 +159,7 @@ void dataAquisitionAndSavingLoop() {
     //updateDebugLeds();
     //update auto save time
     //check to see if save should be started/stopped
-     if (saveFlag /* || saveTimer.shouldLog(microsecondsElapsed) */) {
+     if (saveFlag /* || saveTimer.shouldLog(microsecondsElapsed) */ || Serial.read() == 's') {
       saveTimer.updateLastLogTime(microsecondsElapsed);
       changeRecordingState();
       saveFlag = false;
@@ -180,6 +180,9 @@ void dataAquisitionAndSavingLoop() {
         Serial.println(DAQData.serializeDataToJSON().c_str());
         debugLogger.updateLastLogTime(microsecondsElapsed);
       }
+
+      recordNextADSValue();
+
       if(teensyTempLogger.shouldLog(microsecondsElapsed)) {
         float temp = tempmonGetTemp();
         DAQData.setData<cmbtl::SensorIndex::TEENSY_TEMP>(temp);
@@ -233,6 +236,31 @@ void dataAquisitionAndSavingLoop() {
   }
 }
 
+inline void recordNextADSValue() {
+  static uint index = 0;
+  constexpr int PORT_LIST_LENGTH = 1; 
+
+  // List of ADS ports to read from, should wrap around to begining
+  constexpr uint8_t ads1256PortList[PORT_LIST_LENGTH] = {SING_6};
+
+  uint8_t nextSensor = ads1256PortList[index];
+
+  // LDS Rear Right?
+  if (nextSensor == SING_6) {
+    long result = ads1256.readSinglePort(nextSensor);
+    float value = LDSRearRight.computeSensorReading(result);
+    writePacket(SensorID::LDS_REAR_RIGHT, value);
+    DAQData.setData<cmbtl::SensorIndex::LDSRearRight>(value);
+  } else {
+    Serial.println("Unknown sensor port to read from.");
+  }
+
+  index++;
+
+  if (index >= PORT_LIST_LENGTH) {
+    index = 0;
+  }
+}
 //changes recording state and saves file
 void changeRecordingState() {
   if(isRecording == true) {

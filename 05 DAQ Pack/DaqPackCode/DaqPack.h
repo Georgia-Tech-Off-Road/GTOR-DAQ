@@ -278,6 +278,8 @@ inline void setUpSD() {
   outputFile = SD.open(String("/"+time+"/"+time+".bin").c_str(),  FILE_WRITE);
 }
 
+inline void recordNextADSValue();
+
 //time setup function
 inline void setupTeensyTime() {
   setSyncProvider(getTeensy3Time);
