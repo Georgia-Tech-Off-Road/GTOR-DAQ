@@ -666,53 +666,36 @@ long ADS1256::cycleSingle()
 
 long ADS1256::readSinglePort(uint8_t port)
 {
-	if(_isAcquisitionRunning == false)
-	{
-	  _isAcquisitionRunning = true;
-	  _cycle = 0;
-	  _spi->beginTransaction(SPISettings(1920000, MSBFIRST, SPI_MODE1));
-	  CS_LOW(); //CS must stay LOW during the entire sequence [Ref: P34, T24]
-	  _spi->transfer(0x50 | 1); // 0x50 = WREG //1 = MUX
-      _spi->transfer(0x00);
-      _spi->transfer(SING_0); //AIN0+AINCOM
-	  CS_HIGH();
-	  delay(50);
-	  CS_LOW(); //CS must stay LOW during the entire sequence [Ref: P34, T24]
-	}
-	else
-	{}
+	_spi->beginTransaction(SPISettings(1920000, MSBFIRST, SPI_MODE1));
+	CS_LOW(); //CS must stay LOW during the entire sequence [Ref: P34, T24]
 
-	if(_cycle < 8)
-	{
-	  _outputValue = 0;
-	  waitForLowDRDY();
+	//Step 1. - Set MUX to desired port
+	waitForLowDRDY();
+	_spi->transfer(0x50 | MUX_REG); // WREG MUX
+	_spi->transfer(0x00);
+	_spi->transfer(port);
 
-      //Step 1. - Updating MUX
-      updateMUX(port);
+	//Step 2. - SYNC and WAKEUP to start conversion with new MUX
+	_spi->transfer(0b11111100); //SYNC
+	delayMicroseconds(4); //t11 delay 24*tau = 3.125 us //delay should be larger, so we delay by 4 us
+	_spi->transfer(0b11111111); //WAKEUP
 
-      //Step 2.
-      _spi->transfer(0b11111100); //SYNC
-      delayMicroseconds(4); //t11 delay 24*tau = 3.125 us //delay should be larger, so we delay by 4 us
-      _spi->transfer(0b11111111); //WAKEUP
+	//Step 3. - Wait for new conversion to complete, then read
+	waitForLowDRDY();
+	_spi->transfer(0b00000001); //Issue RDATA (0000 0001) command
+	delayMicroseconds(7); //Wait t6 time (~6.51 us) REF: P34, FIG:30.
 
-      //Step 3.
-      //Issue RDATA (0000 0001) command
-      _spi->transfer(0b00000001);
-      delayMicroseconds(7); //Wait t6 time (~6.51 us) REF: P34, FIG:30.
+	_outputBuffer[0] = _spi->transfer(0x0F); // MSB
+	_outputBuffer[1] = _spi->transfer(0x0F); // Mid-byte
+	_outputBuffer[2] = _spi->transfer(0x0F); // LSB
 
-	  _outputBuffer[0] = _spi->transfer(0x0F); // MSB 
-	  _outputBuffer[1] = _spi->transfer(0x0F); // Mid-byte
-	  _outputBuffer[2] = _spi->transfer(0x0F); // LSB
+	_outputValue = ((long)_outputBuffer[0]<<16) | ((long)_outputBuffer[1]<<8) | (_outputBuffer[2]);
+	_outputValue = convertSigned24BitToLong(_outputValue);
 
-	  _outputValue = ((long)_outputBuffer[0]<<16) | ((long)_outputBuffer[1]<<8) | (_outputBuffer[2]);
-	  _outputValue = convertSigned24BitToLong(_outputValue);
+	CS_HIGH();
+	_spi->endTransaction();
 
-	  _cycle++; //Increase cycle - This will move to the next MUX input channel
-	  if(_cycle == 8)
-	  {
-		  _cycle = 0; //Reset to 0 - Restart conversion from the 1st input channel
-	  }
-    }
+	_isAcquisitionRunning = false; //Self-contained read, no persistent state
 
 	return _outputValue;
 }
