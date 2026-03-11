@@ -1,0 +1,5 @@
+Change Component Designator: OldDesignator=J? NewDesignator=CAN
+Change Component Designator: OldDesignator=J? NewDesignator=I2C
+Change Component Designator: OldDesignator=J? NewDesignator=UART
+Added Member To Class: ClassName=48PinConnector Member=Component I2C 282837-4
+Added Member To Class: ClassName=48PinConnector Member=Component UART 282837-4

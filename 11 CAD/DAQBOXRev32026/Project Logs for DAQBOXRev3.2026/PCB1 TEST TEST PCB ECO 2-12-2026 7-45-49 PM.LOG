@@ -1,0 +1,48 @@
+Removed Pin From Net: NetName=NetRTC power batt_2 Pin=Teensy 4.1-VBAT
+Change Component Footprint: Designator=CAN? Old Footprint=691709710304 New Footprint=691709710304
+Change Component Footprint: Designator=I? Old Footprint=691709710304 New Footprint=691709710304
+Change Component Footprint: Designator=UART? Old Footprint=691709710304 New Footprint=691709710304
+Change Component Comment : Designator=Teensy 4.1 Old Comment=DEV-16771 New Comment=TEENSY_4.1
+Change Component Kind : Designator=UART? Old Kind=Standard New Kind=Standard (No BOM)
+Change Component Kind : Designator=I? Old Kind=Standard New Kind=Standard (No BOM)
+Change Component Kind : Designator=CAN? Old Kind=Standard New Kind=Standard (No BOM)
+Change Managed Component Library Link : Designator=CAN? Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=F8CD5FD9-34D3-478B-958C-E92D43904C0A Old ItemGUID=8027B8C3-5158-490D-8A1C-4D9BB87555E6 New ItemGUID=2A0CE15A-43F6-4585-BB79-E322F55D320E Old RevisionGUID=76003A83-6815-46C4-8FDC-F979AA160B8C New RevisionGUID=1462EC0C-F3A3-4C75-AC7D-B121BB56B0C8
+Change Managed Component Library Link : Designator=I? Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=F8CD5FD9-34D3-478B-958C-E92D43904C0A Old ItemGUID=8027B8C3-5158-490D-8A1C-4D9BB87555E6 New ItemGUID=2A0CE15A-43F6-4585-BB79-E322F55D320E Old RevisionGUID=76003A83-6815-46C4-8FDC-F979AA160B8C New RevisionGUID=1462EC0C-F3A3-4C75-AC7D-B121BB56B0C8
+Change Managed Component Library Link : Designator=UART? Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=F8CD5FD9-34D3-478B-958C-E92D43904C0A Old ItemGUID=8027B8C3-5158-490D-8A1C-4D9BB87555E6 New ItemGUID=2A0CE15A-43F6-4585-BB79-E322F55D320E Old RevisionGUID=76003A83-6815-46C4-8FDC-F979AA160B8C New RevisionGUID=1462EC0C-F3A3-4C75-AC7D-B121BB56B0C8
+Change component parameters: Designator = "CAN?" ("CAN?"); Footprint = "691709710304"; UniqueID = "\RREFGHSN" ("\RREFGHSN")
+Change component parameters (AddParameter): Name = "Design Item ID"; Value = "ED5554DS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mfr_Name"; Value = "On Shore Technology"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Source"; Value = "ED5554DS.SchLib"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Type"; Value = "Wire to Board"; VariantName = "[No Variations]"
+Change component parameters: Designator = "I?" ("I?"); Footprint = "691709710304"; UniqueID = "\JDJUNCID" ("\JDJUNCID")
+Change component parameters (AddParameter): Name = "Design Item ID"; Value = "ED5554DS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mfr_Name"; Value = "On Shore Technology"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Source"; Value = "ED5554DS.SchLib"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Type"; Value = "Wire to Board"; VariantName = "[No Variations]"
+Change component parameters: Designator = "UART?" ("UART?"); Footprint = "691709710304"; UniqueID = "\WQSRIIWD" ("\WQSRIIWD")
+Change component parameters (AddParameter): Name = "Design Item ID"; Value = "ED5554DS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mfr_Name"; Value = "On Shore Technology"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Source"; Value = "ED5554DS.SchLib"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Type"; Value = "Wire to Board"; VariantName = "[No Variations]"
+Added Component: Designator=J?(691241510009)
+Added Pin To Net: NetName=Net3_E4 Pin=Teensy 4.1-0
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-42
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-43
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-44
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-45
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-46
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-47
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-48
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-49
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-50
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-51
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-52
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-55
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-57
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-69
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-70
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-71
+Added Member To Class: ClassName=48PinConnector Member=Component J? 691241510009

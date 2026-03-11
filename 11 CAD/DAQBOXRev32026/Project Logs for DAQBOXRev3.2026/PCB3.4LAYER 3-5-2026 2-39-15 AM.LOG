@@ -1,0 +1,91 @@
+Removed Pin From Net: NetName=GND Pin=C01-1
+Removed Pin From Net: NetName=Net12V_1 Pin=C01-2
+Removed Pin From Net: NetName=GND Pin=C02-1
+Removed Pin From Net: NetName=Net1_1 Pin=C02-2
+Removed Pin From Net: NetName=GND Pin=C03-1
+Removed Pin From Net: NetName=Net12V_1 Pin=C03-2
+Removed Pin From Net: NetName=Net1_14 Pin=R01-1
+Removed Pin From Net: NetName=NetADS1256_24 Pin=R01-2
+Removed Pin From Net: NetName=Net2_13 Pin=R02-1
+Removed Pin From Net: NetName=NetADS1256_23 Pin=R02-2
+Removed Pin From Net: NetName=Net2_12 Pin=R03-1
+Removed Pin From Net: NetName=NetADS1256_20 Pin=R03-2
+Removed Member From Class: ClassName=MainSchematic.3 Member=C03
+Added Component: Designator=C01(FP-CL21-IPC_A)
+Add component (AddParameter): Name = "Capacitance"; Value = "1nF"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Case Code (Imperial)"; Value = "0805"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Case Code (Metric)"; Value = "2012"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Case/Package"; Value = "0805"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Depth"; Value = "1.25mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Dielectric"; Value = "X7R"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Height"; Value = "0.85mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Length"; Value = "0.079inch"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Operating Temperature"; Value = "125°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Min Operating Temperature"; Value = "-55°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mount"; Value = "Surface Mount"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package Quantity"; Value = "4000"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Packaging"; Value = "Tape and Reel"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Radiation Hardening"; Value = "No"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Thickness"; Value = "0.037inch"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Tolerance"; Value = "10%"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage Rating"; Value = "200V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Width"; Value = "0.049inch"; VariantName = "[No Variations]"
+Added Component: Designator=C02(FP-CL21-IPC_A)
+Add component (AddParameter): Name = "Capacitance"; Value = "1nF"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Case Code (Imperial)"; Value = "0805"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Case Code (Metric)"; Value = "2012"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Case/Package"; Value = "0805"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Depth"; Value = "1.25mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Dielectric"; Value = "X7R"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Height"; Value = "0.85mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Length"; Value = "0.079inch"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Operating Temperature"; Value = "125°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Min Operating Temperature"; Value = "-55°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mount"; Value = "Surface Mount"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package Quantity"; Value = "4000"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Packaging"; Value = "Tape and Reel"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Radiation Hardening"; Value = "No"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Thickness"; Value = "0.037inch"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Tolerance"; Value = "10%"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage Rating"; Value = "200V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Width"; Value = "0.049inch"; VariantName = "[No Variations]"
+Added Component: Designator=C02(FP-CL21-IPC_A)
+Add component (AddParameter): Name = "Capacitance"; Value = "1nF"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Case Code (Imperial)"; Value = "0805"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Case Code (Metric)"; Value = "2012"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Case/Package"; Value = "0805"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Depth"; Value = "1.25mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Dielectric"; Value = "X7R"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Height"; Value = "0.85mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Length"; Value = "0.079inch"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Operating Temperature"; Value = "125°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Min Operating Temperature"; Value = "-55°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mount"; Value = "Surface Mount"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package Quantity"; Value = "4000"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Packaging"; Value = "Tape and Reel"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Radiation Hardening"; Value = "No"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Thickness"; Value = "0.037inch"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Tolerance"; Value = "10%"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage Rating"; Value = "200V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Width"; Value = "0.049inch"; VariantName = "[No Variations]"
+Added Component: Designator=R01(RESC3116X65X40LL10T20)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Yageo"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "RC1206FR-10750RL"; VariantName = "[No Variations]"
+Added Component: Designator=R02(RESC3116X65X40LL10T20)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Yageo"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "RC1206FR-10750RL"; VariantName = "[No Variations]"
+Added Component: Designator=R03(RESC3116X65X40LL10T20)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Yageo"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "RC1206FR-10750RL"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=C01-1
+Added Pin To Net: NetName=Net12V_1 Pin=C01-2
+Added Pin To Net: NetName=GND Pin=C02-1
+Added Pin To Net: NetName=GND Pin=C02-1
+Added Pin To Net: NetName=Net1_1 Pin=C02-2
+Added Pin To Net: NetName=Net12V_1 Pin=C02-2
+Added Pin To Net: NetName=Net1_14 Pin=R01-1
+Added Pin To Net: NetName=NetADS1256_24 Pin=R01-2
+Added Pin To Net: NetName=Net2_13 Pin=R02-1
+Added Pin To Net: NetName=NetADS1256_23 Pin=R02-2
+Added Pin To Net: NetName=Net2_12 Pin=R03-1
+Added Pin To Net: NetName=NetADS1256_20 Pin=R03-2

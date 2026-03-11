@@ -1,0 +1,424 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html">
+<style type="text/css">
+		h1, h2, h3, h4, h5, h6 {
+			font-family : segoe ui;
+			color : black;
+			background-color : #EDE7D9;
+			padding: 0.3em;
+		}
+
+		h1 {
+			font-size: 1.2em;
+		}		
+
+		h2 {
+			font-size: 1.2em;
+		}
+
+		body {
+			font-family : segoe ui;
+		}
+
+		td, th {
+			padding: 0.5em;
+			text-align : left;
+			width: 10em;
+		}
+		th {
+			background-color : #EEEEEE;
+
+		}
+		th.column1, td.column1 {
+			text-align: left;
+			width : auto;
+		}
+		table {
+			width : 100%;
+			font-size: 0.9em;
+		}
+
+		.DRC_summary_header {
+			padding-bottom : 0.1em;
+			border : 0px solid black;
+			width: 100%;
+			align: left;
+		}
+
+		.DRC_summary_header_col1,
+		.DRC_summary_header_col2, 
+		.DRC_summary_header_col3 {
+			color : black;
+			font-size:100%;
+			padding : 0em;
+			padding-top : 0.2em;
+			padding-bottom 0.2em;
+			border : 0px solid black;
+			vertical-align: top;
+			text-align: left;
+		}
+
+		.DRC_summary_header_col1 {
+			font-weight: bold;
+			width: 9em;
+		}
+
+		.DRC_summary_header_col2 {
+			width: 0.1em;
+		
+		}
+
+		.DRC_summary_header_col3 {
+			width : auto;
+		}
+
+		.header_holder {
+		    Width = 100%;
+		    border = 0px solid green;
+		    padding = 0;
+		}
+
+
+		.front_matter, .front_matter_column1, .front_matter_column2, .front_matter_column3
+		{
+			left : 0;
+			top : 0;
+			padding: 0em;
+			padding-top : 0.1em;
+			border : 0px solid black;
+			width : 100%;
+			vertical-align: top;
+			text-align: left;
+		}
+
+		.front_matter_column1 {
+			width : 8em;
+			font-weight: bold;
+		}
+
+		.front_matter_column2 {
+			width: 0.1em;
+		}
+
+		.front_matter_column3 {
+			width : auto;
+		}
+
+		.total_column1, .total_column {
+			font-weight : bold;
+		}
+		.total_column1 {
+			text-align : left;
+		}
+		.warning, .error {
+			color : red;
+			font-weight : bold;
+		}
+		tr.onmouseout_odd {
+			background-color : #white;
+		}
+		tr.onmouseout_even { 
+			background-color : #FAFAFA;
+		}
+		tr.onmouseover_odd, tr.onmouseover_even { 
+			background-color : #EEEEEE;
+		} 
+		a:link, a:visited, .q a:link,.q a:active,.q {
+			color: #21489e; 
+		}
+		a:link.callback, a:visited.callback { 
+			color: #21489e;
+		}
+		a:link.customize, a:visited.customize {
+			color: #C0C0C0;
+			position: absolute; 
+			right: 10px;
+		}	
+		p.contents_level1 {
+			font-weight : bold;
+			font-size : 110%;
+			margin : 0.5em;
+		}
+		p.contents_level2 {
+			position : relative;
+			left : 20px;
+			margin : 0.5em;
+		}
+	</style><script type="text/javascript">
+		function coordToMils(coord) {
+			var number = coord / 10000;
+			
+			if (number != number.toFixed(3))
+				number = number.toFixed(3);
+
+			return number + 'mil'
+		}
+
+		function coordToMM(coord) {
+			var number = 0.0254 * coord / 10000;
+			
+			if (number != number.toFixed(4))
+				number = number.toFixed(4);
+			
+			return number + 'mm'
+		}
+	
+		function convertCoord(coordNode, units) {
+			for (var i = 0; i < coordNode.childNodes.length; i++) {
+				coordNode.removeChild(coordNode.childNodes[i]);
+			}
+
+			var coord = coordNode.getAttribute('value');
+			if (coord != null) {
+				if (units == 'mm') {
+					textNode = document.createTextNode(coordToMM(coord));
+					coordNode.appendChild(textNode);
+				} else if (units == 'mil') {
+					textNode = document.createTextNode(coordToMils(coord));		
+					coordNode.appendChild(textNode);	
+				}
+			}
+		}
+	
+		function convertUnits(unitNode, units) {
+			for (var i = 0; i < unitNode.childNodes.length; i++) {
+				unitNode.removeChild(unitNode.childNodes[i]);		
+			}
+		
+			textNode = document.createTextNode(units); 
+			unitNode.appendChild(textNode);
+		}
+	
+		function changeUnits(radio_input, units) {
+			if (radio_input.checked) {
+			
+				var elements = document.getElementsByName('coordinate');
+				if (elements) {
+					for (var i = 0; i < elements.length; i++) {
+						convertCoord(elements[i], units);
+					}
+				}
+	
+				var elements = document.getElementsByName('units');
+				if (elements) {
+					for (var i = 0; i < elements.length; i++) {
+						convertUnits(elements[i], units);
+					}
+				}
+			}
+		}
+	</script><title>Design Rule Verification Report</title>
+</head>
+<body onload=""><img ALT="Altium" src="
+			file://C:\Users\Public\Documents\Altium\AD25\Templates\AD_logo.png
+		"><h1>Design Rule Verification Report</h1>
+<table class="header_holder">
+<td class="column1">
+<table class="front_matter">
+<tr class="front_matter">
+<td class="front_matter_column1">Date:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3">3/10/2026</td>
+</tr>
+<tr class="front_matter">
+<td class="front_matter_column1">Time:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3">8:31:19 PM</td>
+</tr>
+<tr class="front_matter">
+<td class="front_matter_column1">Elapsed Time:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3">00:00:00</td>
+</tr>
+<tr class="front_matter">
+<td class="front_matter_column1">Filename:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3"><a href="file:///C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc" class="file"><acronym title="C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc">C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc</acronym></a></td>
+</tr>
+</table>
+</td>
+<td class="column2">
+<table class="DRC_summary_header">
+<tr>
+<td class="DRC_summary_header_col1">Warnings:</td>
+<td class="DRC_summary_header_col2"></td>
+<td class="DRC_summary_header_col3">0</td></tr>
+<tr>
+<td class="DRC_summary_header_col1">Rule Violations:</td>
+<td class="DRC_summary_header_col2"></td>
+<td class="DRC_summary_header_col3" style="color : red">28</td></tr>
+</table>
+</td>
+</table><a name="IDCEFJP0VNHOGLNJSX5SQNF1M4NIKUTD25Y0XXIMEBNCWL4213EJLG"><h2>Summary</h2></a><table>
+<tr>
+<th class="column1">Warnings</th>
+<th class="column2">Count</th>
+</tr>
+<tr>
+<td style="font-weight : bold; text-align : right" class="column1">Total</td>
+<td style="font-weight : bold" class="column2">0</td>
+</tr>
+</table><br><table>
+<tr>
+<th class="column1">Rule Violations</th>
+<th class="column2">Count</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDZJ0M5GCS5GNDKN1I24IVFNGTBFMVG1OELVYVOAODJMFWKSI4SE0P">Clearance Constraint (Gap=0.254mm) (All),(All)</a></td>
+<td class="column2">22</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#ID0DAJ2MWGNZJ1IK0UCNEEUHRG1P0O0QAOTUAM11MXL221GVSDPB4O">Short-Circuit Constraint (Allowed=No) (All),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDVAE2U023L5TDF3FJMLR2NVK2KB524YI0GQBWS0GN5KT2XHCF5DXO">Un-Routed Net Constraint ( (All) )</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDDPKQCCZYVX50MW2TRVL3YZCGOMR1VLEUHPCDNEJRDQIH1ZKWPRPM">Modified Polygon (Allow modified: No), (Allow shelved: No)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDFRJXO3OBKJZHG4Z1BI3VLQOPKGLKQCB4SHYCJPCJMSWWYYENKSIE">Width Constraint (Min=0.254mm) (Max=0.5mm) (Preferred=0.254mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#ID0NWE3XA02BILBX4P0PZM2WHDLILT3TXHCCD4DE3TUXB0TENLBFJ">Routing Topology Rule(Topology=Shortest) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDJLA3GO5IKFANDTI4SOZ50XIY3PRVIEGF4RL4OACDULUEBEYTWXVD">Power Plane Connect Rule(Relief Connect )(Expansion=0.508mm) (Conductor Width=0.254mm) (Air Gap=0.254mm) (Entries=4) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDYQ0BOEAPTMAMM3GJTOSJZQIY0GIGIVJJL1CANNJR4WRTNFW1EZPI">Hole Size Constraint (Min=0.025mm) (Max=3.6mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDJWSVW11HZID4CM51SKO2JM2RRH4VKGEFKMOWSQHWSID5O1HADAFK">Hole To Hole Clearance (Gap=0.254mm) (All),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDSAJWYMWNTAGBFTIBYM2FCBT5ZLRLS3U5GTRQKJL0FVSOUZOY3D4H">Minimum Solder Mask Sliver (Gap=0.254mm) (All),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDOJWUAFCA5CLKP2A5RKSHRIJJOOFOE4M5EBYV3AFXGKP1C41ZC13G">Silk To Solder Mask (Clearance=0.254mm) (IsPad),(All)</a></td>
+<td class="column2">4</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDWQSI04DIUSVJDGCEYRRMUEL5VC1MDDQEQAOPO2NBNCWH5HTJPLFB">Silk to Silk (Clearance=0.254mm) (All),(All)</a></td>
+<td class="column2">2</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDWRZNT3U53SIJDYBVBZKZGOX0WE2ORRTTEKYBQBG2UXAPFWJY0R1C">Net Antennae (Tolerance=0mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDXQUXFYAKN4S3OMOPXBVZXD52IMJF0MYYWCPZ3CHJ52EQQD41VXOC">Height Constraint (Min=0mm) (Max=25.4mm) (Prefered=12.7mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr>
+<td style="font-weight : bold; text-align : right" class="column1">Total</td>
+<td style="font-weight : bold" class="column2">28</td>
+</tr>
+</table><br><a name="IDZJ0M5GCS5GNDKN1I24IVFNGTBFMVG1OELVYVOAODJMFWKSI4SE0P"><table>
+<tr>
+<th style="text-align : left" colspan="1" class="rule">Clearance Constraint (Gap=0.254mm) (All),(All)</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2612.918mil|Location2.Y=2624.168mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2612.918mil|Location2.Y=2624.168mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-1(32.414mm,49.31mm) on Top Layer And Pad ADS1256-2(32.414mm,48.66mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2382.604mil|Location2.Y=2393.854mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2382.604mil|Location2.Y=2393.854mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-10(32.414mm,43.46mm) on Top Layer And Pad ADS1256-11(32.414mm,42.81mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2408.194mil|Location2.Y=2419.444mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2408.194mil|Location2.Y=2419.444mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-10(32.414mm,43.46mm) on Top Layer And Pad ADS1256-9(32.414mm,44.11mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2357.013mil|Location2.Y=2368.263mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2357.013mil|Location2.Y=2368.263mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-11(32.414mm,42.81mm) on Top Layer And Pad ADS1256-12(32.414mm,42.16mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2331.422mil|Location2.Y=2342.672mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2331.422mil|Location2.Y=2342.672mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-12(32.414mm,42.16mm) on Top Layer And Pad ADS1256-13(32.414mm,41.51mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2305.832mil|Location2.Y=2317.082mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2305.832mil|Location2.Y=2317.082mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-13(32.414mm,41.51mm) on Top Layer And Pad ADS1256-14(32.414mm,40.86mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2305.832mil|Location2.Y=2317.082mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2305.832mil|Location2.Y=2317.082mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-15(39.214mm,40.86mm) on Top Layer And Pad ADS1256-16(39.214mm,41.51mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2331.422mil|Location2.Y=2342.672mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2331.422mil|Location2.Y=2342.672mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-16(39.214mm,41.51mm) on Top Layer And Pad ADS1256-17(39.214mm,42.16mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2357.013mil|Location2.Y=2368.263mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2357.013mil|Location2.Y=2368.263mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-17(39.214mm,42.16mm) on Top Layer And Pad ADS1256-18(39.214mm,42.81mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2382.604mil|Location2.Y=2393.854mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2382.604mil|Location2.Y=2393.854mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-18(39.214mm,42.81mm) on Top Layer And Pad ADS1256-19(39.214mm,43.46mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2408.194mil|Location2.Y=2419.444mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2408.194mil|Location2.Y=2419.444mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-19(39.214mm,43.46mm) on Top Layer And Pad ADS1256-20(39.214mm,44.11mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2433.784mil|Location2.Y=2445.034mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2433.784mil|Location2.Y=2445.034mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-20(39.214mm,44.11mm) on Top Layer And Pad ADS1256-21(39.214mm,44.76mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2459.375mil|Location2.Y=2470.625mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2459.375mil|Location2.Y=2470.625mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-21(39.214mm,44.76mm) on Top Layer And Pad ADS1256-22(39.214mm,45.41mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2484.966mil|Location2.Y=2496.216mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2484.966mil|Location2.Y=2496.216mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-22(39.214mm,45.41mm) on Top Layer And Pad ADS1256-23(39.214mm,46.06mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2510.556mil|Location2.Y=2521.806mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2510.556mil|Location2.Y=2521.806mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-23(39.214mm,46.06mm) on Top Layer And Pad ADS1256-24(39.214mm,46.71mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2536.146mil|Location2.Y=2547.396mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4349.808mil|Location2.X=4361.058mil|Location1.Y=2536.146mil|Location2.Y=2547.396mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-24(39.214mm,46.71mm) on Top Layer And Pad ADS1256-25(39.214mm,47.36mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2561.737mil|Location2.Y=2572.987mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2561.737mil|Location2.Y=2572.987mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-3(32.414mm,48.01mm) on Top Layer And Pad ADS1256-4(32.414mm,47.36mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2536.146mil|Location2.Y=2547.396mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2536.146mil|Location2.Y=2547.396mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-4(32.414mm,47.36mm) on Top Layer And Pad ADS1256-5(32.414mm,46.71mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2510.556mil|Location2.Y=2521.806mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2510.556mil|Location2.Y=2521.806mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-5(32.414mm,46.71mm) on Top Layer And Pad ADS1256-6(32.414mm,46.06mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2484.966mil|Location2.Y=2496.216mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2484.966mil|Location2.Y=2496.216mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-6(32.414mm,46.06mm) on Top Layer And Pad ADS1256-7(32.414mm,45.41mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2459.375mil|Location2.Y=2470.625mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2459.375mil|Location2.Y=2470.625mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-7(32.414mm,45.41mm) on Top Layer And Pad ADS1256-8(32.414mm,44.76mm) on Top Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2433.784mil|Location2.Y=2445.034mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4082.092mil|Location2.X=4093.342mil|Location1.Y=2433.784mil|Location2.Y=2445.034mil|Absolute=True">Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad ADS1256-8(32.414mm,44.76mm) on Top Layer And Pad ADS1256-9(32.414mm,44.11mm) on Top Layer </acronym></a><br></td>
+</tr>
+</table></a><hr color="#EEEEEE"><a href="#top" style="font-size: 0.9em">Back to top</a><br><br><a name="IDOJWUAFCA5CLKP2A5RKSHRIJJOOFOE4M5EBYV3AFXGKP1C41ZC13G"><table>
+<tr>
+<th style="text-align : left" colspan="1" class="rule">Silk To Solder Mask (Clearance=0.254mm) (IsPad),(All)</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4356.483mil|Location2.X=4364.149mil|Location1.Y=1181.325mil|Location2.Y=1188.991mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4356.483mil|Location2.X=4364.149mil|Location1.Y=1181.325mil|Location2.Y=1188.991mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.254mm) Between Pad DS2-2(40.513mm,12.189mm) on Multi-Layer And Track (40.013mm,12.577mm)(41.013mm,12.577mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4376.167mil|Location2.X=4383.833mil|Location1.Y=1185.546mil|Location2.Y=1193.212mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4376.167mil|Location2.X=4383.833mil|Location1.Y=1185.546mil|Location2.Y=1193.212mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.254mm) Between Pad DS2-2(40.513mm,12.189mm) on Multi-Layer And Track (40.513mm,12.077mm)(40.513mm,13.077mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3591.483mil|Location2.X=3599.149mil|Location1.Y=1181.325mil|Location2.Y=1188.991mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3591.483mil|Location2.X=3599.149mil|Location1.Y=1181.325mil|Location2.Y=1188.991mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.254mm) Between Pad DS4-2(21.082mm,12.189mm) on Multi-Layer And Track (20.582mm,12.577mm)(21.582mm,12.577mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3611.167mil|Location2.X=3618.833mil|Location1.Y=1185.546mil|Location2.Y=1193.212mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3611.167mil|Location2.X=3618.833mil|Location1.Y=1185.546mil|Location2.Y=1193.212mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.254mm) Between Pad DS4-2(21.082mm,12.189mm) on Multi-Layer And Track (21.082mm,12.077mm)(21.082mm,13.077mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+</table></a><hr color="#EEEEEE"><a href="#top" style="font-size: 0.9em">Back to top</a><br><br><a name="IDWQSI04DIUSVJDGCEYRRMUEL5VC1MDDQEQAOPO2NBNCWH5HTJPLFB"><table>
+<tr>
+<th style="text-align : left" colspan="1" class="rule">Silk to Silk (Clearance=0.254mm) (All),(All)</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4648.048mil|Location2.X=4655.714mil|Location1.Y=2484.286mil|Location2.Y=2491.952mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4648.048mil|Location2.X=4655.714mil|Location1.Y=2484.286mil|Location2.Y=2491.952mil|Absolute=True">Silk To Silk Clearance Constraint: (Collision &lt; 0.254mm) Between Text "R02" (46.419mm,44.839mm) on Top Overlay And Track (47.371mm,30.734mm)(47.371mm,48.514mm) on Top Overlay Silk Text to Silk Clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4646.167mil|Location2.X=4653.833mil|Location1.Y=2384.286mil|Location2.Y=2391.952mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4646.167mil|Location2.X=4653.833mil|Location1.Y=2384.286mil|Location2.Y=2391.952mil|Absolute=True">Silk To Silk Clearance Constraint: (Collision &lt; 0.254mm) Between Text "R03" (46.419mm,42.299mm) on Top Overlay And Track (47.371mm,30.734mm)(47.371mm,48.514mm) on Top Overlay Silk Text to Silk Clearance [0mm]</acronym></a><br></td>
+</tr>
+</table></a><hr color="#EEEEEE"><a href="#top" style="font-size: 0.9em">Back to top</a><br><br></body>
+</html>

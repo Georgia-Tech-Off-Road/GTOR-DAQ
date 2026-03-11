@@ -1,0 +1,12 @@
+Added Component: Designator=Display(MODULE_DM-OLED096-636)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/DM-OLED096-636/Display+Module/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Display Module"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "DM-OLED096-636"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "Package"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/DM-OLED096-636/Display+Module/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=Display-1
+Added Pin To Net: NetName=Net5V_1 Pin=Display-2
+Added Pin To Net: NetName=NetI2C_3 Pin=Display-3
+Added Pin To Net: NetName=NetI2C_2 Pin=Display-4
+Added Member To Class: ClassName=48PinConnector Member=Component Display DM-OLED096-636

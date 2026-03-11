@@ -1,0 +1,2 @@
+Change Component Designator: OldDesignator=C02 NewDesignator=C03
+Added Member To Class: ClassName=MainSchematic.3 Member=Component C03 1µF
