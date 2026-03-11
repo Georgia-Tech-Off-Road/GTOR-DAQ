@@ -1,0 +1,73 @@
+Change Component Designator: OldDesignator=3 NewDesignator=48 pin
+Change Component Library : Designator=CAN Old Library=282837-4 NEW.IntLib New Library=282837-4.SchLib
+Change Component Library : Designator=I2C Old Library=282837-4 NEW.IntLib New Library=282837-4.SchLib
+Change Component Library : Designator=UART Old Library=282837-4 NEW.IntLib New Library=282837-4.SchLib
+Added Component: Designator=J?(TE_282837-4)
+Add component (AddParameter): Name = "Availability"; Value = "In Stock"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/282837-4/TE+Connectivity+AMP+Connectors/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "EU_RoHS_Compliance"; Value = "Compliant with Exemptions"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "TE Connectivity"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "282837-4"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Purchase-URL"; Value = "https://pricing.snapeda.com/search/part/282837-4/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/282837-4/TE+Connectivity+AMP+Connectors/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Pin To Net: NetName=Net3_A2 Pin=J?-1
+Added Pin To Net: NetName=Net3_A2 Pin=J?-2
+Added Pin To Net: NetName=Net3_A2 Pin=J?-3
+Added Pin To Net: NetName=Net3_A2 Pin=J?-4
+Added Pin To Net: NetName=Net3_A2 Pin=J?-5
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-42
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-43
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-44
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-45
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-46
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-47
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-48
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-49
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-50
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-51
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-52
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-55
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-57
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-69
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-70
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-71
+Change Net Name : Old Net Name=Net3_A1 New Net Name=Net48 pin_A1
+Change Net Name : Old Net Name=Net3_A2 New Net Name=Net48 pin_A2
+Change Net Name : Old Net Name=Net3_A3 New Net Name=Net48 pin_A3
+Change Net Name : Old Net Name=Net3_A4 New Net Name=Net48 pin_A4
+Change Net Name : Old Net Name=Net3_B1 New Net Name=Net48 pin_B1
+Change Net Name : Old Net Name=Net3_B3 New Net Name=Net48 pin_B3
+Change Net Name : Old Net Name=Net3_B4 New Net Name=Net48 pin_B4
+Change Net Name : Old Net Name=Net3_C1 New Net Name=Net48 pin_C1
+Change Net Name : Old Net Name=Net3_C2 New Net Name=Net48 pin_C2
+Change Net Name : Old Net Name=Net3_C3 New Net Name=Net48 pin_C3
+Change Net Name : Old Net Name=Net3_C4 New Net Name=Net48 pin_C4
+Change Net Name : Old Net Name=Net3_D1 New Net Name=Net48 pin_D1
+Change Net Name : Old Net Name=Net3_D2 New Net Name=Net48 pin_D2
+Change Net Name : Old Net Name=Net3_D3 New Net Name=Net48 pin_D3
+Change Net Name : Old Net Name=Net3_D4 New Net Name=Net48 pin_D4
+Change Net Name : Old Net Name=Net3_E1 New Net Name=Net48 pin_E1
+Change Net Name : Old Net Name=Net3_E2 New Net Name=Net48 pin_E2
+Change Net Name : Old Net Name=Net3_E4 New Net Name=Net48 pin_E4
+Change Net Name : Old Net Name=Net3_F1 New Net Name=Net48 pin_F1
+Change Net Name : Old Net Name=Net3_F2 New Net Name=Net48 pin_F2
+Change Net Name : Old Net Name=Net3_F4 New Net Name=Net48 pin_F4
+Change Net Name : Old Net Name=Net3_G1 New Net Name=Net48 pin_G1
+Change Net Name : Old Net Name=Net3_G2 New Net Name=Net48 pin_G2
+Change Net Name : Old Net Name=Net3_G3 New Net Name=Net48 pin_G3
+Change Net Name : Old Net Name=Net3_G4 New Net Name=Net48 pin_G4
+Change Net Name : Old Net Name=Net3_H1 New Net Name=Net48 pin_H1
+Change Net Name : Old Net Name=Net3_H2 New Net Name=Net48 pin_H2
+Change Net Name : Old Net Name=Net3_H3 New Net Name=Net48 pin_H3
+Change Net Name : Old Net Name=Net3_J1 New Net Name=Net48 pin_J1
+Change Net Name : Old Net Name=Net3_J2 New Net Name=Net48 pin_J2
+Change Net Name : Old Net Name=Net3_K1 New Net Name=Net48 pin_K1
+Change Net Name : Old Net Name=Net3_K2 New Net Name=Net48 pin_K2
+Change Net Name : Old Net Name=Net3_L3 New Net Name=Net48 pin_L3
+Added Pin To Net: NetName=Net48 pin_H4 Pin=48 pin-H4
+Added Pin To Net: NetName=Net48 pin_H4 Pin=Teensy 4.1-33
+Added Net: Name=Net48 pin_H4
+Added Member To Class: ClassName=48PinConnector Member=Component J? 282837-4

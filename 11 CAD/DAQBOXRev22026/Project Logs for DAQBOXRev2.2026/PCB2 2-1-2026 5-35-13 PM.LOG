@@ -1,0 +1,85 @@
+Change component parameters: Designator = "J?" ("J?"); Footprint = "FP-64320-1319-MFG"; UniqueID = "\XREMKUVL" ("\XREMKUVL")
+Change component parameters (AddParameter): Name = "Color"; Value = "Brown"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Current Rating"; Value = "12A"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Gender"; Value = "Male"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Glow Wire Compliant"; Value = "Non-compliant"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Halogen Free"; Value = "Low Halogen"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Housing Material"; Value = "Nylon"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Length"; Value = "34.9mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Material"; Value = "Polyester"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Max Operating Temperature"; Value = "125°C"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Max Voltage Rating (AC)"; Value = "250V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Min Operating Temperature"; Value = "-40°C"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Number of Contacts"; Value = "48"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Number of Ports"; Value = "1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Number of Positions"; Value = "48"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Number of Rows"; Value = "4"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Orientation"; Value = "Straight"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Package Quantity"; Value = "220"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Packaging"; Value = "Bulk"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Pitch"; Value = "2.54mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Radiation Hardening"; Value = "No"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RoHS Compliant"; Value = "Yes"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Series"; Value = "64320"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Termination"; Value = "Crimp"; VariantName = "[No Variations]"
+Add component: Footprint Not Found TEENSY41
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-1
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-2
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-3
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-4
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-5
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-6
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-7
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-8
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-9
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-10
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-11
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-12
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-13
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-14
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-15
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-16
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-17
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-18
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-19
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-20
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-21
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-22
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-23
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-24
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-25
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-26
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-27
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-28
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-29
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-30
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-31
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-32
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-33
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-34
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-35
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-36
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-37
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-38
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-39
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-40
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-41
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-42
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-43
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-45
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-46
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-47
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-48
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-49
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-50
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-51
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-52
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-55
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-57
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-69
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-70
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-71
+Added Member To Class: ClassName=48PinConnector Member=Component J? 64320-1319
+Added Member To Class: ClassName=48PinConnector Member=Component J? 64320-1319
+Added Member To Class: ClassName=48PinConnector Member=Component J? 64320-1319
+Add Class Member: Failed to add class member : Component Teensy 4.1 TEENSY_4.1

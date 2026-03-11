@@ -1,0 +1,5 @@
+Replace Part ADC Clock Generator ECS-100AX-500 in C:\GTOR-DAQ\11 CAD\DAQBOXRev22026\MainSchematic.2.SchDoc with ECS-100AX-500 from ECS-100AX-500.IntLib
+Update Managed Component ADS1256 From CMP-0003-00153-1[ADS1256IDBTG4] To CMP-0003-00153-1[ADS1256IDBTG4] in MainSchematic.2.SchDoc
+Update Managed Component Analog VREF Generator From CMP-0784-00194-1[ADR4550ARZ] To CMP-0784-00194-1[ADR4550ARZ] in MainSchematic.2.SchDoc
+Update Managed Component RTC power batt From CMP-19636-000018-1[101] To CMP-19636-000018-1[101] in MainSchematic.2.SchDoc
+Update Managed Component Step Down Circuit From CMP-2000-05274-1[OKI-78SR-5/1.5-W36-C] To CMP-2000-05274-1[OKI-78SR-5/1.5-W36-C] in MainSchematic.2.SchDoc

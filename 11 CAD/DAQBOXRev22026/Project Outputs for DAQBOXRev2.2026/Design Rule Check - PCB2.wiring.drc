@@ -1,0 +1,88 @@
+Protel Design System Design Rule Check
+PCB File : C:\GTOR-DAQ\11 CAD\DAQBOXRev22026\PCB2.wiring.test.PcbDoc
+Date     : 2/23/2026
+Time     : 3:52:20 PM
+
+Processing Rule : Clearance Constraint (Gap=0.254mm) (All),(All)
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-1(26.826mm,48.675mm) on Top Layer And Pad ADS1256-2(26.826mm,48.025mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-10(26.826mm,42.825mm) on Top Layer And Pad ADS1256-11(26.826mm,42.175mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-10(26.826mm,42.825mm) on Top Layer And Pad ADS1256-9(26.826mm,43.475mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-11(26.826mm,42.175mm) on Top Layer And Pad ADS1256-12(26.826mm,41.525mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-12(26.826mm,41.525mm) on Top Layer And Pad ADS1256-13(26.826mm,40.875mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-13(26.826mm,40.875mm) on Top Layer And Pad ADS1256-14(26.826mm,40.225mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-15(33.626mm,40.225mm) on Top Layer And Pad ADS1256-16(33.626mm,40.875mm) on Top Layer 
+   Violation between Clearance Constraint: (0.129mm < 0.254mm) Between Pad ADS1256-15(33.626mm,40.225mm) on Top Layer And Track (32.131mm,40.259mm)(32.766mm,40.894mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-16(33.626mm,40.875mm) on Top Layer And Pad ADS1256-17(33.626mm,41.525mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-17(33.626mm,41.525mm) on Top Layer And Pad ADS1256-18(33.626mm,42.175mm) on Top Layer 
+   Violation between Clearance Constraint: (0.183mm < 0.254mm) Between Pad ADS1256-17(33.626mm,41.525mm) on Top Layer And Track (32.131mm,40.259mm)(32.766mm,40.894mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-18(33.626mm,42.175mm) on Top Layer And Pad ADS1256-19(33.626mm,42.825mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-19(33.626mm,42.825mm) on Top Layer And Pad ADS1256-20(33.626mm,43.475mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-2(26.826mm,48.025mm) on Top Layer And Pad ADS1256-3(26.826mm,47.375mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-20(33.626mm,43.475mm) on Top Layer And Pad ADS1256-21(33.626mm,44.125mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-21(33.626mm,44.125mm) on Top Layer And Pad ADS1256-22(33.626mm,44.775mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-22(33.626mm,44.775mm) on Top Layer And Pad ADS1256-23(33.626mm,45.425mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-23(33.626mm,45.425mm) on Top Layer And Pad ADS1256-24(33.626mm,46.075mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-24(33.626mm,46.075mm) on Top Layer And Pad ADS1256-25(33.626mm,46.725mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-3(26.826mm,47.375mm) on Top Layer And Pad ADS1256-4(26.826mm,46.725mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-4(26.826mm,46.725mm) on Top Layer And Pad ADS1256-5(26.826mm,46.075mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-5(26.826mm,46.075mm) on Top Layer And Pad ADS1256-6(26.826mm,45.425mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-6(26.826mm,45.425mm) on Top Layer And Pad ADS1256-7(26.826mm,44.775mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-7(26.826mm,44.775mm) on Top Layer And Pad ADS1256-8(26.826mm,44.125mm) on Top Layer 
+   Violation between Clearance Constraint: (0.2mm < 0.254mm) Between Pad ADS1256-8(26.826mm,44.125mm) on Top Layer And Pad ADS1256-9(26.826mm,43.475mm) on Top Layer 
+Rule Violations :25
+
+Processing Rule : Short-Circuit Constraint (Allowed=No) (All),(All)
+Rule Violations :0
+
+Processing Rule : Un-Routed Net Constraint ( (All) )
+Rule Violations :0
+
+Processing Rule : Modified Polygon (Allow modified: No), (Allow shelved: No)
+Rule Violations :0
+
+Processing Rule : Width Constraint (Min=0.254mm) (Max=0.5mm) (Preferred=0.254mm) (All)
+Rule Violations :0
+
+Processing Rule : Routing Topology Rule(Topology=Shortest) (All)
+Rule Violations :0
+
+Processing Rule : Power Plane Connect Rule(Relief Connect )(Expansion=0.508mm) (Conductor Width=0.254mm) (Air Gap=0.254mm) (Entries=4) (All)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=0.025mm) (Max=3.6mm) (All)
+Rule Violations :0
+
+Processing Rule : Hole To Hole Clearance (Gap=0.254mm) (All),(All)
+Rule Violations :0
+
+Processing Rule : Minimum Solder Mask Sliver (Gap=0.254mm) (All),(All)
+   Violation between Minimum Solder Mask Sliver Constraint: (0.147mm < 0.254mm) Between Pad C0?-1(24.602mm,57.404mm) on Top Layer And Pad C0?-2(26.452mm,57.404mm) on Top Layer [Top Solder] Mask Sliver [0.147mm]
+   Violation between Minimum Solder Mask Sliver Constraint: (0.147mm < 0.254mm) Between Pad C1?-1(24.602mm,62.992mm) on Top Layer And Pad C1?-2(26.452mm,62.992mm) on Top Layer [Top Solder] Mask Sliver [0.147mm]
+   Violation between Minimum Solder Mask Sliver Constraint: (0.147mm < 0.254mm) Between Pad C2?-1(13.97mm,65.877mm) on Top Layer And Pad C2?-2(13.97mm,67.727mm) on Top Layer [Top Solder] Mask Sliver [0.147mm]
+   Violation between Minimum Solder Mask Sliver Constraint: (0.147mm < 0.254mm) Between Pad C3?-1(8.636mm,65.877mm) on Top Layer And Pad C3?-2(8.636mm,67.727mm) on Top Layer [Top Solder] Mask Sliver [0.147mm]
+   Violation between Minimum Solder Mask Sliver Constraint: (0.147mm < 0.254mm) Between Pad C4?-1(3.302mm,65.841mm) on Top Layer And Pad C4?-2(3.302mm,67.691mm) on Top Layer [Top Solder] Mask Sliver [0.147mm]
+   Violation between Minimum Solder Mask Sliver Constraint: (0.147mm < 0.254mm) Between Pad C5?-1(7.747mm,18.233mm) on Top Layer And Pad C5?-2(7.747mm,16.383mm) on Top Layer [Top Solder] Mask Sliver [0.147mm]
+   Violation between Minimum Solder Mask Sliver Constraint: (0.147mm < 0.254mm) Between Pad C6?-1(13.081mm,18.324mm) on Top Layer And Pad C6?-2(13.081mm,16.474mm) on Top Layer [Top Solder] Mask Sliver [0.147mm]
+   Violation between Minimum Solder Mask Sliver Constraint: (0.147mm < 0.254mm) Between Pad C7?-1(24.439mm,24.13mm) on Top Layer And Pad C7?-2(26.289mm,24.13mm) on Top Layer [Top Solder] Mask Sliver [0.147mm]
+Rule Violations :8
+
+Processing Rule : Silk To Solder Mask (Clearance=0.254mm) (IsPad),(All)
+   Violation between Silk To Solder Mask Clearance Constraint: (Collision < 0.254mm) Between Pad DS2-2(40.513mm,12.697mm) on Multi-Layer And Track (40.013mm,13.085mm)(41.013mm,13.085mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]
+   Violation between Silk To Solder Mask Clearance Constraint: (Collision < 0.254mm) Between Pad DS2-2(40.513mm,12.697mm) on Multi-Layer And Track (40.513mm,12.585mm)(40.513mm,13.585mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]
+   Violation between Silk To Solder Mask Clearance Constraint: (Collision < 0.254mm) Between Pad DS4-2(21.082mm,12.697mm) on Multi-Layer And Track (20.582mm,13.085mm)(21.582mm,13.085mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]
+   Violation between Silk To Solder Mask Clearance Constraint: (Collision < 0.254mm) Between Pad DS4-2(21.082mm,12.697mm) on Multi-Layer And Track (21.082mm,12.585mm)(21.082mm,13.585mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]
+Rule Violations :4
+
+Processing Rule : Silk to Silk (Clearance=0.254mm) (All),(All)
+Rule Violations :0
+
+Processing Rule : Net Antennae (Tolerance=0mm) (All)
+Rule Violations :0
+
+Processing Rule : Height Constraint (Min=0mm) (Max=25.4mm) (Prefered=12.7mm) (All)
+Rule Violations :0
+
+
+Violations Detected : 37
+Waived Violations : 0
+Time Elapsed        : 00:00:00

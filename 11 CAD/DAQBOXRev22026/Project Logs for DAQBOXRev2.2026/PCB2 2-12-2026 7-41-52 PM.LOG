@@ -1,0 +1,109 @@
+Removed Pin From Net: NetName=Net3_A4 Pin=CAN?-1
+Removed Pin From Net: NetName=Net3_A3 Pin=CAN?-2
+Removed Pin From Net: NetName=Net3_B3 Pin=CAN?-3
+Removed Pin From Net: NetName=GND Pin=CAN?-4
+Removed Pin From Net: NetName=Net3_A2 Pin=I?-1
+Removed Pin From Net: NetName=Net3_G3 Pin=I?-2
+Removed Pin From Net: NetName=Net3_H3 Pin=I?-3
+Removed Pin From Net: NetName=GND Pin=I?-4
+Removed Pin From Net: NetName=Net3_A4 Pin=Teensy 4.1-3.3V_1
+Removed Pin From Net: NetName=Net3_A4 Pin=Teensy 4.1-3.3V_2
+Removed Pin From Net: NetName=Net3_A4 Pin=Teensy 4.1-3.3V_3
+Removed Pin From Net: NetName=Net3_A2 Pin=Teensy 4.1-5V
+Removed Pin From Net: NetName=NetTeensy 4.1_50 Pin=Teensy 4.1-D+
+Removed Pin From Net: NetName=NetTeensy 4.1_51 Pin=Teensy 4.1-D-
+Removed Pin From Net: NetName=GND Pin=Teensy 4.1-GND1
+Removed Pin From Net: NetName=GND Pin=Teensy 4.1-GND2
+Removed Pin From Net: NetName=GND Pin=Teensy 4.1-GND3
+Removed Pin From Net: NetName=GND Pin=Teensy 4.1-GND4
+Removed Pin From Net: NetName=GND Pin=Teensy 4.1-GND5
+Removed Pin From Net: NetName=NetTeensy 4.1_47 Pin=Teensy 4.1-ON/OFF
+Removed Pin From Net: NetName=NetTeensy 4.1_46 Pin=Teensy 4.1-PROGRAM
+Removed Pin From Net: NetName=GND Pin=Teensy 4.1-USB_GND1
+Removed Pin From Net: NetName=GND Pin=Teensy 4.1-USB_GND2
+Removed Pin From Net: NetName=NetRTC power batt_2 Pin=Teensy 4.1-VBAT
+Removed Pin From Net: NetName=Net3_A2 Pin=Teensy 4.1-VIN
+Removed Pin From Net: NetName=Net3_A2 Pin=UART?-1
+Removed Pin From Net: NetName=Net3_C3 Pin=UART?-2
+Removed Pin From Net: NetName=Net3_D3 Pin=UART?-3
+Removed Pin From Net: NetName=GND Pin=UART?-4
+Change Component Footprint: Designator=CAN? Old Footprint=691709710304 New Footprint=CONN4_ED5554DS_SHT
+Change Component Footprint: Designator=I? Old Footprint=691709710304 New Footprint=CONN4_ED5554DS_SHT
+Change Component Footprint: Designator=UART? Old Footprint=691709710304 New Footprint=CONN4_ED5554DS_SHT
+Change Component Comment : Designator=CAN? Old Comment=691709710304 New Comment=ED5554DS
+Change Component Comment : Designator=I? Old Comment=691709710304 New Comment=ED5554DS
+Change Component Comment : Designator=UART? Old Comment=691709710304 New Comment=ED5554DS
+Change Component Comment : Designator=Teensy 4.1 Old Comment=TEENSY_4.1 New Comment=DEV-16771
+Change Component Kind : Designator=UART? Old Kind=Standard New Kind=Standard (No BOM)
+Change Component Kind : Designator=I? Old Kind=Standard New Kind=Standard (No BOM)
+Change Component Kind : Designator=CAN? Old Kind=Standard New Kind=Standard (No BOM)
+Change Managed Component Library Link : Designator=CAN? Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=F8CD5FD9-34D3-478B-958C-E92D43904C0A Old ItemGUID=8027B8C3-5158-490D-8A1C-4D9BB87555E6 New ItemGUID=2A0CE15A-43F6-4585-BB79-E322F55D320E Old RevisionGUID=76003A83-6815-46C4-8FDC-F979AA160B8C New RevisionGUID=1462EC0C-F3A3-4C75-AC7D-B121BB56B0C8
+Change Managed Component Library Link : Designator=I? Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=F8CD5FD9-34D3-478B-958C-E92D43904C0A Old ItemGUID=8027B8C3-5158-490D-8A1C-4D9BB87555E6 New ItemGUID=2A0CE15A-43F6-4585-BB79-E322F55D320E Old RevisionGUID=76003A83-6815-46C4-8FDC-F979AA160B8C New RevisionGUID=1462EC0C-F3A3-4C75-AC7D-B121BB56B0C8
+Change Managed Component Library Link : Designator=Teensy 4.1 Old VaultGUID= New VaultGUID=F8CD5FD9-34D3-478B-958C-E92D43904C0A Old ItemGUID= New ItemGUID=05B93ABA-5085-4690-BD88-AA0A4229ED32 Old RevisionGUID= New RevisionGUID=B5BC5E27-2AFF-4117-9F04-AC93E87B9F4F
+Change Managed Component Library Link : Designator=UART? Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=F8CD5FD9-34D3-478B-958C-E92D43904C0A Old ItemGUID=8027B8C3-5158-490D-8A1C-4D9BB87555E6 New ItemGUID=2A0CE15A-43F6-4585-BB79-E322F55D320E Old RevisionGUID=76003A83-6815-46C4-8FDC-F979AA160B8C New RevisionGUID=1462EC0C-F3A3-4C75-AC7D-B121BB56B0C8
+Change component parameters: Designator = "CAN?" ("CAN?"); Footprint = "691709710304"; UniqueID = "\RREFGHSN" ("\RREFGHSN")
+Change component parameters (AddParameter): Name = "Design Item ID"; Value = "ED5554DS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mfr_Name"; Value = "On Shore Technology"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Source"; Value = "ED5554DS.SchLib"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Type"; Value = "Wire to Board"; VariantName = "[No Variations]"
+Change component parameters: Designator = "I?" ("I?"); Footprint = "691709710304"; UniqueID = "\JDJUNCID" ("\JDJUNCID")
+Change component parameters (AddParameter): Name = "Design Item ID"; Value = "ED5554DS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mfr_Name"; Value = "On Shore Technology"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Source"; Value = "ED5554DS.SchLib"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Type"; Value = "Wire to Board"; VariantName = "[No Variations]"
+Change component parameters: Designator = "Teensy 4.1" ("Teensy 4.1"); Footprint = "MODULE_DEV-16771"; UniqueID = "\WIONXDEG" ("\WIONXDEG")
+Change component parameters (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/DEV-16771/SparkFun+Electronics/view-part/?ref=eda"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "MF"; Value = "SparkFun Electronics"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "MP"; Value = "DEV-16771"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/DEV-16771/SparkFun+Electronics/view-part/?ref=snap"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Change component parameters: Designator = "UART?" ("UART?"); Footprint = "691709710304"; UniqueID = "\WQSRIIWD" ("\WQSRIIWD")
+Change component parameters (AddParameter): Name = "Design Item ID"; Value = "ED5554DS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mfr_Name"; Value = "On Shore Technology"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Source"; Value = "ED5554DS.SchLib"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Type"; Value = "Wire to Board"; VariantName = "[No Variations]"
+Added Component: Designator=J?(691241510009)
+Added Pin To Net: NetName=GND Pin=CAN?-1
+Added Pin To Net: NetName=Net3_B3 Pin=CAN?-2
+Added Pin To Net: NetName=Net3_A3 Pin=CAN?-3
+Added Pin To Net: NetName=Net3_A4 Pin=CAN?-4
+Added Pin To Net: NetName=GND Pin=I?-1
+Added Pin To Net: NetName=Net3_H3 Pin=I?-2
+Added Pin To Net: NetName=Net3_G3 Pin=I?-3
+Added Pin To Net: NetName=Net3_A2 Pin=I?-4
+Added Pin To Net: NetName=GND Pin=UART?-1
+Added Pin To Net: NetName=Net3_D3 Pin=UART?-2
+Added Pin To Net: NetName=Net3_C3 Pin=UART?-3
+Added Pin To Net: NetName=Net3_A2 Pin=UART?-4
+Added Member To Class: ClassName=48PinConnector Member=Component 3 366380003
+Added Member To Class: ClassName=MainSchematic.2 Member=Component ADC Clock Generator MCO-1510A
+Added Member To Class: ClassName=MainSchematic.2 Member=Component ADS1256 ADS1256IDBTG4
+Added Member To Class: ClassName=MainSchematic.2 Member=Component Analog VREF Generator ADR4550ARZ
+Added Member To Class: ClassName=Filters.2 Member=Component C0? VJ0805Y682KXAMT
+Added Member To Class: ClassName=Filters.2 Member=Component C1? VJ0805Y682KXAMT
+Added Member To Class: ClassName=Filters.2 Member=Component C2? VJ0805Y682KXAMT
+Added Member To Class: ClassName=Filters.2 Member=Component C3? VJ0805Y682KXAMT
+Added Member To Class: ClassName=Filters.2 Member=Component C4? VJ0805Y682KXAMT
+Added Member To Class: ClassName=Filters.2 Member=Component C5? VJ0805Y682KXAMT
+Added Member To Class: ClassName=Filters.2 Member=Component C6? VJ0805Y682KXAMT
+Added Member To Class: ClassName=Filters.2 Member=Component C7? VJ0805Y682KXAMT
+Added Member To Class: ClassName=48PinConnector Member=Component CAN? ED5554DS
+Added Member To Class: ClassName=48PinConnector Member=Component I? ED5554DS
+Added Member To Class: ClassName=48PinConnector Member=Component J? 691241510009
+Added Member To Class: ClassName=Filters.2 Member=Component R0? RC1206FR-10750RL
+Added Member To Class: ClassName=Filters.2 Member=Component R1? RC1206FR-10750RL
+Added Member To Class: ClassName=Filters.2 Member=Component R2? RC1206FR-10750RL
+Added Member To Class: ClassName=Filters.2 Member=Component R3? RC1206FR-10750RL
+Added Member To Class: ClassName=Filters.2 Member=Component R4? RC1206FR-10750RL
+Added Member To Class: ClassName=Filters.2 Member=Component R5? RC1206FR-10750RL
+Added Member To Class: ClassName=Filters.2 Member=Component R6? RC1206FR-10750RL
+Added Member To Class: ClassName=Filters.2 Member=Component R7? RC1206FR-10750RL
+Added Member To Class: ClassName=MainSchematic.2 Member=Component RTC power batt 101
+Added Member To Class: ClassName=48PinConnector Member=Component SPI? 1708110
+Added Member To Class: ClassName=MainSchematic.2 Member=Component Step Down Circuit OKI-78SR-5/1.5-W36-C
+Added Member To Class: ClassName=MainSchematic.2 Member=Component Teensy 4.1 DEV-16771
+Added Member To Class: ClassName=48PinConnector Member=Component UART? ED5554DS
