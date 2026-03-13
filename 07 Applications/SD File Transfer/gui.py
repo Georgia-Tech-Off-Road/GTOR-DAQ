@@ -56,7 +56,6 @@ class DAQControlCenter:
             line = self.ser.readline().decode('utf-8').strip()
             if "END_LIST" in line or not line: break
             if line.startswith("FILE:"):
-                
                 display_name = line.replace("FILE:", "")
                 self.file_list.insert(tk.END, display_name)
 
@@ -84,7 +83,13 @@ class DAQControlCenter:
         except Exception as e:
             messagebox.showerror("Download Error", "Please select a file first.")
 
+
+def launch_daq_gui():
+    daq_root = tk.Toplevel()
+    DAQControlCenter(daq_root)
+    daq_root.mainloop()
+
 if __name__ == "__main__":
     root = tk.Tk()
-    app = DAQControlCenter(root)
+    DAQControlCenter(root)
     root.mainloop()

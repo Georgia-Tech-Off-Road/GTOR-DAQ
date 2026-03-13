@@ -9,6 +9,7 @@ import sys
 import csv
 import json
 import subprocess
+from gui import launch_daq_gui
 
 #ADD DATA STUFF
 import DataDownloader
@@ -487,6 +488,10 @@ def dataProcessingTool():
     #create a button to select the file to be processed
     fileSelectButton = tk.Button(dataProcessingToolPage, text="Choose File",font=("Helvetica", 14, "bold"), command=chooseFile)
     fileSelectButton.pack(pady=10)
+    
+    #creates a button to use a usb connection GUI
+    usbSelectButton = tk.Button(dataProcessingToolPage, text="Use USB Connection", font=("Helvetica", 14, "bold"),command=launch_daq_gui)
+    usbSelectButton.pack(pady=10)
   
     #create a label to show the file selected
     fileSelectLabel = tk.Label(dataProcessingToolPage, text="No file selected")
