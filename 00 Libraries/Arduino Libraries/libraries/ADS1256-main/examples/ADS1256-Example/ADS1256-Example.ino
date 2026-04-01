@@ -77,7 +77,7 @@ SPIClass hspi(HSPI);
 //ADS1256 A(2, ADS1256::PIN_UNUSED, 8, 10, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).    //Arduino Nano/Uno - OK
 //ADS1256 A(7, ADS1256::PIN_UNUSED, 10, 9, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).      //ATmega32U4 -OK
 //ADS1256 A(16, 17, ADS1256::PIN_UNUSED, 15, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).   //ESP32 WROOM 32 - OK (HSPI+VSPI)
-ADS1256 A(22, 23, 24, 10, 5, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).    //Teensy 4.0 - OK
+ADS1256 A(22, 23, 24, 10, 5.0, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).    //Teensy 4.0 - OK
 //ADS1256 A(7, ADS1256::PIN_UNUSED, 6, 5, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).    //RP2040 Waveshare Mini - OK
 //ADS1256 A(18, 20, 21, 19, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float), SPI bus.  //RP2040 Zero - OK
 // ADS1256 A(15, ADS1256::PIN_UNUSED, ADS1256::PIN_UNUSED, 17, 2.500, &USE_SPI);  //DRDY, RESET, SYNC(PDWN), CS, VREF(float), SPI bus.  //RP2040 Pico W - OK
@@ -171,7 +171,9 @@ void setup() {
   //--------------------------------------------
 
   //Set DRATE
-  A.setDRATE(DRATE_1000SPS);  //0b00010011 - DEC: 19
+  while (A.readRegister(DRATE_REG) != DRATE_500SPS) {
+    A.setDRATE(DRATE_500SPS);  //0b00010011 - DEC: 19
+  }
   //--------------------------------------------
 
   //Read back the above 3 values to check if the writing was succesful
