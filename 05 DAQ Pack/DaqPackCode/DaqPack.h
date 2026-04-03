@@ -26,6 +26,13 @@ enum SensorID : uint8_t {
     TEENSY_TEMP     = 12
 };
 
+struct Status {
+  enum recordingStatus {NOT_READY_TO_RECORD = 0, READY_TO_RECORD, RECORDING};
+  int recording_status;
+  enum errorStatus {NO_ERROR = 0, ERROR};
+  int error_status;
+} status;
+
 struct __attribute__((packed)) DataPacket {
     uint8_t sensorID;
     // Record in units of 100 micros
@@ -83,7 +90,10 @@ void writePacket(SensorID id, float value);
 #define RPM_FOUR_LED 11
 
 #define RECORDING_LED 12
+#define ERROR_LED 3
 
+// How often to flash (in milliseconds)
+#define FLASH_RATE 250
 
 // Define number of teeth in one place for easy modification
 #define NUM_TESTING_TEETH 22
@@ -287,3 +297,5 @@ time_t getTeensy3Time()
 {
   return Teensy3Clock.get();
 }
+
+void updateStatusLEDs();
