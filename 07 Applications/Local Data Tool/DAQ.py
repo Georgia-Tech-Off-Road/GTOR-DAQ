@@ -432,7 +432,12 @@ def dataProcessingTool():
         #update the buttons to allow the file to be operated on
         global chosePath
         global outputPath
-        binThread = threading.Thread(target = ProcessingPrograms.BinFileTranslator.binConverter, args = (filePath,chosePath,outputPath))
+        # binThread = threading.Thread(target = ProcessingPrograms.BinFileTranslator.binConverter, args = (filePath,chosePath,outputPath))
+        fileName = os.path.basename(filePath)
+        baseName, _ = os.path.splitext(fileName)
+        outputFile = os.path.join(outputPath, baseName + ".json")
+        print(f"Converting {outputPath}")
+        binThread = threading.Thread(target=ProcessingPrograms.NewBinFileTranslator.translate_and_write, args=(filePath, outputFile))
         #start the thread
         binThread.start()
         

@@ -6,3 +6,4 @@ from . import ExcelConverter
 from . import FileSplitter
 from . import hertzCalculator
 from . import PRHelper
+from . import NewBinFileTranslator
