@@ -55,14 +55,6 @@ struct SensorLogger {
     }
 };
 
-// Log once a second
-struct SensorLogger teensyTempLogger = {1000000UL, 0};
-
-// Log once a second
-struct SensorLogger debugLogger = {1000000UL / 50, 0};
-
-// Save once a minute
-struct SensorLogger saveTimer = {1000000UL * 60, 0};
 
 // Write a packet to the output file
 void writePacket(SensorID id, float value);
@@ -112,6 +104,15 @@ void writePacket(SensorID id, float value);
 #define BAUD 230400
 
 #define serialMonitor Serial
+
+// Log once a second
+struct SensorLogger teensyTempLogger = {1000000UL, 0};
+
+// Log once a second
+struct SensorLogger debugLogger = {1000000UL / 50, 0};
+
+// Save once a minute
+struct SensorLogger saveTimer = {1000000UL * 60, 0};
 
 //actually init the global variable for this 
 volatile unsigned long long microsecondsElapsed = 0;
@@ -287,6 +288,8 @@ inline void setUpSD() {
   Serial.println(time.c_str());
   outputFile = SD.open(String("/"+time+"/"+time+".bin").c_str(),  FILE_WRITE);
 }
+
+constexpr uint8_t getADSPort(SensorID sensorID);
 
 inline void recordNextADSValue();
 

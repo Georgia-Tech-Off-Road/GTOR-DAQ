@@ -109,6 +109,7 @@ void setup() {
   ads2.setGain(GAIN_TWOTHIRDS);
 
   if (initADS1256() != 0) {
+    status.error_status = status.ERROR;
     Serial.println("Failure setting up ADS1256! See errors above^^^");
     while(true);
   }
@@ -132,7 +133,6 @@ void setup() {
   ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
 
   status.recording_status = status.READY_TO_RECORD;
-  status.error_status = status.ERROR;
   updateStatusLEDs();
   dataAquisitionAndSavingLoop();
 }
@@ -244,28 +244,38 @@ void dataAquisitionAndSavingLoop() {
 
 inline void recordNextADSValue() {
   static uint index = 0;
-  constexpr int PORT_LIST_LENGTH = 1; 
+  constexpr int PORT_LIST_LENGTH = 4; 
 
   // List of ADS ports to read from, should wrap around to begining
-  constexpr uint8_t ads1256PortList[PORT_LIST_LENGTH] = {SING_6};
+  constexpr uint8_t ads1256SensorList[PORT_LIST_LENGTH] = {LDS_FRONT_LEFT, LDS_FRONT_RIGHT, LDS_REAR_LEFT, LDS_REAR_RIGHT};
 
-  uint8_t nextSensor = ads1256PortList[index];
-
-  // LDS Rear Right?
-  if (nextSensor == SING_6) {
-    long result = ads1256.readSinglePort(nextSensor);
+  SensorID nextSensor = ads1256SensorList[index];
+  uint8_t nextADSPort = getADSPort(nextSensor);
+  if (nextSensor == LDS_FRONT_LEFT) {
+    long result = ads1256.readSinglePort(nextADSPort);
+    float value = LDSFrontLeft.computeSensorReading(result);
+    writePacket(SensorID::LDS_FRONT_LEFT, value);
+    DAQData.setData<cmbtl::SensorIndex::LDSFrontLeft>(value);
+  } else if (nextSensor == LDS_FRONT_RIGHT) {
+    long result = ads1256.readSinglePort(nextADSPort);
+    float value = LDSFrontRight.computeSensorReading(result);
+    writePacket(SensorID::LDS_FRONT_RIGHT, value);
+    DAQData.setData<cmbtl::SensorIndex::LDSFrontRight>(value);
+  } else if (nextSensor == LDS_REAR_LEFT) {
+    long result = ads1256.readSinglePort(nextADSPort);
+    float value = LDSRearLeft.computeSensorReading(result);
+    writePacket(SensorID::LDS_REAR_LEFT, value);
+    DAQData.setData<cmbtl::SensorIndex::LDSRearLeft>(value);
+  } else if (nextSensor == LDS_REAR_RIGHT) {
+    long result = ads1256.readSinglePort(nextADSPort);
     float value = LDSRearRight.computeSensorReading(result);
     writePacket(SensorID::LDS_REAR_RIGHT, value);
     DAQData.setData<cmbtl::SensorIndex::LDSRearRight>(value);
   } else {
-    Serial.println("Unknown sensor port to read from.");
+    Serial.printf("recordNextADSValue(): Cannot read from unknown sensor with ID %d", nextSensor);
   }
 
-  index++;
-
-  if (index >= PORT_LIST_LENGTH) {
-    index = 0;
-  }
+  index = (index + 1) % PORT_LIST_LENGTH; // Loop back to start
 }
 //changes recording state and saves file
 void changeRecordingState() {
@@ -472,6 +482,21 @@ int initADS1256() {
 
   // Success
   return 0;
+}
+
+constexpr uint8_t getADSPort(SensorID sensorID) {
+  switch (sensorID) {
+    case LDS_FRONT_LEFT:
+      return 5; // FIX ME
+    case LDS_FRONT_RIGHT:
+      return 6; // FIX ME
+    case LDS_REAR_LEFT:
+      return 7; // FIX ME
+    case LDS_REAR_RIGHT:
+      return 8; // FIX ME
+    default:
+      return -1;
+  }
 }
 
 void writePacket(SensorID id, float value) {
