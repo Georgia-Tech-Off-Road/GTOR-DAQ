@@ -273,7 +273,7 @@ inline void recordNextADSValue() {
     DAQData.setData<cmbtl::SensorIndex::LDSRearRight>(value);
   } else {
     Serial.printf("recordNextADSValue(): Cannot read from unknown sensor with ID %d", nextSensor);
-    status.ERROR = status.ERROR;
+    status.error_status = status.ERROR;
   }
 
   index = (index + 1) % PORT_LIST_LENGTH; // Loop back to start
