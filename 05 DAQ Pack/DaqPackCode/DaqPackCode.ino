@@ -123,6 +123,10 @@ void setup() {
   //start ADCs
   ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
   ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
+
+  status.recording_status = status.READY_TO_RECORD;
+  status.error_status = status.ERROR;
+  updateStatusLEDs();
   dataAquisitionAndSavingLoop();
 }
 
@@ -148,7 +152,7 @@ void updateDebugLeds() {
 
 //writes data to SD card
 void dataAquisitionAndSavingLoop() {
-  while(1) {  
+  while(1) {
     //updateDebugLeds();
     //update auto save time
     //check to see if save should be started/stopped
@@ -165,6 +169,7 @@ void dataAquisitionAndSavingLoop() {
 
     //size of is apparently computed at compile time
     if (isRecording) {
+      status.recording_status = status.RECORDING;
       // Only write packet if sufficient time has passed
       DAQData.setData<cmbtl::SensorIndex::MICRO_SEC>(microsecondsElapsed);
       DAQData.setData<cmbtl::SensorIndex::SEC>(microsecondsElapsed / 1000000);
@@ -213,6 +218,7 @@ void dataAquisitionAndSavingLoop() {
         aux1RPM.checkRPM();
       }
       //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
+      updateStatusLEDs();
     }
     //this is still called from within this while loop so an interrupt isnt calling a function
     if (analogValueFlag1) {
@@ -394,4 +400,28 @@ uint32_t safeTimestamp() {
   ts = (uint32_t)(microsecondsElapsed / 100);
   interrupts();
   return ts;
+}
+
+void updateStatusLEDs() {
+  static uint recording_counter = 0;
+  static uint last_record_time = 0;
+  if (status.recording_status == status.NOT_READY_TO_RECORD) {
+    digitalWrite(RECORDING_LED, LOW);
+  }
+  else if (status.recording_status == status.READY_TO_RECORD) {
+    digitalWrite(RECORDING_LED, HIGH);
+  }
+  else if (status.recording_status == status.RECORDING) {
+    if (last_record_time + FLASH_RATE < millis()) {
+      digitalWrite(RECORDING_LED, ++recording_counter % 2 ? HIGH : LOW);
+      last_record_time = millis();
+    }
+  }
+
+  if (status.error_status == status.ERROR) {
+    digitalWrite(ERROR_LED, HIGH);
+  }
+  else if (status.error_status == status.NO_ERROR) {
+    digitalWrite(ERROR_LED, LOW);
+  }
 }
