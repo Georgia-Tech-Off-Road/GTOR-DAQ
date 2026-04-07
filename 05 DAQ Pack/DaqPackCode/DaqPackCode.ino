@@ -243,7 +243,7 @@ void dataAquisitionAndSavingLoop() {
 }
 
 inline void recordNextADSValue() {
-  static uint index = 0;
+  static uint8_t index = 0;
   constexpr int PORT_LIST_LENGTH = 4; 
 
   // List of ADS ports to read from, should wrap around to begining
@@ -273,6 +273,7 @@ inline void recordNextADSValue() {
     DAQData.setData<cmbtl::SensorIndex::LDSRearRight>(value);
   } else {
     Serial.printf("recordNextADSValue(): Cannot read from unknown sensor with ID %d", nextSensor);
+    status.ERROR = status.ERROR;
   }
 
   index = (index + 1) % PORT_LIST_LENGTH; // Loop back to start
@@ -487,13 +488,13 @@ int initADS1256() {
 constexpr uint8_t getADSPort(SensorID sensorID) {
   switch (sensorID) {
     case LDS_FRONT_LEFT:
-      return 5; // FIX ME
+      return SING_4;
     case LDS_FRONT_RIGHT:
-      return 6; // FIX ME
+      return SING_5;
     case LDS_REAR_LEFT:
-      return 7; // FIX ME
+      return SING_6;
     case LDS_REAR_RIGHT:
-      return 8; // FIX ME
+      return SING_7;
     default:
       return -1;
   }
