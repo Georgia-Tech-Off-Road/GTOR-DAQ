@@ -3,6 +3,8 @@
 #include <SPI.h>
 #include <TimeLib.h>
 #include <Adafruit_ADS1X15.h>
+#include <ADS1256.h>
+
 #include <TeensyThreads.h>
 #include <DAQ_AMT22.h>
 #include <DAQ_RPM_Sensor.h>
@@ -74,8 +76,13 @@ void writePacket(SensorID id, float value);
 //LDS max travel
 #define LDS_MAX_TRAVEL 7.87402
 
-//ads resolution currently set to that of an ADS1115
-#define ADC_RESOLUTION 15
+//ADS Settings
+#define ADC_RESOLUTION 15 //Delete once adafruit ADS is gone
+#define DRDY 22
+#define RESET 23
+#define SYNC 24
+#define CS 10
+#define V_REF 5.0
 
 //debug macros
 #define SD_CARD_INIT_LED 3
@@ -177,6 +184,7 @@ inline void flashBang(int timeInMillis, int frontBackOrAll) {
 //DAQ sensor data struct (used for local logging and potential wireless packet formats)
 cmbtl::DAQSensorDataType DAQData;
 
+ADS1256 ads1256(DRDY, RESET, SYNC, CS, V_REF, &SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).
 //outputFile
 File outputFile;
 
@@ -280,6 +288,8 @@ inline void setUpSD() {
   outputFile = SD.open(String("/"+time+"/"+time+".bin").c_str(),  FILE_WRITE);
 }
 
+inline void recordNextADSValue();
+
 //time setup function
 inline void setupTeensyTime() {
   setSyncProvider(getTeensy3Time);
@@ -289,6 +299,9 @@ inline void setupTeensyTime() {
     Serial.println("RTC has set the system time");
   }
 }
+
+// Returns -1 if failure, 0 if success
+int initADS1256();
 
 uint32_t safeTimestamp();
 

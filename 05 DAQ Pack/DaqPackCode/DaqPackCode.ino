@@ -52,6 +52,7 @@ void setup() {
   //crank up i2c clocks
   Wire.setClock(1000000);
   Wire1.setClock(1000000);
+
   //initialize debug leds
   initDebugLEDs();
   //test leds
@@ -107,6 +108,12 @@ void setup() {
   }
   ads2.setGain(GAIN_TWOTHIRDS);
 
+  if (initADS1256() != 0) {
+    Serial.println("Failure setting up ADS1256! See errors above^^^");
+    while(true);
+  }
+  Serial.println("ADS1256 setup successful!");
+
   //calibrate the LDSs
   //LDSFrontLeft = createCalibratedLDSSensor(2, &ads1, 0);
   //LDSFrontRight = createCalibratedLDSSensor(3, &ads1, 0);
@@ -156,7 +163,7 @@ void dataAquisitionAndSavingLoop() {
     //updateDebugLeds();
     //update auto save time
     //check to see if save should be started/stopped
-     if (saveFlag /* || saveTimer.shouldLog(microsecondsElapsed) */) {
+     if (saveFlag /* || saveTimer.shouldLog(microsecondsElapsed) */ || Serial.read() == 's') {
       saveTimer.updateLastLogTime(microsecondsElapsed);
       changeRecordingState();
       saveFlag = false;
@@ -178,6 +185,9 @@ void dataAquisitionAndSavingLoop() {
         Serial.println(DAQData.serializeDataToJSON().c_str());
         debugLogger.updateLastLogTime(microsecondsElapsed);
       }
+
+      recordNextADSValue();
+
       if(teensyTempLogger.shouldLog(microsecondsElapsed)) {
         float temp = tempmonGetTemp();
         DAQData.setData<cmbtl::SensorIndex::TEENSY_TEMP>(temp);
@@ -232,6 +242,31 @@ void dataAquisitionAndSavingLoop() {
   }
 }
 
+inline void recordNextADSValue() {
+  static uint index = 0;
+  constexpr int PORT_LIST_LENGTH = 1; 
+
+  // List of ADS ports to read from, should wrap around to begining
+  constexpr uint8_t ads1256PortList[PORT_LIST_LENGTH] = {SING_6};
+
+  uint8_t nextSensor = ads1256PortList[index];
+
+  // LDS Rear Right?
+  if (nextSensor == SING_6) {
+    long result = ads1256.readSinglePort(nextSensor);
+    float value = LDSRearRight.computeSensorReading(result);
+    writePacket(SensorID::LDS_REAR_RIGHT, value);
+    DAQData.setData<cmbtl::SensorIndex::LDSRearRight>(value);
+  } else {
+    Serial.println("Unknown sensor port to read from.");
+  }
+
+  index++;
+
+  if (index >= PORT_LIST_LENGTH) {
+    index = 0;
+  }
+}
 //changes recording state and saves file
 void changeRecordingState() {
   if(isRecording == true) {
@@ -380,6 +415,63 @@ void saveInterrupt(){
     //used as a debouncer, the interrupts will finish in order since they have the same priority
     lastSaveTimeInMillis = microsecondsElapsed / 1000;
   }
+}
+
+int initADS1256() {
+  Serial.println("Setting up ADS1256...");
+
+  ads1256.InitializeADC();
+
+  uint8_t pgaVal = PGA_1;
+  uint8_t muxVal = SING_1;
+  uint8_t drateVal = DRATE_1000SPS;
+
+  // Set PGA 
+  ads1256.setPGA(pgaVal);
+
+  //Set input channels
+  ads1256.setMUX(muxVal);
+
+  //Set DRATE
+  ads1256.setDRATE(drateVal);
+
+  //Read back the above 3 values to check if the writing was succesful
+  Serial.print("PGA: ");
+  uint8_t pgaResult = ads1256.getPGA();
+  Serial.println(pgaResult);
+  delay(100);
+  //--
+  Serial.print("MUX: ");
+  uint8_t muxResult = ads1256.readRegister(MUX_REG);
+  Serial.println(muxResult);
+  delay(100);
+  //--
+  Serial.print("DRATE: ");
+  uint8_t drateResult = ads1256.readRegister(DRATE_REG);
+  Serial.println(drateResult);
+  delay(100);
+
+  // --- Error Handling ---
+  bool error = false;
+  if (pgaVal != pgaResult) {
+    Serial.println("Unable to correctly set PGA value");
+    error = true;
+  }
+  if (muxVal != muxResult) {
+    Serial.println("Unable to correctly set mux value");
+    error = true;
+  }
+  if (drateVal != drateResult) {
+    Serial.println("Unable to correctly set drate value");
+    error = true;
+  }
+
+  // Failure
+  if (error)
+    return -1;
+
+  // Success
+  return 0;
 }
 
 void writePacket(SensorID id, float value) {
