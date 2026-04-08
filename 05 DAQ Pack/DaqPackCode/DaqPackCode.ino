@@ -134,6 +134,7 @@ void setup() {
 
   status.recording_status = status.READY_TO_RECORD;
   updateStatusLEDs();
+  // blockForButtonHold(RECORD_BUTTON, 1000000); // Must hold the recording button for one second
   dataAquisitionAndSavingLoop();
 }
 
@@ -500,6 +501,30 @@ constexpr uint8_t getADSPort(SensorID sensorID) {
   }
 }
 
+void blockForButtonHold(int buttonPin, uint32_t holdMicroseconds) {
+  uint32_t lastHeldTime, heldMicroseconds = 0;
+  uint32_t debounceMicros = 1000;
+  bool firstHold = true;
+  while(true) {
+    if (digitalRead(buttonPin) == LOW) {
+      if (!firstHold) {
+        heldMicroseconds += safeMicrosecondsElapsed() - lastHeldTime;
+      }
+      firstHold = false;
+      lastHeldTime = safeMicrosecondsElapsed();
+    } else if ((safeMicrosecondsElapsed() - lastHeldTime) < debounceMicros) { // Prevent noisy values from breaking our hold
+      continue;
+    }
+    else {
+      firstHold = true;
+      heldMicroseconds = 0;
+    }
+
+    if (heldMicroseconds >= holdMicroseconds) {
+      return;
+    }
+  }
+}
 void writePacket(SensorID id, float value) {
   if (!isRecording) return;
   DataPacket packet;
@@ -513,9 +538,13 @@ void writePacket(SensorID id, float value) {
 }
 
 uint32_t safeTimestamp() {
+  return safeMicrosecondsElapsed() / 100;
+}
+
+inline uint32_t safeMicrosecondsElapsed() {
   uint32_t ts;
   noInterrupts();
-  ts = (uint32_t)(microsecondsElapsed / 100);
+  ts = (uint32_t) microsecondsElapsed;
   interrupts();
   return ts;
 }

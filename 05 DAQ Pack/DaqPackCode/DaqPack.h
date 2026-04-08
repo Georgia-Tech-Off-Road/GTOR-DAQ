@@ -91,6 +91,8 @@ void writePacket(SensorID id, float value);
 #define RECORDING_LED 12
 #define ERROR_LED 3
 
+#define RECORD_BUTTON 0 // FIXME
+
 // How often to flash (in milliseconds)
 #define FLASH_RATE 250
 
@@ -293,6 +295,11 @@ constexpr uint8_t getADSPort(SensorID sensorID);
 
 inline void recordNextADSValue();
 
+/*
+ * Returns if the specified buttonPin is held for holdMilliseconds
+*/
+void blockForButtonHold(int buttonPin, uint32_t holdMilliseconds);
+
 //time setup function
 inline void setupTeensyTime() {
   setSyncProvider(getTeensy3Time);
@@ -307,6 +314,8 @@ inline void setupTeensyTime() {
 int initADS1256();
 
 uint32_t safeTimestamp();
+
+inline uint32_t safeMicrosecondsElapsed();
 
 //method needed to get time
 time_t getTeensy3Time()
