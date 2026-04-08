@@ -490,9 +490,9 @@ constexpr uint8_t getADSPort(SensorID sensorID) {
     case LDS_FRONT_LEFT:
       return SING_4;
     case LDS_FRONT_RIGHT:
-      return SING_5;
-    case LDS_REAR_LEFT:
       return SING_6;
+    case LDS_REAR_LEFT:
+      return SING_5;
     case LDS_REAR_RIGHT:
       return SING_7;
     default:
