@@ -69,29 +69,19 @@ void writePacket(SensorID id, float value);
 #define LDS_MAX_TRAVEL 7.87402
 
 //ADS Settings
-#define ADC_RESOLUTION 15 //Delete once adafruit ADS is gone
+#define ADC_RESOLUTION 15
 #define DRDY 22
 #define RESET 23
 #define SYNC 24
 #define CS 10
 #define V_REF 5.0
 
-//debug macros
-#define SD_CARD_INIT_LED 3
-#define ANALOG_ONE_LED 4
-#define ANALOG_TWO_LED 5
-#define ANALOG_THREE_LED 6
-#define ANALOG_FOUR_LED 7
-
-#define RPM_ONE_LED 8
-#define RPM_TWO_LED 9
-#define RPM_THREE_LED 10
-#define RPM_FOUR_LED 11
-
+// LEDs
 #define RECORDING_LED 35
 #define ERROR_LED 40
 #define POWER_LED 3
 
+// Buttons
 #define RECORD_SAVE_BUTTON 34
 
 // How often to flash (in milliseconds)
@@ -154,36 +144,6 @@ enum Sensor_Constants {
   FRTEETH = 12,
   FLTEETH = 12
 };
-
-//function to test all debug LEDs
-inline void flashBang(int timeInMillis, int frontBackOrAll) {
-  //choose which lights to set high (used to communicate info for LDS calibration and whatnot)
-  if(frontBackOrAll != 1) {
-    digitalWrite(RECORDING_LED, HIGH);
-    digitalWrite(RPM_ONE_LED, HIGH);
-    digitalWrite(RPM_TWO_LED, HIGH);
-    digitalWrite(RPM_THREE_LED, HIGH);
-    digitalWrite(RPM_FOUR_LED, HIGH);
-  }
-  if (frontBackOrAll != 0) {
-    digitalWrite(ANALOG_ONE_LED, HIGH);
-    digitalWrite(ANALOG_TWO_LED, HIGH);
-    digitalWrite(ANALOG_THREE_LED, HIGH);
-    digitalWrite(ANALOG_FOUR_LED, HIGH);
-    digitalWrite(SD_CARD_INIT_LED, HIGH);
-  }
-  delay(timeInMillis);
-  digitalWrite(RECORDING_LED, LOW);
-  digitalWrite(RPM_ONE_LED, LOW);
-  digitalWrite(RPM_TWO_LED, LOW);
-  digitalWrite(RPM_THREE_LED, LOW);
-  digitalWrite(RPM_FOUR_LED, LOW);
-  digitalWrite(ANALOG_ONE_LED, LOW);
-  digitalWrite(ANALOG_TWO_LED, LOW);
-  digitalWrite(ANALOG_THREE_LED, LOW);
-  digitalWrite(ANALOG_FOUR_LED, LOW);
-  digitalWrite(SD_CARD_INIT_LED, LOW);
-}
 
 //DAQ sensor data struct (used for local logging and potential wireless packet formats)
 cmbtl::DAQSensorDataType DAQData;
@@ -260,10 +220,8 @@ inline int setUpSD() {
   if(!SDCARDINIT) {
     Serial.printf("SD FAILED TO INIT\n");
     return -1;
-    digitalWrite(SD_CARD_INIT_LED, LOW);
   } else {
     Serial.printf("SD INITIALIZED\n");
-    //digitalWrite(SD_CARD_INIT_LED, HIGH);
   }
   delay(500);
   String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());

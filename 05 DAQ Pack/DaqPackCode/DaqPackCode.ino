@@ -3,10 +3,6 @@
 //create an interval timer (provides more accurate timing than microseconds)
 IntervalTimer intervalMicros;
 
-// Intialize ADCs
-Adafruit_ADS1115 ads1;
-Adafruit_ADS1115 ads2;
-
 // Initialize analog value flags
 volatile bool analogValueFlag1 = false;
 volatile bool analogValueFlag2 = false;
@@ -54,8 +50,6 @@ void setup() {
 
   //initialize pins for LEDs, buttons, etc.
   initPins();
-  //test leds
-  //flashBang(5000, 2);
   //initialize micros interval timer (updates every 5 microseconds, means our effective maximum polling rate would be 500kHz)
   intervalMicros.begin(&intervalTimerFunction, 5);
   //set the interupt priority to be higher than the default priority of 128 for the attachInterrupts ones (we don't want our time drifting)
@@ -74,8 +68,6 @@ void setup() {
   };
   updateStatusLEDs();
 
-  pinMode(41, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(41), updateAnalogValueFlag2, FALLING);
 
   pinMode(RPM3, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM3), frontRightRPMInterrupt, RISING);
@@ -85,20 +77,6 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(RPM2), frontLeftRPMInterrupt, RISING);
   pinMode(RPM4, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM4), aux1RPMInterrupt, RISING);
-  //configure ADCs
-  ads1.begin(0x48, &Wire);
-  ads2.begin(0x48, &Wire1);
-  //make sure it sets it right
-  while(ads1.getDataRate() != RATE_ADS1115_860SPS) {
-    ads1.setDataRate(RATE_ADS1115_860SPS);
-  }
-  
-  ads1.setGain(GAIN_TWOTHIRDS);
-
-  while(ads2.getDataRate() != RATE_ADS1115_860SPS) {
-    ads2.setDataRate(RATE_ADS1115_860SPS);
-  }
-  ads2.setGain(GAIN_TWOTHIRDS);
 
   if (initADS1256() != 0) {
     status.error_status = status.ERROR;
@@ -120,9 +98,6 @@ void setup() {
   isRecording = true;
   //init auto save time
   autoSaveTimeMillis = millis();
-  //start ADCs
-  ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
-  ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
 
   status.recording_status = status.READY_TO_RECORD;
   updateStatusLEDs();
@@ -135,22 +110,6 @@ void setup() {
 
 //do nothing here
 void loop() {}
-
-//update debug LEDs
-void updateDebugLeds() {
-  digitalWrite(RECORDING_LED, isRecording ? HIGH : LOW);
-  digitalWrite(RPM_ONE_LED, engineRPM.getRPMValueGood() ? HIGH : LOW);
-  digitalWrite(RPM_TWO_LED, frontLeftRPM.getRPMValueGood() ? HIGH : LOW);
-  digitalWrite(RPM_THREE_LED, frontRightRPM.getRPMValueGood() ? HIGH : LOW);
-  digitalWrite(RPM_FOUR_LED, aux1RPM.getRPMValueGood() ? HIGH : LOW);
-  digitalWrite(ANALOG_ONE_LED, rearBrakePressure.getValueGood() ? HIGH : LOW);
-  digitalWrite(ANALOG_TWO_LED, frontBrakePressure.getValueGood() ? HIGH : LOW);
-  digitalWrite(ANALOG_THREE_LED, LDSFrontLeft.getValueGood() ? HIGH : LOW);
-  digitalWrite(ANALOG_FOUR_LED, LDSFrontRight.getValueGood() ? HIGH : LOW);
-  //SD debug is handled by the file creation code
-  //power LED is always on whenever the box is on
-}
-
 
 //writes data to SD card
 void dataAquisitionAndSavingLoop() {
@@ -256,15 +215,6 @@ void dataAquisitionAndSavingLoop() {
       //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
       updateStatusLEDs();
     }
-    //this is still called from within this while loop so an interrupt isnt calling a function
-    if (analogValueFlag1) {
-      readAnalogValues1();
-      analogValueFlag1 = false;
-    }
-    if (analogValueFlag2) {
-      readAnalogValues2();
-      analogValueFlag2 = false;
-    }
   }
 }
 
@@ -314,7 +264,6 @@ void changeRecordingState() {
     Serial.printf("File closed\n");
     isRecording = false;
     //signal to user that the file saved with a flashbang
-    flashBang(1000, 2);
     status.recording_status = status.READY_TO_RECORD;
   }
   else {
@@ -346,25 +295,6 @@ void updateAnalogValueFlag2() {
 }
 
 inline void initPins() {
-  pinMode(SD_CARD_INIT_LED, OUTPUT);
-  digitalWrite(SD_CARD_INIT_LED, 0);
-  pinMode(ANALOG_ONE_LED, OUTPUT);
-  digitalWrite(ANALOG_ONE_LED, 0);
-  pinMode(ANALOG_TWO_LED, OUTPUT);
-  digitalWrite(ANALOG_TWO_LED, 0);
-  pinMode(ANALOG_THREE_LED, OUTPUT);
-  digitalWrite(ANALOG_THREE_LED, 0);
-  pinMode(ANALOG_FOUR_LED, OUTPUT);
-  digitalWrite(ANALOG_FOUR_LED, 0);
-  pinMode(RPM_ONE_LED, OUTPUT);
-  digitalWrite(RPM_ONE_LED, 0);
-  pinMode(RPM_TWO_LED, OUTPUT);
-  digitalWrite(RPM_TWO_LED, 0);
-  pinMode(RPM_THREE_LED, OUTPUT);
-  digitalWrite(RPM_THREE_LED, 0);
-  pinMode(RPM_FOUR_LED, OUTPUT);
-  digitalWrite(RPM_FOUR_LED, 0);
-
   pinMode(POWER_LED, OUTPUT);
   digitalWrite(POWER_LED, HIGH); // Leave at HIGH for basically forever
 
@@ -375,81 +305,6 @@ inline void initPins() {
   digitalWrite(ERROR_LED, LOW);
 
   pinMode(RECORD_SAVE_BUTTON, INPUT_PULLUP);
-}
-
-
-void readAnalogValues1() {
-  switch (currentAnalogSensor1) {
-    case 0: {
-      float value = (float) rearBrakePressure.computeSensorReading(ads1.getLastConversionResults());
-      DAQData.setData<cmbtl::SensorIndex::RearBrakePressure>(value);
-      writePacket(SensorID::REAR_BRAKE_PRES, value);
-      currentAnalogSensor1 = 1;
-      ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
-      break;
-    }
-    case 1: {
-      float value = (float) frontBrakePressure.computeSensorReading(ads1.getLastConversionResults());
-      DAQData.setData<cmbtl::SensorIndex::FrontBrakePressure>(value);
-      writePacket(SensorID::FRONT_BRAKE_PRES, value);
-      currentAnalogSensor1 = 2;
-      ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
-      break;
-    }
-    case 2: {
-      float value = (float) LDSFrontRight.computeSensorReading(ads1.getLastConversionResults());
-      DAQData.setData<cmbtl::SensorIndex::LDSFrontRight>(value);
-      writePacket(SensorID::LDS_FRONT_RIGHT, value);
-      currentAnalogSensor1 = 3;
-      ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
-      break;
-    }
-    case 3: {
-      float value = (float) LDSFrontLeft.computeSensorReading(ads1.getLastConversionResults());
-      DAQData.setData<cmbtl::SensorIndex::LDSFrontLeft>(value);
-      writePacket(SensorID::LDS_FRONT_LEFT, value);
-      currentAnalogSensor1 = 0;
-      ads1.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
-      break;
-    }
-  }
-}
-
-void readAnalogValues2() {
-  switch (currentAnalogSensor2) {
-    case 0: {
-      float value = (float) LDSRearRight.computeSensorReading(ads2.getLastConversionResults());
-      DAQData.setData<cmbtl::SensorIndex::LDSRearRight>(value);
-      writePacket(SensorID::LDS_REAR_RIGHT, value);
-      currentAnalogSensor2 = 1;
-      ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_1, false);
-      break;
-    }
-    case 1: {
-      float value = (float) LDSRearLeft.computeSensorReading(ads2.getLastConversionResults());
-      DAQData.setData<cmbtl::SensorIndex::LDSRearLeft>(value);
-      writePacket(SensorID::LDS_REAR_LEFT, value);
-      currentAnalogSensor2 = 2;
-      ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_2, false);
-      break;
-    }
-    case 2: {
-      float value = (float) CVTTemp.computeSensorReading(ads2.getLastConversionResults());
-      DAQData.setData<cmbtl::SensorIndex::CVTTemp>(value);
-      writePacket(SensorID::CVT_TEMP, value);
-      currentAnalogSensor2 = 3;
-      ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_3, false);
-      break;
-    }
-    case 3: {
-      float value = RearTransferCaseTemp.computeSensorReading(ads2.getLastConversionResults());
-      DAQData.setData<cmbtl::SensorIndex::RearTransferCaseTemp>(value);
-      writePacket(SensorID::REAR_TC_TEMP, value);
-      currentAnalogSensor2 = 0;
-      ads2.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, false);
-      break;
-    }
-  }
 }
 
 void engineRPMInterrupt() {
