@@ -53,8 +53,10 @@ void setup() {
   Wire.setClock(1000000);
   Wire1.setClock(1000000);
 
-  //initialize debug leds
-  initDebugLEDs();
+
+
+  //initialize pins for LEDs, buttons, etc.
+  initPins();
   //test leds
   //flashBang(5000, 2);
   //initialize micros interval timer (updates every 5 microseconds, means our effective maximum polling rate would be 500kHz)
@@ -72,11 +74,8 @@ void setup() {
   //perform outFile init
   setUpSD();
 
-  //configure save pin
-  pinMode(0, INPUT_PULLUP);
-
   //set up save interrupt
-  attachInterrupt(digitalPinToInterrupt(RECORD_SAVE_BUTTON), saveInterrupt, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(RECORD_SAVE_BUTTON), saveInterrupt, FALLING);
 
   //set up ADC interrupts
   pinMode(40, INPUT_PULLUP);
@@ -134,14 +133,15 @@ void setup() {
 
   status.recording_status = status.READY_TO_RECORD;
   updateStatusLEDs();
-  blockForButtonHold(RECORD_SAVE_BUTTON, 1000000); // Must hold the recording button for one second
+
+  // blockForButtonHold(RECORD_SAVE_BUTTON, 1000000); // Must hold the recording button for one second
   // Rapid flash the recording LED for 5 sec
   rapidFlash(RECORDING_LED, 5000);
   dataAquisitionAndSavingLoop();
 }
 
 //do nothing here
-void loop(){}
+void loop() {}
 
 //update debug LEDs
 void updateDebugLeds() {
@@ -156,13 +156,13 @@ void updateDebugLeds() {
   digitalWrite(ANALOG_FOUR_LED, LDSFrontRight.getValueGood() ? HIGH : LOW);
   //SD debug is handled by the file creation code
   //power LED is always on whenever the box is on
-  
 }
 
 
 //writes data to SD card
 void dataAquisitionAndSavingLoop() {
   while(1) {
+    digitalWrite(POWER_LED, HIGH);
     //updateDebugLeds();
     //update auto save time
     //check to see if save should be started/stopped
@@ -176,12 +176,14 @@ void dataAquisitionAndSavingLoop() {
       status.recording_status = status.READY_TO_RECORD;
       updateStatusLEDs();
 
-      blockForButtonHold(RECORD_SAVE_BUTTON, 1000000); // Must hold the recording button for one second
+      // blockForButtonHold(RECORD_SAVE_BUTTON, 1000000); // Must hold the recording button for one second
       // Rapid flash the recording LED for 5 sec
-      rapidFlash(RECORDING_LED, 5000);
+      digitalWrite(ERROR_LED, HIGH);
+      delay(5000);
+      digitalWrite(ERROR_LED, LOW);
     }
     //perform flush check before data check
-    if (millis() > autoSaveTimeMillis + 300000) {
+    if (millis() > autoSaveTimeMillis + 30000) {
       outputFile.flush();
       autoSaveTimeMillis = millis();
     }
@@ -293,9 +295,6 @@ inline void recordNextADSValue() {
 //changes recording state and saves file
 void changeRecordingState() {
   if(isRecording == true) {
-    while(!digitalRead(0)) {
-      flashBang(10, 0);
-    }
     //outputFile.printf("]");
     outputFile.flush();
     outputFile.close();
@@ -307,9 +306,6 @@ void changeRecordingState() {
     status.recording_status = status.READY_TO_RECORD;
   }
   else {
-    while(!digitalRead(0)) {
-      flashBang(10, 1);
-    }
     String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
     SD.mkdir(time.c_str());
     Serial.println(time.c_str());
@@ -335,6 +331,38 @@ void updateAnalogValueFlag1() {
 
 void updateAnalogValueFlag2() {
   analogValueFlag2 = true;
+}
+
+inline void initPins() {
+  pinMode(SD_CARD_INIT_LED, OUTPUT);
+  digitalWrite(SD_CARD_INIT_LED, 0);
+  pinMode(ANALOG_ONE_LED, OUTPUT);
+  digitalWrite(ANALOG_ONE_LED, 0);
+  pinMode(ANALOG_TWO_LED, OUTPUT);
+  digitalWrite(ANALOG_TWO_LED, 0);
+  pinMode(ANALOG_THREE_LED, OUTPUT);
+  digitalWrite(ANALOG_THREE_LED, 0);
+  pinMode(ANALOG_FOUR_LED, OUTPUT);
+  digitalWrite(ANALOG_FOUR_LED, 0);
+  pinMode(RPM_ONE_LED, OUTPUT);
+  digitalWrite(RPM_ONE_LED, 0);
+  pinMode(RPM_TWO_LED, OUTPUT);
+  digitalWrite(RPM_TWO_LED, 0);
+  pinMode(RPM_THREE_LED, OUTPUT);
+  digitalWrite(RPM_THREE_LED, 0);
+  pinMode(RPM_FOUR_LED, OUTPUT);
+  digitalWrite(RPM_FOUR_LED, 0);
+
+  pinMode(POWER_LED, OUTPUT);
+  digitalWrite(POWER_LED, HIGH); // Leave at HIGH for basically forever
+
+  pinMode(RECORDING_LED, OUTPUT);
+  digitalWrite(RECORDING_LED, LOW);
+
+  pinMode(ERROR_LED, OUTPUT);
+  digitalWrite(ERROR_LED, LOW);
+
+  pinMode(RECORD_SAVE_BUTTON, INPUT_PULLUP);
 }
 
 
@@ -429,12 +457,14 @@ void aux1RPMInterrupt() {
 }
 
 void saveInterrupt(){
+  delayMicroseconds(50);
+  if (digitalRead(RECORD_SAVE_BUTTON) != LOW) return;
   //debounce button, the first interrupt will fire, the rest won't (microsecondElapsed is set to a higher priority so it will interrupt this to keep updating the counter)
   if ((microsecondsElapsed / 1000) > lastSaveTimeInMillis + 2000) {
     //read the digital pin to figure out if it went high or low
-    if (!digitalRead(0) && saveFlag == false) {
+    if (!digitalRead(RECORD_SAVE_BUTTON) && saveFlag == false) {
       saveFlag = true;
-    } else if (digitalRead(0) && saveFlag == true){
+    } else if (digitalRead(RECORD_SAVE_BUTTON) && saveFlag == true){
       saveFlag = false;
     }
     //used as a debouncer, the interrupts will finish in order since they have the same priority
@@ -527,6 +557,7 @@ void blockForButtonHold(int buttonPin, uint32_t holdMicroseconds) {
       uint32_t currMicros = safeMicrosecondsElapsed();
       if (!firstHold) {
         heldMicroseconds += currMicros - lastHeldTime;
+        Serial.println("Button held.");
       }
       firstHold = false;
       lastHeldTime = currMicros;
@@ -598,4 +629,6 @@ void updateStatusLEDs() {
   else if (status.error_status == status.NO_ERROR) {
     digitalWrite(ERROR_LED, LOW);
   }
+
+  digitalWrite(POWER_LED, HIGH);
 }

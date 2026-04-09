@@ -88,8 +88,9 @@ void writePacket(SensorID id, float value);
 #define RPM_THREE_LED 10
 #define RPM_FOUR_LED 11
 
-#define RECORDING_LED 12
+#define RECORDING_LED 35
 #define ERROR_LED 3
+#define POWER_LED 40
 
 #define RECORD_SAVE_BUTTON 34
 
@@ -249,28 +250,7 @@ Linear_Analog_Sensor* createCalibratedLDSSensor(int ADCPortNumber, Adafruit_ADS1
 }
 
 //led pinmode declarations
-inline void initDebugLEDs() {
-  pinMode(SD_CARD_INIT_LED, OUTPUT);
-  digitalWrite(SD_CARD_INIT_LED, 0);
-  pinMode(ANALOG_ONE_LED, OUTPUT);
-  digitalWrite(ANALOG_ONE_LED, 0);
-  pinMode(ANALOG_TWO_LED, OUTPUT);
-  digitalWrite(ANALOG_TWO_LED, 0);
-  pinMode(ANALOG_THREE_LED, OUTPUT);
-  digitalWrite(ANALOG_THREE_LED, 0);
-  pinMode(ANALOG_FOUR_LED, OUTPUT);
-  digitalWrite(ANALOG_FOUR_LED, 0);
-  pinMode(RPM_ONE_LED, OUTPUT);
-  digitalWrite(RPM_ONE_LED, 0);
-  pinMode(RPM_TWO_LED, OUTPUT);
-  digitalWrite(RPM_TWO_LED, 0);
-  pinMode(RPM_THREE_LED, OUTPUT);
-  digitalWrite(RPM_THREE_LED, 0);
-  pinMode(RPM_FOUR_LED, OUTPUT);
-  digitalWrite(RPM_FOUR_LED, 0);
-  pinMode(RECORDING_LED, OUTPUT);
-  digitalWrite(RECORDING_LED, 0);
-}
+inline void initPins();
 
 
 //method to setup outFile/SD card
