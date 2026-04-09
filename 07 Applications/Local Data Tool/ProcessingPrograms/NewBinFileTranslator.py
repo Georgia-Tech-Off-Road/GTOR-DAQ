@@ -32,12 +32,16 @@ def translate_and_write(in_path: str, out_path: str):
 	with open(in_path, 'rb') as in_file, open(out_path, 'w', encoding='utf-8') as out_file:
 		first = True
 		out_file.write("[")
+		first_timestamp = 0
 		while chunk := in_file.read(PACKET_SIZE):
 			if len(chunk) < PACKET_SIZE:
 				print(f"Warning incomplete chunk at end of file, skipping.")
 				break
 			# Unpack values from struct
 			sensor_id, timestamp, value = struct.unpack(PACKET_FORMAT, chunk)
+			if first:
+				first_timestamp = timestamp
+			timestamp -= first_timestamp
 			record = {"microsec": timestamp * 100, sensors[sensor_id]: value}
 			if not first:
 				out_file.write(",\n")
