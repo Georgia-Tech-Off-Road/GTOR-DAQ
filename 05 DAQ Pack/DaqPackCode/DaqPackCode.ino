@@ -76,7 +76,7 @@ void setup() {
   pinMode(0, INPUT_PULLUP);
 
   //set up save interrupt
-  attachInterrupt(digitalPinToInterrupt(0), saveInterrupt, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(RECORD_SAVE_BUTTON), saveInterrupt, CHANGE);
 
   //set up ADC interrupts
   pinMode(40, INPUT_PULLUP);
@@ -134,7 +134,9 @@ void setup() {
 
   status.recording_status = status.READY_TO_RECORD;
   updateStatusLEDs();
-  // blockForButtonHold(RECORD_BUTTON, 1000000); // Must hold the recording button for one second
+  blockForButtonHold(RECORD_SAVE_BUTTON, 1000000); // Must hold the recording button for one second
+  // Rapid flash the recording LED for 5 sec
+  rapidFlash(RECORDING_LED, 5000);
   dataAquisitionAndSavingLoop();
 }
 
@@ -168,6 +170,15 @@ void dataAquisitionAndSavingLoop() {
       saveTimer.updateLastLogTime(microsecondsElapsed);
       changeRecordingState();
       saveFlag = false;
+
+      // Open a new file
+      changeRecordingState();
+      status.recording_status = status.READY_TO_RECORD;
+      updateStatusLEDs();
+
+      blockForButtonHold(RECORD_SAVE_BUTTON, 1000000); // Must hold the recording button for one second
+      // Rapid flash the recording LED for 5 sec
+      rapidFlash(RECORDING_LED, 5000);
     }
     //perform flush check before data check
     if (millis() > autoSaveTimeMillis + 300000) {
@@ -293,6 +304,7 @@ void changeRecordingState() {
     isRecording = false;
     //signal to user that the file saved with a flashbang
     flashBang(1000, 2);
+    status.recording_status = status.READY_TO_RECORD;
   }
   else {
     while(!digitalRead(0)) {
@@ -313,6 +325,7 @@ void changeRecordingState() {
     teensyTempLogger.updateLastLogTime(microsecondsElapsed);
         
     isRecording = true;
+    status.recording_status = status.RECORDING;
   }
 }
 
@@ -502,16 +515,21 @@ constexpr uint8_t getADSPort(SensorID sensorID) {
 }
 
 void blockForButtonHold(int buttonPin, uint32_t holdMicroseconds) {
-  uint32_t lastHeldTime, heldMicroseconds = 0;
+  uint32_t heldMicroseconds = 0;
+  uint32_t lastHeldTime = 0;
   uint32_t debounceMicros = 1000;
   bool firstHold = true;
   while(true) {
+    if (heldMicroseconds >= holdMicroseconds) {
+      return;
+    }
     if (digitalRead(buttonPin) == LOW) {
+      uint32_t currMicros = safeMicrosecondsElapsed();
       if (!firstHold) {
-        heldMicroseconds += safeMicrosecondsElapsed() - lastHeldTime;
+        heldMicroseconds += currMicros - lastHeldTime;
       }
       firstHold = false;
-      lastHeldTime = safeMicrosecondsElapsed();
+      lastHeldTime = currMicros;
     } else if ((safeMicrosecondsElapsed() - lastHeldTime) < debounceMicros) { // Prevent noisy values from breaking our hold
       continue;
     }
@@ -519,12 +537,21 @@ void blockForButtonHold(int buttonPin, uint32_t holdMicroseconds) {
       firstHold = true;
       heldMicroseconds = 0;
     }
-
-    if (heldMicroseconds >= holdMicroseconds) {
-      return;
-    }
   }
 }
+
+void rapidFlash(int ledPin, uint32_t durationMilliseconds) {
+  uint32_t flashRate = 50;
+  uint32_t startTime = millis();
+  uint32_t flashCounter = 0;
+
+  while (millis() - startTime <= durationMilliseconds) {
+    delay(flashRate);
+    digitalWrite(ledPin, flashCounter % 2 ? HIGH : LOW);
+    flashCounter++;
+  }
+}
+
 void writePacket(SensorID id, float value) {
   if (!isRecording) return;
   DataPacket packet;
