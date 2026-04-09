@@ -89,8 +89,8 @@ void writePacket(SensorID id, float value);
 #define RPM_FOUR_LED 11
 
 #define RECORDING_LED 35
-#define ERROR_LED 3
-#define POWER_LED 40
+#define ERROR_LED 40
+#define POWER_LED 3
 
 #define RECORD_SAVE_BUTTON 34
 
@@ -254,11 +254,12 @@ inline void initPins();
 
 
 //method to setup outFile/SD card
-inline void setUpSD() {
+inline int setUpSD() {
   int SDCARDINIT = SD.begin(BUILTIN_SDCARD);
   Serial.printf("SD Card init status: %d\n",SDCARDINIT);
   if(!SDCARDINIT) {
     Serial.printf("SD FAILED TO INIT\n");
+    return -1;
     digitalWrite(SD_CARD_INIT_LED, LOW);
   } else {
     Serial.printf("SD INITIALIZED\n");
@@ -269,6 +270,8 @@ inline void setUpSD() {
   SD.mkdir(time.c_str());
   Serial.println(time.c_str());
   outputFile = SD.open(String("/"+time+"/"+time+".bin").c_str(),  FILE_WRITE);
+
+  return 0;
 }
 
 constexpr uint8_t getADSPort(SensorID sensorID);

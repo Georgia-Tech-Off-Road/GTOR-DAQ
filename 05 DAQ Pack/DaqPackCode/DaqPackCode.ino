@@ -11,9 +11,6 @@ Adafruit_ADS1115 ads2;
 volatile bool analogValueFlag1 = false;
 volatile bool analogValueFlag2 = false;
 
-//initialize save flag 
-volatile bool saveFlag = false;
-
 // Current analog sensor number being polled
 int currentAnalogSensor1 = 0;
 int currentAnalogSensor2 = 0;
@@ -72,14 +69,10 @@ void setup() {
   //initiliaze serial monitor
   serialMonitor.begin(BAUD);
   //perform outFile init
-  setUpSD();
-
-  //set up save interrupt
-  attachInterrupt(digitalPinToInterrupt(RECORD_SAVE_BUTTON), saveInterrupt, FALLING);
-
-  //set up ADC interrupts
-  pinMode(40, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(40), updateAnalogValueFlag1, FALLING);
+  if (setUpSD() == -1) {
+    status.error_status = status.ERROR;
+  };
+  updateStatusLEDs();
 
   pinMode(41, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(41), updateAnalogValueFlag2, FALLING);
@@ -166,12 +159,28 @@ void dataAquisitionAndSavingLoop() {
     //updateDebugLeds();
     //update auto save time
     //check to see if save should be started/stopped
-     if (saveFlag /* || saveTimer.shouldLog(microsecondsElapsed) */ || Serial.read() == 's') {
+    static uint32_t holdStartMicros = 0;
+    static bool tracking = false;
+    bool shouldSave = false;
+
+    if (digitalRead(RECORD_SAVE_BUTTON) == LOW) {
+      if(!tracking) {
+        holdStartMicros = safeMicrosecondsElapsed();
+        tracking = true;
+      } else if (safeMicrosecondsElapsed() - holdStartMicros >= 1000000) {
+        shouldSave = true;
+      }
+    } else {
+      tracking = false;
+    }
+
+    if (Serial.read() == 's') {
+      shouldSave = true;
+    }
+
+    if (shouldSave) {
       saveTimer.updateLastLogTime(microsecondsElapsed);
       changeRecordingState();
-      saveFlag = false;
-
-      // Open a new file
       changeRecordingState();
       status.recording_status = status.READY_TO_RECORD;
       updateStatusLEDs();
@@ -181,6 +190,9 @@ void dataAquisitionAndSavingLoop() {
       digitalWrite(ERROR_LED, HIGH);
       delay(5000);
       digitalWrite(ERROR_LED, LOW);
+
+      while (digitalRead(RECORD_SAVE_BUTTON) == LOW) {} // Wait for release so we don't retrigger
+      tracking = false;
     }
     //perform flush check before data check
     if (millis() > autoSaveTimeMillis + 30000) {
@@ -454,22 +466,6 @@ void frontRightRPMInterrupt() {
 
 void aux1RPMInterrupt() {
   aux1RPM.handleInterrupt();
-}
-
-void saveInterrupt(){
-  delayMicroseconds(50);
-  if (digitalRead(RECORD_SAVE_BUTTON) != LOW) return;
-  //debounce button, the first interrupt will fire, the rest won't (microsecondElapsed is set to a higher priority so it will interrupt this to keep updating the counter)
-  if ((microsecondsElapsed / 1000) > lastSaveTimeInMillis + 2000) {
-    //read the digital pin to figure out if it went high or low
-    if (!digitalRead(RECORD_SAVE_BUTTON) && saveFlag == false) {
-      saveFlag = true;
-    } else if (digitalRead(RECORD_SAVE_BUTTON) && saveFlag == true){
-      saveFlag = false;
-    }
-    //used as a debouncer, the interrupts will finish in order since they have the same priority
-    lastSaveTimeInMillis = microsecondsElapsed / 1000;
-  }
 }
 
 int initADS1256() {
