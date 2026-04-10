@@ -2,8 +2,11 @@
 #include <SD.h>
 #include <SPI.h>
 #include <TimeLib.h>
-#include <Adafruit_ADS1X15.h>
 #include <ADS1256.h>
+
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 
 #include <TeensyThreads.h>
 #include <DAQ_AMT22.h>
@@ -70,16 +73,23 @@ void writePacket(SensorID id, float value);
 
 //ADS Settings
 #define ADC_RESOLUTION 15
-#define DRDY 22
-#define RESET 23
-#define SYNC 24
-#define CS 10
+#define DRDY_PIN 22
+#define ADS_RESET_PIN 23
+#define ADS_SYNC_PIN 24
+#define ADS_CS_PIN 10
 #define V_REF 5.0
 
 // LEDs
 #define RECORDING_LED 35
-#define ERROR_LED 40
-#define POWER_LED 3
+#define ERROR_LED 3
+#define POWER_LED 40
+
+// Display
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64  // or 32, depending on your display
+#define OLED_ADDR 0x3C 
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
 
 // Buttons
 #define RECORD_SAVE_BUTTON 34
@@ -148,19 +158,20 @@ enum Sensor_Constants {
 //DAQ sensor data struct (used for local logging and potential wireless packet formats)
 cmbtl::DAQSensorDataType DAQData;
 
-ADS1256 ads1256(DRDY, RESET, SYNC, CS, V_REF, &SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).
+ADS1256 ads1256(DRDY_PIN, ADS_RESET_PIN, ADS_SYNC_PIN, ADS_CS_PIN, V_REF, &SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).
 //outputFile
 File outputFile;
 
 //flag for if recording
 bool isRecording = false;
 
-//saves the last time data was saved 
+//saves the last time data was saved
 volatile long long unsigned lastSaveTimeInMillis = 0;
 
 //saves the last time auto save
 ulong autoSaveTimeMillis = 0;
 
+/*
 //function to calibrate LDSs
 Linear_Analog_Sensor* createCalibratedLDSSensor(int ADCPortNumber, Adafruit_ADS1115 * adc, int frontOrBack) {
   Serial.printf("Beginning calibration!\n");
@@ -208,6 +219,7 @@ Linear_Analog_Sensor* createCalibratedLDSSensor(int ADCPortNumber, Adafruit_ADS1
   //return it
   return LDSToReturn;
 }
+*/
 
 //led pinmode declarations
 inline void initPins();
@@ -237,9 +249,9 @@ constexpr uint8_t getADSPort(SensorID sensorID);
 inline void recordNextADSValue();
 
 /*
- * Returns if the specified buttonPin is held for holdMilliseconds
+ * Returns if the specified buttonPin is held for holdMicroseconds
 */
-void blockForButtonHold(int buttonPin, uint32_t holdMilliseconds);
+void blockForButtonHold(int buttonPin, uint32_t holdMicroseconds);
 
 void rapidFlash(int ledPin, uint32_t durationMilliseconds);
 
@@ -256,6 +268,8 @@ inline void setupTeensyTime() {
 // Returns -1 if failure, 0 if success
 int initADS1256();
 
+int initDisplay();
+
 uint32_t safeTimestamp();
 
 inline uint32_t safeMicrosecondsElapsed();
@@ -266,4 +280,4 @@ time_t getTeensy3Time()
   return Teensy3Clock.get();
 }
 
-void updateStatusLEDs();
+void updateStatusIndicators();

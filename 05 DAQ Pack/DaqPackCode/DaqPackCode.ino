@@ -43,7 +43,7 @@ static_assert(sizeof(DataPacket) == 9, "DataPacket size mismatch - check packing
 
 void setup() {
   //crank up i2c clocks
-  Wire.setClock(1000000);
+  Wire.setClock(400000);
   Wire1.setClock(1000000);
 
 
@@ -66,7 +66,7 @@ void setup() {
   if (setUpSD() == -1) {
     status.error_status = status.ERROR;
   };
-  updateStatusLEDs();
+  updateStatusIndicators();
 
 
   pinMode(RPM3, INPUT_PULLDOWN);
@@ -77,6 +77,10 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(RPM2), frontLeftRPMInterrupt, RISING);
   pinMode(RPM4, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM4), aux1RPMInterrupt, RISING);
+
+  if (initDisplay() != 0) {
+    Serial.println("Failure setting up the display!");
+  }
 
   if (initADS1256() != 0) {
     status.error_status = status.ERROR;
@@ -100,9 +104,9 @@ void setup() {
   autoSaveTimeMillis = millis();
 
   status.recording_status = status.READY_TO_RECORD;
-  updateStatusLEDs();
+  updateStatusIndicators();
 
-  // blockForButtonHold(RECORD_SAVE_BUTTON, 1000000); // Must hold the recording button for one second
+  blockForButtonHold(RECORD_SAVE_BUTTON, 1000000); // Must hold the recording button for one second
   // Rapid flash the recording LED for 5 sec
   rapidFlash(RECORDING_LED, 5000);
   dataAquisitionAndSavingLoop();
@@ -139,16 +143,16 @@ void dataAquisitionAndSavingLoop() {
 
     if (shouldSave) {
       saveTimer.updateLastLogTime(microsecondsElapsed);
-      changeRecordingState();
-      changeRecordingState();
-      status.recording_status = status.READY_TO_RECORD;
-      updateStatusLEDs();
 
-      // blockForButtonHold(RECORD_SAVE_BUTTON, 1000000); // Must hold the recording button for one second
-      // Rapid flash the recording LED for 5 sec
-      digitalWrite(ERROR_LED, HIGH);
-      delay(5000);
-      digitalWrite(ERROR_LED, LOW);
+      changeRecordingState();
+
+      status.recording_status = status.READY_TO_RECORD;
+      updateStatusIndicators();
+      blockForButtonHold(RECORD_SAVE_BUTTON, 1000000); // Must hold the recording button for one second
+
+      changeRecordingState();
+
+      rapidFlash(RECORDING_LED, 5000);
 
       while (digitalRead(RECORD_SAVE_BUTTON) == LOW) {} // Wait for release so we don't retrigger
       tracking = false;
@@ -213,7 +217,7 @@ void dataAquisitionAndSavingLoop() {
         aux1RPM.checkRPM();
       }
       //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
-      updateStatusLEDs();
+      updateStatusIndicators();
     }
   }
 }
@@ -223,7 +227,7 @@ inline void recordNextADSValue() {
   constexpr int PORT_LIST_LENGTH = 4; 
 
   // List of ADS ports to read from, should wrap around to begining
-  constexpr uint8_t ads1256SensorList[PORT_LIST_LENGTH] = {LDS_FRONT_LEFT, LDS_FRONT_RIGHT, LDS_REAR_LEFT, LDS_REAR_RIGHT};
+  constexpr SensorID ads1256SensorList[PORT_LIST_LENGTH] = {LDS_FRONT_LEFT, LDS_FRONT_RIGHT, LDS_REAR_LEFT, LDS_REAR_RIGHT};
 
   SensorID nextSensor = ads1256SensorList[index];
   uint8_t nextADSPort = getADSPort(nextSensor);
@@ -380,6 +384,22 @@ int initADS1256() {
   return 0;
 }
 
+
+
+int initDisplay() {
+  if (!display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR)) {
+    Serial.println("SSD1306 failed");
+    return -1;
+  }
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 0);
+  display.println("Hello DAQ!");
+  display.display();  // must call this to push buffer to screen
+  return 0;
+}
+
 constexpr uint8_t getADSPort(SensorID sensorID) {
   switch (sensorID) {
     case LDS_FRONT_LEFT:
@@ -408,7 +428,7 @@ void blockForButtonHold(int buttonPin, uint32_t holdMicroseconds) {
       uint32_t currMicros = safeMicrosecondsElapsed();
       if (!firstHold) {
         heldMicroseconds += currMicros - lastHeldTime;
-        Serial.println("Button held.");
+        // Serial.println("Button held.");
       }
       firstHold = false;
       lastHeldTime = currMicros;
@@ -440,7 +460,7 @@ void writePacket(SensorID id, float value) {
   packet.sensorID = id;
   // Get in units of sec 10^-4
   uint32_t ts = safeTimestamp();
-  packet.timestamp100Micros = (uint32_t) (ts / 100);
+  packet.timestamp100Micros = ts;
   packet.value = value;
 
   outputFile.write(&packet, sizeof(packet));
@@ -458,16 +478,21 @@ inline uint32_t safeMicrosecondsElapsed() {
   return ts;
 }
 
-void updateStatusLEDs() {
+void updateStatusIndicators() {
   static uint recording_counter = 0;
   static uint last_record_time = 0;
+  display.clearDisplay();
   if (status.recording_status == status.NOT_READY_TO_RECORD) {
     digitalWrite(RECORDING_LED, LOW);
+
+    display.println("Recording Status: Not Ready");
   }
   else if (status.recording_status == status.READY_TO_RECORD) {
     digitalWrite(RECORDING_LED, HIGH);
+    display.println("Recording Status: Ready");
   }
   else if (status.recording_status == status.RECORDING) {
+    display.println("Recording Status: Recording...");
     if (last_record_time + FLASH_RATE < millis()) {
       digitalWrite(RECORDING_LED, ++recording_counter % 2 ? HIGH : LOW);
       last_record_time = millis();
@@ -475,9 +500,11 @@ void updateStatusLEDs() {
   }
 
   if (status.error_status == status.ERROR) {
+    display.println("Error Status: Error!");
     digitalWrite(ERROR_LED, HIGH);
   }
   else if (status.error_status == status.NO_ERROR) {
+    display.println("Error Status: Good");
     digitalWrite(ERROR_LED, LOW);
   }
 
