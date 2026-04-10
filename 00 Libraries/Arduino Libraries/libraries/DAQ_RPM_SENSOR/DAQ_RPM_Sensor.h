@@ -8,7 +8,7 @@
 class RPMSensor {
     //everything has to be static so each instance owns all of it's own items
     public:
-        RPMSensor(uint8_t pin, uint16_t numTeeth, uint32_t _minExpectedRPM, uint32_t _maxExpectedRPM);        
+        RPMSensor(uint8_t pin, uint16_t numTeeth, uint32_t _minExpectedRPM, uint32_t _maxExpectedRPM, float maxIntervalMicros);        
         //volatile flag to let data collection flag check (reduces num bits loaded per data save loop)
         volatile bool RPMUpdateFlag;
         float calculateRPM(); 
@@ -21,6 +21,7 @@ class RPMSensor {
         volatile unsigned long long int _prevMicros;
         uint32_t _minExpectedRPM;
         uint32_t _maxExpectedRPM;
+        float _maxIntervalMicros;
         volatile bool _RPMValueGood;
         volatile uint32_t _lastGoodRPMValueTimeStamp;
         volatile unsigned long long int _mostRecentInterval;

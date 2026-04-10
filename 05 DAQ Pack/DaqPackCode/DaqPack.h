@@ -72,7 +72,7 @@ void writePacket(SensorID id, float value);
 #define LDS_MAX_TRAVEL 7.87402
 
 //ADS Settings
-#define ADC_RESOLUTION 15
+#define ADC_RESOLUTION 24
 #define DRDY_PIN 22
 #define ADS_RESET_PIN 23
 #define ADS_SYNC_PIN 24
@@ -103,6 +103,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
 // Define min and max expected RPM values
 #define MIN_EXPECTED_RPM 0
 #define MAX_EXPECTED_RPM 10000
+#define MAX_RPM_INTERVAL_MICROS 100000 // Allow up to 100 ms between hall effect readings before we invalidate the data (return 0)
 
 #define BAUD 230400
 
