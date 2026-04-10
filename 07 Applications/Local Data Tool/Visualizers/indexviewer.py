@@ -1,12 +1,12 @@
 def indices(filePath, customWindow):
     """
-    Read the first JSON object from filePath, build Index -> column-name mapping,
-    and display those labels inside customWindow (below the existing widgets).
+    Read all JSON objects from filePath, collect every unique key across all
+    packets, build Index -> column-name mapping, and display those labels
+    inside customWindow (below the existing widgets).
     This function is safe to call from a background thread: UI updates are scheduled
     on the main thread using customWindow.after().
     """
     import json
-    import pandas as pd
     import tkinter as tk
     import os
 
@@ -14,35 +14,21 @@ def indices(filePath, customWindow):
 
 
     # ---------- Parse JSON (can run in background thread) ----------
-    first_obj_str = []
-    brace_level = 0
-    inside = False
-
     try:
         with open(filePath, "r") as f:
-            for line in f:
-                for char in line:
-                    if not inside:
-                        if char == "{":
-                            inside = True
-                            brace_level = 1
-                            first_obj_str.append(char)
-                    else:
-                        first_obj_str.append(char)
-                        if char == "{":
-                            brace_level += 1
-                        elif char == "}":
-                            brace_level -= 1
-                            if brace_level == 0:
-                                inside = False
-                                break
-                if not inside and brace_level == 0 and first_obj_str:
-                    break
+            data = json.load(f)
 
-        if not first_obj_str:
-            raise ValueError("No JSON object found in file")
+        all_keys = []
+        seen = set()
+        for obj in data:
+            for key in obj:
+                if key not in seen:
+                    seen.add(key)
+                    all_keys.append(key)
 
-        first_obj = json.loads("".join(first_obj_str))
+        if not all_keys:
+            raise ValueError("No JSON keys found in file")
+
     except Exception as e:
         # Schedule an error label on main thread
         def show_error():
@@ -59,8 +45,7 @@ def indices(filePath, customWindow):
         return
 
     # Create variables mapping
-    df = pd.json_normalize(first_obj)
-    variables = {f"Index {idx}": col for idx, col in enumerate(df.columns)}
+    variables = {f"Index {idx}": col for idx, col in enumerate(all_keys)}
 
     # ---------- UI builder (runs on main thread) ----------
     def build_ui():

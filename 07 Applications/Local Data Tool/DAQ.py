@@ -336,50 +336,24 @@ def dataProcessingTool():
 
     def indices(filePath):
         import json
-        import pandas as pd
         import tkinter as tk
         from tkinter import ttk
         import os
 
-        first_obj_str = []
-        brace_level = 0
-        inside = False
-
         with open(filePath, "r") as f:
-            for line in f:
-                for char in line:
-                    if not inside:
-                        if char == "{":
-                            inside = True
-                            brace_level = 1
-                            first_obj_str.append(char)
-                    else:
-                        first_obj_str.append(char)
-                        if char == "{":
-                            brace_level += 1
-                        elif char == "}":
-                            brace_level -= 1
-                            if brace_level == 0:
-                                inside = False
-                                break
-                if not inside and brace_level == 0 and first_obj_str:
-                    break
+            data = json.load(f)
 
-        if not first_obj_str:
-            raise ValueError("No JSON object found in file")
+        all_keys = []
+        seen = set()
+        for obj in data:
+            for key in obj:
+                if key not in seen:
+                    seen.add(key)
+                    all_keys.append(key)
 
-        # Convert the captured characters into a dict
-        first_obj = json.loads("".join(first_obj_str))
+        variables = {f"Index {idx}": col for idx, col in enumerate(all_keys)}
 
-        # ---- Your Original Method Here ----
-        df = pd.json_normalize(first_obj)
-
-        variables = {}
-        for idx, col in enumerate(df.columns):
-            varName = f"Index {idx}"
-            variables[varName] = col
-
-        # GUI (unchanged)
+        # GUI
         indexWindow = tk.Toplevel()
         indexWindow.title(f"Indices for {os.path.basename(filePath)}")
         indexWindow.geometry("700x600")
