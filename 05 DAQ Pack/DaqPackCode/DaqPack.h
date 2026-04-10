@@ -34,7 +34,7 @@ enum SensorID : uint8_t {
 struct Status {
   enum recordingStatus {NOT_READY_TO_RECORD = 0, READY_TO_RECORD, RECORDING};
   int recording_status;
-  enum errorStatus {NO_ERROR = 0, ERROR};
+  enum errorStatus {NO_ERROR = 0, ERROR, SD_ERROR, ADS_ERROR};
   int error_status;
 } status;
 
@@ -81,7 +81,7 @@ void writePacket(SensorID id, float value);
 
 // LEDs
 #define RECORDING_LED 35
-#define ERROR_LED 3
+#define ERROR_LED 40
 #define POWER_LED 40
 
 // Display
@@ -95,7 +95,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
 #define RECORD_SAVE_BUTTON 34
 
 // How often to flash (in milliseconds)
-#define FLASH_RATE 250
+#define FLASH_RATE 400
 
 // Define number of teeth in one place for easy modification
 #define NUM_TESTING_TEETH 22
@@ -114,8 +114,14 @@ struct SensorLogger teensyTempLogger = {1000000UL, 0};
 // Log once a second
 struct SensorLogger debugLogger = {1000000UL / 50, 0};
 
+// Display every half second
+struct SensorLogger displayLogger = {1000000UL / 2, 0};
+
 // Save once a minute
 struct SensorLogger saveTimer = {1000000UL * 60, 0};
+
+struct SensorLogger SDCardChecker = {1000000UL * 30, 0}; // Check every 30 sec to see if SD card is still responding
+
 
 //actually init the global variable for this 
 volatile unsigned long long microsecondsElapsed = 0;
@@ -161,6 +167,7 @@ cmbtl::DAQSensorDataType DAQData;
 ADS1256 ads1256(DRDY_PIN, ADS_RESET_PIN, ADS_SYNC_PIN, ADS_CS_PIN, V_REF, &SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).
 //outputFile
 File outputFile;
+String outputFileName;
 
 //flag for if recording
 bool isRecording = false;
@@ -239,7 +246,9 @@ inline int setUpSD() {
   String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
   SD.mkdir(time.c_str());
   Serial.println(time.c_str());
-  outputFile = SD.open(String("/"+time+"/"+time+".bin").c_str(),  FILE_WRITE);
+
+  outputFileName = String("/"+time+"/"+time+".bin");
+  outputFile = SD.open(outputFileName.c_str(),  FILE_WRITE);
 
   return 0;
 }
@@ -280,4 +289,10 @@ time_t getTeensy3Time()
   return Teensy3Clock.get();
 }
 
-void updateStatusIndicators();
+void updateStatusLEDs();
+
+void updateStatusDisplay();
+
+bool isSDCardAccessible();
+
+inline void emitSDError();

@@ -64,9 +64,15 @@ void setup() {
   serialMonitor.begin(BAUD);
   //perform outFile init
   if (setUpSD() == -1) {
-    status.error_status = status.ERROR;
+    status.error_status = status.SD_ERROR;
   };
-  updateStatusIndicators();
+
+  if (initDisplay() != 0) {
+    Serial.println("Failure setting up the display!");
+  }
+
+  updateStatusLEDs();
+  updateStatusDisplay();
 
 
   pinMode(RPM3, INPUT_PULLDOWN);
@@ -78,12 +84,8 @@ void setup() {
   pinMode(RPM4, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM4), aux1RPMInterrupt, RISING);
 
-  if (initDisplay() != 0) {
-    Serial.println("Failure setting up the display!");
-  }
-
   if (initADS1256() != 0) {
-    status.error_status = status.ERROR;
+    status.error_status = status.ADS_ERROR;
     Serial.println("Failure setting up ADS1256! See errors above^^^");
     while(true);
   }
@@ -97,14 +99,14 @@ void setup() {
   //*LDSRearLeft = createCalibratedLDSSensor(2, &ads2, 1);
   //*LDSRearRight = createCalibratedLDSSensor(3, &ads2, 1);
   //final delay to let you read off all the calibrated values
-  delay(7000);
   //set recording flag
   isRecording = true;
   //init auto save time
   autoSaveTimeMillis = millis();
 
   status.recording_status = status.READY_TO_RECORD;
-  updateStatusIndicators();
+  updateStatusLEDs();
+  updateStatusDisplay();
 
   blockForButtonHold(RECORD_SAVE_BUTTON, 1000000); // Must hold the recording button for one second
   // Rapid flash the recording LED for 5 sec
@@ -126,6 +128,13 @@ void dataAquisitionAndSavingLoop() {
     static bool tracking = false;
     bool shouldSave = false;
 
+    if(SDCardChecker.shouldLog(microsecondsElapsed)) {
+      SDCardChecker.updateLastLogTime(microsecondsElapsed);
+      if (!isSDCardAccessible()) {
+        emitSDError();
+      }
+    }
+
     if (digitalRead(RECORD_SAVE_BUTTON) == LOW) {
       if(!tracking) {
         holdStartMicros = safeMicrosecondsElapsed();
@@ -141,15 +150,22 @@ void dataAquisitionAndSavingLoop() {
       shouldSave = true;
     }
 
+    if (displayLogger.shouldLog(microsecondsElapsed)) {
+      displayLogger.updateLastLogTime(microsecondsElapsed);
+      updateStatusDisplay();
+    }
+
     if (shouldSave) {
       saveTimer.updateLastLogTime(microsecondsElapsed);
 
       changeRecordingState();
 
       status.recording_status = status.READY_TO_RECORD;
-      updateStatusIndicators();
-      blockForButtonHold(RECORD_SAVE_BUTTON, 1000000); // Must hold the recording button for one second
+      updateStatusLEDs();
+      updateStatusDisplay();
 
+      blockForButtonHold(RECORD_SAVE_BUTTON, 1000000); // Must hold the recording button for one second
+      updateStatusDisplay();
       changeRecordingState();
 
       rapidFlash(RECORDING_LED, 5000);
@@ -217,7 +233,7 @@ void dataAquisitionAndSavingLoop() {
         aux1RPM.checkRPM();
       }
       //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
-      updateStatusIndicators();
+      updateStatusLEDs();
     }
   }
 }
@@ -262,21 +278,50 @@ inline void recordNextADSValue() {
 void changeRecordingState() {
   if(isRecording == true) {
     //outputFile.printf("]");
-    outputFile.flush();
-    outputFile.close();
+    if(!isSDCardAccessible()) {
+      emitSDError();
+    }
+
+    if (outputFile) {
+      outputFile.flush();
+      outputFile.close();
+    }
 
     Serial.printf("File closed\n");
+
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setTextColor(SSD1306_WHITE);
+    display.setCursor(0, 0);
+    display.printf("%s closed\n", outputFileName.c_str());
+    display.display();
+
+    delay(4000); // Delay 2 seconds
     isRecording = false;
     //signal to user that the file saved with a flashbang
     status.recording_status = status.READY_TO_RECORD;
   }
   else {
-    String time =  String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
+    String time = String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
     SD.mkdir(time.c_str());
     Serial.println(time.c_str());
     File structConfigFile = SD.open(String("/"+time+"/"+time+"Config.txt").c_str(), FILE_WRITE);
     structConfigFile.close();
-    outputFile = SD.open(String("/"+time+"/"+time+".bin").c_str(),  FILE_WRITE);
+
+    outputFileName = String("/"+time+"/"+time+".bin");
+    outputFile = SD.open(outputFileName.c_str(),  FILE_WRITE);
+
+    if(!outputFile) {
+      emitSDError();
+    }
+
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setTextColor(SSD1306_WHITE);
+    display.setCursor(0, 0);
+    display.printf("Opening: %s.bin\n", time.c_str());
+    display.display();
+    delay(4000);
 
     // Reset flags
     engineRPM.RPMUpdateFlag = false;
@@ -478,21 +523,16 @@ inline uint32_t safeMicrosecondsElapsed() {
   return ts;
 }
 
-void updateStatusIndicators() {
+void updateStatusLEDs() {
   static uint recording_counter = 0;
   static uint last_record_time = 0;
-  display.clearDisplay();
   if (status.recording_status == status.NOT_READY_TO_RECORD) {
     digitalWrite(RECORDING_LED, LOW);
-
-    display.println("Recording Status: Not Ready");
   }
   else if (status.recording_status == status.READY_TO_RECORD) {
     digitalWrite(RECORDING_LED, HIGH);
-    display.println("Recording Status: Ready");
   }
   else if (status.recording_status == status.RECORDING) {
-    display.println("Recording Status: Recording...");
     if (last_record_time + FLASH_RATE < millis()) {
       digitalWrite(RECORDING_LED, ++recording_counter % 2 ? HIGH : LOW);
       last_record_time = millis();
@@ -500,13 +540,86 @@ void updateStatusIndicators() {
   }
 
   if (status.error_status == status.ERROR) {
-    display.println("Error Status: Error!");
     digitalWrite(ERROR_LED, HIGH);
   }
   else if (status.error_status == status.NO_ERROR) {
-    display.println("Error Status: Good");
     digitalWrite(ERROR_LED, LOW);
   }
 
   digitalWrite(POWER_LED, HIGH);
+}
+
+void updateStatusDisplay() {
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 0);
+
+  static uint counter = 0;
+
+
+  if (status.recording_status == status.NOT_READY_TO_RECORD) {
+    display.println("Recording Status: Not Ready");
+  }
+  else if (status.recording_status == status.READY_TO_RECORD) {
+    display.println("Recording Status: Ready");
+  }
+  else if (status.recording_status == status.RECORDING) {
+    if (counter % 4 == 0) {
+      display.println("Recording Status: Recording");
+    }
+    else if (counter % 4 == 1) {
+      display.println("Recording Status: Recording.");
+    }
+    else if (counter % 4 == 2) {
+      display.println("Recording Status: Recording..");
+    } 
+    else {
+      display.println("Recording Status: Recording...");
+    }
+  }
+
+  if (status.error_status == status.ERROR) {
+    display.setTextColor(SSD1306_WHITE);
+    display.println("Error Status: ERROR");
+  }
+  else if (status.error_status == status.SD_ERROR) {
+    display.println("Error Status: SD Card Error!");
+    display.println("Please reinsert the SD card and restart");
+  }
+  else if (status.error_status == status.ADS_ERROR) {
+    display.println("Error Status: ADS failed to initialize, restart");
+  }
+  else if (status.error_status == status.NO_ERROR) {
+    display.setTextColor(SSD1306_WHITE);
+    display.println("Error Status: None");
+  }
+
+  if (status.recording_status == status.READY_TO_RECORD && status.error_status == status.NO_ERROR) {
+    display.println("To begin recording, please hold the button for atleast 1 second.");
+  }
+
+  if (status.recording_status == status.RECORDING && status.error_status == status.NO_ERROR) {
+    display.printf("Output File: %s\n", outputFileName.c_str());
+    display.println("Hold to close file");
+  }
+
+  display.display();
+  counter++;
+}
+
+bool isSDCardAccessible() {
+  File testFile = SD.open("/_healthcheck.tmp", FILE_WRITE);
+  if (!testFile) {
+    return false;
+  }
+  testFile.close();
+  SD.remove("/_healthcheck.tmp");
+  return true;
+}
+
+inline void emitSDError() {
+  status.error_status = status.SD_ERROR;
+  updateStatusDisplay();
+  rapidFlash(ERROR_LED, -1);
 }
