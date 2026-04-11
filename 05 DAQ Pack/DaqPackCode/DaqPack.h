@@ -265,6 +265,8 @@ void blockForButtonHold(int buttonPin, uint32_t holdMicroseconds);
 
 void rapidFlash(int ledPin, uint32_t durationMilliseconds);
 
+void errorFlash();
+
 //time setup function
 inline void setupTeensyTime() {
   setSyncProvider(getTeensy3Time);
@@ -297,3 +299,9 @@ void updateStatusDisplay();
 bool isSDCardAccessible();
 
 inline void emitSDError();
+
+inline void emitADSError();
+
+inline void errorCheck();
+
+inline void onButtonHeldConfirmed();

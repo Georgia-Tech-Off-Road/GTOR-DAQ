@@ -86,8 +86,6 @@ void setup() {
 
   if (initADS1256() != 0) {
     status.error_status = status.ADS_ERROR;
-    Serial.println("Failure setting up ADS1256! See errors above^^^");
-    while(true);
   }
   Serial.println("ADS1256 setup successful!");
 
@@ -107,10 +105,6 @@ void setup() {
   status.recording_status = status.READY_TO_RECORD;
   updateStatusLEDs();
   updateStatusDisplay();
-
-  blockForButtonHold(RECORD_SAVE_BUTTON, 1000000); // Must hold the recording button for one second
-  // Rapid flash the recording LED for 5 sec
-  rapidFlash(RECORDING_LED, 5000);
   dataAquisitionAndSavingLoop();
 }
 
@@ -119,6 +113,10 @@ void loop() {}
 
 //writes data to SD card
 void dataAquisitionAndSavingLoop() {
+  errorCheck();
+  blockForButtonHold(RECORD_SAVE_BUTTON, 1000000); // Must hold the recording button for one second
+  // Rapid flash the recording LED for 5 sec
+  rapidFlash(RECORDING_LED, 5000);
   while(1) {
     digitalWrite(POWER_LED, HIGH);
     //updateDebugLeds();
@@ -156,6 +154,7 @@ void dataAquisitionAndSavingLoop() {
     }
 
     if (shouldSave) {
+      digitalWrite(ERROR_LED, LOW);
       saveTimer.updateLastLogTime(microsecondsElapsed);
 
       changeRecordingState();
@@ -170,7 +169,6 @@ void dataAquisitionAndSavingLoop() {
 
       rapidFlash(RECORDING_LED, 5000);
 
-      while (digitalRead(RECORD_SAVE_BUTTON) == LOW) {} // Wait for release so we don't retrigger
       tracking = false;
     }
     //perform flush check before data check
@@ -467,6 +465,7 @@ void blockForButtonHold(int buttonPin, uint32_t holdMicroseconds) {
   bool firstHold = true;
   while(true) {
     if (heldMicroseconds >= holdMicroseconds) {
+      onButtonHeldConfirmed();
       return;
     }
     if (digitalRead(buttonPin) == LOW) {
@@ -499,6 +498,12 @@ void rapidFlash(int ledPin, uint32_t durationMilliseconds) {
   }
 }
 
+void errorFlash(int ledPin) {
+  while (true) {
+    digitalWrite(ledPin, LOW);
+  }
+}
+
 void writePacket(SensorID id, float value) {
   if (!isRecording) return;
   DataPacket packet;
@@ -524,29 +529,11 @@ inline uint32_t safeMicrosecondsElapsed() {
 }
 
 void updateStatusLEDs() {
-  static uint recording_counter = 0;
-  static uint last_record_time = 0;
-  if (status.recording_status == status.NOT_READY_TO_RECORD) {
-    digitalWrite(RECORDING_LED, LOW);
-  }
-  else if (status.recording_status == status.READY_TO_RECORD) {
-    digitalWrite(RECORDING_LED, HIGH);
-  }
-  else if (status.recording_status == status.RECORDING) {
-    if (last_record_time + FLASH_RATE < millis()) {
-      digitalWrite(RECORDING_LED, ++recording_counter % 2 ? HIGH : LOW);
-      last_record_time = millis();
-    }
-  }
-
-  if (status.error_status == status.ERROR) {
+  if (status.recording_status == status.RECORDING) {
     digitalWrite(ERROR_LED, HIGH);
-  }
-  else if (status.error_status == status.NO_ERROR) {
+  } else {
     digitalWrite(ERROR_LED, LOW);
   }
-
-  digitalWrite(POWER_LED, HIGH);
 }
 
 void updateStatusDisplay() {
@@ -618,8 +605,28 @@ bool isSDCardAccessible() {
   return true;
 }
 
+inline void errorCheck() {
+  if (status.error_status != status.NO_ERROR) {
+    updateStatusDisplay();
+    errorFlash(ERROR_LED);
+  }
+}
+
 inline void emitSDError() {
   status.error_status = status.SD_ERROR;
   updateStatusDisplay();
-  rapidFlash(ERROR_LED, -1);
+  errorFlash(ERROR_LED);
+}
+
+inline void emitADSError() {
+  status.error_status = status.ADS_ERROR;
+  updateStatusDisplay();
+  errorFlash(ERROR_LED);
+}
+
+inline void onButtonHeldConfirmed() {
+  digitalWrite(ERROR_LED, HIGH);
+  while (digitalRead(RECORD_SAVE_BUTTON) == LOW) {} // Wait for release so we don't retrigger
+  digitalWrite(ERROR_LED, LOW);
+  delay(250);
 }
