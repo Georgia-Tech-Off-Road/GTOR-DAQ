@@ -3,7 +3,9 @@
 
 #include <Arduino.h>
 
-#define MAX_SENSORS 3  // Adjust based on the number of sensors you expect
+// Number of entries we can hold
+#define BUFFER_LEN 8
+
 
 class RPMSensor {
     //everything has to be static so each instance owns all of it's own items
@@ -26,6 +28,11 @@ class RPMSensor {
         volatile uint32_t _lastGoodRPMValueTimeStamp;
         volatile unsigned long long int _mostRecentInterval;
         volatile float _RPM;
+
+        // Holds the last X RPM entries
+        float ringBuffer[BUFFER_LEN]
+        uint8_t buffer_idx;
+
 
 };
 
