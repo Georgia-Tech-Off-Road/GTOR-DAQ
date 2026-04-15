@@ -19,7 +19,7 @@ int currentAnalogSensor2 = 0;
 RPMSensor engineRPM(RPM1, ENGTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE, MAX_RPM_INTERVAL_MICROS);
 RPMSensor frontLeftRPM(RPM2, FLTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE, MAX_RPM_INTERVAL_MICROS);
 RPMSensor frontRightRPM(RPM3, FRTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE, MAX_RPM_INTERVAL_MICROS);
-RPMSensor aux1RPM(RPM4, RDTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE, MAX_RPM_INTERVAL_MICROS);
+RPMSensor rearRPM(RPM4, RDTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE, MAX_RPM_INTERVAL_MICROS);
 
 //dont need to calibrate the brake pressures at start up I don't think
 Linear_Analog_Sensor rearBrakePressure(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 2000, 0, 4.5, 0.5, 0, 2000);
@@ -82,7 +82,7 @@ void setup() {
   pinMode(RPM2, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM2), frontLeftRPMInterrupt, RISING);
   pinMode(RPM4, INPUT_PULLDOWN);
-  attachInterrupt(digitalPinToInterrupt(RPM4), aux1RPMInterrupt, RISING);
+  attachInterrupt(digitalPinToInterrupt(RPM4), rearRPMInterrupt, RISING);
 
   if (initADS1256() != 0) {
     status.error_status = status.ADS_ERROR;
@@ -114,7 +114,7 @@ void loop() {}
 //writes data to SD card
 void dataAquisitionAndSavingLoop() {
   errorCheck();
-  blockForButtonHold(RECORD_SAVE_BUTTON, 1000000); // Must hold the recording button for one second
+  blockForButtonHold(RECORD_SAVE_BUTTON, BUTTON_HOLD_DURATION); // Must hold the recording button for one second
   // Rapid flash the recording LED for 5 sec
   rapidFlash(RECORDING_LED, 5000);
   while(1) {
@@ -137,7 +137,7 @@ void dataAquisitionAndSavingLoop() {
       if(!tracking) {
         holdStartMicros = safeMicrosecondsElapsed();
         tracking = true;
-      } else if (safeMicrosecondsElapsed() - holdStartMicros >= 1000000) {
+      } else if (safeMicrosecondsElapsed() - holdStartMicros >= BUTTON_HOLD_DURATION) {
         shouldSave = true;
       }
     } else {
@@ -163,7 +163,7 @@ void dataAquisitionAndSavingLoop() {
       updateStatusLEDs();
       updateStatusDisplay();
 
-      blockForButtonHold(RECORD_SAVE_BUTTON, 1000000); // Must hold the recording button for one second
+      blockForButtonHold(RECORD_SAVE_BUTTON, BUTTON_HOLD_DURATION); // Must hold the recording button for one second
       updateStatusDisplay();
       changeRecordingState();
 
@@ -222,13 +222,13 @@ void dataAquisitionAndSavingLoop() {
       } else {
         frontRightRPM.checkRPM();
       }
-      if (aux1RPM.RPMUpdateFlag) {
-        float value = aux1RPM.calculateRPM();
+      if (rearRPM.RPMUpdateFlag) {
+        float value = rearRPM.calculateRPM();
         DAQData.setData<cmbtl::SensorIndex::RPM4>((uint32_t)value);
-        writePacket(SensorID::AUX_RPM, value);
-        aux1RPM.RPMUpdateFlag = false;
+        writePacket(SensorID::REAR_RPM, value);
+        rearRPM.RPMUpdateFlag = false;
       } else {
-        aux1RPM.checkRPM();
+        rearRPM.checkRPM();
       }
       //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
       updateStatusLEDs();
@@ -325,7 +325,7 @@ void changeRecordingState() {
     engineRPM.RPMUpdateFlag = false;
     frontLeftRPM.RPMUpdateFlag = false;
     frontRightRPM.RPMUpdateFlag = false;
-    aux1RPM.RPMUpdateFlag = false;
+    rearRPM.RPMUpdateFlag = false;
     teensyTempLogger.updateLastLogTime(microsecondsElapsed);
         
     isRecording = true;
@@ -366,8 +366,8 @@ void frontRightRPMInterrupt() {
   frontRightRPM.handleInterrupt();
 }
 
-void aux1RPMInterrupt() {
-  aux1RPM.handleInterrupt();
+void rearRPMInterrupt() {
+  rearRPM.handleInterrupt();
 }
 
 int initADS1256() {
@@ -517,7 +517,10 @@ void writePacket(SensorID id, float value) {
 }
 
 uint32_t safeTimestamp() {
-  return safeMicrosecondsElapsed() / 100;
+  noInterrupts();
+  uint64_t ts = (uint64_t) microsecondsElapsed;
+  interrupts();
+  return (uint32_t) (ts / 100);
 }
 
 inline uint32_t safeMicrosecondsElapsed() {

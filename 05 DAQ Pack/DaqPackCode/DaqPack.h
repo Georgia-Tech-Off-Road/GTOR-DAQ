@@ -19,7 +19,7 @@ enum SensorID : uint8_t {
     ENGINE_RPM      = 0,
     FRONT_LEFT_RPM  = 1,
     FRONT_RIGHT_RPM = 2,
-    AUX_RPM         = 3,
+    REAR_RPM        = 3,
     REAR_BRAKE_PRES = 4,
     FRONT_BRAKE_PRES= 5,
     LDS_FRONT_RIGHT = 6,
@@ -28,7 +28,7 @@ enum SensorID : uint8_t {
     LDS_REAR_LEFT   = 9,
     CVT_TEMP        = 10,
     REAR_TC_TEMP    = 11,
-    TEENSY_TEMP     = 12
+    TEENSY_TEMP     = 12,
 };
 
 struct Status {
@@ -93,6 +93,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
 
 // Buttons
 #define RECORD_SAVE_BUTTON 34
+#define BUTTON_HOLD_DURATION 1000000
 
 // How often to flash (in milliseconds)
 #define FLASH_RATE 400
@@ -156,10 +157,10 @@ enum AUXDAQ_Ports {
 };
 //sensor constants
 enum Sensor_Constants {
-  RDTEETH = 14,
-  ENGTEETH = 8,
-  FRTEETH = 12,
-  FLTEETH = 12
+  RDTEETH = 69,
+  ENGTEETH = 1,
+  FRTEETH = 30,
+  FLTEETH = 30
 };
 
 //DAQ sensor data struct (used for local logging and potential wireless packet formats)
