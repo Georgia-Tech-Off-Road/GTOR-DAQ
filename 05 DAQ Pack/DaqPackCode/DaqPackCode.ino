@@ -185,7 +185,7 @@ void dataAquisitionAndSavingLoop() {
       DAQData.setData<cmbtl::SensorIndex::SEC>(microsecondsElapsed / 1000000);
       
       if (debugLogger.shouldLog(microsecondsElapsed)) {
-        Serial.println(DAQData.serializeDataToJSON().c_str());
+        // Serial.println(DAQData.serializeDataToJSON().c_str());
         debugLogger.updateLastLogTime(microsecondsElapsed);
       }
 
@@ -586,7 +586,7 @@ void updateStatusDisplay() {
   }
 
   if (status.recording_status == status.READY_TO_RECORD && status.error_status == status.NO_ERROR) {
-    display.println("To begin recording, please hold the button for atleast 1 second.");
+    display.printf("To begin recording, please hold the button for atleast %d secs.\n", BUTTON_HOLD_DURATION / 1000000);
   }
 
   if (status.recording_status == status.RECORDING && status.error_status == status.NO_ERROR) {

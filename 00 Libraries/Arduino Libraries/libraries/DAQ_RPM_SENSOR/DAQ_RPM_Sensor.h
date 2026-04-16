@@ -26,7 +26,6 @@ class RPMSensor {
         volatile uint32_t _lastGoodRPMValueTimeStamp;
         volatile unsigned long long int _mostRecentInterval;
         volatile float _RPM;
-
 };
 
 #endif
