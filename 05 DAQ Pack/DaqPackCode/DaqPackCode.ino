@@ -71,6 +71,8 @@ void setup() {
     Serial.println("Failure setting up the display!");
   }
 
+  Serial.println("NEW CODE");
+
   updateStatusLEDs();
   updateStatusDisplay();
 
@@ -78,7 +80,7 @@ void setup() {
   pinMode(RPM3, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM3), frontRightRPMInterrupt, RISING);
   pinMode(RPM1, INPUT_PULLDOWN);
-  attachInterrupt(digitalPinToInterrupt(RPM1), engineRPMInterrupt, RISING);
+  attachInterrupt(digitalPinToInterrupt(RPM1), engineRPMInterrupt, FALLING);
   pinMode(RPM2, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM2), frontLeftRPMInterrupt, RISING);
   pinMode(RPM4, INPUT_PULLDOWN);
@@ -355,7 +357,11 @@ inline void initPins() {
 }
 
 void engineRPMInterrupt() {
-  engineRPM.handleInterrupt();
+  static float counter = 0.0f;
+  noInterrupts();
+  writePacket(SensorID::ENGINE_RPM, counter);
+  counter += 1.0f;
+  interrupts();
 }
 
 void frontLeftRPMInterrupt() {
@@ -552,7 +558,7 @@ void updateStatusDisplay() {
     display.println("Recording Status: Not Ready");
   }
   else if (status.recording_status == status.READY_TO_RECORD) {
-    display.println("Recording Status: Ready");
+    display.println("Recording Status: NEW CODE");
   }
   else if (status.recording_status == status.RECORDING) {
     if (counter % 4 == 0) {
