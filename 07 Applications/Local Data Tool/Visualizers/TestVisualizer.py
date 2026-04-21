@@ -52,7 +52,7 @@ def testVisualizer(df, filePath, columnIndices, customWindow, useDefaultConfig,
     for colIndex in columnIndices:
         if colIndex < df.shape[1]:
             label = df.columns[colIndex]
-            series = df[label].copy().fillna(method='ffill').fillna(method='bfill')
+            series = df[label].copy().ffill().bfill()
 
             win = min(smoothingWindow, len(series))
             if win % 2 == 0:

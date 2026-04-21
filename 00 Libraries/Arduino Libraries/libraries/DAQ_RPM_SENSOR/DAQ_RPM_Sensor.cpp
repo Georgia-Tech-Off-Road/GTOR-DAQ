@@ -4,13 +4,14 @@
 #include "../../../../05 DAQ Pack/DaqPackCode/Globals.h"
 
 
-RPMSensor :: RPMSensor(uint8_t pin, uint16_t numTeeth, uint32_t minExpectedRPM, uint32_t maxExpectedRPM) {
+RPMSensor :: RPMSensor(uint8_t pin, uint16_t numTeeth, uint32_t minExpectedRPM, uint32_t maxExpectedRPM, float maxIntervalMicros) {
     //initialize private variables
     _pin = pin;
     _numTeeth = numTeeth;
     _prevMicros = microsecondsElapsed;
     _minExpectedRPM = minExpectedRPM;
     _maxExpectedRPM = maxExpectedRPM;
+    _maxIntervalMicros = maxIntervalMicros;
 }
 
 void RPMSensor :: handleInterrupt() {
@@ -25,6 +26,10 @@ void RPMSensor :: handleInterrupt() {
 float RPMSensor :: calculateRPM() {
     //calculate time dif in minutes
     float timeDiff = (static_cast<float>(_mostRecentInterval) /1e6);
+
+    if (_mostRecentInterval > _maxIntervalMicros) {
+        return 0.0f;
+    }
     //calculate time per rev
     float timePerRev = timeDiff * _numTeeth;
     //set _RPM to product
