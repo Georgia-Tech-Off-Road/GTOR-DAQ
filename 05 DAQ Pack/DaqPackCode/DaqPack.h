@@ -50,7 +50,11 @@ struct SensorLogger {
     uint64_t lastLogTimeMicros;
     
     bool shouldLog(uint64_t currentTimeMicros) {
-        return currentTimeMicros >= lastLogTimeMicros + intervalMicros;
+        if (currentTimeMicros >= lastLogTimeMicros + intervalMicros) {
+          lastLogTimeMicros = currentTimeMicros;
+          return true;
+        }
+        return false;
     }
     
     void updateLastLogTime(uint64_t currentTimeMicros) {
@@ -105,6 +109,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
 #define MIN_EXPECTED_RPM 0
 #define MAX_EXPECTED_RPM 10000
 #define MAX_RPM_INTERVAL_MICROS 100000 // Allow up to 100 ms between hall effect readings before we invalidate the data (return 0)
+#define RPM_COMPUTE_INTERVAL_MICROS 10000 // Check every 10ms
 
 #define BAUD 230400
 
@@ -123,6 +128,12 @@ struct SensorLogger displayLogger = {1000000UL / 2, 0};
 struct SensorLogger saveTimer = {1000000UL * 60, 0};
 
 struct SensorLogger SDCardChecker = {1000000UL * 30, 0}; // Check every 30 sec to see if SD card is still responding
+
+// RPM Loggers
+struct SensorLogger frontLeftRPMLogger = {RPM_COMPUTE_INTERVAL_MICROS, 0};
+struct SensorLogger frontRightRPMLogger = {RPM_COMPUTE_INTERVAL_MICROS, 0};
+struct SensorLogger rearRPMLogger = {RPM_COMPUTE_INTERVAL_MICROS, 0};
+struct SensorLogger engineRPMLogger = {RPM_COMPUTE_INTERVAL_MICROS, 0};
 
 
 //actually init the global variable for this 

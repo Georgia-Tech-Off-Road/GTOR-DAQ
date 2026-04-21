@@ -16,10 +16,10 @@ int currentAnalogSensor2 = 0;
 #define MAX_EXPECTED_VALUE 2000
 
 //initialize RPM sensors
-RPMSensor engineRPM(RPM1, ENGTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE, MAX_RPM_INTERVAL_MICROS);
-RPMSensor frontLeftRPM(RPM2, FLTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE, MAX_RPM_INTERVAL_MICROS);
-RPMSensor frontRightRPM(RPM3, FRTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE, MAX_RPM_INTERVAL_MICROS);
-RPMSensor rearRPM(RPM4, RDTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE, MAX_RPM_INTERVAL_MICROS);
+RPMSensor engineRPM(RPM1, ENGTEETH, MAX_RPM_INTERVAL_MICROS);
+RPMSensor frontLeftRPM(RPM2, FLTEETH, MAX_RPM_INTERVAL_MICROS);
+RPMSensor frontRightRPM(RPM3, FRTEETH, MAX_RPM_INTERVAL_MICROS);
+RPMSensor rearRPM(RPM4, RDTEETH, MAX_RPM_INTERVAL_MICROS);
 
 //dont need to calibrate the brake pressures at start up I don't think
 Linear_Analog_Sensor rearBrakePressure(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 2000, 0, 4.5, 0.5, 0, 2000);
@@ -197,38 +197,27 @@ void dataAquisitionAndSavingLoop() {
         writePacket(SensorID::TEENSY_TEMP, temp);
         teensyTempLogger.updateLastLogTime(microsecondsElapsed);
       }
-      //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
-      if (engineRPM.RPMUpdateFlag) {
-        float value = (float) engineRPM.calculateRPM();
-        DAQData.setData<cmbtl::SensorIndex::RPM1>((uint32_t)value);
-        writePacket(SensorID::ENGINE_RPM, value);
-        engineRPM.RPMUpdateFlag = false;
-      } else {
-        engineRPM.calculateRPM();
+      
+      // Check for RPM updates
+      if (engineRPMLogger.shouldLog(microsecondsElapsed)) {
+        float RPM = engineRPM.calculateRPM();
+        DAQData.setData<cmbtl::SensorIndex::RPM1>((uint32_t) RPM);
+        writePacket(SensorID::ENGINE_RPM, RPM);
       }
-      if (frontLeftRPM.RPMUpdateFlag) {
-        float value = (float) frontLeftRPM.calculateRPM();
-        DAQData.setData<cmbtl::SensorIndex::RPM2>((uint32_t)value);
-        writePacket(SensorID::FRONT_LEFT_RPM, value);
-        frontLeftRPM.RPMUpdateFlag = false;
-      } else {
-        frontLeftRPM.checkRPM();
+      if (frontLeftRPMLogger.shouldLog(microsecondsElapsed)) {
+        float RPM = frontLeftRPM.calculateRPM();
+        DAQData.setData<cmbtl::SensorIndex::RPM2>((uint32_t) RPM);
+        writePacket(SensorID::FRONT_LEFT_RPM, RPM);
       }
-      if (frontRightRPM.RPMUpdateFlag) {
-        float value = frontRightRPM.calculateRPM();
-        DAQData.setData<cmbtl::SensorIndex::RPM3>((uint32_t)value);
-        writePacket(SensorID::FRONT_RIGHT_RPM, value);
-        frontRightRPM.RPMUpdateFlag = false;
-      } else {
-        frontRightRPM.checkRPM();
+      if (frontRightRPMLogger.shouldLog(microsecondsElapsed)) {
+        float RPM = frontRightRPM.calculateRPM();
+        DAQData.setData<cmbtl::SensorIndex::RPM3>((uint32_t) RPM);
+        writePacket(SensorID::FRONT_RIGHT_RPM, RPM);
       }
-      if (rearRPM.RPMUpdateFlag) {
-        float value = rearRPM.calculateRPM();
-        DAQData.setData<cmbtl::SensorIndex::RPM4>((uint32_t)value);
-        writePacket(SensorID::REAR_RPM, value);
-        rearRPM.RPMUpdateFlag = false;
-      } else {
-        rearRPM.checkRPM();
+      if (rearRPMLogger.shouldLog(microsecondsElapsed)) {
+        float RPM = rearRPM.calculateRPM();
+        DAQData.setData<cmbtl::SensorIndex::RPM4>((uint32_t) RPM);
+        writePacket(SensorID::REAR_RPM, RPM);
       }
       //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
       updateStatusLEDs();
