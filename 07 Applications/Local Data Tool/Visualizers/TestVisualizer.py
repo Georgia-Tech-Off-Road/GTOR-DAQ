@@ -23,7 +23,6 @@ def testVisualizer(df, filePath, columnIndices, customWindow, useDefaultConfig,
             text = infile.read()
         data = json.loads(text)
         df = pd.json_normalize(data)
-        print(df)
     # Create UI indicator
     label1 = tk.Label(customWindow, text="Creating your graph...")
     label1.pack()
@@ -88,7 +87,7 @@ def testVisualizer(df, filePath, columnIndices, customWindow, useDefaultConfig,
         for colName in ycols:
             plt.plot(plot_df['Time'], plot_df[colName], label=colName,
                      alpha=(0.7 if 'Original' in colName else 1.0))
-        plt.title('Data Visualizer')
+        plt.title('Data Visualizer: File '+str(filePath))
         plt.ylabel('Sensor Value')
         plt.xlabel('Time (Seconds)')
         plt.grid(True)

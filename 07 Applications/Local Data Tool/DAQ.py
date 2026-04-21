@@ -49,7 +49,7 @@ except:
 # Creates the main window
 root = tk.Tk()
 root.title("Main Page")
-root.geometry("800x800")
+root.geometry("800x500")
 
 #define function to run when someone xs out to make sure everything closes
 def onXOut():
@@ -70,7 +70,7 @@ def dataProcessingTool():
     # Create a new window for the data processing tool
     dataProcessingToolPage = tk.Toplevel(root)
     dataProcessingToolPage.title("Data Downloader Tool")
-    dataProcessingToolPage.geometry("1000x800")
+    dataProcessingToolPage.geometry("800x500")
     #define a function to handle window being closed
     def onClose():
         root.deiconify()
@@ -123,7 +123,6 @@ def dataProcessingTool():
                             widget.grid_forget()
         #if a filePath has been chosen
         if ('filePath' in globals()):
-                print(filePath)
                 #if the filepath isn't on the main OS drive only display the download button
                 if ".bin" in filePath:
                     outputButton.grid(row=0,column=1,padx=20)
