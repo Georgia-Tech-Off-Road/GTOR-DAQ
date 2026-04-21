@@ -97,7 +97,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
 
 // Buttons
 #define RECORD_SAVE_BUTTON 34
-#define BUTTON_HOLD_DURATION 1000000
+#define BUTTON_HOLD_DURATION 3000000
 
 // How often to flash (in milliseconds)
 #define FLASH_RATE 400
@@ -148,10 +148,10 @@ time_t getTeensy3Time();
 
 //enums for AUXDAQ ports
 enum AUXDAQ_Ports {
-  RPM1 = 15,
-  RPM2 = 37,
-  RPM3 = 20,
-  RPM4 = 16,
+  RPM1 = 19,
+  RPM2 = 22,
+  RPM3 = 21,
+  RPM4 = 20,
   LDS1 = 22,
   LDS2 = 23,
   SPIO = 24,

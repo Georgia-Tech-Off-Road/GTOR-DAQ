@@ -27,8 +27,6 @@ class RPMSensor {
         volatile unsigned long long _ringBuffer[DAQ_RPM_BUFFER_CAPACITY];
         volatile uint16_t _bufferIdx; // Points to the index beyond last data point
         volatile uint16_t _bufferSize;
-
-
 };
 
 #endif

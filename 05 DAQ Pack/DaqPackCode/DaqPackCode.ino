@@ -71,6 +71,8 @@ void setup() {
     Serial.println("Failure setting up the display!");
   }
 
+  Serial.println("NEW CODE");
+
   updateStatusLEDs();
   updateStatusDisplay();
 
@@ -78,7 +80,7 @@ void setup() {
   pinMode(RPM3, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM3), frontRightRPMInterrupt, RISING);
   pinMode(RPM1, INPUT_PULLDOWN);
-  attachInterrupt(digitalPinToInterrupt(RPM1), engineRPMInterrupt, RISING);
+  attachInterrupt(digitalPinToInterrupt(RPM1), engineRPMInterrupt, FALLING);
   pinMode(RPM2, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM2), frontLeftRPMInterrupt, RISING);
   pinMode(RPM4, INPUT_PULLDOWN);
@@ -185,7 +187,7 @@ void dataAquisitionAndSavingLoop() {
       DAQData.setData<cmbtl::SensorIndex::SEC>(microsecondsElapsed / 1000000);
       
       if (debugLogger.shouldLog(microsecondsElapsed)) {
-        Serial.println(DAQData.serializeDataToJSON().c_str());
+        // Serial.println(DAQData.serializeDataToJSON().c_str());
         debugLogger.updateLastLogTime(microsecondsElapsed);
       }
 
@@ -283,7 +285,7 @@ void changeRecordingState() {
     display.printf("%s closed\n", outputFileName.c_str());
     display.display();
 
-    delay(4000); // Delay 2 seconds
+    delay(4000); // Delay 4 seconds
     isRecording = false;
     //signal to user that the file saved with a flashbang
     status.recording_status = status.READY_TO_RECORD;
@@ -344,7 +346,11 @@ inline void initPins() {
 }
 
 void engineRPMInterrupt() {
-  engineRPM.handleInterrupt();
+  static float counter = 0.0f;
+  noInterrupts();
+  writePacket(SensorID::ENGINE_RPM, counter);
+  counter += 1.0f;
+  interrupts();
 }
 
 void frontLeftRPMInterrupt() {
@@ -521,7 +527,13 @@ inline uint32_t safeMicrosecondsElapsed() {
 }
 
 void updateStatusLEDs() {
+  digitalWrite(POWER_LED, HIGH);
   if (status.recording_status == status.RECORDING) {
+    digitalWrite(RECORDING_LED, HIGH);
+  } else {
+    digitalWrite(RECORDING_LED, LOW);
+  }
+  if (status.error_status != status.NO_ERROR) {
     digitalWrite(ERROR_LED, HIGH);
   } else {
     digitalWrite(ERROR_LED, LOW);
@@ -541,7 +553,7 @@ void updateStatusDisplay() {
     display.println("Recording Status: Not Ready");
   }
   else if (status.recording_status == status.READY_TO_RECORD) {
-    display.println("Recording Status: Ready");
+    display.println("Recording Status: Ready to record");
   }
   else if (status.recording_status == status.RECORDING) {
     if (counter % 4 == 0) {
@@ -575,7 +587,7 @@ void updateStatusDisplay() {
   }
 
   if (status.recording_status == status.READY_TO_RECORD && status.error_status == status.NO_ERROR) {
-    display.println("To begin recording, please hold the button for atleast 1 second.");
+    display.printf("To begin recording, please hold the button for atleast %d secs.\n", BUTTON_HOLD_DURATION / 1000000);
   }
 
   if (status.recording_status == status.RECORDING && status.error_status == status.NO_ERROR) {
@@ -617,8 +629,8 @@ inline void emitADSError() {
 }
 
 inline void onButtonHeldConfirmed() {
-  digitalWrite(ERROR_LED, HIGH);
+  digitalWrite(RECORDING_LED, HIGH);
   while (digitalRead(RECORD_SAVE_BUTTON) == LOW) {} // Wait for release so we don't retrigger
-  digitalWrite(ERROR_LED, LOW);
+  digitalWrite(RECORDING_LED, LOW);
   delay(250);
 }
