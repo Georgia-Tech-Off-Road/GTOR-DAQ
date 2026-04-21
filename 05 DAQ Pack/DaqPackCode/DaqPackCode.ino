@@ -296,7 +296,7 @@ void changeRecordingState() {
     display.printf("%s closed\n", outputFileName.c_str());
     display.display();
 
-    delay(4000); // Delay 2 seconds
+    delay(4000); // Delay 4 seconds
     isRecording = false;
     //signal to user that the file saved with a flashbang
     status.recording_status = status.READY_TO_RECORD;
@@ -538,7 +538,13 @@ inline uint32_t safeMicrosecondsElapsed() {
 }
 
 void updateStatusLEDs() {
+  digitalWrite(POWER_LED, HIGH);
   if (status.recording_status == status.RECORDING) {
+    digitalWrite(RECORDING_LED, HIGH);
+  } else {
+    digitalWrite(RECORDING_LED, LOW);
+  }
+  if (status.error_status != status.NO_ERROR) {
     digitalWrite(ERROR_LED, HIGH);
   } else {
     digitalWrite(ERROR_LED, LOW);
@@ -558,7 +564,7 @@ void updateStatusDisplay() {
     display.println("Recording Status: Not Ready");
   }
   else if (status.recording_status == status.READY_TO_RECORD) {
-    display.println("Recording Status: NEW CODE");
+    display.println("Recording Status: Ready to record");
   }
   else if (status.recording_status == status.RECORDING) {
     if (counter % 4 == 0) {
@@ -634,8 +640,8 @@ inline void emitADSError() {
 }
 
 inline void onButtonHeldConfirmed() {
-  digitalWrite(ERROR_LED, HIGH);
+  digitalWrite(RECORDING_LED, HIGH);
   while (digitalRead(RECORD_SAVE_BUTTON) == LOW) {} // Wait for release so we don't retrigger
-  digitalWrite(ERROR_LED, LOW);
+  digitalWrite(RECORDING_LED, LOW);
   delay(250);
 }
