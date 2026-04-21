@@ -4,59 +4,81 @@
 #include "../../../../05 DAQ Pack/DaqPackCode/Globals.h"
 
 
-RPMSensor :: RPMSensor(uint8_t pin, uint16_t numTeeth, uint32_t minExpectedRPM, uint32_t maxExpectedRPM, float maxIntervalMicros) {
+RPMSensor :: RPMSensor(uint8_t pin, uint16_t numTeeth, unsigned long long maxIntervalMicros) {
     //initialize private variables
     _pin = pin;
     _numTeeth = numTeeth;
     _prevMicros = microsecondsElapsed;
-    _minExpectedRPM = minExpectedRPM;
-    _maxExpectedRPM = maxExpectedRPM;
     _maxIntervalMicros = maxIntervalMicros;
+
+    _bufferIdx = 0;
+    _bufferSize = 0;    
 }
 
 void RPMSensor :: handleInterrupt() {
     //always use microsecondsElapsed instead of micros()
     unsigned long long int now = microsecondsElapsed;
-    _mostRecentInterval = now - _prevMicros;
+    _ringBuffer[_bufferIdx] = now;
+    _bufferIdx = (_bufferIdx + 1) % DAQ_RPM_BUFFER_CAPACITY;
+    if(_bufferSize < DAQ_RPM_BUFFER_CAPACITY) _bufferSize++;
     _prevMicros = now;
     //set boolean flag
     RPMUpdateFlag = true;
 }
 
 float RPMSensor :: calculateRPM() {
-    //calculate time dif in minutes
-    float timeDiff = (static_cast<float>(_mostRecentInterval) /1e6);
+    if (_bufferSize <= 1) return 0.0f; // Don't have enough timestamps to calculate
 
-    if (_mostRecentInterval > _maxIntervalMicros) {
-        return 0.0f;
+    unsigned long long localBuf[DAQ_RPM_BUFFER_CAPACITY];
+    unsigned long long accumulatedDiff = 0;
+
+    noInterrupts();
+    uint16_t size = _bufferSize;
+    uint16_t head = (_bufferIdx + DAQ_RPM_BUFFER_CAPACITY - 1) % DAQ_RPM_BUFFER_CAPACITY;
+
+    memcpy(localBuf, (const void *) _ringBuffer, sizeof(_ringBuffer));
+
+    _bufferIdx = 1;
+    _bufferSize = 1;
+
+    // Place the most recent timestamp at the beginning to carry forward to the next calcluation
+    _ringBuffer[0] = _ringBuffer[head];
+    interrupts();
+
+    uint16_t timestampsProcessed = 0;
+
+    for (uint16_t i = 0; i < size - 1; i++) {
+        uint16_t idx = (head + DAQ_RPM_BUFFER_CAPACITY - i) % DAQ_RPM_BUFFER_CAPACITY;
+        uint16_t prevIdx = (head + DAQ_RPM_BUFFER_CAPACITY - i - 1) % DAQ_RPM_BUFFER_CAPACITY;
+
+        unsigned long long diff = localBuf[idx] - localBuf[prevIdx];
+
+        if (diff < _maxIntervalMicros) {
+            accumulatedDiff += diff;
+            timestampsProcessed++;
+        }
     }
-    //calculate time per rev
-    float timePerRev = timeDiff * _numTeeth;
-    //set _RPM to product
-    _RPM = static_cast<float>(60/timePerRev);
-    //set valueGood to true if the RPM is within a valid range
-    if (_RPM > static_cast<float>(_minExpectedRPM) && _RPM < static_cast<float>(_maxExpectedRPM)) {
-        _RPMValueGood = true;
-        //always calculate timestamps based off microsecondsElapsed
-        _lastGoodRPMValueTimeStamp = microsecondsElapsed * 1000;
-    }
+
+    if (timestampsProcessed == 0) return 0.0f;
+    float averageDiff = (static_cast<float>(accumulatedDiff) / static_cast<float>(timestampsProcessed)) / 1e6f;
+
+    float timePerRev = averageDiff * _numTeeth;
+    _RPM = 60.0f / timePerRev;
+
     return _RPM;
 }
 
 float RPMSensor :: checkRPM() {
     //always use microsecondsElapsed instead of micros()
-    if (_prevMicros + 5000000 < microsecondsElapsed) {
+    noInterrupts();
+    unsigned long long prev = _prevMicros;
+    unsigned long long now = microsecondsElapsed;
+    interrupts();
+    if (prev + _maxIntervalMicros < now) {
         _RPM = 0;
     }
     return _RPM;
 }
 
-bool RPMSensor :: getRPMValueGood() {
-    //Serial.printf("%d, %d, %d\n", _RPMValueGood, _lastGoodRPMValueTimeStamp, millis());
-    if ((_lastGoodRPMValueTimeStamp + 30000) < millis() ) {
-        _RPMValueGood = false;
-    }
-    return _RPMValueGood;
-}
 
 
