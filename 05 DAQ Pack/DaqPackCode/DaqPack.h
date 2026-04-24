@@ -80,7 +80,7 @@ void writePacket(SensorID id, float value);
 #define V_REF 5.0
 
 // LEDs
-#define RECORDING_LED 35
+#define RECORDING_LED 40
 #define ERROR_LED 40
 #define POWER_LED 40
 
@@ -137,10 +137,10 @@ time_t getTeensy3Time();
 
 //enums for AUXDAQ ports
 enum AUXDAQ_Ports {
-  RPM1 = 19,
-  RPM2 = 22,
-  RPM3 = 21,
-  RPM4 = 20,
+  RPM1 = 25,
+  RPM2 = 21,
+  RPM3 = 20,
+  RPM4 = 41,
   LDS1 = 22,
   LDS2 = 23,
   SPIO = 24,

@@ -90,16 +90,7 @@ void setup() {
     status.error_status = status.ADS_ERROR;
   }
   Serial.println("ADS1256 setup successful!");
-
-  //calibrate the LDSs
-  //LDSFrontLeft = createCalibratedLDSSensor(2, &ads1, 0);
-  //LDSFrontRight = createCalibratedLDSSensor(3, &ads1, 0);
-  //delay to give calibrators time to get to the back of the car
-  //delay(10000);
-  //*LDSRearLeft = createCalibratedLDSSensor(2, &ads2, 1);
-  //*LDSRearRight = createCalibratedLDSSensor(3, &ads2, 1);
-  //final delay to let you read off all the calibrated values
-  //set recording flag
+  
   isRecording = true;
   //init auto save time
   autoSaveTimeMillis = millis();
@@ -117,8 +108,6 @@ void loop() {}
 void dataAquisitionAndSavingLoop() {
   errorCheck();
   blockForButtonHold(RECORD_SAVE_BUTTON, BUTTON_HOLD_DURATION); // Must hold the recording button for one second
-  // Rapid flash the recording LED for 5 sec
-  rapidFlash(RECORDING_LED, 5000);
   while(1) {
     digitalWrite(POWER_LED, HIGH);
     //updateDebugLeds();
@@ -128,6 +117,8 @@ void dataAquisitionAndSavingLoop() {
     static bool tracking = false;
     bool shouldSave = false;
 
+
+    // Serial.println("Gateway1");
     if(SDCardChecker.shouldLog(microsecondsElapsed)) {
       SDCardChecker.updateLastLogTime(microsecondsElapsed);
       if (!isSDCardAccessible()) {
@@ -135,6 +126,7 @@ void dataAquisitionAndSavingLoop() {
       }
     }
 
+  // Serial.println("Gateway2");
     if (digitalRead(RECORD_SAVE_BUTTON) == LOW) {
       if(!tracking) {
         holdStartMicros = safeMicrosecondsElapsed();
@@ -155,6 +147,7 @@ void dataAquisitionAndSavingLoop() {
       updateStatusDisplay();
     }
 
+    // Serial.println("Gateway3");
     if (shouldSave) {
       digitalWrite(ERROR_LED, LOW);
       saveTimer.updateLastLogTime(microsecondsElapsed);
@@ -178,6 +171,7 @@ void dataAquisitionAndSavingLoop() {
       outputFile.flush();
       autoSaveTimeMillis = millis();
     }
+    // Serial.println("Gateway4");
 
     //size of is apparently computed at compile time
     if (isRecording) {
@@ -187,18 +181,20 @@ void dataAquisitionAndSavingLoop() {
       DAQData.setData<cmbtl::SensorIndex::SEC>(microsecondsElapsed / 1000000);
       
       if (debugLogger.shouldLog(microsecondsElapsed)) {
-        // Serial.println(DAQData.serializeDataToJSON().c_str());
+        Serial.println(DAQData.serializeDataToJSON().c_str());
         debugLogger.updateLastLogTime(microsecondsElapsed);
       }
 
+      // Serial.println("Gateway5");
       recordNextADSValue();
-
+      // Serial.println("Gateway6");
       if(teensyTempLogger.shouldLog(microsecondsElapsed)) {
         float temp = tempmonGetTemp();
         DAQData.setData<cmbtl::SensorIndex::TEENSY_TEMP>(temp);
         writePacket(SensorID::TEENSY_TEMP, temp);
         teensyTempLogger.updateLastLogTime(microsecondsElapsed);
       }
+      // Serial.println("Gateway7");
       //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
       if (engineRPM.RPMUpdateFlag) {
         float value = (float) engineRPM.calculateRPM();
@@ -232,6 +228,7 @@ void dataAquisitionAndSavingLoop() {
       } else {
         rearRPM.checkRPM();
       }
+      // Serial.println("Gateway8");
       //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
       updateStatusLEDs();
     }
@@ -249,22 +246,26 @@ inline void recordNextADSValue() {
   uint8_t nextADSPort = getADSPort(nextSensor);
   if (nextSensor == LDS_FRONT_LEFT) {
     long result = ads1256.readSinglePort(nextADSPort);
-    float value = LDSFrontLeft.computeSensorReading(result);
+    // float value = LDSFrontLeft.computeSensorReading(result);
+    float value = ads1256.convertToVoltage(result);
     writePacket(SensorID::LDS_FRONT_LEFT, value);
     DAQData.setData<cmbtl::SensorIndex::LDSFrontLeft>(value);
   } else if (nextSensor == LDS_FRONT_RIGHT) {
     long result = ads1256.readSinglePort(nextADSPort);
-    float value = LDSFrontRight.computeSensorReading(result);
+    // float value = LDSFrontRight.computeSensorReading(result);
+    float value = ads1256.convertToVoltage(result);
     writePacket(SensorID::LDS_FRONT_RIGHT, value);
     DAQData.setData<cmbtl::SensorIndex::LDSFrontRight>(value);
   } else if (nextSensor == LDS_REAR_LEFT) {
     long result = ads1256.readSinglePort(nextADSPort);
-    float value = LDSRearLeft.computeSensorReading(result);
+    // float value = LDSRearLeft.computeSensorReading(result);
+    float value = ads1256.convertToVoltage(result);
     writePacket(SensorID::LDS_REAR_LEFT, value);
     DAQData.setData<cmbtl::SensorIndex::LDSRearLeft>(value);
   } else if (nextSensor == LDS_REAR_RIGHT) {
     long result = ads1256.readSinglePort(nextADSPort);
-    float value = LDSRearRight.computeSensorReading(result);
+    // float value = LDSRearRight.computeSensorReading(result);
+    float value = ads1256.convertToVoltage(result);
     writePacket(SensorID::LDS_REAR_RIGHT, value);
     DAQData.setData<cmbtl::SensorIndex::LDSRearRight>(value);
   } else {
@@ -543,11 +544,6 @@ void updateStatusLEDs() {
     digitalWrite(RECORDING_LED, HIGH);
   } else {
     digitalWrite(RECORDING_LED, LOW);
-  }
-  if (status.error_status != status.NO_ERROR) {
-    digitalWrite(ERROR_LED, HIGH);
-  } else {
-    digitalWrite(ERROR_LED, LOW);
   }
 }
 
