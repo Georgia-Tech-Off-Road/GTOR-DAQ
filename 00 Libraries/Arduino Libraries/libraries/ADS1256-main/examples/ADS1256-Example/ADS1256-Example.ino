@@ -166,7 +166,7 @@ void setup() {
   A.setPGA(PGA_1);  //0b00000000 - DEC: 0
   //--------------------------------------------
 
-  //Set input channels
+  //Set input channels 
   A.setMUX(DIFF_6_7);  //0b01100111 - DEC: 103
   //--------------------------------------------
 
@@ -189,6 +189,9 @@ void setup() {
   Serial.println(A.readRegister(DRATE_REG));
   delay(100);
 
+  Serial.println("Calibrating...");
+  A.sendDirectCommand(0b11110000); // Calibration command
+  Serial.println("Calibration complete");
   //Freeze the display for 3 sec
   delay(3000);
 }
@@ -233,12 +236,22 @@ void loop() {
       case 'C':                       //Cycle single ended inputs (A0+GND, A1+GND ... A7+GND)
         while (Serial.read() != 's')  //The conversion is stopped by a character received from the serial port
         {
-          float channels[8];  //Buffer that holds 8 conversions (8 single-ended channels)
+          long channels[8];  //Buffer that holds 8 conversions (8 single-ended channels)
           for (int j = 0; j < 8; j++) {
-            channels[j] = A.convertToVoltage(A.cycleSingle());  //store the converted single-ended results in the buffer
+            channels[j] = A.cycleSingle();  //store the converted single-ended results in the buffer
           }
           for (int i = 0; i < 8; i++) {
-            Serial.print(channels[i], 4);  //print the converted single-ended results with 4 digits
+            Serial.printf("%06lx", (uint32_t)(channels[i] & 0xFFFFFF));  //print the converted single-ended results with 4 digits
+
+            if (i < 7)  //Only printing tab between the first 7 conversions
+            {
+              Serial.print("\t");  //tab separator to separate the 8 conversions shown in the same line
+            }
+          }
+          Serial.println();  //Printing a linebreak - this will put the next 8 conversions in a new line
+
+          for (int i = 0; i < 8; i++) {
+            Serial.print(A.convertToVoltage(channels[i]), 4);  //print the converted single-ended results with 4 digits
 
             if (i < 7)  //Only printing tab between the first 7 conversions
             {
@@ -247,6 +260,10 @@ void loop() {
           }
           Serial.println();  //Printing a linebreak - this will put the next 8 conversions in a new line
         }
+
+        Serial.println();
+        Serial.println();
+
         A.stopConversion();
         break;
       case 'Y':
