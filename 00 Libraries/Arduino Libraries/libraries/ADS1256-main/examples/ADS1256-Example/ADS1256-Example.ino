@@ -153,45 +153,13 @@ void setup() {
   hspi.begin(14, 25, 13);  //SCK, MISO (safe), MOSI
 #endif
 
-  Serial.print("DRDY pin reads: ");
-  Serial.println(digitalRead(22));
-  A.InitializeADC();  //See the documentation for every details
-  //Setting up CS, RESET, SYNC and SPI
-  //Assigning default values to: STATUS, MUX, ADCON, DRATE
-  //Performing a SYSCAL
-
-  //Below is a demonstration to change the values through the built-on functions of the library
-  //Set a PGA value
-  Serial.println("Attempting to set PGA");
-  A.setPGA(PGA_1);  //0b00000000 - DEC: 0
-  //--------------------------------------------
-
-  //Set input channels 
-  A.setMUX(DIFF_6_7);  //0b01100111 - DEC: 103
-  //--------------------------------------------
-
-  //Set DRATE
-  while (A.readRegister(DRATE_REG) != DRATE_500SPS) {
-    A.setDRATE(DRATE_500SPS);  //0b00010011 - DEC: 19
-  }
-  //--------------------------------------------
-
-  //Read back the above 3 values to check if the writing was succesful
-  Serial.print("PGA: ");
-  Serial.println(A.getPGA());
-  delay(100);
-  //--
-  Serial.print("MUX: ");
-  Serial.println(A.readRegister(MUX_REG));
-  delay(100);
-  //--
-  Serial.print("DRATE: ");
-  Serial.println(A.readRegister(DRATE_REG));
-  delay(100);
-
-  Serial.println("Calibrating...");
-  A.sendDirectCommand(0b11110000); // Calibration command
-  Serial.println("Calibration complete");
+  A.InitializeADC();
+  A.setAutoCal(ACAL_DISABLED);  // prevent implicit recalibration
+  A.setPGA(PGA_1);
+  A.setDRATE(DRATE_500SPS);
+  A.setMUX(DIFF_6_7);
+  A.sendDirectCommand(SELFCAL);  // single clean calibration with final settings
+  delay(400);                    // give it time to complete
   //Freeze the display for 3 sec
   delay(3000);
 }
