@@ -155,13 +155,47 @@ void setup() {
 
   A.InitializeADC();
   A.setAutoCal(ACAL_DISABLED);  // prevent implicit recalibration
-  A.setPGA(PGA_1);
-  A.setDRATE(DRATE_500SPS);
-  A.setMUX(DIFF_6_7);
+  while(A.getPGA() != PGA_1) {
+    A.setPGA(PGA_1);
+  }
+  while(A.readRegister(DRATE_REG) != DRATE_500SPS) {
+    A.setDRATE(DRATE_500SPS);
+  }
   A.sendDirectCommand(SELFCAL);  // single clean calibration with final settings
   delay(400);                    // give it time to complete
+
+  //Read back the above 3 values to check if the writing was succesful
+  Serial.print("PGA: ");
+  Serial.println(A.getPGA());
+  delay(100);
+  //--
+  Serial.print("DRATE: ");
+  Serial.println(A.readRegister(DRATE_REG));
+  delay(100);
+
+  Serial.printf("FSC: %x", (uint8_t) A.readRegister(FSC2_REG));
+  delay(100);
+
+  long = 
+
+  Serial.printf("%x", (uint8_t) A.readRegister(FSC1_REG));
+  delay(100);
+
+  Serial.printf("%x\n", (uint8_t) A.readRegister(FSC0_REG));
+  delay(100);
+
+  Serial.printf("OFC: %x", (uint8_t) A.readRegister(OFC2_REG));
+  delay(100);
+
+  Serial.printf("%x", (uint8_t) A.readRegister(OFC1_REG));
+  delay(100);
+
+  Serial.printf("%x\n", (uint8_t) A.readRegister(OFC0_REG));
+
   //Freeze the display for 3 sec
   delay(3000);
+
+  Serial.println("Enter a command: ");
 }
 
 void loop() {
