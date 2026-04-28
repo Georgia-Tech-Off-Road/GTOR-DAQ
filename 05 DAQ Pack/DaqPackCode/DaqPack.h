@@ -81,10 +81,12 @@ void writePacket(SensorID id, float value);
 #define ADS_RESET_PIN 23
 #define ADS_SYNC_PIN 24
 #define ADS_CS_PIN 10
-#define V_REF 5.0
+#define V_REF 5.03
+#define ADS_PGA PGA_1
+#define ADS_DRATE DRATE_500SPS
 
 // LEDs
-#define RECORDING_LED 35
+#define RECORDING_LED 40
 #define ERROR_LED 40
 #define POWER_LED 40
 
@@ -148,10 +150,10 @@ time_t getTeensy3Time();
 
 //enums for AUXDAQ ports
 enum AUXDAQ_Ports {
-  RPM1 = 19,
-  RPM2 = 22,
-  RPM3 = 21,
-  RPM4 = 20,
+  RPM1 = 25,
+  RPM2 = 21,
+  RPM3 = 20,
+  RPM4 = 41,
   LDS1 = 22,
   LDS2 = 23,
   SPIO = 24,
@@ -290,7 +292,7 @@ inline void setupTeensyTime() {
 }
 
 // Returns -1 if failure, 0 if success
-int initADS1256();
+int initADS1256(uint8_t pga, uint8_t drate);
 
 int initDisplay();
 
