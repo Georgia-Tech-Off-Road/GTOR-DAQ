@@ -77,7 +77,9 @@ void writePacket(SensorID id, float value);
 #define ADS_RESET_PIN 23
 #define ADS_SYNC_PIN 24
 #define ADS_CS_PIN 10
-#define V_REF 5.0
+#define V_REF 5.03
+#define ADS_PGA PGA_1
+#define ADS_DRATE DRATE_500SPS
 
 // LEDs
 #define RECORDING_LED 40
@@ -279,7 +281,7 @@ inline void setupTeensyTime() {
 }
 
 // Returns -1 if failure, 0 if success
-int initADS1256();
+int initADS1256(uint8_t pga, uint8_t drate);
 
 int initDisplay();
 

@@ -176,8 +176,6 @@ void setup() {
   Serial.printf("FSC: %x", (uint8_t) A.readRegister(FSC2_REG));
   delay(100);
 
-  long = 
-
   Serial.printf("%x", (uint8_t) A.readRegister(FSC1_REG));
   delay(100);
 

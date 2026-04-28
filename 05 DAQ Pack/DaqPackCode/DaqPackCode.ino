@@ -86,7 +86,7 @@ void setup() {
   pinMode(RPM4, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM4), rearRPMInterrupt, RISING);
 
-  if (initADS1256() != 0) {
+  if (initADS1256(ADS_PGA, ADS_DRATE) != 0) {
     status.error_status = status.ADS_ERROR;
   }
   Serial.println("ADS1256 setup successful!");
@@ -377,51 +377,59 @@ void rearRPMInterrupt() {
   rearRPM.handleInterrupt();
 }
 
-int initADS1256() {
+int initADS1256(uint8_t pga, uint8_t drate) {
   Serial.println("Setting up ADS1256...");
 
   ads1256.InitializeADC();
+  ads1256.setAutoCal(ACAL_DISABLED);  // Prevent implicit recalibration
 
-  uint8_t pgaVal = PGA_1;
-  uint8_t muxVal = SING_1;
-  uint8_t drateVal = DRATE_1000SPS;
+  for (int i = 0; i < 10; i++) { // Attempt 10 times
+    ads1256.setPGA(pga);
+    if (ads1256.getPGA() == pga) break;
+  }
 
-  // Set PGA 
-  ads1256.setPGA(pgaVal);
+  for (int i = 0; i < 10; i++) { // Attempt 10 times
+    ads1256.setDRATE(drate);
+    if (ads1256.readRegister(DRATE_REG) == drate) break;
+  }
 
-  //Set input channels
-  ads1256.setMUX(muxVal);
+  ads1256.sendDirectCommand(SELFCAL);  // Single clean calibration with final settings
+  delay(400);                          // Give it time to complete
 
-  //Set DRATE
-  ads1256.setDRATE(drateVal);
-
-  //Read back the above 3 values to check if the writing was succesful
+  // Read back the above 3 values to check if the writing was succesful
   Serial.print("PGA: ");
-  uint8_t pgaResult = ads1256.getPGA();
-  Serial.println(pgaResult);
-  delay(100);
-  //--
-  Serial.print("MUX: ");
-  uint8_t muxResult = ads1256.readRegister(MUX_REG);
-  Serial.println(muxResult);
+  Serial.println(ads1256.getPGA());
   delay(100);
   //--
   Serial.print("DRATE: ");
-  uint8_t drateResult = ads1256.readRegister(DRATE_REG);
-  Serial.println(drateResult);
+  Serial.println(ads1256.readRegister(DRATE_REG));
   delay(100);
 
+  // Print full scale calibration (FSC) and offset calibration (OFC) for debugging
+  // See p.g 24 of ADS1256 datasheet for formula and ideal values
+  Serial.printf("FSC: %x", (uint8_t) ads1256.readRegister(FSC2_REG));
+  delay(100);
+  Serial.printf("%x", (uint8_t) ads1256.readRegister(FSC1_REG));
+  delay(100);
+  Serial.printf("%x\n", (uint8_t) ads1256.readRegister(FSC0_REG));
+  delay(100);
+
+  Serial.printf("OFC: %x", (uint8_t) ads1256.readRegister(OFC2_REG));
+  delay(100);
+  Serial.printf("%x", (uint8_t) ads1256.readRegister(OFC1_REG));
+  delay(100);
+  Serial.printf("%x\n", (uint8_t) ads1256.readRegister(OFC0_REG));
+
   // --- Error Handling ---
+  uint8_t pgaResult = ads1256.getPGA();
+  uint8_t drateResult = ads1256.readRegister(DRATE_REG);
+
   bool error = false;
-  if (pgaVal != pgaResult) {
+  if (pga != pgaResult) {
     Serial.println("Unable to correctly set PGA value");
     error = true;
   }
-  if (muxVal != muxResult) {
-    Serial.println("Unable to correctly set mux value");
-    error = true;
-  }
-  if (drateVal != drateResult) {
+  if (drate != drateResult) {
     Serial.println("Unable to correctly set drate value");
     error = true;
   }
