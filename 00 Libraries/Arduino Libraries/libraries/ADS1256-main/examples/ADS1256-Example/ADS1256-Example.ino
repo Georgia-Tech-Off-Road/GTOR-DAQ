@@ -153,44 +153,47 @@ void setup() {
   hspi.begin(14, 25, 13);  //SCK, MISO (safe), MOSI
 #endif
 
-  Serial.print("DRDY pin reads: ");
-  Serial.println(digitalRead(22));
-  A.InitializeADC();  //See the documentation for every details
-  //Setting up CS, RESET, SYNC and SPI
-  //Assigning default values to: STATUS, MUX, ADCON, DRATE
-  //Performing a SYSCAL
-
-  //Below is a demonstration to change the values through the built-on functions of the library
-  //Set a PGA value
-  Serial.println("Attempting to set PGA");
-  A.setPGA(PGA_1);  //0b00000000 - DEC: 0
-  //--------------------------------------------
-
-  //Set input channels
-  A.setMUX(DIFF_6_7);  //0b01100111 - DEC: 103
-  //--------------------------------------------
-
-  //Set DRATE
-  while (A.readRegister(DRATE_REG) != DRATE_500SPS) {
-    A.setDRATE(DRATE_500SPS);  //0b00010011 - DEC: 19
+  A.InitializeADC();
+  A.setAutoCal(ACAL_DISABLED);  // prevent implicit recalibration
+  while(A.getPGA() != PGA_1) {
+    A.setPGA(PGA_1);
   }
-  //--------------------------------------------
+  while(A.readRegister(DRATE_REG) != DRATE_500SPS) {
+    A.setDRATE(DRATE_500SPS);
+  }
+  A.sendDirectCommand(SELFCAL);  // single clean calibration with final settings
+  delay(400);                    // give it time to complete
 
   //Read back the above 3 values to check if the writing was succesful
   Serial.print("PGA: ");
   Serial.println(A.getPGA());
   delay(100);
   //--
-  Serial.print("MUX: ");
-  Serial.println(A.readRegister(MUX_REG));
-  delay(100);
-  //--
   Serial.print("DRATE: ");
   Serial.println(A.readRegister(DRATE_REG));
   delay(100);
 
+  Serial.printf("FSC: %x", (uint8_t) A.readRegister(FSC2_REG));
+  delay(100);
+
+  Serial.printf("%x", (uint8_t) A.readRegister(FSC1_REG));
+  delay(100);
+
+  Serial.printf("%x\n", (uint8_t) A.readRegister(FSC0_REG));
+  delay(100);
+
+  Serial.printf("OFC: %x", (uint8_t) A.readRegister(OFC2_REG));
+  delay(100);
+
+  Serial.printf("%x", (uint8_t) A.readRegister(OFC1_REG));
+  delay(100);
+
+  Serial.printf("%x\n", (uint8_t) A.readRegister(OFC0_REG));
+
   //Freeze the display for 3 sec
   delay(3000);
+
+  Serial.println("Enter a command: ");
 }
 
 void loop() {
@@ -233,12 +236,22 @@ void loop() {
       case 'C':                       //Cycle single ended inputs (A0+GND, A1+GND ... A7+GND)
         while (Serial.read() != 's')  //The conversion is stopped by a character received from the serial port
         {
-          float channels[8];  //Buffer that holds 8 conversions (8 single-ended channels)
+          long channels[8];  //Buffer that holds 8 conversions (8 single-ended channels)
           for (int j = 0; j < 8; j++) {
-            channels[j] = A.convertToVoltage(A.cycleSingle());  //store the converted single-ended results in the buffer
+            channels[j] = A.cycleSingle();  //store the converted single-ended results in the buffer
           }
           for (int i = 0; i < 8; i++) {
-            Serial.print(channels[i], 4);  //print the converted single-ended results with 4 digits
+            Serial.printf("%06lx", (uint32_t)(channels[i] & 0xFFFFFF));  //print the converted single-ended results with 4 digits
+
+            if (i < 7)  //Only printing tab between the first 7 conversions
+            {
+              Serial.print("\t");  //tab separator to separate the 8 conversions shown in the same line
+            }
+          }
+          Serial.println();  //Printing a linebreak - this will put the next 8 conversions in a new line
+
+          for (int i = 0; i < 8; i++) {
+            Serial.print(A.convertToVoltage(channels[i]), 4);  //print the converted single-ended results with 4 digits
 
             if (i < 7)  //Only printing tab between the first 7 conversions
             {
@@ -247,6 +260,10 @@ void loop() {
           }
           Serial.println();  //Printing a linebreak - this will put the next 8 conversions in a new line
         }
+
+        Serial.println();
+        Serial.println();
+
         A.stopConversion();
         break;
       case 'Y':

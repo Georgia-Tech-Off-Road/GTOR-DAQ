@@ -86,20 +86,11 @@ void setup() {
   pinMode(RPM4, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM4), rearRPMInterrupt, RISING);
 
-  if (initADS1256() != 0) {
+  if (initADS1256(ADS_PGA, ADS_DRATE) != 0) {
     status.error_status = status.ADS_ERROR;
   }
   Serial.println("ADS1256 setup successful!");
-
-  //calibrate the LDSs
-  //LDSFrontLeft = createCalibratedLDSSensor(2, &ads1, 0);
-  //LDSFrontRight = createCalibratedLDSSensor(3, &ads1, 0);
-  //delay to give calibrators time to get to the back of the car
-  //delay(10000);
-  //*LDSRearLeft = createCalibratedLDSSensor(2, &ads2, 1);
-  //*LDSRearRight = createCalibratedLDSSensor(3, &ads2, 1);
-  //final delay to let you read off all the calibrated values
-  //set recording flag
+  
   isRecording = true;
   //init auto save time
   autoSaveTimeMillis = millis();
@@ -117,8 +108,6 @@ void loop() {}
 void dataAquisitionAndSavingLoop() {
   errorCheck();
   blockForButtonHold(RECORD_SAVE_BUTTON, BUTTON_HOLD_DURATION); // Must hold the recording button for one second
-  // Rapid flash the recording LED for 5 sec
-  rapidFlash(RECORDING_LED, 5000);
   while(1) {
     digitalWrite(POWER_LED, HIGH);
     //updateDebugLeds();
@@ -128,6 +117,8 @@ void dataAquisitionAndSavingLoop() {
     static bool tracking = false;
     bool shouldSave = false;
 
+
+    // Serial.println("Gateway1");
     if(SDCardChecker.shouldLog(microsecondsElapsed)) {
       SDCardChecker.updateLastLogTime(microsecondsElapsed);
       if (!isSDCardAccessible()) {
@@ -135,6 +126,7 @@ void dataAquisitionAndSavingLoop() {
       }
     }
 
+  // Serial.println("Gateway2");
     if (digitalRead(RECORD_SAVE_BUTTON) == LOW) {
       if(!tracking) {
         holdStartMicros = safeMicrosecondsElapsed();
@@ -155,6 +147,7 @@ void dataAquisitionAndSavingLoop() {
       updateStatusDisplay();
     }
 
+    // Serial.println("Gateway3");
     if (shouldSave) {
       digitalWrite(ERROR_LED, LOW);
       saveTimer.updateLastLogTime(microsecondsElapsed);
@@ -178,6 +171,7 @@ void dataAquisitionAndSavingLoop() {
       outputFile.flush();
       autoSaveTimeMillis = millis();
     }
+    // Serial.println("Gateway4");
 
     //size of is apparently computed at compile time
     if (isRecording) {
@@ -187,18 +181,20 @@ void dataAquisitionAndSavingLoop() {
       DAQData.setData<cmbtl::SensorIndex::SEC>(microsecondsElapsed / 1000000);
       
       if (debugLogger.shouldLog(microsecondsElapsed)) {
-        // Serial.println(DAQData.serializeDataToJSON().c_str());
+        Serial.println(DAQData.serializeDataToJSON().c_str());
         debugLogger.updateLastLogTime(microsecondsElapsed);
       }
 
+      // Serial.println("Gateway5");
       recordNextADSValue();
-
+      // Serial.println("Gateway6");
       if(teensyTempLogger.shouldLog(microsecondsElapsed)) {
         float temp = tempmonGetTemp();
         DAQData.setData<cmbtl::SensorIndex::TEENSY_TEMP>(temp);
         writePacket(SensorID::TEENSY_TEMP, temp);
         teensyTempLogger.updateLastLogTime(microsecondsElapsed);
       }
+      // Serial.println("Gateway7");
       //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
       if (engineRPM.RPMUpdateFlag) {
         float value = (float) engineRPM.calculateRPM();
@@ -232,6 +228,7 @@ void dataAquisitionAndSavingLoop() {
       } else {
         rearRPM.checkRPM();
       }
+      // Serial.println("Gateway8");
       //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
       updateStatusLEDs();
     }
@@ -249,22 +246,26 @@ inline void recordNextADSValue() {
   uint8_t nextADSPort = getADSPort(nextSensor);
   if (nextSensor == LDS_FRONT_LEFT) {
     long result = ads1256.readSinglePort(nextADSPort);
-    float value = LDSFrontLeft.computeSensorReading(result);
+    // float value = LDSFrontLeft.computeSensorReading(result);
+    float value = ads1256.convertToVoltage(result);
     writePacket(SensorID::LDS_FRONT_LEFT, value);
     DAQData.setData<cmbtl::SensorIndex::LDSFrontLeft>(value);
   } else if (nextSensor == LDS_FRONT_RIGHT) {
     long result = ads1256.readSinglePort(nextADSPort);
-    float value = LDSFrontRight.computeSensorReading(result);
+    // float value = LDSFrontRight.computeSensorReading(result);
+    float value = ads1256.convertToVoltage(result);
     writePacket(SensorID::LDS_FRONT_RIGHT, value);
     DAQData.setData<cmbtl::SensorIndex::LDSFrontRight>(value);
   } else if (nextSensor == LDS_REAR_LEFT) {
     long result = ads1256.readSinglePort(nextADSPort);
-    float value = LDSRearLeft.computeSensorReading(result);
+    // float value = LDSRearLeft.computeSensorReading(result);
+    float value = ads1256.convertToVoltage(result);
     writePacket(SensorID::LDS_REAR_LEFT, value);
     DAQData.setData<cmbtl::SensorIndex::LDSRearLeft>(value);
   } else if (nextSensor == LDS_REAR_RIGHT) {
     long result = ads1256.readSinglePort(nextADSPort);
-    float value = LDSRearRight.computeSensorReading(result);
+    // float value = LDSRearRight.computeSensorReading(result);
+    float value = ads1256.convertToVoltage(result);
     writePacket(SensorID::LDS_REAR_RIGHT, value);
     DAQData.setData<cmbtl::SensorIndex::LDSRearRight>(value);
   } else {
@@ -376,51 +377,59 @@ void rearRPMInterrupt() {
   rearRPM.handleInterrupt();
 }
 
-int initADS1256() {
+int initADS1256(uint8_t pga, uint8_t drate) {
   Serial.println("Setting up ADS1256...");
 
   ads1256.InitializeADC();
+  ads1256.setAutoCal(ACAL_DISABLED);  // Prevent implicit recalibration
 
-  uint8_t pgaVal = PGA_1;
-  uint8_t muxVal = SING_1;
-  uint8_t drateVal = DRATE_1000SPS;
+  for (int i = 0; i < 10; i++) { // Attempt 10 times
+    ads1256.setPGA(pga);
+    if (ads1256.getPGA() == pga) break;
+  }
 
-  // Set PGA 
-  ads1256.setPGA(pgaVal);
+  for (int i = 0; i < 10; i++) { // Attempt 10 times
+    ads1256.setDRATE(drate);
+    if (ads1256.readRegister(DRATE_REG) == drate) break;
+  }
 
-  //Set input channels
-  ads1256.setMUX(muxVal);
+  ads1256.sendDirectCommand(SELFCAL);  // Single clean calibration with final settings
+  delay(400);                          // Give it time to complete
 
-  //Set DRATE
-  ads1256.setDRATE(drateVal);
-
-  //Read back the above 3 values to check if the writing was succesful
+  // Read back the above 3 values to check if the writing was succesful
   Serial.print("PGA: ");
-  uint8_t pgaResult = ads1256.getPGA();
-  Serial.println(pgaResult);
-  delay(100);
-  //--
-  Serial.print("MUX: ");
-  uint8_t muxResult = ads1256.readRegister(MUX_REG);
-  Serial.println(muxResult);
+  Serial.println(ads1256.getPGA());
   delay(100);
   //--
   Serial.print("DRATE: ");
-  uint8_t drateResult = ads1256.readRegister(DRATE_REG);
-  Serial.println(drateResult);
+  Serial.println(ads1256.readRegister(DRATE_REG));
   delay(100);
 
+  // Print full scale calibration (FSC) and offset calibration (OFC) for debugging
+  // See p.g 24 of ADS1256 datasheet for formula and ideal values
+  Serial.printf("FSC: %x", (uint8_t) ads1256.readRegister(FSC2_REG));
+  delay(100);
+  Serial.printf("%x", (uint8_t) ads1256.readRegister(FSC1_REG));
+  delay(100);
+  Serial.printf("%x\n", (uint8_t) ads1256.readRegister(FSC0_REG));
+  delay(100);
+
+  Serial.printf("OFC: %x", (uint8_t) ads1256.readRegister(OFC2_REG));
+  delay(100);
+  Serial.printf("%x", (uint8_t) ads1256.readRegister(OFC1_REG));
+  delay(100);
+  Serial.printf("%x\n", (uint8_t) ads1256.readRegister(OFC0_REG));
+
   // --- Error Handling ---
+  uint8_t pgaResult = ads1256.getPGA();
+  uint8_t drateResult = ads1256.readRegister(DRATE_REG);
+
   bool error = false;
-  if (pgaVal != pgaResult) {
+  if (pga != pgaResult) {
     Serial.println("Unable to correctly set PGA value");
     error = true;
   }
-  if (muxVal != muxResult) {
-    Serial.println("Unable to correctly set mux value");
-    error = true;
-  }
-  if (drateVal != drateResult) {
+  if (drate != drateResult) {
     Serial.println("Unable to correctly set drate value");
     error = true;
   }
@@ -543,11 +552,6 @@ void updateStatusLEDs() {
     digitalWrite(RECORDING_LED, HIGH);
   } else {
     digitalWrite(RECORDING_LED, LOW);
-  }
-  if (status.error_status != status.NO_ERROR) {
-    digitalWrite(ERROR_LED, HIGH);
-  } else {
-    digitalWrite(ERROR_LED, LOW);
   }
 }
 
