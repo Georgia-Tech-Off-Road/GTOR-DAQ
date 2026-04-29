@@ -105,10 +105,14 @@ def dataProcessingTool():
             os.system(f'open {howToFilePath}')
     def chooseFile():
         # Open file dialog and get the file path
-        global filePath
+        global filePath, outputPath
         filePath = filedialog.askopenfilename()
         # Display the file path in the label
         fileSelectLabel.config(text=f"Selected file: {filePath}")
+
+        if outputPath == None:
+            outputPath = os.path.dirname(filePath)
+            outputSelectLabel.config(text=f"Selected output path: {outputPath}")
         #update the buttons to allow the file to be operated on
         updateButtons()
 
@@ -411,7 +415,17 @@ def dataProcessingTool():
         baseName, _ = os.path.splitext(fileName)
         outputFile = os.path.join(outputPath, baseName + ".json")
         print(f"Converting {outputPath}")
-        binThread = threading.Thread(target=ProcessingPrograms.NewBinFileTranslator.translate_and_write, args=(filePath, outputFile))
+
+        def convertAndNotify():
+            ProcessingPrograms.NewBinFileTranslator.translate_and_write(filePath, outputFile)
+            # Show a popup when conversion is done
+            alert = tk.Toplevel(dataProcessingToolPage)
+            alert.title("Done")
+            alert.geometry("300x150")
+            tk.Label(alert, text=f"Conversion complete!\nSaved to:\n{outputFile}", wraplength=250).pack(pady=20)
+            tk.Button(alert, text="OK", command=alert.destroy).pack(pady=5)
+
+        binThread = threading.Thread(target=convertAndNotify)
         #start the thread
         binThread.start()
         
