@@ -111,7 +111,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
 #define MIN_EXPECTED_RPM 0
 #define MAX_EXPECTED_RPM 10000
 #define MAX_RPM_INTERVAL_MICROS 100000 // Allow up to 100 ms between hall effect readings before we invalidate the data (return 0)
-#define RPM_COMPUTE_INTERVAL_MICROS 10000 // Check every 10ms
+#define RPM_COMPUTE_INTERVAL_MICROS 50000 // Check every 50ms
+#define RPM_BUFFER_CAPACITY 100 // Store up to 100 timestamps
 
 #define BAUD 230400
 

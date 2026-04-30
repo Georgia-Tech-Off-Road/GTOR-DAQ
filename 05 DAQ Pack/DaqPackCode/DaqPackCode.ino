@@ -16,10 +16,10 @@ int currentAnalogSensor2 = 0;
 #define MAX_EXPECTED_VALUE 2000
 
 //initialize RPM sensors
-RPMSensor engineRPM(RPM1, ENGTEETH, MAX_RPM_INTERVAL_MICROS);
-RPMSensor frontLeftRPM(RPM2, FLTEETH, MAX_RPM_INTERVAL_MICROS);
-RPMSensor frontRightRPM(RPM3, FRTEETH, MAX_RPM_INTERVAL_MICROS);
-RPMSensor rearRPM(RPM4, RDTEETH, MAX_RPM_INTERVAL_MICROS);
+RPMSensor<RPM_BUFFER_CAPACITY> engineRPM(RPM1, ENGTEETH, MAX_RPM_INTERVAL_MICROS);
+RPMSensor<RPM_BUFFER_CAPACITY> frontLeftRPM(RPM2, FLTEETH, MAX_RPM_INTERVAL_MICROS);
+RPMSensor<RPM_BUFFER_CAPACITY> frontRightRPM(RPM3, FRTEETH, MAX_RPM_INTERVAL_MICROS);
+RPMSensor<RPM_BUFFER_CAPACITY> rearRPM(RPM4, RDTEETH, MAX_RPM_INTERVAL_MICROS);
 
 //dont need to calibrate the brake pressures at start up I don't think
 Linear_Analog_Sensor rearBrakePressure(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 2000, 0, 4.5, 0.5, 0, 2000);
@@ -108,6 +108,8 @@ void loop() {}
 void dataAquisitionAndSavingLoop() {
   errorCheck();
   blockForButtonHold(RECORD_SAVE_BUTTON, BUTTON_HOLD_DURATION); // Must hold the recording button for one second
+  status.recording_status = status.RECORDING;
+  updateStatusDisplay();
   while(1) {
     digitalWrite(POWER_LED, HIGH);
     //updateDebugLeds();
@@ -143,8 +145,9 @@ void dataAquisitionAndSavingLoop() {
     }
 
     if (displayLogger.shouldLog(microsecondsElapsed)) {
+      unsigned long long startMicros = microsecondsElapsed;
       displayLogger.updateLastLogTime(microsecondsElapsed);
-      updateStatusDisplay();
+      // updateStatusDisplay() // Takes ~25 ms to fully update, too much time just for an animation
     }
 
     // Serial.println("Gateway3");
@@ -288,6 +291,8 @@ void changeRecordingState() {
     isRecording = false;
     //signal to user that the file saved with a flashbang
     status.recording_status = status.READY_TO_RECORD;
+
+    updateStatusDisplay();
   }
   else {
     String time = String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
@@ -320,6 +325,8 @@ void changeRecordingState() {
         
     isRecording = true;
     status.recording_status = status.RECORDING;
+
+    updateStatusDisplay();
   }
 }
 
@@ -558,18 +565,7 @@ void updateStatusDisplay() {
     display.println("Recording Status: Ready to record");
   }
   else if (status.recording_status == status.RECORDING) {
-    if (counter % 4 == 0) {
       display.println("Recording Status: Recording");
-    }
-    else if (counter % 4 == 1) {
-      display.println("Recording Status: Recording.");
-    }
-    else if (counter % 4 == 2) {
-      display.println("Recording Status: Recording..");
-    } 
-    else {
-      display.println("Recording Status: Recording...");
-    }
   }
 
   if (status.error_status == status.ERROR) {
