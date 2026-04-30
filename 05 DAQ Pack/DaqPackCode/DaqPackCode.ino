@@ -165,8 +165,6 @@ void dataAquisitionAndSavingLoop() {
       updateStatusDisplay();
       changeRecordingState();
 
-      rapidFlash(RECORDING_LED, 5000);
-
       tracking = false;
     }
     //perform flush check before data check
@@ -184,7 +182,7 @@ void dataAquisitionAndSavingLoop() {
       DAQData.setData<cmbtl::SensorIndex::SEC>(microsecondsElapsed / 1000000);
       
       if (debugLogger.shouldLog(microsecondsElapsed)) {
-        Serial.println(DAQData.serializeDataToJSON().c_str());
+        // Serial.println(DAQData.serializeDataToJSON().c_str());
         debugLogger.updateLastLogTime(microsecondsElapsed);
       }
 
@@ -287,7 +285,7 @@ void changeRecordingState() {
     display.printf("%s closed\n", outputFileName.c_str());
     display.display();
 
-    delay(4000); // Delay 4 seconds
+    delay(1000); // Delay 4 seconds
     isRecording = false;
     //signal to user that the file saved with a flashbang
     status.recording_status = status.READY_TO_RECORD;
@@ -314,7 +312,7 @@ void changeRecordingState() {
     display.setCursor(0, 0);
     display.printf("Opening: %s.bin\n", time.c_str());
     display.display();
-    delay(4000);
+    delay(1000);
 
     // Reset flags
     engineRPM.RPMUpdateFlag = false;
