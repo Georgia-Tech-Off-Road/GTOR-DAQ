@@ -155,7 +155,7 @@ private:
 	
 SPIClass* _spi; //Pointer to an SPIClass object
 
-void waitForLowDRDY(); // Block until DRDY is low
+bool waitForLowDRDY(uint32_t timeoutMicros = 50000); // Block until DRDY is low
 void waitForHighDRDY(); // Block until DRDY is high
 void updateMUX(uint8_t muxValue);
 inline void CS_LOW();

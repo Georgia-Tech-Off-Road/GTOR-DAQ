@@ -94,9 +94,15 @@ void ADS1256::InitializeADC()
   _isAcquisitionRunning = false; //MCU will be waiting to start a continuous acquisition
 }
 
-void ADS1256::waitForLowDRDY()
+bool ADS1256::waitForLowDRDY(uint32_t timeoutMicros)
 {		    
-    while (digitalRead(_DRDY_pin) == HIGH) {} 
+	uint32_t start = micros();
+    while (digitalRead(_DRDY_pin) == HIGH) {
+		if (micros() - start > timeoutMicros) {
+			return false;
+		}
+	} 
+	return true;
 }
 
 void ADS1256::waitForHighDRDY()
@@ -670,7 +676,11 @@ long ADS1256::readSinglePort(uint8_t port)
 	CS_LOW(); //CS must stay LOW during the entire sequence [Ref: P34, T24]
 
 	//Step 1. - Set MUX to desired port
-	waitForLowDRDY();
+	if(!waitForLowDRDY()) { // Failure, timeout
+		CS_HIGH();
+		_spi->endTransaction();
+		return 0;
+	}
 	_spi->transfer(0x50 | MUX_REG); // WREG MUX
 	_spi->transfer(0x00);
 	_spi->transfer(port);
@@ -681,7 +691,11 @@ long ADS1256::readSinglePort(uint8_t port)
 	_spi->transfer(0b11111111); //WAKEUP
 
 	//Step 3. - Wait for new conversion to complete, then read
-	waitForLowDRDY();
+	if(!waitForLowDRDY()) {
+		CS_HIGH();
+		_spi->endTransaction();
+		return 0;
+	}
 	_spi->transfer(0b00000001); //Issue RDATA (0000 0001) command
 	delayMicroseconds(7); //Wait t6 time (~6.51 us) REF: P34, FIG:30.
 
