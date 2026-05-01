@@ -482,6 +482,12 @@ void ADS1256::sendDirectCommand(uint8_t directCommand)
   _spi->endTransaction();
 }
 
+void ADS1256::recover() {
+	sendDirectCommand(SYNC);
+	delayMicroseconds(4);
+	sendDirectCommand(WAKEUP);
+}
+
 
 float ADS1256::convertToVoltage(int32_t rawData) //Converting the 24-bit data into a voltage value
 {	
@@ -712,6 +718,19 @@ long ADS1256::readSinglePort(uint8_t port)
 	_isAcquisitionRunning = false; //Self-contained read, no persistent state
 
 	return _outputValue;
+}
+
+bool ADS1256::safeReadSinglePort(uint8_t port, long &result) {
+	// Time guard
+	uint32_t start = micros();
+	result = readSinglePort(port);
+
+	// If took longer than 50ms, SPI taking WAY longer than it should
+	if (micros() - start > 50000) {
+		return false;
+	}
+
+	return true;
 }
 long ADS1256::cycleDifferential()
 {

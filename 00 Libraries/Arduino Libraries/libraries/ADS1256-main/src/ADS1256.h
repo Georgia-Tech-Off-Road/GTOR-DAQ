@@ -132,6 +132,7 @@ static constexpr int8_t PIN_UNUSED = -1;
 	void setCLKOUT(uint8_t clkout);
 	void setSDCS(uint8_t sdcs);	
 	void sendDirectCommand(uint8_t directCommand);	
+	void recover();
 
 	//Get a single conversion
 	long readSingle();
@@ -142,6 +143,7 @@ static constexpr int8_t PIN_UNUSED = -1;
 	//Cycling through the single-ended inputs
 	long cycleSingle(); //Ax + COM
 	long readSinglePort(uint8_t port); // Reads a value at port_number
+	bool safeReadSinglePort(uint8_t port, long &result);
 	//Cycling through the differential inputs
 	long cycleDifferential(); //Ax + Ay
 		

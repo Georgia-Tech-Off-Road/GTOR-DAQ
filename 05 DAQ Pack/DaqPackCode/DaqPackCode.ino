@@ -18,8 +18,8 @@ int currentAnalogSensor2 = 0;
 //initialize RPM sensors
 RPMSensor<RPM_BUFFER_CAPACITY> engineRPM(RPM1, ENGTEETH, MAX_RPM_INTERVAL_MICROS);
 RPMSensor<RPM_BUFFER_CAPACITY> frontLeftRPM(RPM2, FLTEETH, MAX_RPM_INTERVAL_MICROS);
-RPMSensor<RPM_BUFFER_CAPACITY> frontRightRPM(RPM4, FRTEETH, MAX_RPM_INTERVAL_MICROS);
-RPMSensor<RPM_BUFFER_CAPACITY> rearRPM(RPM3, RDTEETH, MAX_RPM_INTERVAL_MICROS);
+RPMSensor<RPM_BUFFER_CAPACITY> frontRightRPM(RPM3, FRTEETH, MAX_RPM_INTERVAL_MICROS);
+RPMSensor<RPM_BUFFER_CAPACITY> rearRPM(RPM4, RDTEETH, MAX_RPM_INTERVAL_MICROS);
 
 //dont need to calibrate the brake pressures at start up I don't think
 Linear_Analog_Sensor rearBrakePressure(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 2000, 0, 4.5, 0.5, 0, 2000);
@@ -233,27 +233,23 @@ inline void recordNextADSValue() {
 
   SensorID nextSensor = ads1256SensorList[index];
   uint8_t nextADSPort = getADSPort(nextSensor);
+  long result;
+  if(!ads1256.safeReadSinglePort(nextADSPort, result)) {
+    Serial.printf("%d: timeout reading port %d\n", microsecondsElapsed, nextADSPort);
+  }
   if (nextSensor == LDS_FRONT_LEFT) {
-    long result = ads1256.readSinglePort(nextADSPort);
-    // float value = LDSFrontLeft.computeSensorReading(result);
     float value = ads1256.convertToVoltage(result);
     writePacket(SensorID::LDS_FRONT_LEFT, value);
     DAQData.setData<cmbtl::SensorIndex::LDSFrontLeft>(value);
   } else if (nextSensor == LDS_FRONT_RIGHT) {
-    long result = ads1256.readSinglePort(nextADSPort);
-    // float value = LDSFrontRight.computeSensorReading(result);
     float value = ads1256.convertToVoltage(result);
     writePacket(SensorID::LDS_FRONT_RIGHT, value);
     DAQData.setData<cmbtl::SensorIndex::LDSFrontRight>(value);
   } else if (nextSensor == LDS_REAR_LEFT) {
-    long result = ads1256.readSinglePort(nextADSPort);
-    // float value = LDSRearLeft.computeSensorReading(result);
     float value = ads1256.convertToVoltage(result);
     writePacket(SensorID::LDS_REAR_LEFT, value);
     DAQData.setData<cmbtl::SensorIndex::LDSRearLeft>(value);
   } else if (nextSensor == LDS_REAR_RIGHT) {
-    long result = ads1256.readSinglePort(nextADSPort);
-    // float value = LDSRearRight.computeSensorReading(result);
     float value = ads1256.convertToVoltage(result);
     writePacket(SensorID::LDS_REAR_RIGHT, value);
     DAQData.setData<cmbtl::SensorIndex::LDSRearRight>(value);
