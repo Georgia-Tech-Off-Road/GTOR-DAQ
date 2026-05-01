@@ -4,19 +4,23 @@ import argparse
 import math
 # This should correspond with arduino code
 sensors = {
-	0: "engineRPM",
-	1: "frontLeftRPM",
-	2: "frontRightRPM",
-	3: "rearRPM",
-	4: "rearBrakePressure",
-	5: "frontBrakePressure",
-	6: "LDSFrontRight",
-	7: "LDSFrontLeft",
-	8: "LDSRearRight",
-	9: "LDSRearLeft",
-	10: "CVTemp",
-	11: "rearTCTemp",
-	12: "teensyTemp",
+    0: "engineRPM",
+    1: "frontLeftRPM",
+    2: "frontRightRPM",
+    3: "rearRPM",
+    4: "rearBrakePressure",
+    5: "frontBrakePressure",
+    6: "LDSFrontRight",
+    7: "LDSFrontLeft",
+    8: "LDSRearRight",
+    9: "LDSRearLeft",
+    10: "CVTemp",
+    11: "rearTCTemp",
+    12: "teensyTemp",
+    13: "engineRPMTimestamp",
+    14: "frontLeftRPMTimestamp",
+    15: "frontRightRPMTimestamp",
+    16: "rearRPMTimestamp"
 }
 
 # The < symbol is important to specify that the teensy uses little endian

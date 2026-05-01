@@ -18,8 +18,8 @@ int currentAnalogSensor2 = 0;
 //initialize RPM sensors
 RPMSensor<RPM_BUFFER_CAPACITY> engineRPM(RPM1, ENGTEETH, MAX_RPM_INTERVAL_MICROS);
 RPMSensor<RPM_BUFFER_CAPACITY> frontLeftRPM(RPM2, FLTEETH, MAX_RPM_INTERVAL_MICROS);
-RPMSensor<RPM_BUFFER_CAPACITY> frontRightRPM(RPM3, FRTEETH, MAX_RPM_INTERVAL_MICROS);
-RPMSensor<RPM_BUFFER_CAPACITY> rearRPM(RPM4, RDTEETH, MAX_RPM_INTERVAL_MICROS);
+RPMSensor<RPM_BUFFER_CAPACITY> frontRightRPM(RPM4, FRTEETH, MAX_RPM_INTERVAL_MICROS);
+RPMSensor<RPM_BUFFER_CAPACITY> rearRPM(RPM3, RDTEETH, MAX_RPM_INTERVAL_MICROS);
 
 //dont need to calibrate the brake pressures at start up I don't think
 Linear_Analog_Sensor rearBrakePressure(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 2000, 0, 4.5, 0.5, 0, 2000);
@@ -214,7 +214,8 @@ void dataAquisitionAndSavingLoop() {
       if (rearRPMLogger.shouldLog(microsecondsElapsed)) {
         float RPM = rearRPM.calculateRPM();
         DAQData.setData<cmbtl::SensorIndex::RPM4>((uint32_t) RPM);
-        writePacket(SensorID::REAR_RPM, RPM);
+        //writePacket(SensorID::REAR_RPM, RPM);
+        writePacket(SensorID::REAR_RPM, digitalRead(RPM3) * 1000.0f);
       }
       // Serial.println("Gateway8");
       //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
@@ -351,21 +352,28 @@ inline void initPins() {
 
 void engineRPMInterrupt() {
   static float counter = 0.0f;
-  noInterrupts();
-  writePacket(SensorID::ENGINE_RPM, counter);
+  writePacket(SensorID::ENGINE_RPM_TIMESTAMP, counter);
   counter += 1.0f;
-  interrupts();
+  engineRPM.handleInterrupt();
 }
 
 void frontLeftRPMInterrupt() {
-  frontLeftRPM.handleInterrupt();
+  static float counter = 0.0f;
+  writePacket(SensorID::FRONT_LEFT_RPM_TIMESTAMP, counter);
+  counter += 1.0f;
 }
 
 void frontRightRPMInterrupt() {
+  static float counter = 0.0f;
+  writePacket(SensorID::FRONT_RIGHT_RPM_TIMESTAMP, counter);
+  counter += 1.0f;
   frontRightRPM.handleInterrupt();
 }
 
 void rearRPMInterrupt() {
+  static float counter = 0.0f;
+  writePacket(SensorID::REAR_RPM_TIMESTAMP, counter);
+  counter += 1.0f;
   rearRPM.handleInterrupt();
 }
 

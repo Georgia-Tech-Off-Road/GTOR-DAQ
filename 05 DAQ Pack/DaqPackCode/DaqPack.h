@@ -29,6 +29,10 @@ enum SensorID : uint8_t {
     CVT_TEMP        = 10,
     REAR_TC_TEMP    = 11,
     TEENSY_TEMP     = 12,
+    ENGINE_RPM_TIMESTAMP = 13,
+    FRONT_LEFT_RPM_TIMESTAMP = 14,
+    FRONT_RIGHT_RPM_TIMESTAMP = 15,
+    REAR_RPM_TIMESTAMP = 16
 };
 
 struct Status {
