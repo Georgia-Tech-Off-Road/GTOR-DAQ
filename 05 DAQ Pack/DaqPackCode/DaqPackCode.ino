@@ -39,7 +39,7 @@ Linear_Analog_Sensor LDSRearRight(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 7.87402
 Linear_Analog_Sensor CVTTemp(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
 Linear_Analog_Sensor RearTransferCaseTemp(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
 
-static_assert(sizeof(DataPacket) == 9, "DataPacket size mismatch - check packing");
+static_assert(sizeof(DataPacket) == 10, "DataPacket size mismatch - check packing");
 
 void setup() {
   //crank up i2c clocks
@@ -518,6 +518,7 @@ void errorFlash(int ledPin) {
 void writePacket(SensorID id, float value) {
   if (!isRecording) return;
   DataPacket packet;
+  packet.sync = 0xAA;
   packet.sensorID = id;
   // Get in units of sec 10^-4
   uint32_t ts = safeTimestamp();

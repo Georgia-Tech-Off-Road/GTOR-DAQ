@@ -43,6 +43,7 @@ struct Status {
 } status;
 
 struct __attribute__((packed)) DataPacket {
+    uint8_t sync;
     uint8_t sensorID;
     // Record in units of 100 micros
     uint32_t timestamp100Micros;
