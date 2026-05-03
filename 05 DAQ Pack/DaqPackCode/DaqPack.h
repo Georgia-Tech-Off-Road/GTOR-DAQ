@@ -268,7 +268,7 @@ inline int setUpSD() {
   SD.mkdir(time.c_str());
   Serial.println(time.c_str());
 
-  outputFileName = String("/"+time+"/"+time+".bin");
+  outputFileName = String("/"+time+".bin");
   outputFile = SD.open(outputFileName.c_str(),  FILE_WRITE);
 
   return 0;
@@ -325,3 +325,10 @@ inline void emitADSError();
 inline void errorCheck();
 
 inline void onButtonHeldConfirmed();
+
+void listFiles(File dir);
+
+void sendFile(String filename);
+
+inline void handleSerial();
+

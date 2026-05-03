@@ -119,6 +119,7 @@ void dataAquisitionAndSavingLoop() {
     static bool tracking = false;
     bool shouldSave = false;
 
+    handleCommands();
 
     // Serial.println("Gateway1");
     if(SDCardChecker.shouldLog(microsecondsElapsed)) {
@@ -128,7 +129,7 @@ void dataAquisitionAndSavingLoop() {
       }
     }
 
-  // Serial.println("Gateway2");
+    // Serial.println("Gateway2");
     if (digitalRead(RECORD_SAVE_BUTTON) == LOW) {
       if(!tracking) {
         holdStartMicros = safeMicrosecondsElapsed();
@@ -293,10 +294,10 @@ void changeRecordingState() {
     String time = String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
     SD.mkdir(time.c_str());
     Serial.println(time.c_str());
-    File structConfigFile = SD.open(String("/"+time+"/"+time+"Config.txt").c_str(), FILE_WRITE);
-    structConfigFile.close();
+    // File structConfigFile = SD.open(String("/"+time+"/"+time+"Config.txt").c_str(), FILE_WRITE);
+    // structConfigFile.close();
 
-    outputFileName = String("/"+time+"/"+time+".bin");
+    outputFileName = String("/"+time+".bin");
     outputFile = SD.open(outputFileName.c_str(),  FILE_WRITE);
 
     if(!outputFile) {
@@ -634,4 +635,56 @@ inline void onButtonHeldConfirmed() {
   while (digitalRead(RECORD_SAVE_BUTTON) == LOW) {} // Wait for release so we don't retrigger
   digitalWrite(RECORDING_LED, LOW);
   delay(250);
+}
+
+inline void handleCommands() {
+  if (Serial.available() > 0) {
+    String command = Serial.readStringUntil('\n');
+    command.trim(); 
+
+    if (command == "LIST") {
+      File root = SD.open("/");
+      listFiles(root);
+    } 
+    else if (command.startsWith("GET ")) {
+      String filename = command.substring(4);
+      sendFile(filename);
+    }
+  }
+}
+
+void listFiles(File dir) {
+  while (true) {
+    File entry = dir.openNextFile();
+    if (!entry) break; 
+    
+    if (!entry.isDirectory()) {
+      Serial.print("FILE:");
+      Serial.print(entry.name());
+      Serial.print("|SIZE:");
+      Serial.println(entry.size());
+    }
+    entry.close();
+  }
+  Serial.println("END_LIST");
+}
+
+void sendFile(String filename) {
+  if (!SD.exists(filename.c_str())) {
+    Serial.println("ERROR: File not found.");
+    return;
+  }
+
+  File dataFile = SD.open(filename.c_str());
+  if (dataFile) {
+    Serial.println("START_TRANSFER");
+    // Stream the file bytes directly
+    while (dataFile.available()) {
+      Serial.write(dataFile.read());
+    }
+    dataFile.close();
+    Serial.println("\nEND_TRANSFER");
+  } else {
+    Serial.println("ERROR: Could not open file.");
+  }
 }
