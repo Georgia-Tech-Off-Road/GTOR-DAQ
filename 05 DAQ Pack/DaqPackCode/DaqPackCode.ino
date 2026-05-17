@@ -76,7 +76,7 @@ void setup() {
   updateStatusLEDs();
   updateStatusDisplay();
 
-
+  /**
   pinMode(RPM3, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM3), frontRightRPMInterrupt, RISING);
   pinMode(RPM1, INPUT_PULLDOWN);
@@ -85,6 +85,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(RPM2), frontLeftRPMInterrupt, RISING);
   pinMode(RPM4, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(RPM4), rearRPMInterrupt, RISING);
+  **/
 
   if (initADS1256(ADS_PGA, ADS_DRATE) != 0) {
     status.error_status = status.ADS_ERROR;
@@ -196,7 +197,7 @@ void dataAquisitionAndSavingLoop() {
       }
       // Serial.println("Gateway7");
       //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
-      if (engineRPM.RPMUpdateFlag) {
+      /**if (engineRPM.RPMUpdateFlag) {
         float value = (float) engineRPM.calculateRPM();
         DAQData.setData<cmbtl::SensorIndex::RPM1>((uint32_t)value);
         writePacket(SensorID::ENGINE_RPM, value);
@@ -228,8 +229,9 @@ void dataAquisitionAndSavingLoop() {
       } else {
         rearRPM.checkRPM();
       }
-      // Serial.println("Gateway8");
-      //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
+        **/
+      //Serial.println("Gateway8");
+      Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
       updateStatusLEDs();
     }
   }
