@@ -24,7 +24,7 @@ sensors = {
 }
 
 # The < symbol is important to specify that the teensy uses little endian
-PACKET_FORMAT = "<BBIf"
+PACKET_FORMAT = "<BBQf"
 PACKET_SIZE = struct.calcsize(PACKET_FORMAT)
 
 def translate_and_write(in_path: str, out_path: str):
@@ -65,7 +65,7 @@ def translate_and_write(in_path: str, out_path: str):
 			elif raw_timestamp < prev_raw_timestamp:
 				overflow_accumulator += (2**32 // 100)
 			adjusted = raw_timestamp - base_offset + overflow_accumulator
-			record = {"microsec": adjusted * 100, sensors[sensor_id]: value}
+			record = {"microsec": adjusted, sensors[sensor_id]: value}
 			if not first:
 				out_file.write(",\n")
 			out_file.write(json.dumps(record))
