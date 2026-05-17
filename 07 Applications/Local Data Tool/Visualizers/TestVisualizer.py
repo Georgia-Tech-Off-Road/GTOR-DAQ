@@ -78,7 +78,7 @@ def testVisualizer(df, filePath, columnIndices, customWindow, useDefaultConfig,
     ycols = [c for c in plot_df.columns if c != 'Time']
 
     if plotlyCheckVar == 1:
-        fig = px.line(plot_df, x='Time', y=ycols,
+        fig = px.line(plot_df, x=plot_df.index, y=ycols,
                       labels={'value': 'Sensor Value', 'Time': 'Time (Seconds)'},
                       title='Data Visualizer')
         progressBar.stop()
