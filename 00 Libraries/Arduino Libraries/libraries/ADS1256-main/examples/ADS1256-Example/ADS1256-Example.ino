@@ -77,11 +77,11 @@ SPIClass hspi(HSPI);
 //ADS1256 A(2, ADS1256::PIN_UNUSED, 8, 10, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).    //Arduino Nano/Uno - OK
 //ADS1256 A(7, ADS1256::PIN_UNUSED, 10, 9, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).      //ATmega32U4 -OK
 //ADS1256 A(16, 17, ADS1256::PIN_UNUSED, 15, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).   //ESP32 WROOM 32 - OK (HSPI+VSPI)
-ADS1256 A(22, 23, 24, 10, 5.0, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).    //Teensy 4.0 - OK
+//ADS1256 A(7, ADS1256::PIN_UNUSED, 8, 10, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).    //Teensy 4.0 - OK
 //ADS1256 A(7, ADS1256::PIN_UNUSED, 6, 5, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).    //RP2040 Waveshare Mini - OK
 //ADS1256 A(18, 20, 21, 19, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float), SPI bus.  //RP2040 Zero - OK
-// ADS1256 A(15, ADS1256::PIN_UNUSED, ADS1256::PIN_UNUSED, 17, 2.500, &USE_SPI);  //DRDY, RESET, SYNC(PDWN), CS, VREF(float), SPI bus.  //RP2040 Pico W - OK
-//ADS1256 A(PA2, ADS1256::PIN_UNUSED, ADS1256::PIN_UNUSED, PA4, 2.500, &USE_PI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float). //STM32 "blue pill" - SPI1 - OK
+ADS1256 A(15, ADS1256::PIN_UNUSED, 14, 17, 2.500, &USE_SPI);  //DRDY, RESET, SYNC(PDWN), CS, VREF(float), SPI bus.  //RP2040 Pico W - OK
+//ADS1256 A(PA2, ADS1256::PIN_UNUSED, ADS1256::PIN_UNUSED, PA4, 2.500, &USE_SPI); //DRDY, RESET, SYNC(PDWN), CS, VREF(float). //STM32 "blue pill" - SPI1 - OK
 //ADS1256 A(PB10, PB11, ADS1256::PIN_UNUSED, PB12, 2.500, &USE_SPI);  // DRDY, RESET, SYNC, CS, VREF, SPI //STM32 "blue pill" - SPI2 - OK
 
 long rawConversion = 0;  //24-bit raw value
@@ -89,10 +89,10 @@ float voltageValue = 0;  //human-readable floating point value
 
 int singleEndedChannels[8] = { SING_0, SING_1, SING_2, SING_3, SING_4, SING_5, SING_6, SING_7 };  //Array to store the single-ended channels
 int differentialChannels[4] = { DIFF_0_1, DIFF_2_3, DIFF_4_5, DIFF_6_7 };                         //Array to store the differential channels
-int inputChannel = 0;                                                                              //Number used to pick the channel from the above two arrays
+int inputChannel = 0;                                                                             //Number used to pick the channel from the above two arrays
 char inputMode = ' ';                                                                             //can be 's' and 'd': single-ended and differential
 
-int pgaValues[7] = { PGA_1, PGA_2, PGA_4, PGA_8, PGA_16, PGA_32,   };  //Array to store the PGA settings
+int pgaValues[7] = { PGA_1, PGA_2, PGA_4, PGA_8, PGA_16, PGA_32, PGA_64 };  //Array to store the PGA settings
 int pgaSelection = 0;                                                       //Number used to pick the PGA value from the above array
 
 int drateValues[16] = {
@@ -153,51 +153,42 @@ void setup() {
   hspi.begin(14, 25, 13);  //SCK, MISO (safe), MOSI
 #endif
 
-  A.InitializeADC();
-  A.setAutoCal(ACAL_DISABLED);  // prevent implicit recalibration
-  while(A.getPGA() != PGA_1) {
-    A.setPGA(PGA_1);
-  }
-  while(A.readRegister(DRATE_REG) != DRATE_500SPS) {
-    A.setDRATE(DRATE_500SPS);
-  }
-  A.sendDirectCommand(SELFCAL);  // single clean calibration with final settings
-  delay(400);                    // give it time to complete
+  A.InitializeADC();  //See the documentation for every details
+  //Setting up CS, RESET, SYNC and SPI
+  //Assigning default values to: STATUS, MUX, ADCON, DRATE
+  //Performing a SYSCAL
+
+  //Below is a demonstration to change the values through the built-on functions of the library
+  //Set a PGA value
+  A.setPGA(PGA_1);  //0b00000000 - DEC: 0
+  //--------------------------------------------
+
+  //Set input channels
+  A.setMUX(DIFF_6_7);  //0b01100111 - DEC: 103
+  //--------------------------------------------
+
+  //Set DRATE
+  A.setDRATE(DRATE_5SPS);  //0b00010011 - DEC: 19
+  //--------------------------------------------
 
   //Read back the above 3 values to check if the writing was succesful
   Serial.print("PGA: ");
   Serial.println(A.getPGA());
   delay(100);
   //--
+  Serial.print("MUX: ");
+  Serial.println(A.readRegister(MUX_REG));
+  delay(100);
+  //--
   Serial.print("DRATE: ");
   Serial.println(A.readRegister(DRATE_REG));
   delay(100);
 
-  Serial.printf("FSC: %x", (uint8_t) A.readRegister(FSC2_REG));
-  delay(100);
-
-  Serial.printf("%x", (uint8_t) A.readRegister(FSC1_REG));
-  delay(100);
-
-  Serial.printf("%x\n", (uint8_t) A.readRegister(FSC0_REG));
-  delay(100);
-
-  Serial.printf("OFC: %x", (uint8_t) A.readRegister(OFC2_REG));
-  delay(100);
-
-  Serial.printf("%x", (uint8_t) A.readRegister(OFC1_REG));
-  delay(100);
-
-  Serial.printf("%x\n", (uint8_t) A.readRegister(OFC0_REG));
-
   //Freeze the display for 3 sec
   delay(3000);
-
-  Serial.println("Enter a command: ");
 }
 
 void loop() {
-    uint cycle_index = 0;
   /* Here I implemented some typical functions that can be useful for using the ADS1256
       Changing the registers by the built-in functions or by directly writing the registers
       Reading the registers to check the value of it
@@ -236,12 +227,12 @@ void loop() {
       case 'C':                       //Cycle single ended inputs (A0+GND, A1+GND ... A7+GND)
         while (Serial.read() != 's')  //The conversion is stopped by a character received from the serial port
         {
-          long channels[8];  //Buffer that holds 8 conversions (8 single-ended channels)
+          float channels[8];  //Buffer that holds 8 conversions (8 single-ended channels)
           for (int j = 0; j < 8; j++) {
-            channels[j] = A.cycleSingle();  //store the converted single-ended results in the buffer
+            channels[j] = A.convertToVoltage(A.cycleSingle());  //store the converted single-ended results in the buffer
           }
           for (int i = 0; i < 8; i++) {
-            Serial.printf("%06lx", (uint32_t)(channels[i] & 0xFFFFFF));  //print the converted single-ended results with 4 digits
+            Serial.print(channels[i], 4);  //print the converted single-ended results with 4 digits
 
             if (i < 7)  //Only printing tab between the first 7 conversions
             {
@@ -249,42 +240,6 @@ void loop() {
             }
           }
           Serial.println();  //Printing a linebreak - this will put the next 8 conversions in a new line
-
-          for (int i = 0; i < 8; i++) {
-            Serial.print(A.convertToVoltage(channels[i]), 4);  //print the converted single-ended results with 4 digits
-
-            if (i < 7)  //Only printing tab between the first 7 conversions
-            {
-              Serial.print("\t");  //tab separator to separate the 8 conversions shown in the same line
-            }
-          }
-          Serial.println();  //Printing a linebreak - this will put the next 8 conversions in a new line
-        }
-
-        Serial.println();
-        Serial.println();
-
-        A.stopConversion();
-        break;
-      case 'Y':
-        while (Serial.read() != 's') // The conversion is stopped by a character received from the serial port
-        {
-          // Skip 5
-          std::array<uint8_t, 5> port_order = {SING_1, SING_3, SING_4, SING_6, SING_6};
-          
-
-          long result = A.readSinglePort(port_order[cycle_index]);
-          float converted_result = A.convertToVoltage(result);
-
-          Serial.print(converted_result, 4);
-          Serial.print("\t");
-
-          // Wrap
-          cycle_index++;
-          if (cycle_index >= port_order.size())
-            cycle_index = 0;
-          if (cycle_index == 0)
-            Serial.print("\n");
         }
         A.stopConversion();
         break;
