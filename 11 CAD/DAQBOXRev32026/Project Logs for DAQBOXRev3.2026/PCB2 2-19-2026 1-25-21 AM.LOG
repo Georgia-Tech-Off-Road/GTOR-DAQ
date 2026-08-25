@@ -1,0 +1,12 @@
+Change Component Footprint: Designator=Batt Hookup Old Footprint=691214110002S New Footprint=691214110002S
+Added Pin To Net: NetName=Net48 Pin Conn_D1 Pin=48 Pin Conn-D1
+Added Pin To Net: NetName=Net48 Pin Conn_D1 Pin=ADS1256-7
+Added Pin To Net: NetName=Net48 Pin Conn_D1 Pin=R1?-1
+Added Net: Name=Net48 Pin Conn_D1
+Added Pin To Net: NetName=Net48 Pin Conn_E2 Pin=48 Pin Conn-E2
+Added Pin To Net: NetName=Net48 Pin Conn_E2 Pin=Teensy 4.1-16
+Added Net: Name=Net48 Pin Conn_E2
+Added Pin To Net: NetName=Net48 Pin Conn_E4 Pin=48 Pin Conn-E4
+Added Pin To Net: NetName=Net48 Pin Conn_E4 Pin=SPI-7
+Added Net: Name=Net48 Pin Conn_E4
+Added Member To Class: ClassName=48PinConnector Member=Component 48 Pin Conn 366380003

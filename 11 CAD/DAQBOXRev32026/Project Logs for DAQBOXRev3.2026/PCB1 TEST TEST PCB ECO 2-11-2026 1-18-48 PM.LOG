@@ -1,0 +1,27 @@
+Change Component DesignItemId : Designator=Teensy 4.1 Old DesignItemId=TEENSY_4.1 New DesignItemId=CMP-003-000000-1
+Change Component Comment : Designator=Teensy 4.1 Old Comment=TEENSY_4.1 New Comment=DEV-16771
+Change Component Description : Designator=Teensy 4.1 Old Description=<b>Teensy 4.1 Development Board</b><p> Source: <a href="https://www.pjrc.com/store/teensy41.html"> Datasheet </a> New Description=RT1062 Teensy 4.1 series ARM?Cortex?M7 MPU Embedded Evaluation Board
+Change Component Library : Designator=Teensy 4.1 Old Library=TEENSY_4.1 (1).IntLib New Library=GTOR-DAQ
+Change Managed Component Library Link : Designator=Teensy 4.1 Old VaultGUID=F8CD5FD9-34D3-478B-958C-E92D43904C0A New VaultGUID=F8CD5FD9-34D3-478B-958C-E92D43904C0A Old ItemGUID= New ItemGUID=05B93ABA-5085-4690-BD88-AA0A4229ED32 Old RevisionGUID= New RevisionGUID=B5BC5E27-2AFF-4117-9F04-AC93E87B9F4F
+Change component parameters: Designator = "Teensy 4.1" ("Teensy 4.1"); Footprint = "MODULE_DEV-16771"; UniqueID = "\WIONXDEG" ("\WIONXDEG")
+Change component parameters (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/DEV-16771/SparkFun+Electronics/view-part/?ref=eda"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "MF"; Value = "SparkFun Electronics"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "MP"; Value = "DEV-16771"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/DEV-16771/SparkFun+Electronics/view-part/?ref=snap"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-42
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-43
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-45
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-46
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-47
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-48
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-49
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-50
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-51
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-52
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-55
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-57
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-69
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-70
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-71

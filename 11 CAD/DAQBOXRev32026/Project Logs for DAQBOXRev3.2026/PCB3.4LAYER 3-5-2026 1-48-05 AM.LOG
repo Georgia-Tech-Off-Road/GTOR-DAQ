@@ -1,0 +1,137 @@
+Removed Pin From Net: NetName=Net48 Pin Conn_A3 Pin=-22
+Removed Pin From Net: NetName=Net48 Pin Conn_B3 Pin=-23
+Removed Pin From Net: NetName=Net2_12 Pin=ADS1256-20
+Removed Pin From Net: NetName=Net2_13 Pin=ADS1256-23
+Removed Pin From Net: NetName=Net1_14 Pin=ADS1256-24
+Add component: Footprint Not Found CAP 0201_0603
+Added Component: Designator=C01(CAPC0603(1608)100_L)
+Add component (AddParameter): Name = "Capacitor Type"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Case/Package"; Value = "0603"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Component Type"; Value = "Capacitors"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "TDK"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part Number"; Value = "CGA3E3X5R1E105K080AB"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Operating Temperature"; Value = "85°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Min Operating Temperature"; Value = "-55°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mounting Technology"; Value = "SMT"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Pins"; Value = "2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ripple Current"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ripple Current (AC)"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RoHS Compliant"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Tolerance"; Value = "20%"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "1µF"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage Rating"; Value = "25V"; VariantName = "[No Variations]"
+Added Component: Designator=C02(CAPC0603(1608)100_L)
+Add component (AddParameter): Name = "Capacitor Type"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Case/Package"; Value = "0603"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Component Type"; Value = "Capacitors"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "TDK"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part Number"; Value = "CGA3E3X5R1E105K080AB"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Operating Temperature"; Value = "85°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Min Operating Temperature"; Value = "-55°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mounting Technology"; Value = "SMT"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Pins"; Value = "2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ripple Current"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ripple Current (AC)"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RoHS Compliant"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Tolerance"; Value = "20%"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "1µF"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage Rating"; Value = "25V"; VariantName = "[No Variations]"
+Added Component: Designator=C03(CAPC0603(1608)100_L)
+Add component (AddParameter): Name = "Capacitor Type"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Case/Package"; Value = "0603"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Component Type"; Value = "Capacitors"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "TDK"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part Number"; Value = "CGA3E3X5R1E105K080AB"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Operating Temperature"; Value = "85°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Min Operating Temperature"; Value = "-55°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mounting Technology"; Value = "SMT"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Pins"; Value = "2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ripple Current"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ripple Current (AC)"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RoHS Compliant"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Tolerance"; Value = "20%"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "1µF"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage Rating"; Value = "25V"; VariantName = "[No Variations]"
+Add component: Footprint Not Found CAP 0201_0603
+Add component: Footprint Not Found CAP 0201_0603
+Add component: Footprint Not Found CAP 0201_0603
+Add component: Footprint Not Found CAP 0201_0603
+Added Component: Designator=R01(RESC1608X55X25NL10T15)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Yageo"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "RC0603JR-10100RL"; VariantName = "[No Variations]"
+Added Component: Designator=R02(RESC1608X55X25NL10T15)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Yageo"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "RC0603JR-10100RL"; VariantName = "[No Variations]"
+Added Component: Designator=R03(RESC1608X55X25NL10T15)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Yageo"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "RC0603JR-10100RL"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=Net1_3 Pin=Hi-4
+Added Pin To Net: NetName=Net1_3 Pin=-16
+Add Pin To Net: Unknown Pin: Pin 08-1
+Add Pin To Net: Unknown Pin: Pin 08-2
+Added Pin To Net: NetName=GND Pin=48 Pin Conn-B1
+Added Pin To Net: NetName=GND Pin=48 Pin Conn-L4
+Added Pin To Net: NetName=GND Pin=48 Pin Conn-M1
+Added Pin To Net: NetName=GND Pin=ADS1256-2
+Added Pin To Net: NetName=GND Pin=ADS1256-5
+Added Pin To Net: NetName=Net1_3 Pin=ADS1256-14
+Added Pin To Net: NetName=Net1_3 Pin=ADS1256-15
+Added Pin To Net: NetName=GND Pin=VREF Gen-4
+Added Pin To Net: NetName=GND Pin=C0?-1
+Added Pin To Net: NetName=GND Pin=C01-1
+Added Pin To Net: NetName=Net12V_1 Pin=C01-2
+Added Pin To Net: NetName=GND Pin=C1?-1
+Added Pin To Net: NetName=GND Pin=C02-1
+Added Pin To Net: NetName=Net1_1 Pin=C02-2
+Added Pin To Net: NetName=GND Pin=C2?-1
+Added Pin To Net: NetName=GND Pin=C03-1
+Added Pin To Net: NetName=Net12V_1 Pin=C03-2
+Added Pin To Net: NetName=GND Pin=C3?-1
+Add Pin To Net: Unknown Pin: Pin C04-1
+Add Pin To Net: Unknown Pin: Pin C04-2
+Added Pin To Net: NetName=GND Pin=C4?-1
+Add Pin To Net: Unknown Pin: Pin C05-1
+Added Pin To Net: NetName=GND Pin=C5?-1
+Add Pin To Net: Unknown Pin: Pin C06-1
+Add Pin To Net: Unknown Pin: Pin C06-2
+Added Pin To Net: NetName=GND Pin=C6?-1
+Add Pin To Net: Unknown Pin: Pin C07-1
+Add Pin To Net: Unknown Pin: Pin C07-2
+Added Pin To Net: NetName=GND Pin=C7?-1
+Added Pin To Net: NetName=Net1_14 Pin=R01-1
+Added Pin To Net: NetName=Net2_13 Pin=R02-1
+Added Pin To Net: NetName=Net2_12 Pin=R03-1
+Added Pin To Net: NetName=Net1_3 Pin=Teensy 4.1-23
+Added Pin To Net: NetName=Net1_3 Pin=Teensy 4.1-24
+Change Net Name : Old Net Name=Net48 Pin Conn_A1 New Net Name=Net08_2
+Added Pin To Net: NetName=NetADS1256_20 Pin=ADS1256-20
+Added Pin To Net: NetName=NetADS1256_20 Pin=R03-2
+Added Net: Name=NetADS1256_20
+Added Pin To Net: NetName=NetADS1256_23 Pin=ADS1256-23
+Added Pin To Net: NetName=NetADS1256_23 Pin=R02-2
+Added Net: Name=NetADS1256_23
+Added Pin To Net: NetName=NetADS1256_24 Pin=ADS1256-24
+Added Pin To Net: NetName=NetADS1256_24 Pin=R01-2
+Added Net: Name=NetADS1256_24
+Added Class: Name=Filters.3
+Added Class: Name=MainSchematic.3
+Added Member To Class: ClassName=48PinConnector Member=Component 3V3 282837-4
+Added Member To Class: ClassName=48PinConnector Member=Component 5V 282837-4
+Added Member To Class: ClassName=48PinConnector Member=Component 12V 282837-4
+Added Member To Class: ClassName=48PinConnector Member=Component 48 Pin Conn 366380003
+Added Member To Class: ClassName=48PinConnector Member=Component Batt 691214110002S
+Add Class Member: Failed to add class member : Component Btn 4 282837-4
+Added Member To Class: ClassName=48PinConnector Member=Component CAN 282837-4
+Added Member To Class: ClassName=48PinConnector Member=Component Display DM-OLED096-636
+Added Member To Class: ClassName=48PinConnector Member=Component DS2 304090041
+Added Member To Class: ClassName=48PinConnector Member=Component DS4 304090041
+Added Member To Class: ClassName=48PinConnector Member=Component GND 282837-4
+Added Member To Class: ClassName=48PinConnector Member=Component I2C 282837-4
+Added Member To Class: ClassName=48PinConnector Member=Component I/O 282837-4
+Added Member To Class: ClassName=48PinConnector Member=Component R1 RC1206FR-10750RL
+Added Member To Class: ClassName=48PinConnector Member=Component R2 RC1206FR-10750RL
+Added Member To Class: ClassName=48PinConnector Member=Component R3 RC1206FR-10750RL
+Added Member To Class: ClassName=48PinConnector Member=Component R4 RC1206FR-10750RL
+Added Member To Class: ClassName=48PinConnector Member=Component Rec 282837-4
+Added Member To Class: ClassName=48PinConnector Member=Component SPI 282837-4
+Added Member To Class: ClassName=48PinConnector Member=Component UART 282837-4

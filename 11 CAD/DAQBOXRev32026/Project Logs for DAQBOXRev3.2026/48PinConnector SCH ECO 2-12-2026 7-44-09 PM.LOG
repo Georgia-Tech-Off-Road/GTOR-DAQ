@@ -1,0 +1,19 @@
+Change Component Footprint: Designator=CAN? Old Footprint=CONN4_ED5554DS_SHT New Footprint=691709710304
+Change Component Footprint: Designator=I? Old Footprint=CONN4_ED5554DS_SHT New Footprint=691709710304
+Change Component Footprint: Designator=UART? Old Footprint=CONN4_ED5554DS_SHT New Footprint=691709710304
+Change Component Comment: Designator=Teensy 4.1 Old Comment=DEV-16771 New Comment=TEENSY_4.1
+Change Component Comment: Designator=CAN? Old Comment=ED5554DS New Comment=691709710304
+Change Component Comment: Designator=I? Old Comment=ED5554DS New Comment=691709710304
+Change Component Comment: Designator=UART? Old Comment=ED5554DS New Comment=691709710304
+Change Pin Designator/Name:  Old Designator=CAN?-1 Old Name=1 New Designator =4 New Name=4
+Change Pin Designator/Name:  Old Designator=CAN?-2 Old Name=2 New Designator =3 New Name=3
+Change Pin Designator/Name:  Old Designator=CAN?-3 Old Name=3 New Designator =2 New Name=2
+Change Pin Designator/Name:  Old Designator=CAN?-4 Old Name=4 New Designator =1 New Name=1
+Change Pin Designator/Name:  Old Designator=I?-1 Old Name=1 New Designator =4 New Name=4
+Change Pin Designator/Name:  Old Designator=I?-2 Old Name=2 New Designator =3 New Name=3
+Change Pin Designator/Name:  Old Designator=I?-3 Old Name=3 New Designator =2 New Name=2
+Change Pin Designator/Name:  Old Designator=I?-4 Old Name=4 New Designator =1 New Name=1
+Change Pin Designator/Name:  Old Designator=UART?-1 Old Name=1 New Designator =4 New Name=4
+Change Pin Designator/Name:  Old Designator=UART?-2 Old Name=2 New Designator =3 New Name=3
+Change Pin Designator/Name:  Old Designator=UART?-3 Old Name=3 New Designator =2 New Name=2
+Change Pin Designator/Name:  Old Designator=UART?-4 Old Name=4 New Designator =1 New Name=1

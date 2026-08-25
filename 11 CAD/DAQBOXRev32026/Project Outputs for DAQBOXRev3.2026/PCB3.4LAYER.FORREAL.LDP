@@ -1,0 +1,3 @@
+Layer Pairs Export File for PCB: C:\GTOR-DAQ\11 CAD\DAQBOXRev32026\PCB3.4LAYER.FORREAL.PcbDoc
+LayersSetName=Top_Bot_Plated_Thru_Holes|DrillFile=pcb3.4layer.forreal-plated.txt|DrillLayers=gtl,gp1,g1,gbl
+LayersSetName=Top_Bot_NonPlated_Thru_Holes|DrillFile=pcb3.4layer.forreal-nonplated.txt|DrillLayers=gtl,gp1,g1,gbl

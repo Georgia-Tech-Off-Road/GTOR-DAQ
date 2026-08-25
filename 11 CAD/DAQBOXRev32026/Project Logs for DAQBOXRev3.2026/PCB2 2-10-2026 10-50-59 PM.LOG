@@ -1,0 +1,69 @@
+Removed Pin From Net: NetName=NetADS1256_7 Pin=J?-A2
+Removed Pin From Net: NetName=NetADS1256_8 Pin=J?-A3
+Removed Pin From Net: NetName=NetADS1256_9 Pin=J?-A4
+Removed Pin From Net: NetName=NetADS1256_10 Pin=J?-B1
+Removed Pin From Net: NetName=NetADS1256_11 Pin=J?-B2
+Removed Pin From Net: NetName=NetADS1256_12 Pin=J?-B3
+Removed Pin From Net: NetName=NetADS1256_13 Pin=J?-B4
+Removed Pin From Net: NetName=NetADS1256_2 Pin=J?-L2
+Removed Pin From Net: NetName=NetADS1256_1 Pin=J?-L3
+Removed Pin From Net: NetName=GND Pin=J?-L4
+Removed Pin From Net: NetName=NetAnalog VREF Generator_2 Pin=J?-M1
+Removed Pin From Net: NetName=NetADC Clock Generator_14 Pin=J?-M2
+Removed Pin From Net: NetName=NetJ?_C2 Pin=Teensy 4.1-15
+Removed Pin From Net: NetName=NetJ?_D2 Pin=Teensy 4.1-41
+Change Component Footprint: Designator=J? Old Footprint=CONN_SD-500762-001_MOL New Footprint=CONN_36638-0003_MOL
+Change Component Comment : Designator=J? Old Comment=5007620481 New Comment=366380003
+Change component parameters: Designator = "J?" ("J?"); Footprint = "CONN_SD-500762-001_MOL"; UniqueID = "\UXNIABKT" ("\UXNIABKT")
+Change component parameters (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2025 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer_Name"; Value = "Molex Connector Corporation"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer_Part_Number"; Value = "366380003"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Type"; Value = "Type"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=NetADS1256_7 Pin=J?-B1
+Added Pin To Net: NetName=NetADS1256_8 Pin=J?-C1
+Added Pin To Net: NetName=NetADS1256_9 Pin=J?-D1
+Added Pin To Net: NetName=NetADS1256_10 Pin=J?-E1
+Added Pin To Net: NetName=NetADS1256_11 Pin=J?-F1
+Added Pin To Net: NetName=NetADS1256_12 Pin=J?-G1
+Added Pin To Net: NetName=NetADS1256_13 Pin=J?-H1
+Added Pin To Net: NetName=NetADS1256_1 Pin=J?-L2
+Added Pin To Net: NetName=NetAnalog VREF Generator_2 Pin=J?-L3
+Added Pin To Net: NetName=NetADS1256_2 Pin=J?-M1
+Added Pin To Net: NetName=GND Pin=J?-M2
+Added Pin To Net: NetName=NetADC Clock Generator_14 Pin=J?-M3
+Added Pin To Net: NetName=NetJ?_C2 Pin=Teensy 4.1-16
+Added Pin To Net: NetName=NetJ?_D2 Pin=Teensy 4.1-17
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-42
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-43
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-45
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-46
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-47
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-48
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-49
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-50
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-51
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-52
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-55
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-57
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-69
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-70
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-71
+Added Pin To Net: NetName=NetJ?_A2 Pin=J?-A2
+Added Pin To Net: NetName=NetJ?_A2 Pin=Teensy 4.1-14
+Added Net: Name=NetJ?_A2
+Added Pin To Net: NetName=NetJ?_B2 Pin=J?-B2
+Added Pin To Net: NetName=NetJ?_B2 Pin=Teensy 4.1-15
+Added Net: Name=NetJ?_B2
+Added Pin To Net: NetName=NetJ?_E2 Pin=J?-E2
+Added Pin To Net: NetName=NetJ?_E2 Pin=Teensy 4.1-25
+Added Net: Name=NetJ?_E2
+Added Pin To Net: NetName=NetJ?_F2 Pin=J?-F2
+Added Pin To Net: NetName=NetJ?_F2 Pin=Teensy 4.1-41
+Added Net: Name=NetJ?_F2
+Added Pin To Net: NetName=NetJ?_G2 Pin=J?-G2
+Added Pin To Net: NetName=NetJ?_G2 Pin=Teensy 4.1-20
+Added Net: Name=NetJ?_G2
+Added Pin To Net: NetName=NetJ?_H2 Pin=J?-H2
+Added Pin To Net: NetName=NetJ?_H2 Pin=Teensy 4.1-21
+Added Net: Name=NetJ?_H2

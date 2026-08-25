@@ -1,0 +1,22 @@
+Removed Pin From Net: NetName=Net3_A4 Pin=SPI?-1
+Removed Pin From Net: NetName=GND Pin=SPI?-2
+Removed Pin From Net: NetName=Net3_A2 Pin=SPI?-3
+Removed Pin From Net: NetName=Net3_B4 Pin=SPI?-4
+Removed Pin From Net: NetName=Net3_C4 Pin=SPI?-5
+Removed Pin From Net: NetName=Net3_D4 Pin=SPI?-6
+Removed Pin From Net: NetName=Net3_E4 Pin=SPI?-7
+Removed Pin From Net: NetName=Net3_F4 Pin=SPI?-8
+Removed Pin From Net: NetName=Net3_G4 Pin=SPI?-9
+Removed Pin From Net: NetName=Net3_H4 Pin=SPI?-10
+Removed Member From Class: ClassName=48PinConnector Member=SPI?
+Added Component: Designator=SPI(691244710010)
+Added Pin To Net: NetName=Net3_A4 Pin=SPI-1
+Added Pin To Net: NetName=GND Pin=SPI-2
+Added Pin To Net: NetName=Net3_A2 Pin=SPI-3
+Added Pin To Net: NetName=Net3_B4 Pin=SPI-4
+Added Pin To Net: NetName=Net3_C4 Pin=SPI-5
+Added Pin To Net: NetName=Net3_D4 Pin=SPI-6
+Added Pin To Net: NetName=Net3_E4 Pin=SPI-7
+Added Pin To Net: NetName=Net3_F4 Pin=SPI-8
+Added Pin To Net: NetName=Net3_G4 Pin=SPI-9
+Added Member To Class: ClassName=48PinConnector Member=Component SPI 691244710010

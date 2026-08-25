@@ -1,0 +1,10 @@
+Change Component Designator: OldDesignator=J? NewDesignator=3
+Change Component Kind : Designator=3 Old Kind=Standard New Kind=Net Tie (In BOM)
+Change Pin Designator/Name:  Old Designator=Teensy 4.1-14 Old Name=A0 New Designator =A2 New Name=16
+Change Pin Designator/Name:  Old Designator=Teensy 4.1-15 Old Name=A1 New Designator =A3 New Name=17
+Change Pin Designator/Name:  Old Designator=Teensy 4.1-16 Old Name=A2 New Designator =A11 New Name=25
+Change Pin Designator/Name:  Old Designator=Teensy 4.1-17 Old Name=A3 New Designator =A17 New Name=41
+Change Pin Designator/Name:  Old Designator=Teensy 4.1-20 Old Name=A6 New Designator =A0 New Name=14
+Change Pin Designator/Name:  Old Designator=Teensy 4.1-21 Old Name=A7 New Designator =A1 New Name=15
+Change Pin Designator/Name:  Old Designator=Teensy 4.1-25 Old Name=A11 New Designator =A6 New Name=20
+Change Pin Designator/Name:  Old Designator=Teensy 4.1-41 Old Name=A17 New Designator =A7 New Name=21

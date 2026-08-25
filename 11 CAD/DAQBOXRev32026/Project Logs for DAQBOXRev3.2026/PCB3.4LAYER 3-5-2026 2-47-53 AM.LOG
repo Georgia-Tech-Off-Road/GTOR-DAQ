@@ -1,0 +1,6 @@
+Added Member To Class: ClassName=MainSchematic.3 Member=Component C01 1µF
+Added Member To Class: ClassName=MainSchematic.3 Member=Component C02 1µF
+Add Class Member: Failed to add class member : Component C03 1µF
+Added Member To Class: ClassName=MainSchematic.3 Member=Component R01 RC1206FR-10750RL
+Added Member To Class: ClassName=MainSchematic.3 Member=Component R02 RC1206FR-10750RL
+Added Member To Class: ClassName=MainSchematic.3 Member=Component R03 RC1206FR-10750RL

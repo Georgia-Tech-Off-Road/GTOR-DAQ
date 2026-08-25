@@ -1,0 +1,151 @@
+Removed Pin From Net: NetName=GND Pin=Teensy 4.1-GND1
+Added Pin To Net: NetName=Net5V_1 Pin=1-1
+Added Pin To Net: NetName=GND Pin=1-2
+Added Pin To Net: NetName=Net3V3_1 Pin=1-3
+Added Pin To Net: NetName=Net48 Pin Conn_H3 Pin=1-8
+Added Pin To Net: NetName=Net48 Pin Conn_G3 Pin=1-9
+Added Pin To Net: NetName=GND Pin=1-15
+Added Pin To Net: NetName=Net48 Pin Conn_G4 Pin=1-20
+Added Pin To Net: NetName=Net48 Pin Conn_F4 Pin=1-21
+Added Pin To Net: NetName=Net48 Pin Conn_H4 Pin=1-24
+Added Pin To Net: NetName=Net48 Pin Conn_E4 Pin=2-2
+Added Pin To Net: NetName=Net48 Pin Conn_C4 Pin=2-3
+Added Pin To Net: NetName=Net48 Pin Conn_C3 Pin=2-9
+Added Pin To Net: NetName=Net48 Pin Conn_D3 Pin=2-10
+Added Pin To Net: NetName=Net3V3_1 Pin=2-15
+Added Pin To Net: NetName=Net48 Pin Conn_D4 Pin=2-18
+Added Pin To Net: NetName=Net48 Pin Conn_B4 Pin=2-19
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-42
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-43
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-45
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-46
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-47
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-48
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-49
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-50
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-51
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-52
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-55
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-69
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-70
+Add Pin To Net: Unknown Pin: Pin Teensy 4.1-71
+Change Net Name : Old Net Name=Net3V3_1 New Net Name=Net1_3
+Change Net Name : Old Net Name=Net5V_1 New Net Name=Net1_1
+Change Net Name : Old Net Name=Net48 Pin Conn_B4 New Net Name=Net2_19
+Change Net Name : Old Net Name=Net48 Pin Conn_C3 New Net Name=Net2_9
+Change Net Name : Old Net Name=Net48 Pin Conn_C4 New Net Name=Net2_3
+Change Net Name : Old Net Name=Net48 Pin Conn_D3 New Net Name=Net2_10
+Change Net Name : Old Net Name=Net48 Pin Conn_D4 New Net Name=Net2_18
+Change Net Name : Old Net Name=Net48 Pin Conn_E4 New Net Name=Net2_2
+Change Net Name : Old Net Name=Net48 Pin Conn_F4 New Net Name=Net1_21
+Change Net Name : Old Net Name=Net48 Pin Conn_G3 New Net Name=Net1_9
+Change Net Name : Old Net Name=Net48 Pin Conn_G4 New Net Name=Net1_20
+Change Net Name : Old Net Name=Net48 Pin Conn_H3 New Net Name=Net1_8
+Change Net Name : Old Net Name=Net48 Pin Conn_H4 New Net Name=Net1_24
+Added Pin To Net: NetName=Net1_4 Pin=1-4
+Added Pin To Net: NetName=Net1_4 Pin=ADS1256-15
+Added Pin To Net: NetName=Net1_4 Pin=Teensy 4.1-23
+Added Net: Name=Net1_4
+Added Pin To Net: NetName=Net1_5 Pin=1-5
+Added Pin To Net: NetName=Net1_5 Pin=ADS1256-21
+Added Pin To Net: NetName=Net1_5 Pin=Teensy 4.1-22
+Added Net: Name=Net1_5
+Added Pin To Net: NetName=Net1_6 Pin=1-6
+Added Pin To Net: NetName=Net1_6 Pin=48 Pin Conn-K2
+Added Pin To Net: NetName=Net1_6 Pin=Teensy 4.1-21
+Added Net: Name=Net1_6
+Added Pin To Net: NetName=Net1_7 Pin=1-7
+Added Pin To Net: NetName=Net1_7 Pin=48 Pin Conn-J2
+Added Pin To Net: NetName=Net1_7 Pin=Teensy 4.1-20
+Added Net: Name=Net1_7
+Added Pin To Net: NetName=Net1_10 Pin=1-10
+Added Pin To Net: NetName=Net1_10 Pin=48 Pin Conn-F2
+Added Pin To Net: NetName=Net1_10 Pin=Teensy 4.1-17
+Added Net: Name=Net1_10
+Added Pin To Net: NetName=Net1_11 Pin=1-11
+Added Pin To Net: NetName=Net1_11 Pin=48 Pin Conn-E2
+Added Pin To Net: NetName=Net1_11 Pin=Teensy 4.1-16
+Added Net: Name=Net1_11
+Added Pin To Net: NetName=Net1_12 Pin=1-12
+Added Pin To Net: NetName=Net1_12 Pin=48 Pin Conn-D2
+Added Pin To Net: NetName=Net1_12 Pin=Teensy 4.1-15
+Added Net: Name=Net1_12
+Added Pin To Net: NetName=Net1_13 Pin=1-13
+Added Pin To Net: NetName=Net1_13 Pin=48 Pin Conn-C2
+Added Pin To Net: NetName=Net1_13 Pin=Teensy 4.1-14
+Added Net: Name=Net1_13
+Added Pin To Net: NetName=Net1_14 Pin=1-14
+Added Pin To Net: NetName=Net1_14 Pin=ADS1256-24
+Added Pin To Net: NetName=Net1_14 Pin=Teensy 4.1-13
+Added Net: Name=Net1_14
+Added Pin To Net: NetName=Net1_16 Pin=1-16
+Added Pin To Net: NetName=Net1_16 Pin=48 Pin Conn-H2
+Added Pin To Net: NetName=Net1_16 Pin=Teensy 4.1-41
+Added Net: Name=Net1_16
+Added Pin To Net: NetName=Net1_17 Pin=1-17
+Added Pin To Net: NetName=Net1_17 Pin=R1-1
+Added Pin To Net: NetName=Net1_17 Pin=Teensy 4.1-40
+Added Net: Name=Net1_17
+Added Pin To Net: NetName=Net1_18 Pin=1-18
+Added Pin To Net: NetName=Net1_18 Pin=Teensy 4.1-39
+Added Net: Name=Net1_18
+Added Pin To Net: NetName=Net1_19 Pin=1-19
+Added Pin To Net: NetName=Net1_19 Pin=Teensy 4.1-38
+Added Net: Name=Net1_19
+Added Pin To Net: NetName=Net1_22 Pin=1-22
+Added Pin To Net: NetName=Net1_22 Pin=R2-1
+Added Pin To Net: NetName=Net1_22 Pin=Teensy 4.1-35
+Added Net: Name=Net1_22
+Added Pin To Net: NetName=Net1_23 Pin=1-23
+Added Pin To Net: NetName=Net1_23 Pin=Rec-1
+Added Pin To Net: NetName=Net1_23 Pin=Teensy 4.1-34
+Added Net: Name=Net1_23
+Added Pin To Net: NetName=Net2_4 Pin=2-4
+Added Pin To Net: NetName=Net2_4 Pin=Teensy 4.1-2
+Added Net: Name=Net2_4
+Added Pin To Net: NetName=Net2_5 Pin=2-5
+Added Pin To Net: NetName=Net2_5 Pin=Teensy 4.1-3
+Added Net: Name=Net2_5
+Added Pin To Net: NetName=Net2_6 Pin=2-6
+Added Pin To Net: NetName=Net2_6 Pin=Teensy 4.1-4
+Added Net: Name=Net2_6
+Added Pin To Net: NetName=Net2_7 Pin=2-7
+Added Pin To Net: NetName=Net2_7 Pin=Teensy 4.1-5
+Added Net: Name=Net2_7
+Added Pin To Net: NetName=Net2_8 Pin=2-8
+Added Pin To Net: NetName=Net2_8 Pin=Teensy 4.1-6
+Added Net: Name=Net2_8
+Added Pin To Net: NetName=Net2_11 Pin=2-11
+Added Pin To Net: NetName=Net2_11 Pin=Teensy 4.1-9
+Added Net: Name=Net2_11
+Added Pin To Net: NetName=Net2_12 Pin=2-12
+Added Pin To Net: NetName=Net2_12 Pin=ADS1256-20
+Added Pin To Net: NetName=Net2_12 Pin=Teensy 4.1-10
+Added Net: Name=Net2_12
+Added Pin To Net: NetName=Net2_13 Pin=2-13
+Added Pin To Net: NetName=Net2_13 Pin=ADS1256-23
+Added Pin To Net: NetName=Net2_13 Pin=Teensy 4.1-11
+Added Net: Name=Net2_13
+Added Pin To Net: NetName=Net2_14 Pin=2-14
+Added Pin To Net: NetName=Net2_14 Pin=ADS1256-22
+Added Pin To Net: NetName=Net2_14 Pin=Teensy 4.1-12
+Added Net: Name=Net2_14
+Added Pin To Net: NetName=Net2_16 Pin=2-16
+Added Pin To Net: NetName=Net2_16 Pin=ADS1256-14
+Added Pin To Net: NetName=Net2_16 Pin=Teensy 4.1-24
+Added Net: Name=Net2_16
+Added Pin To Net: NetName=Net2_17 Pin=2-17
+Added Pin To Net: NetName=Net2_17 Pin=48 Pin Conn-G2
+Added Pin To Net: NetName=Net2_17 Pin=Teensy 4.1-25
+Added Net: Name=Net2_17
+Added Pin To Net: NetName=Net2_20 Pin=2-20
+Added Pin To Net: NetName=Net2_20 Pin=Btn 3-1
+Added Pin To Net: NetName=Net2_20 Pin=Teensy 4.1-28
+Added Net: Name=Net2_20
+Added Pin To Net: NetName=Net2_21 Pin=2-21
+Added Pin To Net: NetName=Net2_21 Pin=R3-1
+Added Pin To Net: NetName=Net2_21 Pin=Teensy 4.1-29
+Added Net: Name=Net2_21
+Added Pin To Net: NetName=Net2_24 Pin=2-24
+Added Pin To Net: NetName=Net2_24 Pin=Teensy 4.1-32
+Added Net: Name=Net2_24

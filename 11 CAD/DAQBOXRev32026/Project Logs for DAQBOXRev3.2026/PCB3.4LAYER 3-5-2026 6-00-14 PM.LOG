@@ -1,0 +1,13 @@
+Removed Pin From Net: NetName=Net1_3 Pin=-16
+Removed Pin From Net: NetName=Net1_3 Pin=ADS1256-14
+Removed Pin From Net: NetName=Net1_3 Pin=ADS1256-15
+Removed Pin From Net: NetName=Net1_3 Pin=Hi-4
+Change Net Name : Old Net Name=Net5V_REF New Net Name=Net48 Pin Conn_A1
+Added Pin To Net: NetName=Net1_4 Pin=Hi-4
+Added Pin To Net: NetName=Net1_4 Pin=ADS1256-15
+Added Pin To Net: NetName=Net1_4 Pin=Teensy 4.1-23
+Added Net: Name=Net1_4
+Added Pin To Net: NetName=Net2_16 Pin=-16
+Added Pin To Net: NetName=Net2_16 Pin=ADS1256-14
+Added Pin To Net: NetName=Net2_16 Pin=Teensy 4.1-24
+Added Net: Name=Net2_16

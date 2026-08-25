@@ -1,0 +1,47 @@
+48 Pin Conn 1
+C4? C1
+R5? R1
+R4? R2
+C5? C2
+C3? C3
+R6? R3
+R3? R4
+Batt Batt1
+C6? C4
+SPI SPI1
+C2? C5
+R2? R5
+R4 R6
+R3 R7
+DS4 DS1
+DS3 DS2
+4 2
+Step Down Step Down1
+C0? C6
+C1? C7
+ADS1256 ADS1
+C7? C8
+R1? R8
+R7? R9
+R0? R10
+VREF Gen VREF Gen1
+R2 R11
+R1 R12
+Teensy 4.1 Teensy 1
+ 4
+ 5
+DS2 DS3
+DS1 DS4
+XBee XBee1
+Rec Rec1
+I/O I/O1
+CAN CAN1
+UART UART1
+I2C I1
+3V3 6
+GND GND1
+5V 7
+ADC Clock Gen ADC Clock Gen1
+12V 8
+Display Display1
+RTC Power Batt RTC Power Batt1
