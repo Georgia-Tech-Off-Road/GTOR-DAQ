@@ -29,6 +29,10 @@ enum SensorID : uint8_t {
     CVT_TEMP        = 10,
     REAR_TC_TEMP    = 11,
     TEENSY_TEMP     = 12,
+    ENGINE_RPM_TIMESTAMP = 13,
+    FRONT_LEFT_RPM_TIMESTAMP = 14,
+    FRONT_RIGHT_RPM_TIMESTAMP = 15,
+    REAR_RPM_TIMESTAMP = 16
 };
 
 struct Status {
@@ -39,6 +43,7 @@ struct Status {
 } status;
 
 struct __attribute__((packed)) DataPacket {
+    uint8_t sync;
     uint8_t sensorID;
     // Record in units of 100 micros
     uint32_t timestamp100Micros;
@@ -50,7 +55,11 @@ struct SensorLogger {
     uint64_t lastLogTimeMicros;
     
     bool shouldLog(uint64_t currentTimeMicros) {
-        return currentTimeMicros >= lastLogTimeMicros + intervalMicros;
+        if (currentTimeMicros >= lastLogTimeMicros + intervalMicros) {
+          lastLogTimeMicros = currentTimeMicros;
+          return true;
+        }
+        return false;
     }
     
     void updateLastLogTime(uint64_t currentTimeMicros) {
@@ -107,6 +116,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
 #define MIN_EXPECTED_RPM 0
 #define MAX_EXPECTED_RPM 10000
 #define MAX_RPM_INTERVAL_MICROS 100000 // Allow up to 100 ms between hall effect readings before we invalidate the data (return 0)
+#define RPM_COMPUTE_INTERVAL_MICROS 50000 // Check every 50ms
+#define RPM_BUFFER_CAPACITY 100 // Store up to 100 timestamps
 
 #define BAUD 230400
 
@@ -125,6 +136,12 @@ struct SensorLogger displayLogger = {1000000UL / 2, 0};
 struct SensorLogger saveTimer = {1000000UL * 60, 0};
 
 struct SensorLogger SDCardChecker = {1000000UL * 30, 0}; // Check every 30 sec to see if SD card is still responding
+
+// RPM Loggers
+struct SensorLogger frontLeftRPMLogger = {RPM_COMPUTE_INTERVAL_MICROS, 0};
+struct SensorLogger frontRightRPMLogger = {RPM_COMPUTE_INTERVAL_MICROS, 0};
+struct SensorLogger rearRPMLogger = {RPM_COMPUTE_INTERVAL_MICROS, 0};
+struct SensorLogger engineRPMLogger = {RPM_COMPUTE_INTERVAL_MICROS, 0};
 
 
 //actually init the global variable for this 
@@ -251,7 +268,7 @@ inline int setUpSD() {
   SD.mkdir(time.c_str());
   Serial.println(time.c_str());
 
-  outputFileName = String("/"+time+"/"+time+".bin");
+  outputFileName = String("/"+time+".bin");
   outputFile = SD.open(outputFileName.c_str(),  FILE_WRITE);
 
   return 0;
@@ -308,3 +325,10 @@ inline void emitADSError();
 inline void errorCheck();
 
 inline void onButtonHeldConfirmed();
+
+void listFiles(File dir);
+
+void sendFile(String filename);
+
+inline void handleSerial();
+

@@ -4,23 +4,27 @@ import argparse
 import math
 # This should correspond with arduino code
 sensors = {
-	0: "engineRPM",
-	1: "frontLeftRPM",
-	2: "frontRightRPM",
-	3: "rearRPM",
-	4: "rearBrakePressure",
-	5: "frontBrakePressure",
-	6: "LDSFrontRight",
-	7: "LDSFrontLeft",
-	8: "LDSRearRight",
-	9: "LDSRearLeft",
-	10: "CVTemp",
-	11: "rearTCTemp",
-	12: "teensyTemp",
+    0: "engineRPM",
+    1: "frontLeftRPM",
+    2: "frontRightRPM",
+    3: "rearRPM",
+    4: "rearBrakePressure",
+    5: "frontBrakePressure",
+    6: "LDSFrontRight",
+    7: "LDSFrontLeft",
+    8: "LDSRearRight",
+    9: "LDSRearLeft",
+    10: "CVTemp",
+    11: "rearTCTemp",
+    12: "teensyTemp",
+    13: "engineRPMTimestamp",
+    14: "frontLeftRPMTimestamp",
+    15: "frontRightRPMTimestamp",
+    16: "rearRPMTimestamp"
 }
 
 # The < symbol is important to specify that the teensy uses little endian
-PACKET_FORMAT = "<BIf"
+PACKET_FORMAT = "<BBQf"
 PACKET_SIZE = struct.calcsize(PACKET_FORMAT)
 
 def translate_and_write(in_path: str, out_path: str):
@@ -41,7 +45,19 @@ def translate_and_write(in_path: str, out_path: str):
 				print(f"Warning incomplete chunk at end of file, skipping.")
 				break
 			# Unpack values from struct
-			sensor_id, timestamp, value = struct.unpack(PACKET_FORMAT, chunk)
+			sync, sensor_id, timestamp, value = struct.unpack(PACKET_FORMAT, chunk)
+			resync_failed = False
+			while sync != 0xAA or sensor_id not in sensors: # Anti corruption value
+				curpos = in_file.tell()
+				in_file.seek(curpos - PACKET_SIZE + 1) # Go one byte after beginning of current packet
+				chunk = in_file.read(PACKET_SIZE)
+				if len(chunk) <  PACKET_SIZE:
+					print("Warning: could not resynchronize, reached end of file.")
+					resync_failed = True
+					break
+				sync, sensor_id, timestamp, value = struct.unpack(PACKET_FORMAT, chunk)
+			if resync_failed:
+				break
 			raw_timestamp = int(timestamp)
 			if first:
 				base_offset = raw_timestamp
@@ -49,7 +65,7 @@ def translate_and_write(in_path: str, out_path: str):
 			elif raw_timestamp < prev_raw_timestamp:
 				overflow_accumulator += (2**32 // 100)
 			adjusted = raw_timestamp - base_offset + overflow_accumulator
-			record = {"microsec": adjusted * 100, sensors[sensor_id]: value}
+			record = {"microsec": adjusted, sensors[sensor_id]: value}
 			if not first:
 				out_file.write(",\n")
 			out_file.write(json.dumps(record))

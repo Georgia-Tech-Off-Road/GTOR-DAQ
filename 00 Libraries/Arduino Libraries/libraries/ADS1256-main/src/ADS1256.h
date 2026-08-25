@@ -132,6 +132,7 @@ static constexpr int8_t PIN_UNUSED = -1;
 	void setCLKOUT(uint8_t clkout);
 	void setSDCS(uint8_t sdcs);	
 	void sendDirectCommand(uint8_t directCommand);	
+	void recover();
 
 	//Get a single conversion
 	long readSingle();
@@ -142,6 +143,7 @@ static constexpr int8_t PIN_UNUSED = -1;
 	//Cycling through the single-ended inputs
 	long cycleSingle(); //Ax + COM
 	long readSinglePort(uint8_t port); // Reads a value at port_number
+	bool safeReadSinglePort(uint8_t port, long &result);
 	//Cycling through the differential inputs
 	long cycleDifferential(); //Ax + Ay
 		
@@ -155,7 +157,7 @@ private:
 	
 SPIClass* _spi; //Pointer to an SPIClass object
 
-void waitForLowDRDY(); // Block until DRDY is low
+bool waitForLowDRDY(uint32_t timeoutMicros = 50000); // Block until DRDY is low
 void waitForHighDRDY(); // Block until DRDY is high
 void updateMUX(uint8_t muxValue);
 inline void CS_LOW();

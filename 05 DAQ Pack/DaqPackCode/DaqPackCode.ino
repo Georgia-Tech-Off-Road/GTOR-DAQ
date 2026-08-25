@@ -16,10 +16,10 @@ int currentAnalogSensor2 = 0;
 #define MAX_EXPECTED_VALUE 2000
 
 //initialize RPM sensors
-RPMSensor engineRPM(RPM1, ENGTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE, MAX_RPM_INTERVAL_MICROS);
-RPMSensor frontLeftRPM(RPM2, FLTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE, MAX_RPM_INTERVAL_MICROS);
-RPMSensor frontRightRPM(RPM3, FRTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE, MAX_RPM_INTERVAL_MICROS);
-RPMSensor rearRPM(RPM4, RDTEETH, MIN_EXPECTED_VALUE, MAX_EXPECTED_VALUE, MAX_RPM_INTERVAL_MICROS);
+RPMSensor<RPM_BUFFER_CAPACITY> engineRPM(RPM1, ENGTEETH, MAX_RPM_INTERVAL_MICROS);
+RPMSensor<RPM_BUFFER_CAPACITY> frontLeftRPM(RPM2, FLTEETH, MAX_RPM_INTERVAL_MICROS);
+RPMSensor<RPM_BUFFER_CAPACITY> frontRightRPM(RPM3, FRTEETH, MAX_RPM_INTERVAL_MICROS);
+RPMSensor<RPM_BUFFER_CAPACITY> rearRPM(RPM4, RDTEETH, MAX_RPM_INTERVAL_MICROS);
 
 //dont need to calibrate the brake pressures at start up I don't think
 Linear_Analog_Sensor rearBrakePressure(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 2000, 0, 4.5, 0.5, 0, 2000);
@@ -39,7 +39,7 @@ Linear_Analog_Sensor LDSRearRight(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 7.87402
 Linear_Analog_Sensor CVTTemp(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
 Linear_Analog_Sensor RearTransferCaseTemp(ADC_RESOLUTION, ADC_REFERENCE_VOLTAGE, 200, 0, 5.0, 0.0, 0.0, 200);
 
-static_assert(sizeof(DataPacket) == 9, "DataPacket size mismatch - check packing");
+static_assert(sizeof(DataPacket) == 10, "DataPacket size mismatch - check packing");
 
 void setup() {
   //crank up i2c clocks
@@ -108,6 +108,8 @@ void loop() {}
 void dataAquisitionAndSavingLoop() {
   errorCheck();
   blockForButtonHold(RECORD_SAVE_BUTTON, BUTTON_HOLD_DURATION); // Must hold the recording button for one second
+  status.recording_status = status.RECORDING;
+  updateStatusDisplay();
   while(1) {
     digitalWrite(POWER_LED, HIGH);
     //updateDebugLeds();
@@ -117,6 +119,7 @@ void dataAquisitionAndSavingLoop() {
     static bool tracking = false;
     bool shouldSave = false;
 
+    handleCommands();
 
     // Serial.println("Gateway1");
     if(SDCardChecker.shouldLog(microsecondsElapsed)) {
@@ -126,7 +129,7 @@ void dataAquisitionAndSavingLoop() {
       }
     }
 
-  // Serial.println("Gateway2");
+    // Serial.println("Gateway2");
     if (digitalRead(RECORD_SAVE_BUTTON) == LOW) {
       if(!tracking) {
         holdStartMicros = safeMicrosecondsElapsed();
@@ -143,8 +146,9 @@ void dataAquisitionAndSavingLoop() {
     }
 
     if (displayLogger.shouldLog(microsecondsElapsed)) {
+      unsigned long long startMicros = microsecondsElapsed;
       displayLogger.updateLastLogTime(microsecondsElapsed);
-      updateStatusDisplay();
+      // updateStatusDisplay() // Takes ~25 ms to fully update, too much time just for an animation
     }
 
     // Serial.println("Gateway3");
@@ -161,8 +165,6 @@ void dataAquisitionAndSavingLoop() {
       blockForButtonHold(RECORD_SAVE_BUTTON, BUTTON_HOLD_DURATION); // Must hold the recording button for one second
       updateStatusDisplay();
       changeRecordingState();
-
-      rapidFlash(RECORDING_LED, 5000);
 
       tracking = false;
     }
@@ -181,7 +183,7 @@ void dataAquisitionAndSavingLoop() {
       DAQData.setData<cmbtl::SensorIndex::SEC>(microsecondsElapsed / 1000000);
       
       if (debugLogger.shouldLog(microsecondsElapsed)) {
-        Serial.println(DAQData.serializeDataToJSON().c_str());
+        // Serial.println(DAQData.serializeDataToJSON().c_str());
         debugLogger.updateLastLogTime(microsecondsElapsed);
       }
 
@@ -194,39 +196,27 @@ void dataAquisitionAndSavingLoop() {
         writePacket(SensorID::TEENSY_TEMP, temp);
         teensyTempLogger.updateLastLogTime(microsecondsElapsed);
       }
-      // Serial.println("Gateway7");
-      //check for RPM updates (we still use the individual flags as they enable us to reset RPM to 0 after a certain amount of time goes by (prevents hanging at like 5000 or whatev))
-      if (engineRPM.RPMUpdateFlag) {
-        float value = (float) engineRPM.calculateRPM();
-        DAQData.setData<cmbtl::SensorIndex::RPM1>((uint32_t)value);
-        writePacket(SensorID::ENGINE_RPM, value);
-        engineRPM.RPMUpdateFlag = false;
-      } else {
-        engineRPM.calculateRPM();
+      // Check for RPM updates
+      if (engineRPMLogger.shouldLog(microsecondsElapsed)) {
+        float RPM = engineRPM.calculateRPM();
+        DAQData.setData<cmbtl::SensorIndex::RPM1>((uint32_t) RPM);
+        writePacket(SensorID::ENGINE_RPM, RPM);
       }
-      if (frontLeftRPM.RPMUpdateFlag) {
-        float value = (float) frontLeftRPM.calculateRPM();
-        DAQData.setData<cmbtl::SensorIndex::RPM2>((uint32_t)value);
-        writePacket(SensorID::FRONT_LEFT_RPM, value);
-        frontLeftRPM.RPMUpdateFlag = false;
-      } else {
-        frontLeftRPM.checkRPM();
+      if (frontLeftRPMLogger.shouldLog(microsecondsElapsed)) {
+        float RPM = frontLeftRPM.calculateRPM();
+        DAQData.setData<cmbtl::SensorIndex::RPM2>((uint32_t) RPM);
+        writePacket(SensorID::FRONT_LEFT_RPM, RPM);
       }
-      if (frontRightRPM.RPMUpdateFlag) {
-        float value = frontRightRPM.calculateRPM();
-        DAQData.setData<cmbtl::SensorIndex::RPM3>((uint32_t)value);
-        writePacket(SensorID::FRONT_RIGHT_RPM, value);
-        frontRightRPM.RPMUpdateFlag = false;
-      } else {
-        frontRightRPM.checkRPM();
+      if (frontRightRPMLogger.shouldLog(microsecondsElapsed)) {
+        float RPM = frontRightRPM.calculateRPM();
+        DAQData.setData<cmbtl::SensorIndex::RPM3>((uint32_t) RPM);
+        writePacket(SensorID::FRONT_RIGHT_RPM, RPM);
       }
-      if (rearRPM.RPMUpdateFlag) {
-        float value = rearRPM.calculateRPM();
-        DAQData.setData<cmbtl::SensorIndex::RPM4>((uint32_t)value);
-        writePacket(SensorID::REAR_RPM, value);
-        rearRPM.RPMUpdateFlag = false;
-      } else {
-        rearRPM.checkRPM();
+      if (rearRPMLogger.shouldLog(microsecondsElapsed)) {
+        float RPM = rearRPM.calculateRPM();
+        DAQData.setData<cmbtl::SensorIndex::RPM4>((uint32_t) RPM);
+        //writePacket(SensorID::REAR_RPM, RPM);
+        writePacket(SensorID::REAR_RPM, digitalRead(RPM3) * 1000.0f);
       }
       // Serial.println("Gateway8");
       //Serial.printf("%s", DAQData.serializeDataToJSON().c_str());
@@ -244,27 +234,23 @@ inline void recordNextADSValue() {
 
   SensorID nextSensor = ads1256SensorList[index];
   uint8_t nextADSPort = getADSPort(nextSensor);
+  long result;
+  if(!ads1256.safeReadSinglePort(nextADSPort, result)) {
+    Serial.printf("%d: timeout reading port %d\n", microsecondsElapsed, nextADSPort);
+  }
   if (nextSensor == LDS_FRONT_LEFT) {
-    long result = ads1256.readSinglePort(nextADSPort);
-    // float value = LDSFrontLeft.computeSensorReading(result);
     float value = ads1256.convertToVoltage(result);
     writePacket(SensorID::LDS_FRONT_LEFT, value);
     DAQData.setData<cmbtl::SensorIndex::LDSFrontLeft>(value);
   } else if (nextSensor == LDS_FRONT_RIGHT) {
-    long result = ads1256.readSinglePort(nextADSPort);
-    // float value = LDSFrontRight.computeSensorReading(result);
     float value = ads1256.convertToVoltage(result);
     writePacket(SensorID::LDS_FRONT_RIGHT, value);
     DAQData.setData<cmbtl::SensorIndex::LDSFrontRight>(value);
   } else if (nextSensor == LDS_REAR_LEFT) {
-    long result = ads1256.readSinglePort(nextADSPort);
-    // float value = LDSRearLeft.computeSensorReading(result);
     float value = ads1256.convertToVoltage(result);
     writePacket(SensorID::LDS_REAR_LEFT, value);
     DAQData.setData<cmbtl::SensorIndex::LDSRearLeft>(value);
   } else if (nextSensor == LDS_REAR_RIGHT) {
-    long result = ads1256.readSinglePort(nextADSPort);
-    // float value = LDSRearRight.computeSensorReading(result);
     float value = ads1256.convertToVoltage(result);
     writePacket(SensorID::LDS_REAR_RIGHT, value);
     DAQData.setData<cmbtl::SensorIndex::LDSRearRight>(value);
@@ -297,19 +283,21 @@ void changeRecordingState() {
     display.printf("%s closed\n", outputFileName.c_str());
     display.display();
 
-    delay(4000); // Delay 4 seconds
+    delay(1000); // Delay 4 seconds
     isRecording = false;
     //signal to user that the file saved with a flashbang
     status.recording_status = status.READY_TO_RECORD;
+
+    updateStatusDisplay();
   }
   else {
     String time = String(year()) + "-" + String(month()) + "-" + String(day()) + " " + String(hour()) + "_" + String(minute()) + "_" + String(second());
     SD.mkdir(time.c_str());
     Serial.println(time.c_str());
-    File structConfigFile = SD.open(String("/"+time+"/"+time+"Config.txt").c_str(), FILE_WRITE);
-    structConfigFile.close();
+    // File structConfigFile = SD.open(String("/"+time+"/"+time+"Config.txt").c_str(), FILE_WRITE);
+    // structConfigFile.close();
 
-    outputFileName = String("/"+time+"/"+time+".bin");
+    outputFileName = String("/"+time+".bin");
     outputFile = SD.open(outputFileName.c_str(),  FILE_WRITE);
 
     if(!outputFile) {
@@ -322,7 +310,7 @@ void changeRecordingState() {
     display.setCursor(0, 0);
     display.printf("Opening: %s.bin\n", time.c_str());
     display.display();
-    delay(4000);
+    delay(1000);
 
     // Reset flags
     engineRPM.RPMUpdateFlag = false;
@@ -333,6 +321,8 @@ void changeRecordingState() {
         
     isRecording = true;
     status.recording_status = status.RECORDING;
+
+    updateStatusDisplay();
   }
 }
 
@@ -359,21 +349,28 @@ inline void initPins() {
 
 void engineRPMInterrupt() {
   static float counter = 0.0f;
-  noInterrupts();
-  writePacket(SensorID::ENGINE_RPM, counter);
+  writePacket(SensorID::ENGINE_RPM_TIMESTAMP, counter);
   counter += 1.0f;
-  interrupts();
+  engineRPM.handleInterrupt();
 }
 
 void frontLeftRPMInterrupt() {
-  frontLeftRPM.handleInterrupt();
+  static float counter = 0.0f;
+  writePacket(SensorID::FRONT_LEFT_RPM_TIMESTAMP, counter);
+  counter += 1.0f;
 }
 
 void frontRightRPMInterrupt() {
+  static float counter = 0.0f;
+  writePacket(SensorID::FRONT_RIGHT_RPM_TIMESTAMP, counter);
+  counter += 1.0f;
   frontRightRPM.handleInterrupt();
 }
 
 void rearRPMInterrupt() {
+  static float counter = 0.0f;
+  writePacket(SensorID::REAR_RPM_TIMESTAMP, counter);
+  counter += 1.0f;
   rearRPM.handleInterrupt();
 }
 
@@ -522,6 +519,7 @@ void errorFlash(int ledPin) {
 void writePacket(SensorID id, float value) {
   if (!isRecording) return;
   DataPacket packet;
+  packet.sync = 0xAA;
   packet.sensorID = id;
   // Get in units of sec 10^-4
   uint32_t ts = safeTimestamp();
@@ -571,18 +569,7 @@ void updateStatusDisplay() {
     display.println("Recording Status: Ready to record");
   }
   else if (status.recording_status == status.RECORDING) {
-    if (counter % 4 == 0) {
       display.println("Recording Status: Recording");
-    }
-    else if (counter % 4 == 1) {
-      display.println("Recording Status: Recording.");
-    }
-    else if (counter % 4 == 2) {
-      display.println("Recording Status: Recording..");
-    } 
-    else {
-      display.println("Recording Status: Recording...");
-    }
   }
 
   if (status.error_status == status.ERROR) {
@@ -648,4 +635,56 @@ inline void onButtonHeldConfirmed() {
   while (digitalRead(RECORD_SAVE_BUTTON) == LOW) {} // Wait for release so we don't retrigger
   digitalWrite(RECORDING_LED, LOW);
   delay(250);
+}
+
+inline void handleCommands() {
+  if (Serial.available() > 0) {
+    String command = Serial.readStringUntil('\n');
+    command.trim(); 
+
+    if (command == "LIST") {
+      File root = SD.open("/");
+      listFiles(root);
+    } 
+    else if (command.startsWith("GET ")) {
+      String filename = command.substring(4);
+      sendFile(filename);
+    }
+  }
+}
+
+void listFiles(File dir) {
+  while (true) {
+    File entry = dir.openNextFile();
+    if (!entry) break; 
+    
+    if (!entry.isDirectory()) {
+      Serial.print("FILE:");
+      Serial.print(entry.name());
+      Serial.print("|SIZE:");
+      Serial.println(entry.size());
+    }
+    entry.close();
+  }
+  Serial.println("END_LIST");
+}
+
+void sendFile(String filename) {
+  if (!SD.exists(filename.c_str())) {
+    Serial.println("ERROR: File not found.");
+    return;
+  }
+
+  File dataFile = SD.open(filename.c_str());
+  if (dataFile) {
+    Serial.println("START_TRANSFER");
+    // Stream the file bytes directly
+    while (dataFile.available()) {
+      Serial.write(dataFile.read());
+    }
+    dataFile.close();
+    Serial.println("\nEND_TRANSFER");
+  } else {
+    Serial.println("ERROR: Could not open file.");
+  }
 }
