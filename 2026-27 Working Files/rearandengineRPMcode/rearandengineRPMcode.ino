@@ -1,19 +1,32 @@
 #include <SD.h>
 
 // --- Configuration Pin & Constants ---
-const uint8_t ENGINE_PIN = 11;
-const uint8_t REARPM_PIN = 10;
+const uint8_t FRONTL_PIN = 8;
+const uint8_t FRONTR_PIN = 12;
+const uint8_t ENGINE_PIN = 10;
+const uint8_t REARPM_PIN = 11;
 const uint8_t BUTTON_PIN = 9;
 const float TEETH_PER_REVOLUTION = 69.0; //Rear
+const float SPOKE_PER_REVOLUTION = 22.0; //Front
 const float SPARK_PER_REVOLUTION = 1.0;  // Engine
 
 // --- Volatile Variables (Shared with Interrupt) ---
 volatile uint32_t lastPulseTimeMicros = 0;
 volatile uint32_t pulseIntervalMicros = 0;
+
+volatile uint32_t lastLeftTimeMicros = 0;
+volatile uint32_t leftIntervalMicros = 0;
+
+volatile uint32_t lastRightTimeMicros = 0;
+volatile uint32_t rightIntervalMicros = 0;
+
 volatile uint32_t lastSparkTimeMicros = 0;
 volatile uint32_t sparkIntervalMicros = 0;
+
 volatile uint32_t debugPulseCount = 0;
 volatile uint32_t debugSparkCount = 0;
+volatile uint32_t debugLeftCount = 0;
+volatile uint32_t debugRightCount = 0;
 
 // --- Timing Variables for Serial Output ---
 uint32_t lastPrintTimeMs = 0;
@@ -42,6 +55,30 @@ void FASTRUN rearpmISR() {
   }
 }
 
+// --- Interrupt Service Routine (ISR) ---
+void FASTRUN leftISR() {
+  uint32_t currentTimeMicros = micros();
+  uint32_t delta = currentTimeMicros - lastLeftTimeMicros;
+
+  if (delta > 500) {
+    leftIntervalMicros = delta;
+    lastLeftTimeMicros = currentTimeMicros;
+    debugLeftCount++;
+  }
+}
+
+// --- Interrupt Service Routine (ISR) ---
+void FASTRUN rightISR() {
+  uint32_t currentTimeMicros = micros();
+  uint32_t delta = currentTimeMicros - lastRightTimeMicros;
+
+  if (delta > 500) {
+    rightIntervalMicros = delta;
+    lastRightTimeMicros = currentTimeMicros;
+    debugRightCount++;
+  }
+}
+
 void FASTRUN engineISR() {
   uint32_t currentTimeMicros = micros();
   uint32_t delta = currentTimeMicros - lastSparkTimeMicros;
@@ -64,7 +101,7 @@ void startLogging() {
 
   logFile = SD.open(filename, FILE_WRITE);
   if (logFile) {
-    logFile.println("millis,rear rpm,engine rpm");
+    logFile.println("millis,engine rpm, rear rpm, front left rpm, front right rpm");
     loggingActive = true;
     Serial.print("Logging STARTED -> ");
     Serial.println(filename);
@@ -111,6 +148,12 @@ void setup() {
   pinMode(REARPM_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(REARPM_PIN), rearpmISR, FALLING);
 
+  pinMode(FRONTR_PIN, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(FRONTR_PIN), rightISR, FALLING);
+
+  pinMode(FRONTL_PIN, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(FRONTL_PIN), leftISR, FALLING);
+
   pinMode(ENGINE_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(ENGINE_PIN), engineISR, FALLING);
 
@@ -136,17 +179,25 @@ void loop() {
 
   float rearRPM = 0.0;
   float engineRPM = 0.0;
+  float leftRPM = 0.0;
+  float rightRPM = 0.0;
 
   // Atomic copy of volatile timing values
     noInterrupts();
     uint32_t r_interval = pulseIntervalMicros;
     uint32_t e_interval = sparkIntervalMicros;
+    uint32_t f_interval = rightIntervalMicros;
+    uint32_t l_interval = leftIntervalMicros;
 
     uint32_t r_lastTime = lastPulseTimeMicros;
     uint32_t e_lastTime = lastSparkTimeMicros;
+    uint32_t f_lastTime = lastRightTimeMicros;
+    uint32_t l_lastTime = lastLeftTimeMicros;
 
     uint32_t pulseCount = debugPulseCount;
     uint32_t sparkCount = debugSparkCount;
+    uint32_t leftCount = debugLeftCount;
+    uint32_t rightCount = debugRightCount;
     interrupts();
 
 // Timeout check: Reset to 0 if no pulse in 0.5s
@@ -154,6 +205,18 @@ void loop() {
     rearRPM = 0.0;
 } else if (r_interval > 0) {
   rearRPM = (60000000.0 / (float)r_interval) / TEETH_PER_REVOLUTION;
+}
+
+if (micros() - f_lastTime > 500000) {
+    rightRPM = 0.0;
+} else if (f_interval > 0) {
+  rightRPM = (60000000.0 / (float)f_interval) / SPOKE_PER_REVOLUTION;
+}
+
+if (micros() - l_lastTime > 500000) {
+    leftRPM = 0.0;
+} else if (l_interval > 0) {
+    leftRPM = (60000000.0 / (float)l_interval) / SPOKE_PER_REVOLUTION;
 }
 
   if (micros() - e_lastTime > 500000) {
@@ -169,9 +232,24 @@ void loop() {
 // Read the actual physical voltage state of the pin
     bool rHigh = digitalRead(REARPM_PIN);
     bool eHigh = digitalRead(ENGINE_PIN);
+    bool fHigh = digitalRead(FRONTR_PIN);
+    bool lHigh = digitalRead(FRONTL_PIN);
+
 
 // Print everything to the Serial Monitor
+    Serial.print("Current Time: ");
+    Serial.print(currentMillis);
+    Serial.println("ms |");
+
     Serial.print("Pin 10 State: ");
+    Serial.print(eHigh ? "HIGH (3.3)" : "LOW (GND) ");
+    Serial.print(" | Pulses: ");
+    Serial.print(sparkCount);
+    Serial.print(" | RPM: ");
+    Serial.print(engineRPM, 1);
+    Serial.println(loggingActive ? " | LOGGING" : " | (idle)");
+
+    Serial.print("Pin 11 State: ");
     Serial.print(rHigh ? "HIGH (3.3)" : "LOW (GND) ");
     Serial.print(" | Pulses: ");
     Serial.print(pulseCount);
@@ -179,13 +257,22 @@ void loop() {
     Serial.print(rearRPM, 1);
     Serial.println("|");
 
-    Serial.print("Pin 11 State: ");
-    Serial.print(eHigh ? "HIGH (3.3)" : "LOW (GND) ");
+    Serial.print("Pin 12 State: ");
+    Serial.print(fHigh ? "HIGH (3.3)" : "LOW (GND) ");
     Serial.print(" | Pulses: ");
-    Serial.print(sparkCount);
+    Serial.print(rightCount);
     Serial.print(" | RPM: ");
-    Serial.print(engineRPM, 1);
-    Serial.println(loggingActive ? " | LOGGING" : " | (idle)");
+    Serial.print(rightRPM, 1);
+    Serial.println("|");
+
+    Serial.print("Pin 8 State: ");
+    Serial.print(lHigh ? "HIGH (3.3)" : "LOW (GND) ");
+    Serial.print(" | Pulses: ");
+    Serial.print(leftCount);
+    Serial.print(" | RPM: ");
+    Serial.print(leftRPM, 1);
+    Serial.println("|");
+
 
 // Write the same data to the SD card if a logging session is active
     if (loggingActive && logFile) {
@@ -197,9 +284,13 @@ void loop() {
 
       logFile.print(currentMillis);
       logFile.print(",");
+      logFile.print(engineRPM, 2);
+      logFile.print(",");
       logFile.print(rearRPM, 2);
       logFile.print(",");
-      logFile.println(engineRPM, 2);
+      logFile.print(leftRPM, 2);
+      logFile.print(",");
+      logFile.println(rightRPM, 2);
       logFile.flush(); // commit to card now so a power loss mid-run doesn't lose data
     } else {
       digitalWrite(LED_BUILTIN, HIGH);
