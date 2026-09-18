@@ -7,7 +7,7 @@ const uint8_t ENGINE_PIN = 10;
 const uint8_t REARPM_PIN = 11;
 const uint8_t BUTTON_PIN = 9;
 const float TEETH_PER_REVOLUTION = 69.0; //Rear
-const float SPOKE_PER_REVOLUTION = 22.0; //Front
+const float SPOKE_PER_REVOLUTION = 30.0; //Front
 const float SPARK_PER_REVOLUTION = 1.0;  // Engine
 
 // --- Volatile Variables (Shared with Interrupt) ---
