@@ -30,7 +30,7 @@ volatile uint32_t debugRightCount = 0;
 
 // --- Timing Variables for Serial Output ---
 uint32_t lastPrintTimeMs = 0;
-const uint32_t PRINT_INTERVAL_MS = 250;
+const uint32_t PRINT_INTERVAL_MS = 10;
 
 // --- Button / SD Logging State ---
 bool loggingActive = false;
