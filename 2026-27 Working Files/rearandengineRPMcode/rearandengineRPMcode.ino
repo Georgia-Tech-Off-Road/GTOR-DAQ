@@ -47,8 +47,8 @@ void FASTRUN rearpmISR() {
   uint32_t currentTimeMicros = micros();
   uint32_t delta = currentTimeMicros - lastPulseTimeMicros;
 
-// Signal debounce: Ignore noise faster than 10,000 RPM (87 us)
-  if (delta > 500) {
+// Signal debounce: Ignore noise
+  if (delta > 100) {
     pulseIntervalMicros = delta;
     lastPulseTimeMicros = currentTimeMicros;
     debugPulseCount++;
